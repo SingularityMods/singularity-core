@@ -17,7 +17,7 @@
     margin-right: auto;
     margin-left: auto;
     top: 50px;
-    max-height: calc(100vh - 55px);
+    max-height: fit-content;
     width: 770px;
     border: 1px solid #ED8323;
     border-radius: 5px;
@@ -25,7 +25,7 @@
     padding: 0 5px;
     box-shadow: 0px 0px 5px 0px var(--primary-color);
     overflow: hidden;
-    padding-bottom: 25px;
+    padding-bottom: 5px;
 }
 
 .restore-backup-dialog-exit .menubar-btn{
@@ -119,6 +119,7 @@
 .restore-backup-addon-table table.table-bordered {
     border-collapse: separate;
     border-spacing: 0;
+    margin-bottom: 0;
 }
 
 .restore-backup-addon-table .table-bordered tr,
@@ -183,18 +184,15 @@ margin-left: 0px;
     color: red;
 }
 
-.backup-restore-addon-table-scrollbar.mac {
-    max-height: calc(100vh - 200px);
-}
-
 .backup-restore-addon-table-scrollbar {
-    max-height: calc(100vh - 200px);
+    max-height: calc(100vh - 215px);
     overflow: auto;
     padding-right:15px;
     margin-right:-10px;
 }
 
 .backup-restore-addon-table-scrollbar .simplebar-scrollbar {
+    height: 50px;
     background-color: #8f8f8f;
     width: 8px;
     border-radius: 5px;
