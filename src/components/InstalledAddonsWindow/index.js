@@ -448,7 +448,7 @@ export default class InstalledAddonsWindow extends React.Component {
         let selectedAddon = this.state.installedAddons.filter(obj => {
             return obj.addonName == addonName
         })
-        ipcRenderer.send('uninstall-addon', this.state.gameId, this.state.gameVersion, selectedAddon[0]);
+        ipcRenderer.send('uninstall-addon', this.state.gameId, this.state.gameVersion, selectedAddon[0].addonId);
         this.setState({
             selectedAddon: []
         })

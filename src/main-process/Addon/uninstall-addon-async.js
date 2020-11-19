@@ -25,7 +25,6 @@ ipcMain.on('uninstall-addon', async (event, gameId, gameVersion, addonId) => {
                 installedAddons = installedAddons.filter(obj => {
                     return obj.addonId !== addonId;
                 })
-
                 gameS[gameVersion].installedAddons = installedAddons;
                 storageService.setGameSettings(gameId.toString(), gameS);
                 event.sender.send('addon-uninstalled', addonId);

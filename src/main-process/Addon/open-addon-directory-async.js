@@ -1,5 +1,6 @@
 const { ipcMain, shell } = require('electron');
 const storageService = require('../../services/storage-service');
+const path = require('path');
 
 const log = require('electron-log');
 

@@ -324,7 +324,6 @@ function uninstallAddon(gameId, addonDir, addon) {
             }
 
             var promises = [];
-
             for (var d in addon.modules) {
                 promises.push(uninstallDir(addonDir, addon.modules[d].folderName));
             }
