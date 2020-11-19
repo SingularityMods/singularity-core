@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://storage.singularitycdn.com/App/Images/logo.png" height="200" />
+  <img src="https://storage.singularitycdn.com/App/Images/logo.png" height="200" width="646"/>
 </p>
 
 [![Singularity Discord](https://img.shields.io/static/v1?label=Discord&message=Singularity&color=7289DA)](https://discord.gg/xNcqjUD) 
