@@ -213,7 +213,7 @@ function setAppConfig() {
     }
 
     if (version < '1.0.0') {   
-        storageService.setAppData('sidebarMinimized', false)
+        storageService.setAppData('sidebarMinimized', false);
     } 
 
     // Set new version

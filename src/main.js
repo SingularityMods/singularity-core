@@ -266,9 +266,6 @@ app.on('ready', () => {
 
     // Start the addon auto updater
     setAddonUpdateInterval();
-
-    let newTerms = appService.getLatestTerms();
-    let newPrivacy = appService.getLatestPrivacy();
 });
 
 
