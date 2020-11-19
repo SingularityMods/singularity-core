@@ -24,10 +24,11 @@
 .no-addons-found-options{
     text-align: center;
 }
-/*.addon-table {
+
+.installed-addon-window-content .addon-table-scrollbar {
     height: calc(100vh - 250px);
     overflow: auto;
-}*/
+}
 
 .addon-table th {
     font-size: 0.8rem;

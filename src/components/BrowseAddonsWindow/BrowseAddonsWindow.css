@@ -3,7 +3,10 @@
     padding-right: 0px;
 }
 
-
+.browse-addon-window-content .addon-table-scrollbar {
+    height: calc(100vh - 250px);
+    overflow: auto;
+}
 
 .category-window {
     height: calc(100vh - 250px);
@@ -115,6 +118,7 @@
 
 
 .load-more {
+    padding-top: 10px;
     color: var(--singularity-orange);
     cursor: pointer;
     font-weight: bold;

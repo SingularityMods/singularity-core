@@ -18,27 +18,6 @@
     height: 100vh;
 }
 
-/*.game-window-content {
-    padding-right: px;
-}*/
-
-/*.addon-table {
-    height: calc(100vh - 250px);
-    overflow: auto;
-}*/
-
-/* Scroll bar for the installed addons table
-    and browse addons table.
-*/
-.addon-table-scrollbar.mac {
-    height: calc(100vh - 250px);
-}
-
-.addon-table-scrollbar {
-    height: calc(100vh - 275px);
-    overflow: auto;
-}
-
 .addon-table-scrollbar .simplebar-scrollbar {
     background-color: #8f8f8f;
     width: 8px;
@@ -52,6 +31,10 @@
 .addon-table .table-bordered th,
 .addon-table .table-bordered td {
     border: none;
+}
+
+.addon-table .table-bordered {
+    margin-bottom: 0;
 }
 
 .addon-table th {
