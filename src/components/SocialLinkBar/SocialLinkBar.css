@@ -1,0 +1,41 @@
+
+
+.SocialLinkBar {
+    position: absolute;
+    left: 0;
+    top: -35px;
+}
+
+.social-link-icon {
+    font-size: 1.8rem; 
+    float: left;
+    margin-right:5px;
+}
+.social-link-icon.fa-discord {
+    font-size: 1.8rem;
+    float: left;
+    margin-right: 5px;
+    margin-top: 2px;
+    color: #7289DA;
+}
+
+    .social-link-icon.fa-discord:hover {
+
+        color: #53639b;
+    }
+
+.social-link-icon.fa-twitter-square {
+    color: #1DA1F2;
+}
+
+.social-link-icon.fa-twitter-square:hover {
+    color: #1886ca;
+}
+
+.social-link-icon.fa-reddit-square {
+color: #FF5700;
+}
+
+.social-link-icon.fa-reddit-square:hover {
+    color: #d24800;
+}

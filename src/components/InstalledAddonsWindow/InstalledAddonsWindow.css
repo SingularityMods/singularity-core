@@ -1,0 +1,214 @@
+.installed-addon-window-content {
+    padding-left:0;
+    padding-right: 0;
+}
+
+.context-class {
+    color: red;
+}
+
+.game-banner.col {
+    height: 100px;
+    background-color: black;
+    width: 100%;
+    text-align: center;
+}
+
+.window-message {
+    color: var(--text-color);
+    margin-top: 25px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.no-addons-found-options{
+    text-align: center;
+}
+/*.addon-table {
+    height: calc(100vh - 250px);
+    overflow: auto;
+}*/
+
+.addon-table th {
+    font-size: 0.8rem;
+}
+
+.addon-table td {
+    font-size: 0.7rem;
+}
+
+.no-addons-found-window .btn {
+    border: none;
+}
+
+.no-addons-found-window .btn:focus {
+    outline: none !important;
+    box-shadow: none
+}
+
+.addon-window-menu {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.addon-table .table-bordered tr.installed-addons-header {
+    color: white;
+    background-color: var(--primary-color);
+}
+
+.addon-table .table-bordered tr.installed-addons-header th:focus {
+    outline: none;
+    background-color: var(--primary-color);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.addon-table .table-bordered tr.installed-addons-header th.sortable {
+    cursor: pointer;
+}
+
+.addon-table .table-bordered tr.selected-addon-row,
+.addon-table .table-bordered tr.selected-addon-row td{
+    background-color: var(--secondary-color);
+    color: white;
+}
+.addon-table table.table-bordered {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.addon-table .table-bordered tr,
+.addon-table .table-bordered td {
+    color: var(--text-color);
+    background-color: var(--table-background-color);
+}
+
+.addon-table table.table-bordered thead tr th {
+    border-top: 1px solid var(--table-border-color);
+
+
+}
+
+.addon-table thead tr:first-child th:first-child {
+    border-radius: 1em 0 0 0;
+    border-left: 1px solid var(--table-border-color);
+    /*border: none;*/
+}
+
+.addon-table thead tr:first-child th:last-child {
+    border-radius: 0 1em 0 0;
+    border-right: 1px solid var(--table-border-color);
+    /*border: none;*/
+}
+
+.addon-table tbody tr:last-child td:first-child {
+    border-radius: 0 0 0 1em;
+}
+
+.addon-table tbody tr:last-child td:last-child {
+    border-radius: 0 0 1em 0;
+}
+
+
+.addon-table table.table-bordered tbody tr td:first-child {
+    border-left: 1px solid var(--table-border-color);
+}
+
+.addon-table table.table-bordered tbody tr td:last-child {
+    border-right: 1px solid var(--table-border-color);
+}
+
+.addon-table table.table-bordered tbody tr:last-child td {
+    border-bottom: 1px solid var(--table-border-color);
+}
+
+.addon-table .table-bordered tr .label.label-danger {
+font-size: 0.8rem;
+margin-left: 0px;
+}
+
+#installed-addon-table .table-bordered td.react-bs-table-no-data {
+    border-radius: 0 0 1em 1em;
+}
+
+.no-data-label{
+    text-align: center;
+}
+
+.addon-search-field.filter-field {
+    float: right;
+}
+
+
+.backup-button {
+    float: right;
+}
+
+    .backup-button.UpdateAddonButton.disabled,
+    .backup-button.UpdateAddonButton.disabled:hover {
+        cursor: not-allowed;
+        color: #E6E8E6;
+        background-color: #ED8323aa;
+        border: none;
+    }
+
+    .backup-button.btn.btn-primary {
+        background-color: var(--singularity-orange);
+    }
+    
+    .backup-button.btn.btn-primary:focus {
+        background-color: var(--singularity-orange);
+        border-color: var(--singularity-orange);
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        outline:none;
+    }
+    
+    .backup-button.btn.btn-primary:active {
+        background-color: var(--secondary-color);
+        border-color: var(--secondary-color);
+        -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
+        box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
+        outline:none;
+    }
+    
+    .backup-button.btn.btn-primary:not(:disabled):not(.disabled):active {
+        background-color: var(--secondary-color);
+        border-color: var(--secondary-color);
+        -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
+        box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
+    }
+
+.no-backups {
+    margin-left: 5px;
+}
+
+.backup-date {
+    font-size: 0.7rem;
+}
+
+.backup-pending {
+    margin-left:5px;
+    font-size: 0.9rem;
+}
+
+#cloud-backup-details-icon {
+    margin-left: -5px;
+    margin-right: 3px;
+    height: 20px;
+    float: left;
+    background-color: #2a2a2a;
+    border-radius: 50%;
+    padding: 2px;
+}
+
+
+.cloud-backup-hostname{
+    font-size: 0.8rem;
+    float: left;
+}
+
+.backup-date.cloud {
+    float: left;
+    clear: both;
+}

@@ -1,0 +1,15 @@
+.SmallSidebar {
+    background-color: var(--primary-color);
+    float: left;
+    position: static;
+    height: 100%;
+    max-width: 50px;
+    padding: 5px;
+}
+
+    .SmallSidebar .sidebar-title {
+        color: var(--sidebar-text-color);
+        font-size: 0.77rem;
+        text-align: center;
+        border-bottom: 2px solid var(--sidebar-text-color);
+    }

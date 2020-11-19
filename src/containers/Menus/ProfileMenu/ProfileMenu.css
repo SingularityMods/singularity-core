@@ -1,0 +1,73 @@
+.ProfileMenu {
+    color: var(--text-color);
+    border: none;
+    border-radius: 5px;
+    background-color: var(--dialog-background-color);
+    box-shadow: 0px 0px 2px 1px var(--table-border-color);
+    z-index: 99;
+    position: absolute;
+    width: 200px;
+    top: 50px;
+    right: 10px;
+    display: inline-block;
+    max-width: fit-content;
+    padding: 0;
+    -webkit-app-region: no-drag;
+}
+
+.ProfileMenu.windows {
+    top: 75px;
+}
+
+.profile-menu-header{
+    border-bottom: 1px solid var(--context-menu-divider);
+    height: 50px;
+    min-width: 200px;
+    overflow-x:hidden;
+}
+
+.profile-menu-header-img {
+    margin-top:5px;
+    margin-left: 5px;
+    height:40px;
+    border-radius:50%;
+    float: left;
+}
+
+
+.profile-menu-header-user {
+    font-size: 1rem;
+    text-overflow:clip;
+    white-space: nowrap;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-left: 60px;
+    margin-right: 10px;
+    width: max-content;
+}
+
+.profile-menu-item {
+    cursor: pointer;
+    font-size: 0.9rem;
+    height: 30px;
+    padding-top: 3px;
+    padding-left: 10px;
+    padding-right: 5px;
+    border-bottom: 1px solid var(--context-menu-divider);
+    min-width: 200px;
+}
+
+.profile-menu-item:hover {
+    border-radius: 5px;
+    background-color: var(--primary-color);
+}
+
+.profile-menu-item-icon {
+    margin-top:5px;
+    float:left;
+}
+
+.profile-menu-item-lable {
+    float: left;
+    margin-left: 10px;
+}

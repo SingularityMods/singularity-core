@@ -1,0 +1,176 @@
+/*@import url('SettingsWindow.css');*/
+.SettingsWindow {
+    color: var(--text-color);
+}
+
+.settings-exit .menubar-btn {
+    margin-right: 10px;
+    margin-top: 2px;
+    float:right;
+    font-size: 1.2rem;
+    color: var(--text-color);
+    background-color: var(-background-color);
+}
+
+.settings-window-header {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    border-bottom: 1px solid var(--table-border-color);
+}
+
+.settings-window-section-header{
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top:25px;
+}
+.settings-section {
+    margin-top: 10px; 
+}
+.settings-item {
+    border: 1px solid var(--table-border-color);
+    border-radius: 3px;
+    height: 60px;
+    padding-top: 15px;
+    background-color: var(--settings-item-background-color);
+}
+
+.SettingsWindow .settings-item-name {
+    color: var(--text-color);
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.SettingsWindow .dropdown .btn-primary {
+    padding-top:3px;
+    padding-bottom: 3px;
+    color: var(--text-color);
+    background-color: var(--table-background-color);
+    border-color: var(--table-border-color);
+    -webkit-box-shadow: 0px 0px 1px 1px var(--table-border-color);
+    box-shadow: 0px 0px 1px 1px var(--table-border-color);
+}
+
+.SettingsWindow .dropdown .btn-primary:active {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    color: var(--text-color);
+    background-color: var(--table-background-color);
+    border-color: var(--table-border-color);
+    -webkit-box-shadow: 0px 0px 1px 1px var(--table-border-color);
+    box-shadow: 0px 0px 1px 1px var(--table-border-color);
+}
+
+.SettingsWindow .dropdown .btn-primary:focus,
+.SettingsWindow .dropdown .btn-primary.dropdown-toggle:focus {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    color: var(--text-color);
+    background-color: var(--table-background-color);
+    border-color: var(--table-border-color);
+    -webkit-box-shadow: 0px 0px 1px 1px var(--table-border-color);
+    box-shadow: 0px 0px 1px 1px var(--table-border-color);
+}
+
+.SettingsWindow .dropdown-menu {
+    color: var(--text-color);
+    background-color: var(--table-background-color);
+    border-color: var(--table-border-color);
+    -webkit-box-shadow: 0px 0px 1px 1px var(--table-border-color);
+    box-shadow: 0px 0px 1px 1px var(--table-border-color);
+}
+
+    .SettingsWindow .dropdown-menu .dropdown-item {
+        color: var(--text-color);
+    }
+
+        .SettingsWindow .dropdown-menu .dropdown-item:focus {
+            color: var(--singularity-orange);
+            background-color: var(--table-background-color);
+        }
+
+        .SettingsWindow .dropdown-menu .dropdown-item:hover {
+            color: var(--singularity-orange);
+            background-color: var(--table-background-color);
+        }
+
+.SettingsWindow .btn.btn-primary {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    color: var(--text-color);
+    background-color: var(--table-background-color);
+    border-color: var(--table-border-color);
+    -webkit-box-shadow: 0px 0px 1px 1px var(--table-border-color);
+    box-shadow: 0px 0px 1px 1px var(--table-border-color);
+}
+
+    .SettingsWindow .btn.btn-primary:active {
+        padding-top: 3px;
+        padding-bottom: 3px;
+        color: var(--text-color);
+        background-color: var(--table-background-color);
+        border-color: var(--table-border-color);
+        -webkit-box-shadow: 0px 0px 1px 1px var(--singularity-orange);
+        box-shadow: 0px 0px 1px 1px var(--singularity-orange);
+        outline: none;
+    }
+
+        .SettingsWindow .btn.btn-primary:active:focus {
+            padding-top: 3px;
+            padding-bottom: 3px;
+            color: var(--text-color);
+            background-color: var(--table-background-color);
+            border-color: var(--table-border-color);
+            -webkit-box-shadow: 0px 0px 1px 1px var(--singularity-orange);
+            box-shadow: 0px 0px 1px 1px var(--singularity-orange);
+            outline: none;
+        }
+.SettingsWindow .errorMsg{ 
+    margin-left: 20px;
+    font-size: 0.8rem;
+    color: var(--text-color);
+}
+
+.settingsLoading {
+    float:right;
+    margin-left: 20px;
+    font-size: 1.3rem;
+    color: var(--singularity-orange);
+}
+
+.settings-scrollbar .simplebar-scrollbar {
+    background-color: #8f8f8f;
+    width: 8px;
+    border-radius: 5px
+}
+
+.settings-scrollbar {
+    height: calc(100vh - 50px);
+    margin-right: 0px;
+    padding-bottom: 45px;
+    overflow-x: hidden;
+}
+
+#select-backup-dir-button {
+    max-height: 30px;
+    max-width: 350px;
+    overflow:hidden;
+    text-align: left;
+}
+
+.select-install-dir-button {
+    max-width: 325px;
+    max-height: 30px;
+    overflow: hidden;
+    text-align: left;
+}
+
+
+.settings-close-button{
+    position: relative;
+    float:right;
+    margin-top: 5px;
+    margin-right: 0px;
+    cursor: pointer;
+    z-index: 101;
+}

@@ -1,0 +1,287 @@
+@import url('BackupManagementDialog.css');
+
+.BackupManagementDialog {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: #000000aa;
+    z-index: 100;
+}
+
+
+.backup-management-dialog-content {
+    color: var(--text-color);
+    position: relative;
+    margin-right: auto;
+    margin-left: auto;
+    top: 50px;
+    height: fit-content;
+    max-height: calc(100vh - 55px);
+    width: 770px;
+    border: 1px solid #ED8323;
+    border-radius: 5px;
+    background-color: var(--dialog-background-color);
+    padding: 0 5px;
+    box-shadow: 0px 0px 5px 0px var(--primary-color);
+    overflow: hidden;
+    padding-bottom: 25px;
+}
+
+.backup-management-dialog-exit .menubar-btn{
+    color: var(--text-color);
+    background-color: var(--dialog-background-color);
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin-top:3px;
+    margin-right:3px;
+    z-index: 101;
+}
+
+.backup-management-dialog-title {
+    text-align:center;
+    margin-top:15px;
+}
+.backup-management-dialog-title h2 {
+    font-weight: bold;
+}
+
+.backup-management-detail {
+    font-size: 0.8rem;
+}
+
+.backup-management-detail .backup-management-detail-label {
+    font-weight: bold;
+}
+
+.backup-management-option-settins{
+    margin-top: 10px;
+}
+
+.backup-management-confirm-option {
+    margin-top: 40px;
+}
+
+.backup-management-cloud-label{
+    margin-left: 5px;
+    margin-bottom:0;
+}
+
+
+.backup-management-confirm .backup-dialog-button {
+    float: left;
+    margin-bottom: 5px;
+}
+
+.backup-dialog-button {
+    margin-top:25px;
+    margin-left: 20px;
+    margin-right: 20px;
+    border:none;
+}
+
+    .backup-dialog-button.UpdateAddonButton.disabled,
+    .backup-dialog-button.UpdateAddonButton.disabled:hover {
+        cursor: not-allowed;
+        color: #E6E8E6;
+        background-color: #ED8323aa;
+        border: none;
+    }
+
+    .backup-dialog-button.btn.btn-primary {
+        background-color: var(--singularity-orange);
+    }
+    
+    .backup-dialog-button.btn.btn-primary:focus {
+        background-color: var(--singularity-orange);
+        border-color: var(--singularity-orange);
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        outline:none;
+    }
+    
+    .backup-dialog-button.btn.btn-primary:active {
+        background-color: var(--secondary-color);
+        border-color: var(--secondary-color);
+        -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
+        box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
+        outline:none;
+    }
+    
+    .backup-dialog-button.btn.btn-primary:not(:disabled):not(.disabled):active {
+        background-color: var(--secondary-color);
+        border-color: var(--secondary-color);
+        -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
+        box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
+    }
+
+
+.restore-pending-spinner {
+    margin-top: 40px;
+    margin-left: 100px;
+}
+
+.backup-management-addon-table .table-bordered,
+.backup-management-addon-table .table-bordered table,
+.backup-management-addon-table .table-bordered thead,
+.backup-management-addon-table .table-bordered tr,
+.backup-management-addon-table .table-bordered th,
+.backup-management-addon-table .table-bordered td {
+    border: none;
+}
+
+.backup-management-addon-table th {
+    font-size: 0.8rem;
+}
+
+.backup-management-addon-table td {
+    font-size: 0.7rem;
+}
+
+.backup-management-addon-table .table-bordered tr.restore-addon-header {
+    color: white;
+    background-color: var(--primary-color);
+}
+
+.backup-management-addon-table .table-bordered tr.restore-addon-header th:focus {
+    outline: none;
+    background-color: var(--primary-color);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.backup-management-addon-table .table-bordered tr.restore-addon-header th.sortable {
+    cursor: pointer;
+}
+
+.backup-management-addon-table .table-bordered tr.selected-addon-row,
+.backup-management-addon-table .table-bordered tr.selected-addon-row td{
+    background-color: var(--secondary-color);
+    color: white;
+}
+.backup-management-addon-table table.table-bordered {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.backup-management-addon-table .table-bordered tr,
+.backup-management-addon-table .table-bordered td {
+    color: var(--text-color);
+    background-color: var(--table-background-color);
+}
+
+.backup-management-addon-table table.table-bordered thead tr th {
+    border-top: 1px solid var(--table-border-color);
+
+
+}
+
+.backup-management-addon-table thead tr:first-child th:first-child {
+    border-radius: 1em 0 0 0;
+    border-left: 1px solid var(--table-border-color);
+    /*border: none;*/
+}
+
+.backup-management-addon-table thead tr:first-child th:last-child {
+    border-radius: 0 1em 0 0;
+    border-right: 1px solid var(--table-border-color);
+    /*border: none;*/
+}
+
+.backup-management-addon-table tbody tr:last-child td:first-child {
+    border-radius: 0 0 0 1em;
+}
+
+.backup-management-addon-table tbody tr:last-child td:last-child {
+    border-radius: 0 0 1em 0;
+}
+
+
+.backup-management-addon-table table.table-bordered tbody tr td:first-child {
+    border-left: 1px solid var(--table-border-color);
+}
+
+.backup-management-addon-table table.table-bordered tbody tr td:last-child {
+    border-right: 1px solid var(--table-border-color);
+}
+
+.backup-management-addon-table table.table-bordered tbody tr:last-child td {
+    border-bottom: 1px solid var(--table-border-color);
+}
+
+.backup-management-addon-table .table-bordered tr .label.label-danger {
+font-size: 0.8rem;
+margin-left: 0px;
+}
+
+#backup-management-table td.react-bs-table-no-data {
+    border-radius: 0 0 1em 1em;
+}
+
+.backup-restore-message {
+    margin-top: 30px;
+}
+
+.backup-addon-details-column {
+    color: var(--singularity-orange);
+    cursor: pointer;
+}
+
+.delete-backup {
+    font-size: 0.8rem;
+    height: 5px;
+}
+
+.backup-restore-message.restore-success {
+    color:#00FF00;
+}
+
+.backup-restore-message.restore-error {
+    color: red;
+}
+
+.backup-restore-addon-table-scrollbar.mac {
+    height: calc(100vh - 200px);
+}
+
+.backup-restore-addon-table-scrollbar {
+    height: calc(100vh - 200px);
+    overflow: auto;
+    padding-right:15px;
+    margin-right:-10px;
+}
+
+.backup-restore-addon-table-scrollbar .simplebar-scrollbar {
+    background-color: #8f8f8f;
+    width: 8px;
+    border-radius: 5px;
+}
+
+.pending-message {
+    font-size: 0.75rem;
+}
+
+
+.backup-location-icon {
+    text-align: center;
+    color: var(--text-color);
+}
+
+.backup-management-addon-table-scrollbar.mac {
+    max-height: calc(100vh - 200px);
+}
+
+.backup-management-addon-table-scrollbar {
+    max-height: calc(100vh - 200px);
+    overflow: auto;
+    padding-right:15px;
+    margin-right:-10px;
+}
+
+.backup-management-addon-table-scrollbar .simplebar-scrollbar {
+    background-color: #8f8f8f;
+    width: 8px;
+    border-radius: 5px;
+}

@@ -1,0 +1,43 @@
+[data-theme^="light"],
+[data-theme] [data-theme^="light"] {
+    --text-color: black;
+    --alternative-text-color: white;
+    --singularity-orange: #ED8323;
+    --primary-color: #ED8323;
+    --primary-box-shadow-color: #ED832355;
+    --secondary-color: #271550;
+    --secondary-box-shadow-color: #271550;
+    --header-box-shadow-color: #000000c2;
+    --background-color: #e6e8e64a;
+    --main-background-color: #d2d2d229;
+    --header-background-color: white;
+    --table-background-color: white;
+    --table-highlight-color: #271550;
+    --table-border-color: #CED0CE;
+    --dialog-background-color: white;
+    --sidebar-text-color: white;
+    --settings-item-background-color: white;
+    --context-menu-divider: #535353;
+}
+
+[data-theme^="dark"],
+[data-theme] [data-theme^="dark"] {
+    --text-color: white;
+    --alternative-text-color: black;
+    --singularity-orange: #ED8323;
+    --primary-color: #271550;
+    --primary-box-shadow-color: #3e227f;
+    --secondary-color: #ED8323;
+    --secondary-box-shadow-color: #ED8323;
+    --header-box-shadow-color: #4c00ffb8;
+    --background-color: #180d31;
+    --main-background-color: #000000db;
+    --header-background-color: #17083a;
+    --table-background-color: #2a2a2a;
+    --table-highlight-color: #271550;
+    --table-border-color: #ED8323;
+    --dialog-background-color: #2a2a2a;
+    --sidebar-text-color: #ED8323;
+    --settings-item-background-color: #271550;
+    --context-menu-divider: #535353;
+}

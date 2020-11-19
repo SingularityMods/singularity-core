@@ -1,0 +1,87 @@
+.HomePage{
+    height: 100vh;
+
+}
+
+.app-logo-banner {
+    height:120px;
+}
+
+.homepage-title {
+    font-size: 2rem;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.homepage-content {
+    border-radius: 5px;
+    padding-top:5px;
+    background-color: var(--dialog-background-color);
+    margin: 25px auto;
+    max-width: 94%;
+    box-shadow: 0px 0px 3px 3px var(--primary-box-shadow-color);
+}
+
+    .homepage-content hr {
+        border-color: var(--header-box-shadow-color);
+    }
+
+.release-note-date {
+    font-size: 0.7rem;
+    padding-left: 20px;
+}
+.release-note-section-header {
+    margin-bottom: 1px;
+    margin-top: 10px;
+}
+
+.release-note-bullet {
+    margin-bottom: 2px;
+}
+
+.home-page-bar .simplebar-scrollbar,
+.home-page-content-bar .simplebar-scrollbar{
+
+    background-color: #8f8f8f;
+    width: 8px;
+    border-radius: 5px
+}
+
+.home-page-bar.mac {
+    height: calc(100vh - 305px);
+}
+
+.home-page-bar {
+    height: calc(100vh - 330px);
+    margin-right: 0px;
+    margin-bottom:15px;
+    overflow-y: auto;
+    overflow-x:hidden;
+}
+
+.footer-link {
+    text-align: center;
+}
+
+.homepage-footer {
+    padding-bottom: 5px;
+}
+.homepage-content {
+    color: var(--text-color);
+    background-color: var(--table-background-color);
+}
+
+.footer-link a{
+    color: var(--singularity-orange);
+}
+
+a.release-notes-link{
+    color: var(--singularity-orange);
+}
+
+.app-version-display {
+    position: absolute;
+    right: 0;
+    top: -25px;
+}

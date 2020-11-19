@@ -1,0 +1,84 @@
+.GameWindow {
+    background-color: var(--background-color);
+}
+
+.game-banner.col
+{
+    height: 100px;
+    background-color: black;
+    width: 100%;
+    text-align: center;
+}
+
+.game-banner-image {
+    height: 100px;
+}
+
+.GameWindow .game-window-content {
+    height: 100vh;
+}
+
+/*.game-window-content {
+    padding-right: px;
+}*/
+
+/*.addon-table {
+    height: calc(100vh - 250px);
+    overflow: auto;
+}*/
+
+/* Scroll bar for the installed addons table
+    and browse addons table.
+*/
+.addon-table-scrollbar.mac {
+    height: calc(100vh - 250px);
+}
+
+.addon-table-scrollbar {
+    height: calc(100vh - 275px);
+    overflow: auto;
+}
+
+.addon-table-scrollbar .simplebar-scrollbar {
+    background-color: #8f8f8f;
+    width: 8px;
+    border-radius: 5px;
+}
+
+.addon-table .table-bordered,
+.addon-table .table-bordered table,
+.addon-table .table-bordered thead,
+.addon-table .table-bordered tr,
+.addon-table .table-bordered th,
+.addon-table .table-bordered td {
+    border: none;
+}
+
+.addon-table th {
+    font-size: 0.8rem;
+}
+
+.addon-table td {
+    font-size: 0.8rem;
+}
+.no-addons-found-window .btn {
+    border: none;
+}
+
+.no-addons-found-window .btn:focus {
+    outline: none !important;
+    box-shadow: none
+}
+
+.addon-window-menu {
+    margin-top: 5px;
+}
+
+.addon-window-menu .btn {
+    border: none;
+}
+
+.addon-window-menu .btn:focus {
+    outline: none !important;
+    box-shadow: none;
+}

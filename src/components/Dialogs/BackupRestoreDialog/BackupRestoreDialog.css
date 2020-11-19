@@ -1,0 +1,220 @@
+@import url('BackupRestoreDialog.css');
+
+.BackupRestoreDialog {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: #000000aa;
+    z-index: 100;
+}
+
+
+.restore-backup-dialog-content {
+    color: var(--text-color);
+    position: relative;
+    margin-right: auto;
+    margin-left: auto;
+    top: 50px;
+    max-height: calc(100vh - 55px);
+    width: 770px;
+    border: 1px solid #ED8323;
+    border-radius: 5px;
+    background-color: var(--dialog-background-color);
+    padding: 0 5px;
+    box-shadow: 0px 0px 5px 0px var(--primary-color);
+    overflow: hidden;
+    padding-bottom: 25px;
+}
+
+.restore-backup-dialog-exit .menubar-btn{
+    color: var(--text-color);
+    background-color: var(--dialog-background-color);
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin-top:3px;
+    margin-right:3px;
+    z-index: 101;
+}
+
+.restore-backup-detail.backup-date {
+    font-size: 0.8rem;
+}
+
+.restore-backup-dialog-title {
+    text-align:center;
+    margin-top:15px;
+}
+.restore-backup-dialog-title h2 {
+    font-weight: bold;
+}
+
+.restore-backup-detail {
+    font-size: 0.8rem;
+}
+
+.restore-backup-detail .restore-backup-detail-label {
+    font-weight: bold;
+}
+
+.restore-backup-option-settins{
+    margin-top: 10px;
+}
+
+.restore-backup-confirm .backup-dialog-button {
+    float: left;
+    margin-bottom: 5px;
+}
+
+.restore-backup-confirm-option {
+    float: left;
+    margin-top: 40px;
+}
+
+.restore-pending-spinner {
+    margin-top: 40px;
+    margin-left: 0;
+}
+
+.restore-backup-addon-table .table-bordered,
+.restore-backup-addon-table .table-bordered table,
+.restore-backup-addon-table .table-bordered thead,
+.restore-backup-addon-table .table-bordered tr,
+.restore-backup-addon-table .table-bordered th,
+.restore-backup-addon-table .table-bordered td {
+    border: none;
+}
+
+.restore-backup-addon-table th {
+    font-size: 0.8rem;
+}
+
+.restore-backup-addon-table td {
+    font-size: 0.7rem;
+}
+
+.restore-backup-addon-table .table-bordered tr.restore-addon-header {
+    color: white;
+    background-color: var(--primary-color);
+}
+
+.restore-backup-addon-table .table-bordered tr.restore-addon-header th:focus {
+    outline: none;
+    background-color: var(--primary-color);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.restore-backup-addon-table .table-bordered tr.restore-addon-header th.sortable {
+    cursor: pointer;
+}
+
+.restore-backup-addon-table .table-bordered tr.selected-addon-row,
+.restore-backup-addon-table .table-bordered tr.selected-addon-row td{
+    background-color: var(--secondary-color);
+    color: white;
+}
+.restore-backup-addon-table table.table-bordered {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.restore-backup-addon-table .table-bordered tr,
+.restore-backup-addon-table .table-bordered td {
+    color: var(--text-color);
+    background-color: var(--table-background-color);
+}
+
+.restore-backup-addon-table table.table-bordered thead tr th {
+    border-top: 1px solid var(--table-border-color);
+
+
+}
+
+.restore-backup-addon-table thead tr:first-child th:first-child {
+    border-radius: 1em 0 0 0;
+    border-left: 1px solid var(--table-border-color);
+    /*border: none;*/
+}
+
+.restore-backup-addon-table thead tr:first-child th:last-child {
+    border-radius: 0 1em 0 0;
+    border-right: 1px solid var(--table-border-color);
+    /*border: none;*/
+}
+
+.restore-backup-addon-table tbody tr:last-child td:first-child {
+    border-radius: 0 0 0 1em;
+}
+
+.restore-backup-addon-table tbody tr:last-child td:last-child {
+    border-radius: 0 0 1em 0;
+}
+
+
+.restore-backup-addon-table table.table-bordered tbody tr td:first-child {
+    border-left: 1px solid var(--table-border-color);
+}
+
+.restore-backup-addon-table table.table-bordered tbody tr td:last-child {
+    border-right: 1px solid var(--table-border-color);
+}
+
+.restore-backup-addon-table table.table-bordered tbody tr:last-child td {
+    border-bottom: 1px solid var(--table-border-color);
+}
+
+.restore-backup-addon-table .table-bordered tr .label.label-danger {
+font-size: 0.8rem;
+margin-left: 0px;
+}
+
+.backup-restore-message {
+    margin-top: 30px;
+}
+
+.backup-restore-message.restore-success {
+    color:#00FF00;
+}
+
+.backup-restore-message.restore-error {
+    color: red;
+}
+
+.backup-restore-addon-table-scrollbar.mac {
+    max-height: calc(100vh - 200px);
+}
+
+.backup-restore-addon-table-scrollbar {
+    max-height: calc(100vh - 200px);
+    overflow: auto;
+    padding-right:15px;
+    margin-right:-10px;
+}
+
+.backup-restore-addon-table-scrollbar .simplebar-scrollbar {
+    background-color: #8f8f8f;
+    width: 8px;
+    border-radius: 5px;
+}
+
+.restore-backup-message{
+    margin-left: -20px;
+}
+
+.pending-message {
+    margin-left: 10px;
+    font-size: 0.75rem;
+}
+
+.backup-dialog-button.restore-back-button{
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 5px;
+    margin-right: 0px;
+    cursor: pointer;
+    z-index: 101;
+}

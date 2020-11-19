@@ -1,0 +1,21 @@
+.BigSidebar {
+    background-color: var(--primary-color);
+    float: left;
+    position: static;
+    height: 100%;
+    max-width: 250px;
+    border-right: 1px solid var(--primary-color);
+}
+
+.BigSidebar .sidebar-title {
+    color: var(--sidebar-text-color);
+    text-align: center;
+    border-bottom: 2px solid var(--sidebar-text-color);
+    font-size: 1.4rem;
+}
+
+.tray-toggle-icon {
+    color: var(--sidebar-text-color);
+    float:right;
+    cursor: pointer;
+}

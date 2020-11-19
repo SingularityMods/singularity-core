@@ -1,0 +1,32 @@
+.AppMenu {
+    z-index: 999;
+    background-color: #2a2a2a;
+    height: 25px;
+    width: 100%;
+    position: relative;
+    overflow: visible;
+    -webkit-app-region: drag;
+}
+
+
+.header-menu-col {
+    padding-right: 15px;
+}
+
+.menu-icon {
+    color: white;
+}
+
+.menubar-btn {
+    border: none;
+    font-size: 0.8rem;
+    background-color: #2a2a2a;
+    padding: 0px;
+    margin-left: 20px;
+    -webkit-app-region: no-drag;
+}
+
+    .menubar-btn:focus {
+        border: none;
+        outline: none;
+    }

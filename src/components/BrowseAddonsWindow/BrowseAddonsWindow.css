@@ -1,0 +1,172 @@
+.browse-addon-window-content{
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+
+
+.category-window {
+    height: calc(100vh - 250px);
+    overflow: auto;
+}
+
+.loading {
+    height: calc(100vh - 250px);
+    overflow: auto;
+}
+
+.category-window-title {
+    color: var(--text-color);
+}
+.addon-window-menu {
+    margin-top: 5px;
+}
+
+.addon-window-menu .form-group{
+    margin-bottom: 0;
+}
+
+.btn.active.focus,
+.btn.active:focus,
+.btn.focus,
+.btn.focus:active,
+.btn:active:focus,
+.btn:focus {
+    outline: 0 !important;
+    outline-offset: 0 !important;
+    background-image: none !important;
+
+}
+
+.browse-addon-game-button {
+    color: white;
+    float: left;
+}
+
+.browse-addon-game-button:active {
+    color: white;
+
+}
+
+.dropdown-menu {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+#category-dropdown {
+    background-color: var(--singularity-orange);
+    border-color: var(--singularity-orange);
+    float: left;
+}
+
+    #category-dropdown:focus {
+        background-color: var(--singularity-orange);
+        border-color: var(--singularity-orange);
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+
+    #category-dropdown:active {
+        background-color: var(--secondary-color);
+        border-color: var(--secondary-color);
+        -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-color);
+        box-shadow: 0px 0px 4px 1px var(--secondary-color);
+    }
+
+.browse-addon-table-img {
+    height: 30px;
+    margin-right: 5px;
+}
+
+.browse-addon-table td {
+    font-size: 0.6rem;
+}
+
+.addon-table .react-bootstrap-table {
+    font-size: 0.5rem;
+}
+.browse-addon-title-column {
+    width: 100%;
+}
+
+.browse-addon-name {
+    color: var(--singularity-orange);
+}
+.browse-addon-name:hover {
+    color: var(--singularity-orange);
+    text-decoration-color: var(--singularity-orange);
+}
+
+
+
+.addon-table .table-bordered tr.browse-addons-header {
+    color: white;
+    background-color: var(--primary-color);
+}
+
+    .addon-table .table-bordered tr.browse-addons-header th:focus {
+        color: white;
+        outline: none;
+        background-color: var(--primary-color);
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+
+
+
+.load-more {
+    color: var(--singularity-orange);
+    cursor: pointer;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+    margin-top: 0px;
+    font-size: 0.8rem;
+}
+
+.addon-table-scrollbar{
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.addon-table-scrollbar .LoadingSpinner {
+    margin-top: 5px;
+    font-size: 1.2rem;
+}
+
+.addon-search-field {
+    background-color: var(--settings-item-background-color);
+    color: var(--text-color);
+    border-color: var(--table-border-color);
+}
+
+.addon-table tr.selected-addon-row .browse-addon-name {
+    color: white;
+}
+
+.addon-search-field:focus {
+    color: var(--text-color);
+    border-color: var(--table-border-color);
+    box-shadow: 0 0 0 1px var(--table-border-color);
+    background-color: var(--settings-item-background-color);
+}
+
+.browse-addon-buttons .dropdown-menu {
+    color: var(--text-color);
+    background-color: var(--table-background-color);
+    border-color: var(--table-border-color);
+    -webkit-box-shadow: 0px 0px 1px 1px var(--table-border-color);
+    box-shadow: 0px 0px 1px 1px var(--table-border-color);
+}
+
+.browse-addon-buttons .dropdown-menu .dropdown-item {
+    color: var(--text-color);
+}
+.browse-addon-buttons .dropdown-menu .dropdown-item:focus {
+    color: var(--singularity-orange);
+    background-color: var(--table-background-color);
+}
+.browse-addon-buttons .dropdown-menu .dropdown-item:hover {
+    color: var(--singularity-orange);
+    background-color: var(--table-background-color);
+}

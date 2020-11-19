@@ -1,0 +1,21 @@
+.addon-version-table table {
+ width: 100%;
+}
+
+    .addon-version-table th {
+        font-size: 0.8rem;
+        color: var(--text-color);
+    }
+
+    .addon-version-table td {
+        font-size: 0.8rem;
+        color: var(--text-color);
+    }
+
+.addon-details-section .UpdateAddonButton.disabled,
+.addon-details-section .UpdateAddonButton.disabled:hover {
+    cursor: not-allowed;
+    color: var(--text-color);
+    background-color: var(--table-background-color);
+    border: none;
+}

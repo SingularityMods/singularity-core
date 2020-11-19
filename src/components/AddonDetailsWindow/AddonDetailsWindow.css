@@ -1,0 +1,77 @@
+.addon-info-small {
+    font-size: 0.8rem;
+}
+.addon-info-bold {
+    font-weight: bold;
+}
+.addon-info-pad-left {
+    padding-left: 10px;
+}
+
+.addon-info {
+    color: var(--text-color);
+}
+
+.addon-details-icon {
+    height: 100px;
+}
+
+.addon-details-top-menu {
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.addon-details-menu{
+    margin-top:3px;
+}
+
+.addon-details-menu .GameMenuButton,
+.addon-details-menu .GameMenuButton {
+    color: var(--text-color)
+}
+
+.addon-details-menu .GameMenuButton.active-tab,
+.addon-details-menu .GameMenuButton:focus {
+    color: var(--singularity-orange);
+    padding-bottom: 3px;
+    border-bottom: 3px solid var(--singularity-orange);
+    border-radius: unset
+}
+
+.addon-details-menu .GameMenuButton.active-tab:hover,
+.addon-details-menu .GameMenuButton:hover {
+    color: var(--singularity-orange);
+    background-color: #00000000;
+
+
+}
+
+.addon-details-window {
+    height: calc(100vh - 210px);
+    width: 100%;
+    overflow: auto;
+}
+
+.addon-details-window .simplebar-scrollbar {
+    background-color: #8f8f8f;
+    width: 8px;
+    border-radius: 5px
+}
+
+.addon-details-section {
+    margin-top:10px;
+    padding-right: 5px;
+    color: var(--text-color);
+}
+
+.addon-info-install-btn .uninstall-button {
+    margin-left: 15px;
+}
+
+.addon-info-install-btn .UpdateAddonButton.disabled,
+.addon-info-install-btn .UpdateAddonButton.disabled:hover {
+    cursor: not-allowed;
+    color: var(--text-color);
+    background-color: #00000000;
+    border: none;
+}

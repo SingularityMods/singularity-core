@@ -1,0 +1,174 @@
+.AddonContextMenu {
+    border: none;
+    border-radius: 5px 5px 0 0;
+    background-color: var(--dialog-background-color);
+    box-shadow: 0px 0px 2px 1px var(--table-border-color);
+    display: inline-block;
+    z-index: 200;
+    max-width: fit-content;
+    color: var(--text-color);
+    padding: 0;
+}
+
+.context-menu-header{
+    border-bottom: 1px solid var(--context-menu-divider);
+    height: 50px;
+    min-width: 200px;
+}
+/*
+.AddonContextMenu .row {
+    display: block;
+}*/
+
+    .context-menu-header div.col-12,
+    .context-menu-body div.col-12{
+        padding: 0;
+    }
+
+.context-menu-item{
+    cursor: pointer;
+
+    
+}
+
+.context-menu-header-img {
+    margin-top:5px;
+    margin-left: 5px;
+    height:40px;
+    border-radius:50%;
+    float: left;
+}
+
+
+.context-menu-header-title {
+    font-size: 0.65rem;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-left: 60px;
+    margin-right: 10px;
+    width: max-content;
+}
+
+.context-menu-header-file {
+    font-size: 0.6rem;
+    margin-left: 60px;
+    margin-top: -5px;
+    margin-right: 10px;
+    width: max-content;
+}
+
+.context-menu-item {
+    font-size: 0.9rem;
+    height: 30px;
+    padding-top: 3px;
+    padding-left: 10px;
+    padding-right: 5px;
+    border-bottom: 1px solid var(--context-menu-divider);
+}
+
+.context-menu-item.disabled {
+    cursor:default;
+}
+
+.context-menu-item-icon {
+    margin-top:5px;
+    float:left;
+}
+
+.context-menu-item-icon.settings-icon {
+    font-size: 1rem;
+}
+
+.context-menu-item-lable {
+    float: left;
+    margin-left: 10px;
+}
+.context-menu-item-arrow{
+    margin-top: 5px;
+    margin-left: 10px;
+    float:right;
+}
+
+
+.context-menu-item.context-module-dir {
+    width: 200px;
+}
+
+.context-menu-item:hover {
+    background-color: var(--primary-color);
+}
+
+
+.context-menu-branch-menu {
+    position: absolute;
+    right: -202px;
+    top: 15px;
+    border: none;
+    border-radius: 5px 5px 0 0;
+    background-color: var(--dialog-background-color);
+    box-shadow: 0px 0px 2px 1px var(--table-border-color);
+    display: inline-block;
+    z-index: 200;
+    max-width: fit-content;
+    color: var(--text-color);
+    padding: 0;
+}
+
+.context-menu-branch-menu.directory-menu {
+    right: -202px;
+    width: 200px;
+}
+
+    .context-menu-branch-menu.settings-menu {
+        right: -142px;
+        top: 20px;
+        width: 140px;
+    }
+
+.context-menu-branch-menu.directory-menu .context-menu-sub-header-title {
+    width: 180px;
+}
+
+.context-menu-branch-menu.settings-menu .context-menu-sub-header-title {
+    width: 120px;
+    text-align: center;
+}
+
+.context-menu-branch-menu .sub-header,
+.context-menu-setting-menu .sub-header{
+    height: 30px;
+    border-bottom: 1px solid var(--context-menu-divider);
+}
+
+.context-menu-sub-header-title {
+    font-size: 0.8rem;
+    margin-top: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    text-align: center;
+}
+
+.sub-menu-item .context-menu-item-lable {
+    margin-top: 5px;
+    font-size: 0.8rem;
+}
+
+.sub-menu-item .context-menu-item-icon,
+.directory-menu .context-module-dir .context-menu-item-icon {
+    margin-top: 9px;
+    margin-left: 10px;
+}
+
+.context-menu-item-icon.selected {
+    color: var(--singularity-orange);
+}
+
+.context-uninstall {
+    color: #b30b0b;
+}
+
+
+.context-uninstall:hover {
+    background-color: #b30b0b;
+    color: white;
+}

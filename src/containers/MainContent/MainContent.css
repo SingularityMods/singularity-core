@@ -1,0 +1,20 @@
+.Main-Content {
+    position: static;
+    padding-right: 0px;
+}
+
+@media (min-width: 992px) {
+    .Main-Content {
+        padding-right: 0px;
+        width: 100%;
+        max-width: none;
+    }
+}
+
+@media (max-width: 992px) {
+    .Main-Content {
+        width: 100%;
+        max-width: none;
+    }
+}
+

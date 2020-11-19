@@ -1,0 +1,35 @@
+.AuthBar {
+    padding-right: 0px;
+    margin-top: 5px;
+}
+
+.authbar-btn.btn.btn-primary{ 
+    float: right;
+    font-size: 1rem;
+    border: 1px solid white;
+    background-color: var(--background-color);
+    margin-left: 10px;
+}
+
+.authbar-btn-text {
+    padding-bottom: 10px;
+    height: 20px;
+    top:0px;
+}
+
+.auth-user-icon {
+    float: right;
+    cursor: pointer;
+    -webkit-app-region: no-drag;
+    padding: 0;
+    width: 42px;
+    height: 42px;
+    display: inline-block;
+    border-radius: 50%;
+    border: 1px solid black;
+    overflow:hidden;
+}
+
+.auth-user-icon img {
+    height: 40px;
+}

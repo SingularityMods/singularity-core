@@ -1,0 +1,102 @@
+{
+  "name": "singularity-core",
+  "productName": "Singularity",
+  "homepage": "https://singularitymods.com",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/singularitymods/singularity-core.git"
+  },
+  "description": "Singularity is the single app for your addon management.",
+  "version": "1.0.0",
+  "main": ".webpack/main",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "cross-env BUILD_ENV=oss electron-forge package",
+    "package-prod": "cross-env BUILD_ENV=prod electron-forge package",
+    "make": "cross-env BUILD_ENV=oss electron-forge make",
+    "make-prod": "cross-env BUILD_ENV=prod electron-forge make",
+    "publish": "electron-forge publish",
+    "lint": "echo \"No linting configured\"",
+    "test": "mocha --timeout 20000 \"./test/**/*test-*.js\""
+  },
+  "keywords": [
+    "addon manager",
+    "world of warcraft",
+    "wow"
+  ],
+  "author": {
+    "name": "Singularity Mods LLC",
+    "email": "admin@singularitymods.com",
+    "url": "https://singularitymods.com"
+  },
+  "config": {
+    "forge": "./forge.config.js"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.1",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/preset-react": "^7.10.4",
+    "@electron-forge/cli": "^6.0.0-beta.52",
+    "@electron-forge/maker-deb": "^6.0.0-beta.52",
+    "@electron-forge/maker-dmg": "^6.0.0-beta.53",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.52",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.52",
+    "@electron-forge/maker-zip": "^6.0.0-beta.52",
+    "@electron-forge/plugin-webpack": "^6.0.0-beta.52",
+    "@fortawesome/fontawesome-free": "^5.14.0",
+    "@zeit/webpack-asset-relocator-loader": "^0.6.0",
+    "babel": "^6.23.0",
+    "babel-loader": "^8.1.0",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "copy-webpack-plugin": "^6.0.4",
+    "cross-env": "^7.0.2",
+    "css-loader": "^3.6.0",
+    "dotenv": "^8.2.0",
+    "electron": "^9.1.2",
+    "electron-chromedriver": "^10.0.0",
+    "file-loader": "^6.1.0",
+    "mocha": "^8.2.0",
+    "node-loader": "^0.6.0",
+    "spectron": "11.0.0",
+    "style-loader": "^0.23.1",
+    "ttf-loader": "^1.0.2"
+  },
+  "dependencies": {
+    "archiver": "^5.0.2",
+    "axios": "^0.21.0",
+    "bootstrap": "^4.5.2",
+    "electron-dl": "^3.0.2",
+    "electron-log": "^4.2.4",
+    "electron-squirrel-startup": "^1.0.0",
+    "es6-promise-pool": "^2.5.0",
+    "extract-zip": "^2.0.1",
+    "glob": "^7.1.6",
+    "hasha": "^5.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "keytar": "^7.0.0",
+    "ncp": "^2.0.0",
+    "react": "^16.13.1",
+    "react-bootstrap": "^1.3.0",
+    "react-bootstrap-table-next": "^4.0.3",
+    "react-dom": "^16.13.1",
+    "react-hot-loader": "^4.12.21",
+    "react-infinite-scroller": "^1.2.4",
+    "react-switch": "^5.0.1",
+    "react-tooltip": "^4.2.10",
+    "simplebar-react": "^2.2.1",
+    "stream-buffers": "^3.0.2",
+    "uuid": "^8.3.0"
+  },
+  "bugs": {
+    "url": "https://github.com/singularitymods/singularity-core/issues"
+  },
+  "license": "Apache-2.0",
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  ]
+}
