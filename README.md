@@ -10,6 +10,8 @@ Singularity is the single app for your addon management. We created Singularity 
 
 ## Build Singularity
 
+Singularity was built and tested on Node v12 though other versions may work.
+
 Clone this repository locally :
 
 ```bash
