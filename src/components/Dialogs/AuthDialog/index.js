@@ -51,6 +51,7 @@ export default class AuthDialog extends React.Component {
             sendingEmail: false,
             emailResent: false
         }
+        this.capslock = false;
         this.usernameCheckListener = this.usernameCheckListener.bind(this);
         this.authEventListener = this.authEventListener.bind(this);
         this.emailResentEventListener = this.emailResentEventListener.bind(this);
@@ -72,12 +73,14 @@ export default class AuthDialog extends React.Component {
         this.onSubmitLogin = this.onSubmitLogin.bind(this);
         this.onSubmitSignup = this.onSubmitSignup.bind(this);
         this.onSubmitResendEmail = this.onSubmitResendEmail.bind(this);
+        this.checkForCapsLock = this.checkForCapsLock.bind(this);
 
     }
     componentDidMount() {
         ipcRenderer.on('auth-event', this.authEventListener);
         ipcRenderer.on('username-check', this.usernameCheckListener);
         ipcRenderer.on('email-resent', this.emailResentEventListener);
+        document.addEventListener('keyup', this.checkForCapsLock);
         const darkMode = ipcRenderer.sendSync('is-dark-mode');
         this.setState({
             darkMode: darkMode
@@ -88,6 +91,7 @@ export default class AuthDialog extends React.Component {
         ipcRenderer.removeListener('auth-event', this.authEventListener);
         ipcRenderer.removeListener('username-check', this.usernameCheckListener);
         ipcRenderer.removeListener('email-resent', this.emailResentEventListener);
+        document.removeEventListener('keyup', this.checkForCapsLock);
     }
 
     componentDidUpdate(prevProps) {
@@ -179,6 +183,10 @@ export default class AuthDialog extends React.Component {
             emailResent: true,
             sendingEmail: false
         })
+    }
+
+    checkForCapsLock(event) {
+        this.capslock = event.getModifierState("CapsLock");
     }
 
     checkIfFormIsValid = () => {
@@ -320,6 +328,12 @@ export default class AuthDialog extends React.Component {
         let working = this.state.working;
         working.password = true;
         let timeout = this.state.timeout;
+        let errors = this.state.errors;
+        if (this.capslock) {
+            errors.password = "Caps Lock is on!"
+        } else {
+            errors.password = ""
+        }
         if (timeout.password) {
             clearTimeout(this.state.timeout.password)
         }
@@ -329,7 +343,8 @@ export default class AuthDialog extends React.Component {
         this.setState({ 
             password: e.target.value,
             working: working,
-            timeout: timeout
+            timeout: timeout,
+            errors: errors
         });
     }
 

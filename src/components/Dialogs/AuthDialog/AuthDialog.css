@@ -111,6 +111,7 @@
 
 .auth-form-error-text {
     height: 20px;
+    text-align: center;
 }
 
 .auth-dialog-form .form-group {
