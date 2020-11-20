@@ -1,7 +1,7 @@
-const { ipcMain } = require('electron');
+const { ipcMain, dialog } = require('electron');
 const storageService = require('../../services/storage-service');
-const fileService = require('../../services/storage-service');
-
+const fileService = require('../../services/file-service');
+const path = require('path');
 const log = require('electron-log');
 
 ipcMain.on('manually-find-game', (event, gameId) => {
@@ -56,7 +56,7 @@ ipcMain.on('manually-find-game', (event, gameId) => {
                     })
                     storageService.setGameSettings(gameId.toString(), currentSettings)
                     event.sender.send('installation-found');
-                    checkAddons();
+                    fileService.findAndUpdateAddons();
                 } else {
                     event.sender.send('installation-not-found', "We couldn't find a valid game in that directory");
                 }
