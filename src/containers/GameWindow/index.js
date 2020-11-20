@@ -1,7 +1,7 @@
 import './GameWindow.css';
 
 import * as React from 'react';
-import { Row, Col, Button } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 const { ipcRenderer } = require('electron');
 
 import InstallationFinder from '../../components/InstallationFinder';
@@ -30,7 +30,7 @@ export default class GameWindow extends React.Component {
         this.toggleGameVersion = this.toggleGameVersion.bind(this);
         this.toggleActiveTab = this.toggleActiveTab.bind(this);
         this.selectAddon = this.selectAddon.bind(this);
-        this.handeGoBack = this.handleGoBack.bind(this);
+        this.handleGoBack = this.handleGoBack.bind(this);
     }
 
     componentDidMount() {
@@ -68,7 +68,7 @@ export default class GameWindow extends React.Component {
         ipcRenderer.removeListener('installation-found', this.installationFinderListener);
     }
 
-    installationFinderListener = () => {
+    installationFinderListener() {
         var gameSettings = ipcRenderer.sendSync('get-game-settings', this.state.gameId);
         var gameData = ipcRenderer.sendSync('get-game-data', this.state.gameId);
         let installedVersions = [];
@@ -87,14 +87,14 @@ export default class GameWindow extends React.Component {
         });
     }
 
-    toggleActiveTab = (activeTab) => {
+    toggleActiveTab(activeTab) {
         this.setState({
             selectedAddon: '',
             activeTab: activeTab
         })
     }
 
-    toggleGameVersion = (gameVersion) => {
+    toggleGameVersion(gameVersion) {
         if (gameVersion == 'find') {
             ipcRenderer.send('manually-find-game', this.state.gameId);
         } else {
@@ -105,13 +105,13 @@ export default class GameWindow extends React.Component {
         }
     }
 
-    selectAddon = (addonId) => {
+    selectAddon(addonId) {
         this.setState({
             selectedAddon: addonId
         });
     }
 
-    handleGoBack = () => {
+    handleGoBack() {
         this.setState({
             selectedAddon: ''
         })

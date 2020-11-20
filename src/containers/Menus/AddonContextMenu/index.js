@@ -74,7 +74,7 @@ export default class Header extends React.Component {
         } 
     }
 
-    onHoverBranchOption = (toggle) => {
+    onHoverBranchOption(toggle) {
         if (toggle) {
             this.setState({hoverBranchOption: toggle})
         } else {
@@ -82,7 +82,7 @@ export default class Header extends React.Component {
         }
     }
 
-    onHoverBranchMenu = (toggle) => {
+    onHoverBranchMenu(toggle) {
         if (toggle) {
             this.setState({hoverBranchMenu: toggle});
         } else {
@@ -90,7 +90,7 @@ export default class Header extends React.Component {
         }
     }
 
-    onHoverSettingsOption = (toggle) => {
+    onHoverSettingsOption(toggle) {
         if (toggle) {
             this.setState({hoverSettingsOption: toggle})
         } else {
@@ -98,7 +98,7 @@ export default class Header extends React.Component {
         }
     }
 
-    onHoverSettingsMenu = (toggle) => {
+    onHoverSettingsMenu(toggle) {
         if (toggle) {
             this.setState({hoverSettingsMenu: toggle});
         } else {
@@ -106,7 +106,7 @@ export default class Header extends React.Component {
         }
     }
 
-    onHoverDirOption = (toggle) => {
+    onHoverDirOption(toggle) {
         if (toggle) {
             this.setState({hoverDirOption: toggle})
         } else {
@@ -114,7 +114,7 @@ export default class Header extends React.Component {
         }
     }
 
-    onHoverDirMenu = (toggle) => {
+    onHoverDirMenu(toggle) {
         if (toggle) {
             this.setState({hoverDirMenu: toggle});
         } else {
@@ -122,14 +122,14 @@ export default class Header extends React.Component {
         }
     }
 
-    handleClick = (event) => {
+    handleClick(event) {
         if (this.state.visible) {
             event.preventDefault();
         }
         this.setState({ visible: false, x: 0, y: 0 });
     }
 
-    handleContextMenu = (event) => {
+    handleContextMenu(event) {
         event.preventDefault();
         if (event.path.some(e => e.classList && e.classList.contains('installed-addons-row'))) {
             var row = event.path[1];

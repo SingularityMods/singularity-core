@@ -56,6 +56,10 @@
     font-weight: bold;
 }
 
+.backup-management-confirm-option .option-tooltip {
+    color: var(--text-color);
+}
+
 .backup-management-option-settins{
     margin-top: 10px;
 }

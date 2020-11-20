@@ -55,6 +55,7 @@ export default class InstalledAddonsWindow extends React.Component {
         this.handleOnSelect = this.handleOnSelect.bind(this);
         this.openBackupDialog = this.openBackupDialog.bind(this);
         this.changeFilter = this.changeFilter.bind(this);
+        this.findAddons = this.findAddons.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -376,7 +377,7 @@ export default class InstalledAddonsWindow extends React.Component {
         });
     }
 
-    findAddons = () => {
+    findAddons() {
         ipcRenderer.send('find-addons-async', this.state.gameId, this.state.gameVersion);
         this.setState({
             currentlyUpdating: [],
@@ -499,7 +500,7 @@ export default class InstalledAddonsWindow extends React.Component {
     }
 
 
-    updateAll = () => {
+    updateAll() {
         var toUpdate = [];
         var pendingUpdates = [];
         this.state.installedAddons.forEach((addon) => {
@@ -517,7 +518,7 @@ export default class InstalledAddonsWindow extends React.Component {
         });
     }
 
-    uninstallAddon = () => {
+    uninstallAddon() {
         let selectedAddon = this.state.installedAddons.find(obj => {
             return obj.addonId == this.state.selectedAddon
         })
@@ -529,7 +530,7 @@ export default class InstalledAddonsWindow extends React.Component {
         }
     }
 
-    handleOnSelect = (row, isSelect) => {
+    handleOnSelect(row, isSelect) {
         if (isSelect) {
             this.setState({
                 selectedAddon: [row.addonId]
@@ -541,14 +542,14 @@ export default class InstalledAddonsWindow extends React.Component {
         }
     }
 
-    openBackupDialog = () => {
+    openBackupDialog() {
         let opts = {
             gameId: this.state.gameId,
             gameVersion: this.state.gameVersion}
         this.props.openBackupManagementDialog(opts);
     }
 
-    changeFilter = (event) => {
+    changeFilter(event) {
         this.setState({
             filter: event.target.value
         });
@@ -701,7 +702,7 @@ export default class InstalledAddonsWindow extends React.Component {
                                     <span className="label label-danger">Unknown Version</span>
                                 </a>
                                 <ReactTooltip id="unknownVersionTooltip">
-                                    <span>We couldn't recognize the installed version. You can try re-installing from the right-click menu.</span>
+                                    <span>We couldn&apos;t recognize the installed version. You can try re-installing from the right-click menu.</span>
                                 </ReactTooltip>
                             </div>)
                 } else if (row.brokenInstallation) {
@@ -854,7 +855,7 @@ export default class InstalledAddonsWindow extends React.Component {
                                     <div className="no-addons-found-window">
                                         <Row>
                                             <Col xs={12}>
-                                                <h2 className="window-message">It looks like you don't have any adddons installed yet!</h2>
+                                                <h2 className="window-message">It looks like you don&apos;t have any adddons installed yet!</h2>
                                             </Col>
                                         </Row>
                                         <Row>

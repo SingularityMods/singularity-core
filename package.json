@@ -16,7 +16,7 @@
     "make": "cross-env BUILD_ENV=oss electron-forge make",
     "make-prod": "cross-env BUILD_ENV=prod electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "echo \"No linting configured\"",
+    "lint": "npx eslint ./src",
     "test": "mocha --timeout 20000 \"./test/**/*test-*.js\""
   },
   "keywords": [
@@ -56,10 +56,12 @@
     "dotenv": "^8.2.0",
     "electron": "^9.1.2",
     "electron-chromedriver": "^10.0.0",
+    "eslint": "^7.13.0",
+    "eslint-plugin-react": "^7.21.5",
     "file-loader": "^6.1.0",
     "mocha": "^8.2.0",
     "node-loader": "^0.6.0",
-    "spectron": "11.0.0",
+    "spectron": "^11.0.0",
     "style-loader": "^0.23.1",
     "ttf-loader": "^1.0.2"
   },

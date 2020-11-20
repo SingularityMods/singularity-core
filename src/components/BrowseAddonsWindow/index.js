@@ -213,7 +213,7 @@ export default class BrowseAddonsWindow extends React.Component {
     }
 
 
-    refreshSearch = () => {
+    refreshSearch() {
         this.setState({
             addonList: [],
             searching: true,
@@ -226,7 +226,7 @@ export default class BrowseAddonsWindow extends React.Component {
         ipcRenderer.send('addon-search', this.state.gameId, this.state.gameVersion, this.state.searchFilter, this.state.selectedCategory, this.state.page, this.state.pageSize);
     }
 
-    loadMoreAddons = () => {
+    loadMoreAddons() {
         ipcRenderer.send('addon-search', this.state.gameId, this.state.gameVersion, this.state.searchFilter, this.state.selectedCategory, this.state.page + 1, this.state.pageSize);
         this.setState({
             loadingMore: true
@@ -241,7 +241,7 @@ export default class BrowseAddonsWindow extends React.Component {
         
     }
 
-    toggleCategory = (category) => {
+    toggleCategory(category) {
         
         if (category == null) {
             category = 0
@@ -255,7 +255,7 @@ export default class BrowseAddonsWindow extends React.Component {
         })
     }
 
-    changeFilter = (event) => {
+    changeFilter(event) {
         const self = this;
 
         if (this.state.typingTimeout) {
@@ -458,7 +458,7 @@ export default class BrowseAddonsWindow extends React.Component {
                                     </div>
                                 ) : (
                                     this.state.noAddonsFound
-                                        ? <div className="search-error">Looks like we couldn't find any addons for that search...</div> 
+                                        ? <div className="search-error">Looks like we couldn&apos;t find any addons for that search...</div> 
                                         : <SimpleBar scrollbarMaxSize={50} className={process.platform === 'darwin' ? "addon-table-scrollbar mac" : "addon-table-scrollbar"} >
                                             <Row className="addon-table">
                                                 <Col xs={12}>

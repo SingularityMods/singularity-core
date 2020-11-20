@@ -1,6 +1,6 @@
 import './SmallSidebar.css';
 
-import { Container, Row, Col } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 import * as React from 'react';
 const { ipcRenderer } = require('electron');
 import GameSquare from '../../../components/GameSquare';
@@ -11,7 +11,7 @@ export default class SmallSidebar extends React.Component {
         this.handleClick = this.handleClick.bind(this);
     }
 
-    handleClick = (gameId) => {
+    handleClick(gameId) {
         this.props.onClick(gameId);
     }
 

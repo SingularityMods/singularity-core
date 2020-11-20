@@ -1,6 +1,7 @@
-const { ipcMain, net } = require('electron');
+const { ipcMain } = require('electron');
 const storageService = require('../../services/storage-service');
-const fileService = require('../../services/file-service');
+
+const log = require('electron-log');
 
 ipcMain.on('change-addon-branch', (event, gameId, gameVersion, addonId, branch) => {
     log.info('Changing release branch for: '+addonId+' to: '+branch);

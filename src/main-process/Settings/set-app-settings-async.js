@@ -1,5 +1,6 @@
 const { ipcMain, BrowserWindow } = require('electron');
 const storageService = require('../../services/storage-service');
+const fileService = require('../../services/file-service');
 
 const log = require('electron-log');
 
@@ -16,6 +17,6 @@ ipcMain.on('set-app-settings', (event, appSettings) => {
             });
     }
     if (prevSettings.addonUpdateInterval != appSettings.addonUpdateInterval) {
-        setAddonUpdateInterval();
+        fileService.setAddonUpdateInterval();
     }    
 });

@@ -57,10 +57,10 @@ export default class HomePage extends React.Component {
                             <div >
                                 <h3 className="release-notes-title">Release Notes</h3>
                                 <h5>1.0.0 <span className="release-note-date">2020-11-20</span></h5>
-                                <p>Singularity is now open source! Check out the repository <a className="release-notes-link" target="_blank" href="https://github.com/SingularityMods/singularity-core">on GitHub</a> to contribute and submit issues.</p>
+                                <p>Singularity is now open source! Check out the repository <a className="release-notes-link" target="_blank" rel="noreferrer" href="https://github.com/SingularityMods/singularity-core">on GitHub</a> to contribute and submit issues.</p>
                                 <h5 className="release-note-section-header">New Features:</h5>
                                 <p className="release-note-bullet"> - You can now create an account on SingularityMods.com or in-app to access additional features.</p>
-                                <p className="release-note-bullet"> - Singularity now supports cloud backups. When creating a backup, you can choose to upload a copy of it to Singularity's servers. Storage is cheap but not free so only the latest cloud backup per game verison will be retained. *</p>
+                                <p className="release-note-bullet"> - Singularity now supports cloud backups. When creating a backup, you can choose to upload a copy of it to Singularity&apos;s servers. Storage is cheap but not free so only the latest cloud backup per game verison will be retained. *</p>
                                 <p className="release-note-bullet"> - You can now choose to restore specific addons from a backup. Because of these changes, backups made prior to v1.0.0 are no-longer compatible and will be deleted in an upcoming release.</p>
                                 <p className="release-note-bullet"> - You can now minimize the game-select sidebar.</p>
                                 <h5 className="release-note-section-header">Bug Fixes:</h5>
@@ -102,18 +102,18 @@ export default class HomePage extends React.Component {
                                 <p className="release-note-bullet"> - Fixed an issue that could cause some addons to show multiple installed versions.</p>
                                 <hr />
                                 <h5>0.4.1 <span className="release-note-date">2020-10-02</span></h5>
-                                <p>Singularity now supports macOS! Check <a className="release-notes-link" target="_blank" href="https://singularitymods.com">SingularityMods.com</a> for a download link.</p>
+                                <p>Singularity now supports macOS! Check <a className="release-notes-link" target="_blank" rel="noreferrer" href="https://singularitymods.com">SingularityMods.com</a> for a download link.</p>
                                 <h5 className="release-note-section-header">Bug Fixes:</h5>
                                 <p className="release-note-bullet"> - Fixed an issue that caused Singularity to not properly search for and identify after locating an installation.</p>
                                 <p className="release-note-bullet"> - Fixed an issue that caused the app to display an error when checking for app updates while no network is available.</p>
                                 <hr />
                                 <h5>0.4.0 <span className="release-note-date">2020-10-01</span></h5>
                                 <h5 className="release-note-section-header">New Features:</h5>
-                                <p className="release-note-bullet"> - You can now browse an addon's details directly from the currently-installed addons table.</p>
-                                <p className="release-note-bullet"> - Addon screenshots that have been uploaded to CurseForge are now viewable in the new 'Screenshots' tab within the addon details window.</p>
+                                <p className="release-note-bullet"> - You can now browse an addon&apos;s details directly from the currently-installed addons table.</p>
+                                <p className="release-note-bullet"> - Addon screenshots that have been uploaded to CurseForge are now viewable in the new &lsquo;Screenshots&rsquo; tab within the addon details window.</p>
                                 <h5 className="release-note-section-header">Bug Fixes:</h5>
-                                <p className="release-note-bullet"> - Fixed an issue that caused the 'Update All' option to go completely insane when processing a large number of addon updates.</p>
-                                <p className="release-note-bullet"> - Links in an addon's description now correctly open in the OS's web browser instead of in-app.</p>
+                                <p className="release-note-bullet"> - Fixed an issue that caused the &lsquo;Update All&rsquo; option to go completely insane when processing a large number of addon updates.</p>
+                                <p className="release-note-bullet"> - Links in an addon&apos;s description now correctly open in the OS&apos;s web browser instead of in-app.</p>
                                 <p className="release-note-bullet"> - Fixed an issue that could cause Singularity to crash if left open after the initial install or update.</p>
                                 <hr />
                                 <h5>0.3.2 <span className="release-note-date">2020-09-30</span></h5>
@@ -122,20 +122,20 @@ export default class HomePage extends React.Component {
                                 <hr />
                                 <h5>0.3.1 <span className="release-note-date">2020-09-29</span></h5>
                                 <h5 className="release-note-section-header">Bug Fixes:</h5>
-                                <p className="release-note-bullet"> - Fixed an issue that caused Singularity to assign an incorrect install path when a specific game version's directory
-                                 is selected while searching for WoW installations. Users can fix broken configurations by re-selecting "Find More" and pointing Singularity
+                                <p className="release-note-bullet"> - Fixed an issue that caused Singularity to assign an incorrect install path when a specific game version&apos;s directory
+                                 is selected while searching for WoW installations. Users can fix broken configurations by re-selecting &ldquo;Find More&rdquo; and pointing Singularity
                                     to either the root WoW installation directory or a game version directory (ie. /_retail_)</p>
                                 <hr />
                                 <h5>0.3.0 <span className="release-note-date">2020-09-29</span></h5>
                                 <p>Thanks to the efforts of @Rfkgaming, we now have a Discord server! Grab an invite link in the app from the discord icon on the home page
-                                    or <a className="release-notes-link" target="_blank" href="https://discord.gg/xNcqjUD">HERE</a>. Also, check out our subreddit on r/singularitymods.</p>
+                                    or <a className="release-notes-link" target="_blank" rel="noreferrer" href="https://discord.gg/xNcqjUD">HERE</a>. Also, check out our subreddit on r/singularitymods.</p>
                                 <h5 className="release-note-section-header">New Features:</h5>
                                 <p className="release-note-bullet"> - You can now choose the backup storage location for addon settings and file backups in the settings menu.</p>
                                 <p className="release-note-bullet"> - Backups are now stored with compression. As part of this change, all previous backups are now invalid.</p>
                                 <hr />
                                 <h5>0.2.2 <span className="release-note-date">2020-09-28</span></h5>
                                 <h5 className="release-note-section-header">Bug Fixes:</h5>
-                                <p className="release-note-bullet"> - You can now locate additional versions of World of Warcraft by choosing the "Find More" link in the game version
+                                <p className="release-note-bullet"> - You can now locate additional versions of World of Warcraft by choosing the &ldquo;Find More&rdquo; link in the game version
                                     selection dropdown and navigating to the root World of Warcraft installation directory.</p>
                                 <p className="release-note-bullet"> - Singularity can now continue to identify install addons after encountering an invalid addon directory.</p>
                                 <hr />
@@ -145,7 +145,7 @@ export default class HomePage extends React.Component {
                                 <hr />
                                 <h5>0.2.0 <span className="release-note-date">2020-09-26</span></h5>
                                 <h5 className="release-note-section-header">New Features:</h5>
-                                <p className="release-note-bullet"> - Added a dark mode option for users who don't wish to be blinded by the light.</p>
+                                <p className="release-note-bullet"> - Added a dark mode option for users who don&apos;t wish to be blinded by the light.</p>
                                 <p className="release-note-bullet"> - Added a configuration option for how often the app checks for addon updates.</p>
                                 <h5 className="release-note-section-header">Known Issues:</h5>
                                 <h5 className="release-note-section-header">In development:</h5>
@@ -175,7 +175,7 @@ export default class HomePage extends React.Component {
                     </Row>
                     <Row>
                         <Col xs={12} className="homepage-footer">
-                            <div className="footer-link"><a target="_blank" href="https://singularitymods.freshdesk.com/">Support</a></div>
+                            <div className="footer-link"><a target="_blank" rel="noreferrer" href="https://singularitymods.freshdesk.com/">Support</a></div>
                         </Col>
                     </Row>
             </div>

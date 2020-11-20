@@ -31,19 +31,6 @@ export default class Auth {
         }      
     }
 
-    userProfile;
-/*
-  login() {
-    this.lock.show();
-  }
-
-  handleAuthentication() {
-    this.lock.on('authenticated', this.setSession.bind(this));
-    this.lock.on('authorization_error', (err) => {
-      console.log(err);
-    });
-  }*/
-
     register(username,email,password) {
         return new Promise( (resolve,reject) => {
             var postData = {

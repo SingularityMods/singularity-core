@@ -345,7 +345,7 @@ export default class BackupManagementDialog extends React.Component {
                                     <i className="fas fa-question-circle option-tooltip menu-icon"></i>
                                 </a>
                                 <ReactTooltip id="backupCloudTooltip">
-                                    <span>This backs up the WTF directory and your installed addons to Singularity's servers.</span>
+                                    <span>This backs up the WTF directory and your installed addons to Singularity&apos;s servers.</span>
                                 </ReactTooltip>
                             </div>
                         </Col>

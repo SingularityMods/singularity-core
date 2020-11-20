@@ -128,14 +128,14 @@ class App extends React.Component {
      * Dialog Controls
      */
     // <<< Settings Start >>>
-    openSettings = () => {
+    openSettings() {
         this.setState({
             settingsOpened: true,
             profileMenuOpened: false
         })
     }
 
-    closeSettings = () => {
+    closeSettings() {
         this.setState({
             settingsOpened: false
         })
@@ -143,13 +143,13 @@ class App extends React.Component {
     // <<< Settings End >>>
 
     // <<< Profile Menu Start >>>
-    openProfileMenu = () => {
+    openProfileMenu() {
         this.setState({
             profileMenuOpened: !this.state.profileMenuOpened
         })
     }
 
-    closeProfileMenu = () => {
+    closeProfileMenu() {
         this.setState({
             profileMenuOpened: false
         })
@@ -157,7 +157,7 @@ class App extends React.Component {
     // <<< Profile Menu End >>>
 
     // <<< Auth Dialog Start >>>
-    openAuth = (authTab) => {
+    openAuth(authTab) {
         this.setState({
             settingsOpened: false,
             authOpened: authTab,
@@ -165,7 +165,7 @@ class App extends React.Component {
         })
     }
 
-    closeAuth = () => {
+    closeAuth() {
         this.setState({
             authOpened: null
         });
@@ -173,19 +173,19 @@ class App extends React.Component {
     // <<< Auth Dialog End >>>
 
     // <<< Backup Management Dialog Start >>>
-    openBackupManagementDialog = (opts) => {
+    openBackupManagementDialog(opts) {
         this.setState({
             backupManagementOpts: opts
         })
     }
 
-    closeBackupManagementDialog = () => {
+    closeBackupManagementDialog() {
         this.setState({
             backupManagementOpts: null
         })
     }
 
-    submitBackupManagementDialog = (cloud) => {
+    submitBackupManagementDialog(cloud) {
         let gameId = this.state.backupManagementOpts.gameId;
         let gameVersion = this.state.backupManagementOpts.gameVersion;
         ipcRenderer.send('create-granular-backup', gameId, gameVersion, cloud);
@@ -266,7 +266,7 @@ class App extends React.Component {
         })
     }
 
-    selectGame = (gameId) => {
+    selectGame(gameId) {
         this.setState({
             selectedGame: gameId,
             settingsOpened: false,
@@ -274,7 +274,7 @@ class App extends React.Component {
         });
     }
 
-    deselectAll = () => {
+    deselectAll() {
         this.setState({
             selectedGame: '',
             settingsOpened: false,
@@ -282,7 +282,7 @@ class App extends React.Component {
         });
     }
     
-    acceptTerms = (termType) => {
+    acceptTerms(termType) {
         ipcRenderer.send('accept-terms', termType);
         if (termType == 'privacy') {
             this.setState({
@@ -298,7 +298,7 @@ class App extends React.Component {
         
     }
 
-    declineTerms = () => {
+    declineTerms() {
         ipcRenderer.send('close-window');
     }
 

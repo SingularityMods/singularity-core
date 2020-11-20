@@ -23,6 +23,8 @@ var autoUpdateAddonsLeft=[];
 var cloudAddonsLeft = 0;
 var cloudAddonsToRestore = [];
 
+var updateInterval;
+
 function setBrowserWindow(id) {
     browserWindowId = id;
 }
@@ -1082,6 +1084,40 @@ function findInstalledWoWVersions(selectedPath)  {
     return installedVersions;
 }
 
+// Check for and install addons at the user-configured interval.
+// Default to every hour.
+function setAddonUpdateInterval() {
+    let appD = storageService.getAppData('userConfigurable');
+    let checkInterval = 1000 * 60 * 60;
+    if (appD.addonUpdateInterval) {
+        switch (appD.addonUpdateInterval) {
+            case '15m':
+                checkInterval = 1000 * 60 * 15;
+                break;
+            case '30m':
+                checkInterval = 1000 * 60 * 30;
+                break;
+            case '1h':
+                checkInterval = 1000 * 60 * 60;
+                break;
+            case '3h':
+                checkInterval = 1000 * 60 * 60 * 3;
+                break;
+            default:
+                checkInterval = 1000 * 60 * 60;
+        }
+    } else {
+        appD.addonUpdateInterval = '1h';
+        storageService.setAppData('userConfigurable', appD);
+        checkInterval = 1000 * 60 * 60;
+    }
+    log.info('Addon update interval set to: ' + appD.addonUpdateInterval);
+    updateInterval = setInterval(() => {
+        //checkAddons();
+        findAndUpdateAddons();
+    }, checkInterval);
+}
+
 /*
  * None export helper functions
  */
@@ -1184,5 +1220,6 @@ module.exports = {
     identifyAddons,
     findInstalledWoWVersions,
     deleteLocalBackup,
-    findAndUpdateAddons
+    findAndUpdateAddons,
+    setAddonUpdateInterval
   };

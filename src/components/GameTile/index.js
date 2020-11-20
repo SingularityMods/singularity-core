@@ -11,8 +11,9 @@ export default class GameTile extends React.Component {
             iconPath: this.props.gameIconPath,
             tilePath: this.props.gameTilePath
         }
+        this.handleClick = this.handleClick.bind(this);
     }
-    handleClick = () => {
+    handleClick() {
         this.props.onClick(this.props.gameId);
     }
 

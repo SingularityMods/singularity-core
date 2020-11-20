@@ -189,7 +189,7 @@ export default class AuthDialog extends React.Component {
         this.capslock = event.getModifierState("CapsLock");
     }
 
-    checkIfFormIsValid = () => {
+    checkIfFormIsValid() {
         if ((!this.state.working.username && !this.state.errors.username && this.state.username.length > 0)
             && (!this.state.working.password && !this.state.errors.password && this.state.password.length > 0)
             && (!this.state.working.password && !this.state.errors.password && this.state.password.length > 0)
@@ -201,7 +201,7 @@ export default class AuthDialog extends React.Component {
 
     }
 
-    validateUsername = () => {
+    validateUsername() {
         if (this.state.username.length >= 3) {
             ipcRenderer.send('check-username', this.state.username);
         } else {
@@ -218,7 +218,7 @@ export default class AuthDialog extends React.Component {
 
     }
     
-    validateEmail = () => {
+    validateEmail() {
         if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(this.state.email)) {
             let working = this.state.working;
             working.email = false;
@@ -243,7 +243,7 @@ export default class AuthDialog extends React.Component {
         }
     }
     
-    validatePassword = () => {
+    validatePassword() {
         if (this.state.password.length >= 11) {
             let working = this.state.working;
             working.password = false;
@@ -268,7 +268,7 @@ export default class AuthDialog extends React.Component {
         }
     }
     
-    validateConfPassword = () => {
+    validateConfPassword() {
         if (this.state.confirmPassword === this.state.password) {
             let working = this.state.working;
             working.confirmPassword = false;
@@ -293,19 +293,19 @@ export default class AuthDialog extends React.Component {
         }
     }
 
-    handleChangeLoginEmail = (e) => {
+    handleChangeLoginEmail(e) {
         this.setState({
             loginEmail: e.target.value
         });
     }
 
-    handleChangeLoginPassword = (e) => {
+    handleChangeLoginPassword(e) {
         this.setState({
             loginPassword: e.target.value
         });
     }
 
-    handleChangeUsername = (e) => {
+    handleChangeUsername(e) {
         const self = this;
         let working = this.state.working;
         working.username = true;
@@ -323,7 +323,7 @@ export default class AuthDialog extends React.Component {
         });
     }
 
-    handleChangePassword = (e) => {
+    handleChangePassword(e) {
         const self = this;
         let working = this.state.working;
         working.password = true;
@@ -348,7 +348,7 @@ export default class AuthDialog extends React.Component {
         });
     }
 
-    handleChangeConfirmPassword = (e) => {
+    handleChangeConfirmPassword(e) {
         const self = this;
         let working = this.state.working;
         working.confirmPassword = true;
@@ -366,7 +366,7 @@ export default class AuthDialog extends React.Component {
         });
     }
 
-    handleChangeEmail = (e) => {
+    handleChangeEmail(e) {
         const self = this;
         let working = this.state.working;
         working.email = true;
@@ -384,7 +384,7 @@ export default class AuthDialog extends React.Component {
         });
     }
 
-    onTouchUsername = (e) => {
+    onTouchUsername(e) {
         e.preventDefault();
         let touched = this.state.touched;
         touched.username = true;
@@ -393,7 +393,7 @@ export default class AuthDialog extends React.Component {
         })
     }
 
-    onTouchPassword = (e) => {
+    onTouchPassword(e) {
         e.preventDefault();
         let touched = this.state.touched;
         touched.password = true;
@@ -402,7 +402,7 @@ export default class AuthDialog extends React.Component {
         })
     }
 
-    onTouchConfirmPassword = (e) => {
+    onTouchConfirmPassword(e) {
         e.preventDefault();
         let touched = this.state.touched;
         touched.confirmPassword = true;
@@ -411,7 +411,7 @@ export default class AuthDialog extends React.Component {
         })
     }
 
-    onTouchEmail = (e) => {
+    onTouchEmail(e) {
         e.preventDefault();
         let touched = this.state.touched;
         touched.email = true;
@@ -420,7 +420,7 @@ export default class AuthDialog extends React.Component {
         })
     }
 
-    onSubmitLogin = (e) => {
+    onSubmitLogin(e) {
         this.setState({
             error: '',
             loginPending: true
@@ -429,7 +429,7 @@ export default class AuthDialog extends React.Component {
         ipcRenderer.send('login-auth', this.state.loginEmail, this.state.loginPassword);
       }
 
-    onSubmitSignup = (e) => {
+    onSubmitSignup(e) {
         this.setState({
             error: '',
             signupPending: true
@@ -438,7 +438,7 @@ export default class AuthDialog extends React.Component {
         ipcRenderer.send('signup-auth', this.state.username, this.state.email, this.state.password);
       }
 
-    onSubmitResendEmail = (e) => {
+    onSubmitResendEmail(e) {
         e.preventDefault();
         this.setState({
             emailResent: false,
@@ -466,9 +466,9 @@ export default class AuthDialog extends React.Component {
                             </Row>
                             <Row>
                                 <Col xs={12} className="auth-form-terms-message">
-                                <p>You're almost there!</p>
-                                        <p>We sent an email to {this.state.email}. Before you can use your account you'll need to verify the email address that you provided.</p>
-                                        <p>Be sure to check your spam box. If you haven't seen it in the next 5 minutes, hit the link below or log in to SingularityMods.com to request another.</p>
+                                <p>You&apos;re almost there!</p>
+                                        <p>We sent an email to {this.state.email}. Before you can use your account you&apos;ll need to verify the email address that you provided.</p>
+                                        <p>Be sure to check your spam box. If you haven&apos;t seen it in the next 5 minutes, hit the link below or log in to SingularityMods.com to request another.</p>
                                         <p><a href="#" className="signup-link" onClick={this.onSubmitResendEmail}>Re-Send Email</a></p>
                                 </Col>
                             </Row>
@@ -679,7 +679,7 @@ export default class AuthDialog extends React.Component {
                             {this.state.dialogTab == 'signup'
                                 ? <Row>
                                 <Col xs={12} className="auth-form-terms-message">
-                                    <p>By clicking Sign Up, you are indicating that you have read and acknowledged the <a className="signup-link" href="https://singularitymods.com/Terms" target="_blank">Terms of Service</a> and <a className="signup-link" href="https://singularitymods.com/Privacy" target="_blank">Privacy Notice</a>.</p>
+                                    <p>By clicking Sign Up, you are indicating that you have read and acknowledged the <a className="signup-link" href="https://singularitymods.com/Terms" target="_blank" rel="noreferrer">Terms of Service</a> and <a className="signup-link" href="https://singularitymods.com/Privacy" target="_blank" rel="noreferrer">Privacy Notice</a>.</p>
                                 </Col>
                             </Row>
                                 : ''
@@ -712,7 +712,7 @@ export default class AuthDialog extends React.Component {
                             {this.state.dialogTab == 'login'
                                 ? <Row>
                                         <Col xs={12} className="auth-form-terms-message forgot-password">
-                                            <p><a className="signup-link" href="https://singularitymods.com/ResetPassword" target="_blank">Forgot Your Password?</a></p>
+                                            <p><a className="signup-link" href="https://singularitymods.com/ResetPassword" target="_blank" rel="noreferrer">Forgot Your Password?</a></p>
                                         </Col>
                                     </Row>
                                 :'' }

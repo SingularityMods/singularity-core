@@ -26,14 +26,14 @@ export default class TermsWindow extends React.Component {
 
     }
 
-    handleClick = () => {
+    handleClick() {
         this.props.onClick(this.props.categoryId);
     }
 
     render() {
         if (this.state.termType == 'privacy') {
             var msg = "We Have a New Privacy Policy";
-        } else if (this.state.termType = 'tos') {
+        } else if (this.state.termType == 'tos') {
             var msg = "We Have a New Terms of Service"
         }
         return (

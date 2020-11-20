@@ -10,8 +10,9 @@ export default class GameSquare extends React.Component {
             name: this.props.gameName,
             iconPath: this.props.gameIconPath
         }
+        this.handleClick = this.handleClick.bind(this);
     }
-    handleClick = () => {
+    handleClick() {
         this.props.onClick(this.props.gameId);
     }
 

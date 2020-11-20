@@ -32,7 +32,7 @@ ipcMain.on('install-addon', async (event, gameId, gameVersionFlavor, addon, bran
 
             var updateAvailable = false;
             var updateFile = addon.latestFiles.find( (f) => {
-                return (f.releaseType <= trackBranch && f.fileDate > installedFile.fileDate)
+                return (f.gameVersion == addonVersionFlavor && f.releaseType <= trackBranch && f.fileDate > installedFile.fileDate)
             })
             if (updateFile) {
                 updateAvailable = true;

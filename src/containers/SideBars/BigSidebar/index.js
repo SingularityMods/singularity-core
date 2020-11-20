@@ -1,6 +1,6 @@
 import './BigSidebar.css';
 
-import { Container, Row, Col } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 import * as React from 'react';
 const { ipcRenderer } = require('electron');
 
@@ -15,7 +15,7 @@ export default class BigSidebar extends React.Component {
         this.handleClick = this.handleClick.bind(this);
     }
 
-    handleClick = (gameId) => {
+    handleClick(gameId) {
         this.props.onClick(gameId);
     }
 

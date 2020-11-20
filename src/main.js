@@ -15,7 +15,6 @@ log.transports.file.level = 'info';
 log.transports.file.maxSize = 1024 * 1000;
 
 var mainWindow;
-var updateInterval;
 var mainWindowId;
 
 const API_ENDPOINT = "https://api.singularitymods.com/api/v1/";
@@ -143,39 +142,6 @@ const startAutoUpdater = () => {
     }  
 }
 
-// Check for and install addons at the user-configured interval.
-// Default to every hour.
-const setAddonUpdateInterval = () => {
-    let appD = storageService.getAppData('userConfigurable');
-    let checkInterval = 1000 * 60 * 60;
-    if (appD.addonUpdateInterval) {
-        switch (appD.addonUpdateInterval) {
-            case '15m':
-                checkInterval = 1000 * 60 * 15;
-                break;
-            case '30m':
-                checkInterval = 1000 * 60 * 30;
-                break;
-            case '1h':
-                checkInterval = 1000 * 60 * 60;
-                break;
-            case '3h':
-                checkInterval = 1000 * 60 * 60 * 3;
-                break;
-            default:
-                checkInterval = 1000 * 60 * 60;
-        }
-    } else {
-        appD.addonUpdateInterval = '1h';
-        storageService.setAppData('userConfigurable', appD);
-        checkInterval = 1000 * 60 * 60;
-    }
-    log.info('Addon update interval set to: ' + appD.addonUpdateInterval);
-    updateInterval = setInterval(() => {
-        //checkAddons();
-        fileService.findAndUpdateAddons();
-    }, checkInterval);
-}
 
 // Create the main browser window for the renderer
 const createWindow = () => {
@@ -265,7 +231,7 @@ app.on('ready', () => {
     fileService.findAndUpdateAddons();
 
     // Start the addon auto updater
-    setAddonUpdateInterval();
+    fileService.setAddonUpdateInterval();
 });
 
 

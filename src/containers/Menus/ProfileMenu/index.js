@@ -38,13 +38,13 @@ export default class Header extends React.Component {
         }
     }
 
-    handleClickLogout = (event) => {
+    handleClickLogout(event) {
         event.preventDefault();
         ipcRenderer.send('logout-auth');
         this.props.handleClose();
     }
 
-    handleClose = () => {
+    handleClose() {
         ipcRenderer.send('close-window');
     }
 

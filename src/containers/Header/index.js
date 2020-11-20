@@ -53,23 +53,23 @@ export default class Header extends React.Component {
         })
     }
 
-    handleClick = () => {
+    handleClick() {
         this.props.onClick();
     }
 
-    handleClickUpdate = () => {
+    handleClickUpdate() {
         ipcRenderer.send('install-pending-update');
     }
 
-    handleMinimize = () => {
+    handleMinimize() {
         ipcRenderer.send('minimize-window');
     }
 
-    handleMaximize = () => {
+    handleMaximize() {
         ipcRenderer.send('maximize-window');
     }
 
-    handleMaxUnMax = () => {
+    handleMaxUnMax() {
         var maximized = ipcRenderer.sendSync('max-un-max-window');
         console.log(maximized);
         this.setState({
@@ -77,7 +77,7 @@ export default class Header extends React.Component {
         });
     }
 
-    handleClose = () => {
+    handleClose() {
         ipcRenderer.send('close-window');
     }
 

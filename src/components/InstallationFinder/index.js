@@ -1,6 +1,6 @@
 import './InstallationFinder.css';
 
-import { Container, Row, Col } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import * as React from 'react';
 import { ipcRenderer } from 'electron';
 
@@ -30,14 +30,14 @@ export default class InstallationFinder extends React.Component {
         clearTimeout(this.timeout);
     }
 
-    selectManualFind = () => {
+    selectManualFind() {
         ipcRenderer.send('manually-find-game', this.state.gameId);
         this.setState({
             message: ""
         });
     }
 
-    selectAutoFind = () => {
+    selectAutoFind() {
         ipcRenderer.send('auto-find-game', this.state.gameId);
         this.setState({
             isSearching: true,
@@ -65,7 +65,7 @@ export default class InstallationFinder extends React.Component {
             <div className="InstallationFinder">
                 <Row>
                     <Col xs={12} className="installation-finder-header">
-                        <h2>hmmmmm... We couldn't find this game</h2>
+                        <h2>hmmmmm... We couldn&apos;t find this game</h2>
                         <p className="installation-finder-error">{this.state.message}</p>
                     </Col>
                 </Row>

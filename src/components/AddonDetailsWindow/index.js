@@ -23,6 +23,7 @@ export default class AddonDetailsWindow extends React.Component {
             gameId: this.props.gameId,
             gameVersion: this.props.gameVersion,
             addonId: this.props.addonId,
+            addonVersion: '',
             errorMessage: '',
             installed: false,
             updateAvailable: false,
@@ -68,6 +69,7 @@ export default class AddonDetailsWindow extends React.Component {
         ipcRenderer.on('addon-installed', this.addonInstalledListener);
         ipcRenderer.on('addon-uninstalled', this.addonUninstalledListener);
         const gameSettings = ipcRenderer.sendSync('get-game-settings', this.state.gameId);
+        const addonVersion = ipcRenderer.sendSync('get-game-addon-version', this.props.gameId, this.props.gameVersion);
         let installedAddons = gameSettings[this.state.gameVersion].installedAddons;
         var installed = false;
         var updateAvailable = false;
@@ -76,6 +78,7 @@ export default class AddonDetailsWindow extends React.Component {
 
         installedAddons.forEach((addon) => {
             if (addon.addonId == this.props.addonId) {
+                console.log(addon);
                 installedAddon = addon;
                 installed = true;
                 if (addon.updateAvailable) {
@@ -89,6 +92,7 @@ export default class AddonDetailsWindow extends React.Component {
             updateAvailable: updateAvailable,
             installedFile, installedFile,
             installedAddon: installedAddon,
+            addonVersion: addonVersion,
             isLoading: true
         });
     }
@@ -109,6 +113,8 @@ export default class AddonDetailsWindow extends React.Component {
     } 
 
     addonInstalledListener(event, installedAddon) {
+
+
         var updateAvailable = installedAddon.updateAvailable;
         this.setState({
             installed: true,

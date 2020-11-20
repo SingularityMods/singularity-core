@@ -69,7 +69,7 @@ export default class SettingsWindow extends React.Component {
         });
     }
 
-    toggleUpdateInterval = (i) => {
+    toggleUpdateInterval(i) {
         let appSettings = this.state.appSettings;
         appSettings.addonUpdateInterval = i;
         ipcRenderer.send('set-app-settings', appSettings);
@@ -78,7 +78,7 @@ export default class SettingsWindow extends React.Component {
         })
     }
 
-    toggleDefaultWow = (i) => {
+    toggleDefaultWow(i) {
         let appSettings = this.state.appSettings;
         appSettings.defaultWowVersion = i;
         ipcRenderer.send('set-app-settings', appSettings);
@@ -87,17 +87,17 @@ export default class SettingsWindow extends React.Component {
         })
     }
 
-    selectBackupDir = () => {
+    selectBackupDir() {
         ipcRenderer.send('select-backup-dir');
     }
 
-    movingBackupDirListener = () => {
+    movingBackupDirListener() {
         this.setState({
             movingBackupDir: true
         });
     }
 
-    backupDirAcceptedListener = () => {
+    backupDirAcceptedListener() {
         const appSettings = ipcRenderer.sendSync('get-app-settings');
         this.setState({
             appSettings: appSettings,
@@ -105,7 +105,7 @@ export default class SettingsWindow extends React.Component {
         });
     }
 
-    backupDirRejectedListener = (evetn,msg) => {
+    backupDirRejectedListener(evetn,msg) {
         this.setState({
             backupDirMsg: msg,
             movingBackupDir: false
@@ -118,11 +118,11 @@ export default class SettingsWindow extends React.Component {
         }, 5000);
     }
 
-    changeWowInstallDir = (gameVersion) => {
+    changeWowInstallDir(gameVersion) {
         ipcRenderer.send('update-wow-path', gameVersion);
     }
 
-    installDirChangeAcceptedListener = (event,gameVersion,path) => {
+    installDirChangeAcceptedListener(event,gameVersion,path) {
         var wowInstalls = this.state.wowInstalls;
         wowInstalls[gameVersion] = path;
         var wowInstallsErr = this.state.wowInstallsErr;
@@ -133,7 +133,7 @@ export default class SettingsWindow extends React.Component {
         });
     }
 
-    installDirChangeRejectedListener = (event,gameVersion) => {
+    installDirChangeRejectedListener(event,gameVersion) {
         var wowInstallsErr = this.state.wowInstallsErr;
         wowInstallsErr[gameVersion] = true;
         this.setState({
@@ -316,7 +316,7 @@ export default class SettingsWindow extends React.Component {
                                                 <span>{this.state.wowInstalls.wow_retail}</span>
                                             </ReactTooltip>
                                             {this.state.wowInstallsErr && this.state.wowInstallsErr.wow_retail
-                                                ? <span className="errorMsg">Couldn't find game in location</span>
+                                                ? <span className="errorMsg">Couldn&apos;t find game in location</span>
                                                 : ''
                                             }
                                         </Col>
@@ -338,7 +338,7 @@ export default class SettingsWindow extends React.Component {
                                                 <span>{this.state.wowInstalls.wow_classic}</span>
                                             </ReactTooltip>
                                             {this.state.wowInstallsErr && this.state.wowInstallsErr.wow_classic
-                                                ? <span className="errorMsg">Couldn't find game in location</span>
+                                                ? <span className="errorMsg">Couldn&apos;t find game in location</span>
                                                 : ''
                                             }
                                         </Col>
@@ -360,7 +360,7 @@ export default class SettingsWindow extends React.Component {
                                                 <span>{this.state.wowInstalls.wow_retail_ptr}</span>
                                             </ReactTooltip>
                                             {this.state.wowInstallsErr && this.state.wowInstallsErr.wow_retail_ptr
-                                                ? <span className="errorMsg">Couldn't find game in location</span>
+                                                ? <span className="errorMsg">Couldn&apos;t find game in location</span>
                                                 : ''
                                             }
                                         </Col>
@@ -382,7 +382,7 @@ export default class SettingsWindow extends React.Component {
                                                 <span>{this.state.wowInstalls.wow_classic_ptr}</span>
                                             </ReactTooltip>
                                             {this.state.wowInstallsErr && this.state.wowInstallsErr.wow_classic_ptr
-                                                ? <span className="errorMsg">Couldn't find game in location</span>
+                                                ? <span className="errorMsg">Couldn&apos;t find game in location</span>
                                                 : ''
                                             }
                                         </Col>
@@ -403,7 +403,7 @@ export default class SettingsWindow extends React.Component {
                                                 <span>{this.state.wowInstalls.wow_retail_beta}</span>
                                             </ReactTooltip>
                                             {this.state.wowInstallsErr && this.state.wowInstallsErr.wow_retail_beta
-                                                ? <span className="errorMsg">Couldn't find game in location</span>
+                                                ? <span className="errorMsg">Couldn&apos;t find game in location</span>
                                                 : ''
                                             }
                                         </Col>

@@ -13,7 +13,7 @@ export default class CategoryButton extends React.Component {
             iconPath: this.props.categoryIcon
         }
     }
-    handleClick = () => {
+    handleClick() {
         this.props.onClick(this.props.categoryId);
     }
 
