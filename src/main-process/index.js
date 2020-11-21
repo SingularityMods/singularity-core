@@ -13,6 +13,12 @@ exports.getCloudBackupsAsync = require('./Backup/get-cloud-backups-async');
 exports.getLocalBackupsAsync = require('./Backup/get-local-backups-async');
 exports.getLocalBackupsSync = require('./Backup/get-local-backups-sync');
 
+exports.getSyncProfileUpdateStateSync = require('./Sync/get-sync-profile-update-state-sync');
+exports.getSyncEnabledSync = require('./Sync/get-sync-enabled-sync');
+exports.toggleEnableSync = require('./Sync/toggle-enable-sync-async');
+exports.getAddonSyncProfileAsync = require('./Sync/get-sync-profile-async');
+exports.setAddonSyncProfileAsync = require('./Sync/set-sync-profile-async');
+exports.getLocalSyncProfileAsync = require('./Sync/get-local-sync-profile-async');
 
 exports.restoreGranularBackupAsync = require('./Restore/restore-granular-backup-async');
 

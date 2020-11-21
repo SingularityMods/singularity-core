@@ -6,6 +6,7 @@ const appService = require('./services/app-service');
 const storageService = require('./services/storage-service');
 const authService = require('./services/auth-service');
 const fileService = require('./services/file-service');
+const syncService = require('./services/sync-service');
 
 // import ipc handlers
 var routes = require("./main-process");
@@ -180,12 +181,19 @@ const createWindow = () => {
     authService.refreshTokens()
     .then(() => {
       log.info('Authentication token refresh succesful');
+      console.log('here');
+      return syncService.getSyncProfilesFromCloud()
+    })
+    .then(() => {
+        mainWindow.webContents.send('addon-sync-search-complete');
+        log.info('Finished searching for sync profiles');
     })
     .catch(err => {
+        mainWindow.webContents.send('addon-sync-search-complete');
         if (err == 'No Token') {
             log.info('User does not have an authentication session to resume.');
         } else {
-            log.info('Authentication token refresh failed');  
+            log.info(err);  
         }      
     })
 

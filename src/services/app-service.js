@@ -216,6 +216,15 @@ function setAppConfig() {
         storageService.setAppData('sidebarMinimized', false);
     } 
 
+    if (version < '1.1.0') {
+        let gameS = storageService.getGameSettings('1');  
+        for (const [key, value] of Object.entries(gameS)) {
+            var gameVersion = key;
+            gameS[gameVersion].sync = false;
+            storageService.setGameSettings('1',gameS);
+        }
+    }
+
     // Set new version
     storageService.setAppData('version', app.getVersion());
 

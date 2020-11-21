@@ -6,6 +6,7 @@ var gameDataDefaults = require('./storage-service-defaults/gameData.json');
 var gameSettingsDefaults = require('./storage-service-defaults/gameSettings.json');
 var appDataDefaults = require('./storage-service-defaults/appData.json');
 let backupDataDefaults = require('./storage-service-defaults/backupData.json');
+let syncProfileDefault = require('./storage-service-defaults/syncProfile.json');
 
 const log = require('electron-log');
 
@@ -61,6 +62,22 @@ function getGameData(key) {
     return gameData[key];
 }
 
+function getLocalAddonSyncProfile(gameId, gameVersion) {
+    return new Promise((resolve, reject) => {
+        let filePath = path.join(userDataPath,'sync', gameId.toString(), gameVersion, 'sync-profile.json');
+        fsPromises.readFile(filePath)
+        .then( fileData => {
+            resolve(JSON.parse(fileData));
+        })
+        .catch( error => {
+            log.info("User has no sync profile for that game verison yet, returning blank profile");
+            var syncProfile = {};
+            syncProfile = Object.assign(syncProfile,syncProfileDefault)
+            resolve(syncProfile);
+        })
+    })
+}
+
 function getBackupData(key) {
     let filePath = path.join(userDataPath, 'backup-data.json');
     try {
@@ -107,6 +124,25 @@ function setGameData(key, val) {
     fs.writeFileSync(filePath, JSON.stringify(gameData))
 }
 
+function setLocalAddonSyncProfile(profile) {
+    return new Promise((resolve, reject) => {
+        let basePath = path.join(userDataPath,'sync', profile.gameId.toString(), profile.gameVersion);
+        fsPromises.mkdir(basePath, {recursive: true})
+        .then(() => {
+            let filePath = path.join(basePath, 'sync-profile.json');
+            return fsPromises.writeFile(filePath, JSON.stringify(profile))
+        })
+        .then(() => {
+            resolve({})
+        })
+        .catch(err => {
+            log.error(err);
+            reject('Error writing sync profile');
+        })
+    })
+   
+}
+
 function setBackupDataAsync(key, val) {
     return new Promise((resolve, reject) => {
         let filePath = path.join(userDataPath, 'backup-data.json');
@@ -119,6 +155,7 @@ function setBackupDataAsync(key, val) {
                 resolve({})
             })
             .catch(err => {
+                log.error(err);
                 reject('Error writing backup data');
             })
         })
@@ -131,6 +168,7 @@ function setBackupDataAsync(key, val) {
                 resolve({})
             })
             .catch(err => {
+                log.error(err);
                 reject('Error writing backup data');
             })
         })
@@ -224,5 +262,7 @@ module.exports = {
     getBackupDataAsync,
     setBackupDataAsync,
     saveBackupInfo,
-    deleteBackupInfo
+    deleteBackupInfo,
+    getLocalAddonSyncProfile,
+    setLocalAddonSyncProfile
   };

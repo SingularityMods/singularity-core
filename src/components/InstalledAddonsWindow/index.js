@@ -9,10 +9,10 @@ import BootstrapTable from 'react-bootstrap-table-next';
 const { ipcRenderer } = require('electron');
 import ReactTooltip from 'react-tooltip';
 
-
 import UpdateAddonButton from '../Buttons/UpdateAddonButton';
 import GameMenuButton from '../Buttons/GameMenuButton';
 import LoadingSpinner from '../LoadingSpinner';
+import AddonSyncToggle from '../AddonSyncToggle';
 
 import AddonContextMenu from '../../containers/Menus/AddonContextMenu';
 
@@ -20,6 +20,7 @@ export default class InstalledAddonsWindow extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            appUUID: this.props.appUUID,
             gameId: this.props.gameId,
             gameVersion: this.props.gameVersion,
             addonVersion: '',
@@ -33,7 +34,8 @@ export default class InstalledAddonsWindow extends React.Component {
             isRefreshing: false,
             toUpdate: [],
             profile: null,
-            selectedBackup: null
+            selectedBackup: null,
+            darkMode: false
         }
 
         this.autoUpdateCompleteListener = this.autoUpdateCompleteListener.bind(this);
@@ -110,6 +112,7 @@ export default class InstalledAddonsWindow extends React.Component {
         ipcRenderer.on('addon-installed', this.addonInstalledListener);
         ipcRenderer.on('addon-uninstalled', this.addonUninstalledListener);
         ipcRenderer.on('addon-settings-updated', this.addonSettingsUpdatedListener);
+        const darkMode = ipcRenderer.sendSync('is-dark-mode');
         const gameSettings = ipcRenderer.sendSync('get-game-settings', this.state.gameId);
         const addonVersion = ipcRenderer.sendSync('get-game-addon-version', this.props.gameId, this.props.gameVersion);
         let profile = ipcRenderer.sendSync('get-profile');
@@ -167,7 +170,8 @@ export default class InstalledAddonsWindow extends React.Component {
             installedAddons: installedAddons,
             isRefreshing: false,
             filter: '',
-            profile: profile
+            profile: profile,
+            darkMode: darkMode
         });
     }
 
@@ -794,6 +798,12 @@ export default class InstalledAddonsWindow extends React.Component {
                                             <GameMenuButton handleClick={this.updateAll} type='Update All' disabled={!updateAvailable }/>
                                             <GameMenuButton handleClick={() => this.updateAddon(this.state.installedAddons.find(a => {return (a.addonId == this.state.selectedAddon && a.updateAvailable)}))} type='Update' disabled={!this.state.selectedAddon || ! this.state.installedAddons.find(a => {return (a.addonId == this.state.selectedAddon && a.updateAvailable)})} />
                                             <GameMenuButton handleClick={this.uninstallAddon} type='Delete' disabled={this.state.selectedAddon.length > 0 ? false : true} />
+                                            <AddonSyncToggle
+                                                appUUID={this.state.appUUID}
+                                                profile={this.state.profile}
+                                                gameId={this.state.gameId}
+                                                gameVersion={this.state.gameVersion}
+                                                darkMode={this.state.darkMode} />
                                         </Col>
                                         <Col xs={4} sm={3} xl={3} className="filter-col">
                                             <Form.Group>

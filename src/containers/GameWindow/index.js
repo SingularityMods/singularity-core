@@ -23,7 +23,8 @@ export default class GameWindow extends React.Component {
             selectedGameVersion: '',
             selectedAddon: '',
             activeTab: 'installed',
-            errorMessage: ''
+            errorMessage: '',
+            appUUID: ''
         }
 
         this.installationFinderListener = this.installationFinderListener.bind(this);
@@ -38,6 +39,7 @@ export default class GameWindow extends React.Component {
         const gameData = ipcRenderer.sendSync('get-game-data', this.state.gameId);
         const gameSettings = ipcRenderer.sendSync('get-game-settings', this.state.gameId);
         const defaultWowVersion = ipcRenderer.sendSync('get-default-wow-version');
+        const appUUID = ipcRenderer.sendSync('get-app-uuid');
         let installedVersions = [];
         let selectedGameVersion = '';
         for (var gameVersion in gameSettings) {
@@ -60,7 +62,8 @@ export default class GameWindow extends React.Component {
             installedVersions: installedVersions,
             selectedGameVersion: selectedGameVersion,
             gameData: gameData,
-            gameSettings: gameSettings
+            gameSettings: gameSettings,
+            appUUID: appUUID
         });
     }
 
@@ -146,6 +149,7 @@ export default class GameWindow extends React.Component {
                                     <div>
                                     {this.state.activeTab == 'installed' ? (
                                         <InstalledAddonsWindow
+                                            appUUID={this.state.appUUID}
                                             gameId={this.state.gameId}
                                             gameVersion={this.state.selectedGameVersion}
                                             openBackupManagementDialog={this.props.openBackupManagementDialog}

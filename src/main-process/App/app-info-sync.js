@@ -9,6 +9,10 @@ ipcMain.on('get-app-version', (event) => {
     event.returnValue = app.getVersion();
 });
 
+ipcMain.on('get-app-uuid', (event) => {
+    event.returnValue = storageService.getAppData('UUID');
+} )
+
 ipcMain.on('get-new-terms', (event) => {
     let privacy = storageService.getAppData('privacy');
     let tos = storageService.getAppData('tos');

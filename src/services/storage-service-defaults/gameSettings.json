@@ -5,6 +5,7 @@
       "nickName": "Retail",
       "shortName": "wow-retail",
       "installed": false,
+      "sync": false,
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_retail_\\",
       "installedAddons": [],
       "unknownAddonDirs": []
@@ -14,6 +15,7 @@
       "nickName": "Classic",
       "shortName": "wow-classic",
       "installed": false,
+      "sync": false,
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_classic_\\",
       "installedAddons": [],
       "unknownAddonDirs": []
@@ -23,6 +25,7 @@
       "nickName": "PTR",
       "shortName": "wow-retail-ptr",
       "installed": false,
+      "sync": false,
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_ptr_\\",
       "installedAddons": [],
       "unknownAddonDirs": []
@@ -32,6 +35,7 @@
       "nickName": "Classic PTR",
       "shortName": "wow-classic-ptr",
       "installed": false,
+      "sync": false,
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_classic_ptr_\\",
       "installedAddons": [],
       "unknownAddonDirs": []

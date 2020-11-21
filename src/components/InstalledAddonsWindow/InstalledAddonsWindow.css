@@ -3,6 +3,14 @@
     padding-right: 0;
 }
 
+.button-col {
+
+}
+
+.filter-col{ 
+
+}
+
 .context-class {
     color: red;
 }
@@ -54,6 +62,11 @@
 .addon-window-menu {
     margin-top: 5px;
     margin-bottom: 5px;
+}
+
+.installed-addon-window-content .addon-window-menu .btn {
+    float: left;
+    padding: 5px;
 }
 
 .addon-table .table-bordered tr.installed-addons-header {
@@ -144,6 +157,9 @@ margin-left: 0px;
     float: right;
 }
 
+.installed-addon-window-content .backup-button {
+    float:right;
+}
 
 .backup-button {
     float: right;
