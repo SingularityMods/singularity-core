@@ -10,11 +10,41 @@ const axios = require('axios');
 const os = require('os');
 
 const log = require('electron-log');
+const { sync } = require('glob');
 
 
 
-ipcMain.on('create-sync-profile', async (event, gameId, gameVersion) => {
-    log.info('Creating addon sync profile');
+ipcMain.on('enable-addon-sync', async (event, gameId, gameVersion) => {
+    log.info('Enabling addon sync for '+gameVersion);
+    log.info('Checking for existing sync profile');
+    let axiosConfig = {
+        headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'User-Agent': 'Singularity-'+app.getVersion(),
+        'x-auth': authService.getAccessToken()}
+    };
+    axios.get(`https://api.singularitymods.com/api/v1/user/sync/get?gameId=${gameId}&gameVersion=${gameVersion}`, axiosConfig)
+    .then( res => {
+        if (res.status === 200 && res.data.success) {
+            log.info('Addon sync profile found');
+            event.sender.send('enable-sync-status', gameId, gameVersion, 'profile-found', res.data.profile.lastSync, null)              
+        } else {
+            log.info('No addon sync profile found');
+            syncService.createAndSaveSyncProfile({gameId: gameId, gameVersion: gameVersion})
+            .then(() => {
+                event.sender.send('enable-sync-status', gameId, gameVersion, 'complete', null, null)
+            })
+            .catch(e =>{
+                event.sender.send('enable-sync-status', gameId, gameVersion, 'error', null, 'Error creating new sync profile')
+            })
+        }
+    })
+    .catch((err) => {
+        log.error(err);
+        event.sender.send('enable-sync-status', gameId, gameVersion, 'error', null, 'Error enabling sync profile')
+    })
+
+/*
     syncService.createSyncProfileObj(gameId, gameVersion)
     .then(profile => {
         let axiosConfig = {
@@ -26,7 +56,6 @@ ipcMain.on('create-sync-profile', async (event, gameId, gameVersion) => {
         return axios.post(`https://api.singularitymods.com/api/v1/user/sync/set`,profile, axiosConfig)
         .then(res => {
             if (res && res.status === 200 && res.data.success) {
-                log.info('Addon sync profile created and saved');
                 event.sender.send('sync-profile-submitted', true, gameId, gameVersion, null);
             } else {
                 log.error('Error pushing sync profile to the cloud');
@@ -38,5 +67,5 @@ ipcMain.on('create-sync-profile', async (event, gameId, gameVersion) => {
         log.error('Error pushing sync profile to the cloud');
         log.error(err);
         event.sender.send('sync-profile-submitted', false, gameId, gameVersion, 'Error pushing sync profile to the cloud'); 
-    })
+    })*/
 });

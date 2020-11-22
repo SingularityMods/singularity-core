@@ -23,6 +23,7 @@ export default class SyncConfirmDialog extends React.Component {
                     </Row>
                     <Row className="sync-confirmation-dialog-message">
                         <p>A sync profile already exists for this game verison. Do you want to use it or overwrite it?</p>
+                        <p className="lastSyncTime">Profile last update - {this.props.cloudProfileLastSync}</p>
                     </Row>
                     <Row >
                         <Col xs={{span: 10, offset:2}} className="sync-confirmation-dialog-options">

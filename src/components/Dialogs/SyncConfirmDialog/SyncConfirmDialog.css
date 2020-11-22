@@ -3,7 +3,7 @@
     position: absolute;
     top: 35px;
     left: 130px;
-    height: 130px;
+    height: 170px;
     width: 300px;
     z-index: 999;
     border: 1px solid #ED8323;
@@ -36,6 +36,10 @@
 .sync-confirmation-dialog-message{
     text-align: center;
     padding: 5px;
+}
+
+.lastSyncTime{
+    text-align: center;
 }
 
 .sync-confirmation-dialog-options {

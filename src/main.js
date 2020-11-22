@@ -181,8 +181,7 @@ const createWindow = () => {
     authService.refreshTokens()
     .then(() => {
       log.info('Authentication token refresh succesful');
-      console.log('here');
-      return syncService.getSyncProfilesFromCloud()
+      return syncService.handleSync()
     })
     .then(() => {
         mainWindow.webContents.send('addon-sync-search-complete');

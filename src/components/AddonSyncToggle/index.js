@@ -18,16 +18,16 @@ export default class AddonSyncToggle extends React.Component {
             gameId: this.props.gameId,
             gameVersion: this.props.gameVersion,
             darkMode: this.props.darkMode,
-            syncProfile: null,
             searching: true,
-            gettingProfile: false,
             configuring: false,
             profileError: '',
-            confirmDialogOpened: true
+            status: null,
+            cloudProfileLastSync: null,
+            confirmDialogOpened: false
         }
         this.toggleEnabled = this.toggleEnabled.bind(this);
+        this.enableSyncStatusListener = this.enableSyncStatusListener.bind(this);
         this.syncProfileSearchingDoneListener = this.syncProfileSearchingDoneListener.bind(this);
-        this.localAddonSyncProfileFoundListener = this.localAddonSyncProfileFoundListener.bind(this);
         this.syncProfileSubmittedListener = this.syncProfileSubmittedListener.bind(this);
         this.onCloseConfirmDialog = this.onCloseConfirmDialog.bind(this);
         this.onConfirmUse = this.onConfirmUse.bind(this);
@@ -35,20 +35,14 @@ export default class AddonSyncToggle extends React.Component {
     }
 
     componentDidMount() {
-        ipcRenderer.on('local-sync-profile-found', this.localAddonSyncProfileFoundListener);
+        ipcRenderer.on('enable-sync-status', this.enableSyncStatusListener);
         ipcRenderer.on('addon-sync-search-complete', this.syncProfileSearchingDoneListener);
-        ipcRenderer.on('sync-profile-submitted', this.syncProfileSubmittedListener)
+        ipcRenderer.on('sync-profile-submitted', this.syncProfileSubmittedListener);
         let searching = ipcRenderer.sendSync('is-sync-profile-updating');
-        let gettingProfile = false
-        if (!searching) {
-            ipcRenderer.send('get-local-sync-profile', this.state.gameId, this.state.gameVersion);
-            var enabled = ipcRenderer.sendSync('is-sync-enabled', this.state.gameId, this.state.gameVersion);
-            gettingProfile = true;
-        }
+        let enabled = ipcRenderer.sendSync('is-sync-enabled', this.state.gameId, this.state.gameVersion);
         this.setState({
             searching: searching,
-            enabled: enabled,
-            gettingProfile: gettingProfile
+            enabled: enabled
         })
     }
 
@@ -58,29 +52,44 @@ export default class AddonSyncToggle extends React.Component {
             || this.props.gameVersion !== prevProps.gameVersion
             || this.props.darkMode !== prevProps.darkMode) {
                 let searching = ipcRenderer.sendSync('is-sync-profile-updating');
-                let gettingProfile = false
-                if (!searching) {
-                    var enabled = ipcRenderer.sendSync('is-sync-enabled', this.props.gameId, this.props.gameVersion);
-                    ipcRenderer.send('get-local-sync-profile', this.props.gameId, this.props.gameVersion);
-                    gettingProfile = true;
-                }
+                let enabled = ipcRenderer.sendSync('is-sync-enabled', this.props.gameId, this.props.gameVersion);
                 this.setState({
                     profile: this.props.profile,
                     gameId: this.props.gameId,
                     enabled: enabled,
                     gameVersion: this.props.gameVersion,
                     darkMode: this.props.darkMode,
-                    searching: searching,
-                    syncProfile: null,
-                    gettingProfile: gettingProfile
+                    searching: searching
                 })
         }
     }
 
     componentWillUnmount() {
+        ipcRenderer.removeListener('enable-sync-status', this.enableSyncStatusListener);
         ipcRenderer.removeListener('addon-sync-search-complete', this.syncProfileSearchingDoneListener);
-        ipcRenderer.removeListener('local-sync-profile-found', this.localAddonSyncProfileFoundListener);
-        ipcRenderer.removeListener('sync-profile-submitted', this.syncProfileSubmittedListener)
+        ipcRenderer.removeListener('sync-profile-submitted', this.syncProfileSubmittedListener);
+    }
+
+    enableSyncStatusListener(event, gameId, gameVersion, status, additionalInfo, error) {
+        if (gameId == this.state.gameId && gameVersion == this.state.gameVersion) {
+            if (status == 'profile-found'){
+                this.setState({
+                    cloudProfileLastSync: additionalInfo,
+                    confirmDialogOpened: true
+                })
+            } else if (status == 'no-profile'){
+                this.setState({
+                    status: 'Saving profile to cloud'
+                })
+            } else if (status == 'complete') {
+                ipcRenderer.send('toggle-addon-sync', this.state.gameId, this.state.gameVersion, true)
+                this.setState({
+                    configuring: false,
+                    enabled: true,
+                    status: null
+                })
+            }
+        }
     }
 
     syncProfileSearchingDoneListener(event) {
@@ -91,69 +100,61 @@ export default class AddonSyncToggle extends React.Component {
         });
     }
 
-    localAddonSyncProfileFoundListener(event, success, gameId, gameVersion, profile, error) {
+    syncProfileSubmittedListener(event, success, gameId, gameVersion, error) {
         if (gameId == this.state.gameId && gameVersion == this.state.gameVersion) {
-            if (success){
-                if (profile.enabled) {
-                    // Check for cloud backups
-                }
+            if (success) {
+                ipcRenderer.send('toggle-addon-sync', this.state.gameId, this.state.gameVersion, true)
                 this.setState({
-                    syncProfile: profile,
-                    gettingProfile: false
+                    enabled: true,
+                    configuring: false,
+                    status: null
                 })
             } else {
                 this.setState({
-                    profileError: error,
-                    gettingProfile: false
+                    configuring: false,
+                    error: error
                 })
             }
-        }
-    }
-
-    syncProfileSubmittedListener(event, success, gameId, gameVersion, error) {
-        if (gameId == this.state.gameId && gameVersion == this.state.gameVersion) {
-
-            //handle error
-            this.setState({
-                configuring: false
-            })
         }
     }
 
     onCloseConfirmDialog() {
         this.setState({
-            confirmDialogOpened: false
+            confirmDialogOpened: false,
+            enabled: false,
+            configuring: false
         })
     }
 
     onConfirmUse() {
-        console.log('use');
+        ipcRenderer.send('toggle-addon-sync', this.state.gameId, this.state.gameVersion, true);
+        ipcRenderer.send('trigger-sync', this.state.gameId, this.state.gameVersion);
+        this.setState({
+            confirmDialogOpened: false,
+            enabled: true,
+            configuring: false,
+            status: null
+        })
     }
 
     onConfirmOverwrite() {
-        console.log('overwrite');
+        ipcRenderer.send('create-sync-profile', this.state.gameId, this.state.gameVersion);
+        this.setState({
+            confirmDialogOpened: false
+        })
     }
 
     toggleEnabled(checked) {
         if (!this.state.enabled) {
-            if (this.state.syncProfile.enabled) {
-                // Prompt user to accept or overwrite existing profile
-                console.log("profile exists");
-                this.setState({
-                    confirmDialogOpened: true,
-                    configuring: true
-                })
-            } else {
-                // Enable profile and upload to cloud
-                ipcRenderer.send('create-sync-profile', this.state.gameId, this.state.gameVersion);
-                this.setState({
-                    configuring: true
-                })
-            }
-        } else {
-            ipcRenderer.send('toggle-enable-sync', this.state.gameId, this.state.gameVersion, false)
+            ipcRenderer.send('enable-addon-sync', this.state.gameId, this.state.gameVersion)
             this.setState({
-                enabled: checked
+                configuring: true,
+                enabled: true
+            })
+        } else {
+            ipcRenderer.send('toggle-addon-sync', this.state.gameId, this.state.gameVersion, false)
+            this.setState({
+                enabled: false
             });
         }
     }
@@ -165,12 +166,13 @@ export default class AddonSyncToggle extends React.Component {
                     ? <SyncConfirmDialog
                         use={this.onConfirmUse}
                         overwrite={this.onConfirmOverwrite}
-                        exit={this.onCloseConfirmDialog} />
+                        exit={this.onCloseConfirmDialog}
+                        cloudProfileLastSync={this.state.cloudProfileLastSync} />
                     : ''
                 }
                 <a data-tip data-for="addonSyncToggleTooltip">
                 <Switch
-                    disabled={!this.state.profile || this.state.searching || this.state.gettingProfile || this.state.configuring}
+                    disabled={!this.state.profile || this.state.searching || this.state.configuring}
                     onChange={this.toggleEnabled}
                     checked={this.state.enabled}
                     className="settings-switch"
@@ -189,7 +191,7 @@ export default class AddonSyncToggle extends React.Component {
 
                 </ReactTooltip>
                 <div className={!this.state.profile || !this.state.profile.emailVerified ? "addon-sync-toggle-label disabled" : "addon-sync-toggle-label" }>Sync</div>
-                {this.state.searching || this.state.gettingProfile || this.state.configuring
+                {this.state.searching || this.state.configuring
                     ? <Spinner animation="border" size="sm" variant={this.state.darkMode ? 'light': 'dark'} role="status" className="sync-pending-spinner"  id="sync-pending-spinner">
                             <span className="sr-only">Updating...</span>
                         </Spinner>
