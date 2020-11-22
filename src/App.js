@@ -253,7 +253,6 @@ class App extends React.Component {
             restoreState: status
         })
     }
-
     // << Backup Restore Dialog End >>>
 
     /*

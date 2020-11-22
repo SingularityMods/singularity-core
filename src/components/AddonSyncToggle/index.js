@@ -18,10 +18,12 @@ export default class AddonSyncToggle extends React.Component {
             gameId: this.props.gameId,
             gameVersion: this.props.gameVersion,
             darkMode: this.props.darkMode,
-            searching: true,
+            searching: false,
+            syncing: false,
             configuring: false,
-            profileError: '',
+            error: null,
             status: null,
+            syncComplete: false,
             cloudProfileLastSync: null,
             confirmDialogOpened: false
         }
@@ -29,20 +31,23 @@ export default class AddonSyncToggle extends React.Component {
         this.enableSyncStatusListener = this.enableSyncStatusListener.bind(this);
         this.syncProfileSearchingDoneListener = this.syncProfileSearchingDoneListener.bind(this);
         this.syncProfileSubmittedListener = this.syncProfileSubmittedListener.bind(this);
+        this.syncCompleteListener = this.syncCompleteListener.bind(this);
         this.onCloseConfirmDialog = this.onCloseConfirmDialog.bind(this);
         this.onConfirmUse = this.onConfirmUse.bind(this);
         this.onConfirmOverwrite = this.onConfirmOverwrite.bind(this);
     }
 
     componentDidMount() {
-        ipcRenderer.on('enable-sync-status', this.enableSyncStatusListener);
+        ipcRenderer.on('sync-status', this.enableSyncStatusListener);
         ipcRenderer.on('addon-sync-search-complete', this.syncProfileSearchingDoneListener);
         ipcRenderer.on('sync-profile-submitted', this.syncProfileSubmittedListener);
+        ipcRenderer.on('sync-complete',this.syncCompleteListener);
         let searching = ipcRenderer.sendSync('is-sync-profile-updating');
         let enabled = ipcRenderer.sendSync('is-sync-enabled', this.state.gameId, this.state.gameVersion);
         this.setState({
             searching: searching,
-            enabled: enabled
+            enabled: enabled,
+            syncComplete: false
         })
     }
 
@@ -59,7 +64,8 @@ export default class AddonSyncToggle extends React.Component {
                     enabled: enabled,
                     gameVersion: this.props.gameVersion,
                     darkMode: this.props.darkMode,
-                    searching: searching
+                    searching: searching,
+                    syncComplete: false
                 })
         }
     }
@@ -68,32 +74,83 @@ export default class AddonSyncToggle extends React.Component {
         ipcRenderer.removeListener('enable-sync-status', this.enableSyncStatusListener);
         ipcRenderer.removeListener('addon-sync-search-complete', this.syncProfileSearchingDoneListener);
         ipcRenderer.removeListener('sync-profile-submitted', this.syncProfileSubmittedListener);
+        ipcRenderer.removeListener('sync-complete', this.syncCompleteListener);
+    }
+
+    syncCompleteListener(event,success, gameId, gameVersion, err) {
+        console.log
+        if (gameId == this.state.gameId && gameVersion == this.state.gameVersion) {
+            let error = !success ? err : null;
+            this.setState({
+                syncing: false,
+                error: error,
+                status: null,
+                syncComplete: true
+            })
+        }
     }
 
     enableSyncStatusListener(event, gameId, gameVersion, status, additionalInfo, error) {
         if (gameId == this.state.gameId && gameVersion == this.state.gameVersion) {
-            if (status == 'profile-found'){
-                this.setState({
-                    cloudProfileLastSync: additionalInfo,
-                    confirmDialogOpened: true
-                })
-            } else if (status == 'no-profile'){
-                this.setState({
-                    status: 'Saving profile to cloud'
-                })
-            } else if (status == 'complete') {
-                ipcRenderer.send('toggle-addon-sync', this.state.gameId, this.state.gameVersion, true)
-                this.setState({
-                    configuring: false,
-                    enabled: true,
-                    status: null
-                })
+            switch(status) {
+                case 'sync-started':
+                    this.setState({
+                        syncing: true,
+                        status: 'Starting addon sync'
+                    })
+                    break;
+                case 'handling-addons':
+                    this.setState({
+                        syncing: true,
+                        status: 'Installing/updating from sync profile'
+                    })
+                    break;
+                case 'deleting-unsynced-addons':
+                    this.setState({
+                        syncing: true,
+                        status: "Uninstalling addons that weren't in sync profile"
+                    })
+                    break;
+                case 'checking-cloud':
+                    this.setState({
+                        status: 'Checking for existing profile'
+                    });
+                    break;
+                case 'creating-profile':
+                    this.setState({
+                        status: 'Creating new profile'
+                    });
+                    break;
+                case 'profile-found':
+                    this.setState({
+                        cloudProfileLastSync: additionalInfo,
+                        confirmDialogOpened: true,
+                        status: 'Waiting for overwrite confirmation'
+                    });
+                    break;
+                case 'complete':
+                    ipcRenderer.send('toggle-addon-sync', this.state.gameId, this.state.gameVersion, true)
+                    this.setState({
+                        configuring: false,
+                        enabled: true,
+                        status: null,
+                        syncComplete: true
+                    });
+                    break;
+                case 'error':
+                    this.setState({
+                        configuring: false,
+                        enabled: false,
+                        status: null,
+                        error: error
+                    });
+                    break;
+
             }
         }
     }
 
     syncProfileSearchingDoneListener(event) {
-        ipcRenderer.send('get-local-sync-profile', this.state.gameId, this.state.gameVersion);
         this.setState({
             searching: false,
             gettingProfile: true
@@ -133,14 +190,16 @@ export default class AddonSyncToggle extends React.Component {
             confirmDialogOpened: false,
             enabled: true,
             configuring: false,
-            status: null
+            status: 'Syncing',
+            syncing: true
         })
     }
 
     onConfirmOverwrite() {
         ipcRenderer.send('create-sync-profile', this.state.gameId, this.state.gameVersion);
         this.setState({
-            confirmDialogOpened: false
+            confirmDialogOpened: false,
+            status: 'Creating new profile'
         })
     }
 
@@ -191,11 +250,33 @@ export default class AddonSyncToggle extends React.Component {
 
                 </ReactTooltip>
                 <div className={!this.state.profile || !this.state.profile.emailVerified ? "addon-sync-toggle-label disabled" : "addon-sync-toggle-label" }>Sync</div>
-                {this.state.searching || this.state.configuring
-                    ? <Spinner animation="border" size="sm" variant={this.state.darkMode ? 'light': 'dark'} role="status" className="sync-pending-spinner"  id="sync-pending-spinner">
-                            <span className="sr-only">Updating...</span>
-                        </Spinner>
-                    :''
+                {this.state.searching || this.state.configuring || this.state.searching
+                    ? <div className="sync-status-icon status-loading">
+                        <a data-tip data-for="syncStatusIcon" data-tip-disable={!this.state.status}>
+                            <Spinner animation="border" size="sm" variant={this.state.darkMode ? 'light': 'dark'} role="status" className="sync-pending-spinner"  id="sync-pending-spinner">
+                                <span className="sr-only">Updating...</span>
+                            </Spinner>
+                        </a>
+                        <ReactTooltip id="syncStatusIcon">
+                                <span>{this.state.status}</span>
+                        </ReactTooltip>
+                    </div>
+                    : this.state.error
+                        ? <div className="sync-status-icon">
+                            <a data-tip data-for="syncStatusIcon">
+                                <i className="fas fa-exclamation-circle sync-error"></i>
+                            </a>
+                            <ReactTooltip id="syncStatusIcon">
+                                <span>{this.state.error}</span>
+                            </ReactTooltip>
+                        </div>
+                        : this.state.syncComplete
+                            ? <div className="sync-status-icon">
+                                    <a data-tip data-for="syncStatusIcon">
+                                        <i className="fas fa-check-circle sync-success"></i>
+                                    </a>
+                                </div>
+                            : ''
                 }
             </div>
         

@@ -168,7 +168,9 @@ const createWindow = () => {
     mainWindowId = mainWindow.id;
     authService.setBrowserWindow(mainWindowId);
     fileService.setBrowserWindow(mainWindowId);
+    syncService.setBrowserWindow(mainWindowId);
 
+    // Set the user and OS theme in the browser window
     let userTheme = storageService.getAppData('userConfigurable').darkMode ? 'dark' : 'light';
     let osTheme = nativeTheme.shouldUseDarkColors ? 'dark' : 'light';
     mainWindow.webContents.executeJavaScript(`localStorage.setItem('user_theme','${userTheme}')`);
@@ -176,27 +178,6 @@ const createWindow = () => {
 
     // Load the app entry point
     mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-
-    // Start the auth refresh now so its ready by the time the window loads.
-    authService.refreshTokens()
-    .then(() => {
-      log.info('Authentication token refresh succesful');
-      return syncService.handleSync()
-    })
-    .then(() => {
-        mainWindow.webContents.send('addon-sync-search-complete');
-        log.info('Finished searching for sync profiles');
-    })
-    .catch(err => {
-        mainWindow.webContents.send('addon-sync-search-complete');
-        if (err == 'No Token') {
-            log.info('User does not have an authentication session to resume.');
-        } else {
-            log.info(err);  
-        }      
-    })
-
-    // Set the user and OS theme in the browser window
 
     // Set a listener for external link clicks and open them in the user's main browser instead of the app
     mainWindow.webContents.on('new-window', function (e, url) {
@@ -233,8 +214,26 @@ app.on('ready', () => {
     // Create the main window
     createWindow();
 
+     // Start the auth refresh and addon check procedures
+     authService.refreshTokens()
+     .then(() => {
+       log.info('Authentication token refresh succesful');
+       return syncService.handleSync()
+     })
+     .then(() => {
+         mainWindow.webContents.send('addon-sync-search-complete');
+         log.info('Finished searching for sync profiles');
+     })
+     .catch(err => {
+         mainWindow.webContents.send('addon-sync-search-complete');
+         if (err == 'No Token') {
+             log.info('User does not have an authentication session to resume.');
+         } else {
+             log.info(err);  
+         }      
+     })
+
     // Identify addons and check for updates
-    //checkAddons();
     fileService.findAndUpdateAddons();
 
     // Start the addon auto updater

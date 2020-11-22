@@ -3,11 +3,10 @@ const os = require("os");
 const { v4: uuidv4 } = require('uuid');
 
 const storageService = require('../services/storage-service');
-const {app, ipcMain, BrowserWindow} = require('electron');
+const {app} = require('electron');
 
 const log = require('electron-log');
 
-let browserWindowId = 1;
 let apiEndpoint = "https://api.singularitymods.com/api/v1/";
 
 function setAPIEndpoint(endpoint) {
@@ -216,7 +215,7 @@ function setAppConfig() {
         storageService.setAppData('sidebarMinimized', false);
     } 
 
-    if (version < '1.1.0') {
+    if (version < app.getVersion()) {
         let gameS = storageService.getGameSettings('1');  
         for (const [key, value] of Object.entries(gameS)) {
             var gameVersion = key;

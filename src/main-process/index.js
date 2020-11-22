@@ -17,9 +17,8 @@ exports.getSyncProfileUpdateStateSync = require('./Sync/get-sync-profile-update-
 exports.getSyncEnabledSync = require('./Sync/get-sync-enabled-sync');
 exports.enableAddonSyncAsync = require('./Sync/enable-addon-sync-async');
 exports.toggleAddonSyncAsync = require('./Sync/toggle-addon-sync-async');
-exports.getAddonSyncProfileAsync = require('./Sync/get-sync-profile-async');
+exports.triggerSyncAsync = require('./Sync/trigger-sync-async');
 exports.setAddonSyncProfileAsync = require('./Sync/set-sync-profile-async');
-exports.getLocalSyncProfileAsync = require('./Sync/get-local-sync-profile-async');
 
 exports.restoreGranularBackupAsync = require('./Restore/restore-granular-backup-async');
 

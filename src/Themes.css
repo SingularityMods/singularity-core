@@ -18,6 +18,7 @@
     --sidebar-text-color: white;
     --settings-item-background-color: white;
     --context-menu-divider: #535353;
+    --success-green: #00cc00;
 }
 
 [data-theme^="dark"],
@@ -40,4 +41,5 @@
     --sidebar-text-color: #ED8323;
     --settings-item-background-color: #271550;
     --context-menu-divider: #535353;
+    --success-green: #00cc00;
 }

@@ -12,7 +12,7 @@ const fileService = require('./file-service');
 
 const log = require('electron-log');
 
-
+let browserWindowId = 1;
 
 let searching = false;
 let error = null;
@@ -20,15 +20,14 @@ let error = null;
 var snycProfilesToProcess=[];
 var syncProfilesToCreate=[];
 
-/*
-* 1. Get game versions that have sync enabled
-* 2. Get all sync profiles from the cloud
-* 3. For each sync profile that is enabled, install addons, remove other addons
-* 4. For each enabled that doesn't have a sync profile, submit the currently installed addons as a profile
-* 5. Display any errors
-*/
+
+function setBrowserWindow(id) {
+  browserWindowId = id;
+}
+
 let syncInterval = setInterval(() => {
   if (!searching) {
+
     handleSync()
     .then(() => {
       log.info("Done with sync");
@@ -44,19 +43,18 @@ let syncInterval = setInterval(() => {
 function handleSync() {
   return new Promise( (resolve, reject) => {
     log.info('Starting addon sync process');
+    searching = true;
     isSyncEnabled()
     .then((enabled)=>{
       return getSyncProfilesFromCloud(enabled)
     })
     .then((obj) => {
-      // For each profile, if enabled locally, install addons
-
       obj.enabled.forEach(e => {
         let enabledProfile = obj.profiles.find(p => {
           return p.gameId === e.gameId && p.gameVersion === e.gameVersion
         })
         if (!enabledProfile) {
-          syncProfilesToCreate.push({gameId: gameId, gameVersion: gameVersion})
+          syncProfilesToCreate.push({gameId: e.gameId, gameVersion: e.gameVersion})
         } else {
           snycProfilesToProcess.push(enabledProfile)
         }
@@ -70,9 +68,13 @@ function handleSync() {
       return pool2.start()
     })
     .then(() => {
+      searching = false;
+      error = null;
       resolve()
     })
     .catch(err => {
+      searching = false;
+      error = 'Error in automatic sync'
       reject(err);
     })
   })
@@ -112,7 +114,7 @@ async function getLocalSyncProfile(gameId, gameVersion) {
 async function getSyncProfilesFromCloud(enabled=[]) {
     return new Promise( (resolve, reject) => {
         if (authService.isAuthenticated()) {
-            log.info('Fetching cloud backups'); 
+            log.info('Fetching cloud sync profiles'); 
             searching = true;   
             error = null;
             let axiosConfig = {
@@ -130,20 +132,6 @@ async function getSyncProfilesFromCloud(enabled=[]) {
                     enabled: enabled,
                     profiles: res.data.profiles
                   })
-                  /*for (var p in res.data.profiles) {
-                    promises.push(saveSyncProfileLocally(res.data.profiles[p]))
-                  }
-                  Promise.allSettled(promises)
-                  .then( () => {
-                    searching = false;
-                    resolve({});
-                  })
-                  .catch((e) => {
-                    log.error(e);
-                    searching = false;
-                    error = 'Error savign sync profile locally';
-                    reject('Error saving addon sync profiles')
-                  })*/
               } else {
                   log.info('No addon sync profiles found');
                   searching = false;
@@ -194,7 +182,7 @@ function createSyncProfileObj(gameId, gameVersion) {
   })
 }
 
-function createAndSaveSyncProfile(profile) {
+function createAndSaveSyncProfile(obj) {
   return new Promise( (resolve, reject) => {
     createSyncProfileObj(obj.gameId, obj.gameVersion)
     .then(result => {
@@ -204,7 +192,7 @@ function createAndSaveSyncProfile(profile) {
         'User-Agent': 'Singularity-'+app.getVersion(),
         'x-auth': authService.getAccessToken()}
       };
-      return axios.post(`https://api.singularitymods.com/api/v1/user/sync/set`,profile, axiosConfig)
+      return axios.post(`https://api.singularitymods.com/api/v1/user/sync/set`,result, axiosConfig)
     })
     .then(res => {
       if (res && res.status === 200 && res.data.success) {
@@ -236,6 +224,7 @@ function handleSyncProfileProducer() {
 }
 
 module.exports = {
+  setBrowserWindow,
   handleSync,
   isSearchingForProfiles,
   getSyncError,

@@ -17,6 +17,7 @@ const { sync } = require('glob');
 ipcMain.on('enable-addon-sync', async (event, gameId, gameVersion) => {
     log.info('Enabling addon sync for '+gameVersion);
     log.info('Checking for existing sync profile');
+    event.sender.send('sync-status', gameId, gameVersion, 'checking-cloud', null, null)   
     let axiosConfig = {
         headers: {
         'Content-Type': 'application/json;charset=UTF-8',
@@ -27,21 +28,27 @@ ipcMain.on('enable-addon-sync', async (event, gameId, gameVersion) => {
     .then( res => {
         if (res.status === 200 && res.data.success) {
             log.info('Addon sync profile found');
-            event.sender.send('enable-sync-status', gameId, gameVersion, 'profile-found', res.data.profile.lastSync, null)              
+            event.sender.send('sync-status', gameId, gameVersion, 'profile-found', res.data.profile.lastSync, null)              
         } else {
             log.info('No addon sync profile found');
+            event.sender.send('sync-status', gameId, gameVersion, 'creating-profile', null, null)  
             syncService.createAndSaveSyncProfile({gameId: gameId, gameVersion: gameVersion})
             .then(() => {
-                event.sender.send('enable-sync-status', gameId, gameVersion, 'complete', null, null)
+                event.sender.send('sync-status', gameId, gameVersion, 'complete', null, null)
             })
             .catch(e =>{
-                event.sender.send('enable-sync-status', gameId, gameVersion, 'error', null, 'Error creating new sync profile')
+                console.log(e);
+                event.sender.send('sync-status', gameId, gameVersion, 'error', null, 'Error creating new sync profile')
             })
         }
     })
     .catch((err) => {
         log.error(err);
-        event.sender.send('enable-sync-status', gameId, gameVersion, 'error', null, 'Error enabling sync profile')
+        if (err.code && err.code == 'ENOTFOUND') {
+            event.sender.send('sync-status', gameId, gameVersion, 'error', null, 'Failed due to network connection issue');
+        } else {
+            event.sender.send('sync-status', gameId, gameVersion, 'error', null, 'Error enabling sync profile');
+        }
     })
 
 /*

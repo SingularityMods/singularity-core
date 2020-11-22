@@ -27,5 +27,21 @@
     height: 10px;
     width: 10px;
     margin-left: 3px;
-    margin-top:12px;
+    margin-top: 5px;
+}
+
+.sync-status-icon{
+    color: var(--text-color);
+    font-size: 0.8rem;
+    float: left;
+    margin-top: 7px;
+    margin-left: 3px;
+}
+
+.sync-status-icon .sync-error {
+    color: red;
+}
+
+.sync-status-icon .sync-success {
+    color: var(--success-green);
 }

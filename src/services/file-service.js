@@ -375,15 +375,16 @@ function restoreGranularBackup(backup, includeSettings) {
 function syncFromProfile(profile) {   
     return new Promise( (resolve, reject) => {
         log.info('Handling sync for '+profile.gameVersion)
-        let gameS = storageService.getGameSettings(backup.gameId.toString());
+        let gameS = storageService.getGameSettings(profile.gameId.toString());
         let installedAddons = gameS[profile.gameVersion].installedAddons;
 
         let win = BrowserWindow.fromId(browserWindowId);
-        win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'Sync initiated');
+        win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'sync-started', null);
 
         installedAddons.forEach(addon => {
+            
             let profileMatch = profile.addons.find( a => {
-                a.addonId == addon.addonId
+                return a.addonId == addon.addonId
             })
             if (!profileMatch) {
                 addon.gameId = profile.gameId;
@@ -391,15 +392,15 @@ function syncFromProfile(profile) {
                 log.info('Addon '+addon.addonName+' not in sync profile, add to remove list');
                 syncedAddonsToRemove.push(addon)
             } else {
-                if (addon.fileId !== profileMatch.fileId) {
-                    log.info('Addon '+addon.addonName+' needs to be update from profile, add to list');
+                if (addon.installedFile.fileId !== profileMatch.fileId) {
+                    log.info('Addon '+addon.addonName+' needs to be updated from profile, add to list');
                     profileMatch.gameVersion = profile.gameVersion;
                     profileMatch.gameId = profile.gameId;
                     syncedAddonsToInstall.push(profileMatch)
                 }
             } 
         })
-        win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'Installing and updating synced addons');
+        win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'handling-addons', null);
         var pool = new PromisePool(installAddonFromSyncProducer, 1)
         pool.start()
         .then (() => {
@@ -408,18 +409,18 @@ function syncFromProfile(profile) {
             //resolve('success');
         })
         .then(() => {
-            win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'Deleting unsynced addons');
+            win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'deleting-unsynced-addons', null);
             var removePool = new PromisePool(unInstallAddonFromSyncProducer, 3)
             return removePool.start()       
         })
         .then(() => {
             log.info('Done syncing from profile!');
-            win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'Sync complete');
+            win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'complete', null);
             return resolve('success');
         })
         .catch(err => {
             log.error(err);
-            reject('Error restoring backup');
+            reject('Error syncing from profile');
         })
     })
 }
@@ -886,7 +887,7 @@ function findAndUpdateAddons() {
         })
         .catch((e) => {
             log.error(e);
-            return reject()
+            return reject('Error while identifying addons and checking for updates')
         })
     })
 }
