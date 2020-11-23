@@ -157,6 +157,9 @@ export default class SettingsWindow extends React.Component {
                 case '3h':
                     updateIntTitle = '3 Hours';
                     break;
+                case 'never':
+                    updateIntTitle = 'Never';
+                    break;
                 default:
                     updateIntTitle = '1 Hour';
 
@@ -253,6 +256,10 @@ export default class SettingsWindow extends React.Component {
                                                     key='3h'
                                                     eventKey='3h'
                                                 >3 Hours</Dropdown.Item>
+                                                <Dropdown.Item
+                                                    key='never'
+                                                    eventKey='never'
+                                                >Never</Dropdown.Item>
                                             </DropdownButton>
                                         </Col>
                                     </Row>

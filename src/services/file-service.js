@@ -1254,6 +1254,8 @@ function setAddonUpdateInterval() {
             case '3h':
                 checkInterval = 1000 * 60 * 60 * 3;
                 break;
+            case 'never':
+                checkInterval = 1000 * 60 * 60 * 24 * 365;
             default:
                 checkInterval = 1000 * 60 * 60;
         }
