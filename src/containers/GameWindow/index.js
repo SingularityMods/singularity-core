@@ -152,6 +152,8 @@ export default class GameWindow extends React.Component {
                                             appUUID={this.state.appUUID}
                                             gameId={this.state.gameId}
                                             gameVersion={this.state.selectedGameVersion}
+                                            backupPending={this.props.backupPending}
+                                            restorePending={this.props.restorePending}
                                             openBackupManagementDialog={this.props.openBackupManagementDialog}
                                             openBackupRestore={this.props.openBackupRestore}
                                             latestCloudBackup={this.props.latestCloudBackup}

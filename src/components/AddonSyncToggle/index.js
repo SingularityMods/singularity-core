@@ -17,6 +17,8 @@ export default class AddonSyncToggle extends React.Component {
             profile: this.props.profile,
             gameId: this.props.gameId,
             gameVersion: this.props.gameVersion,
+            backupPending: this.props.backupPending,
+            restorePending: this.props.restorePending,
             darkMode: this.props.darkMode,
             searching: false,
             syncing: false,
@@ -40,21 +42,48 @@ export default class AddonSyncToggle extends React.Component {
         ipcRenderer.on('sync-status', this.enableSyncStatusListener);
         ipcRenderer.on('addon-sync-search-complete', this.syncProfileSearchingDoneListener);
         ipcRenderer.on('sync-complete',this.syncCompleteListener);
-        let searching = ipcRenderer.sendSync('is-sync-profile-updating');
+        let syncing = ipcRenderer.sendSync('is-sync-profile-updating');
         let enabled = ipcRenderer.sendSync('is-sync-enabled', this.state.gameId, this.state.gameVersion);
+        let status = null;
+        if (this.props.backupPending) {
+            status = 'Backup pending';
+        }
+        if (this.props.restorePending) {
+            status = 'Restore pending';
+            enabled = false;
+        }
         this.setState({
-            searching: searching,
+            syncing: syncing,
             enabled: enabled,
+            status: status,
             syncComplete: false
         })
     }
 
     componentDidUpdate(prevProps) {
+        if (this.props.backupPending !== prevProps.backupPending) {
+            let status = this.props.backupPending ? 'Backup pending' : null;
+            this.setState({
+                backupPending: this.props.backupPending,
+                status: status
+            });
+        }
+        if (this.props.restorePending !== prevProps.restorePending) {
+            let status = this.props.restorePending ? 'Restore pending' : null;
+            let enabled = this.props.restorePending ? false : this.state.enabled;
+            let syncComplete = this.props.restorePending ? false : this.state.syncComplete;
+            this.setState({
+                restorePending: this.props.restorePending,
+                status: status,
+                enabled: enabled,
+                syncComplete: syncComplete
+            });
+        }
         if (this.props.profile !== prevProps.profile 
             || this.props.gameId !== prevProps.gameId 
             || this.props.gameVersion !== prevProps.gameVersion
             || this.props.darkMode !== prevProps.darkMode) {
-                let searching = ipcRenderer.sendSync('is-sync-profile-updating');
+                let syncing = ipcRenderer.sendSync('is-sync-profile-updating');
                 let enabled = ipcRenderer.sendSync('is-sync-enabled', this.props.gameId, this.props.gameVersion);
                 this.setState({
                     profile: this.props.profile,
@@ -62,7 +91,7 @@ export default class AddonSyncToggle extends React.Component {
                     enabled: enabled,
                     gameVersion: this.props.gameVersion,
                     darkMode: this.props.darkMode,
-                    searching: searching,
+                    syncing: syncing,
                     syncComplete: false
                 })
         }
@@ -159,7 +188,7 @@ export default class AddonSyncToggle extends React.Component {
 
     syncProfileSearchingDoneListener(event) {
         this.setState({
-            searching: false,
+            syncing: false,
             gettingProfile: true
         });
     }
@@ -202,6 +231,7 @@ export default class AddonSyncToggle extends React.Component {
         } else {
             ipcRenderer.send('toggle-addon-sync', this.state.gameId, this.state.gameVersion, false)
             this.setState({
+                syncComplete: false,
                 enabled: false
             });
         }
@@ -220,7 +250,12 @@ export default class AddonSyncToggle extends React.Component {
                 }
                 <a data-tip data-for="addonSyncToggleTooltip">
                 <Switch
-                    disabled={!this.state.profile || this.state.searching || this.state.configuring || this.state.syncing}
+                    disabled={!this.state.profile 
+                                || this.state.searching 
+                                || this.state.configuring 
+                                || this.state.syncing
+                                || this.state.backupPending
+                                || this.state.restorePending}
                     onChange={this.toggleEnabled}
                     checked={this.state.enabled}
                     className="settings-switch"
@@ -239,7 +274,11 @@ export default class AddonSyncToggle extends React.Component {
 
                 </ReactTooltip>
                 <div className={!this.state.profile || !this.state.profile.emailVerified ? "addon-sync-toggle-label disabled" : "addon-sync-toggle-label" }>Sync</div>
-                {this.state.searching || this.state.configuring || this.state.syncing
+                {this.state.searching 
+                    || this.state.configuring 
+                    || this.state.syncing
+                    || this.state.backupPending
+                    || this.state.restorePending
                     ? <div className="sync-status-icon status-loading">
                         <a data-tip data-for="syncStatusIcon" data-tip-disable={!this.state.status}>
                             <Spinner animation="border" size="sm" variant={this.state.darkMode ? 'light': 'dark'} role="status" className="sync-pending-spinner"  id="sync-pending-spinner">

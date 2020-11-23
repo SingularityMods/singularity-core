@@ -69,6 +69,10 @@
     padding: 5px;
 }
 
+.installed-addon-window-content .addon-window-menu .btn.backup-button {
+    float: right;
+}
+
 .addon-table .table-bordered tr.installed-addons-header {
     color: white;
     background-color: var(--primary-color);
@@ -157,13 +161,6 @@ margin-left: 0px;
     float: right;
 }
 
-.installed-addon-window-content .backup-button {
-    float:right;
-}
-
-.backup-button {
-    float: right;
-}
 
     .backup-button.UpdateAddonButton.disabled,
     .backup-button.UpdateAddonButton.disabled:hover {

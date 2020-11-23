@@ -161,6 +161,7 @@ async function getSyncProfilesFromCloud(enabled=[]) {
             .then( res => {
               if (res.status === 200 && res.data.success) {
                   log.info('Addon sync profiles found');
+                  syncing = false;
                   resolve({
                     enabled: enabled,
                     profiles: res.data.profiles
@@ -219,7 +220,7 @@ function createSyncProfileObj(gameId, gameVersion) {
 
 function createAndSaveSyncProfile(obj) {
   return new Promise( (resolve, reject) => {
-    log.info('Creating sync profile for '+obj.gameVersion)
+    log.info('Updating sync profile for '+obj.gameVersion)
     let win = BrowserWindow.fromId(browserWindowId);
     win.webContents.send('sync-status', obj.gameId, obj.gameVersion, 'creating-profile', null, null)  
     createSyncProfileObj(obj.gameId, obj.gameVersion)

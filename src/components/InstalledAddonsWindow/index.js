@@ -23,6 +23,8 @@ export default class InstalledAddonsWindow extends React.Component {
             appUUID: this.props.appUUID,
             gameId: this.props.gameId,
             gameVersion: this.props.gameVersion,
+            backupPending: this.props.backupPending,
+            restorePending: this.props.restorePending,
             addonVersion: '',
             installedAddons: [],
             selectedAddon: [],
@@ -68,6 +70,16 @@ export default class InstalledAddonsWindow extends React.Component {
                 erroredUpdates: [],
                 isRefreshing: true
             })
+        }
+        if (this.props.restorePending !== prevProps.restorePending) {
+            this.setState({
+                restorePending: this.props.restorePending
+            });
+        }
+        if (this.props.backupPending !== prevProps.backupPending) {
+            this.setState({
+                backupPending: this.props.backupPending
+            });
         }
         if (this.props.gameVersion !== prevProps.gameVersion) {
             const gameSettings = ipcRenderer.sendSync('get-game-settings', this.props.gameId);
@@ -803,6 +815,8 @@ export default class InstalledAddonsWindow extends React.Component {
                                                 profile={this.state.profile}
                                                 gameId={this.state.gameId}
                                                 gameVersion={this.state.gameVersion}
+                                                backupPending={this.state.backupPending}
+                                                restorePending={this.state.restorePending}
                                                 darkMode={this.state.darkMode} />
                                         </Col>
                                         <Col xs={4} sm={3} xl={3} className="filter-col">

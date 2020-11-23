@@ -40,6 +40,8 @@ export default class MainContent extends React.Component {
                             gameId={this.state.selectedGameId} 
                             openBackupManagementDialog={this.props.openBackupManagementDialog}
                             openBackupRestore={this.props.openBackupRestore}
+                            backupPending={this.props.backupPending}
+                            restorePending={this.props.restorePending}
                             latestCloudBackup={this.props.latestCloudBackup}
                             lastRestoreComplete={this.props.lastRestoreComplete} />
                         : <HomePage openSettings={this.props.openSettings}/>

@@ -20,10 +20,10 @@ ipcMain.on('trigger-sync', async (event, gameId, gameVersion) => {
         .then( res => {
             if (res.status === 200 && res.data.success) {
                 log.info('Addon sync profile found');
-                fileService.syncFromProfile(res.data.profile)      
+                return fileService.syncFromProfile(res.data.profile)      
             } else if (res.status === 200 ){
                 log.info('No addon sync profile found');
-                syncService.createAndSaveSyncProfile({gameId: gameId, gameVersion: gameVersion})
+                return syncService.createAndSaveSyncProfile({gameId: gameId, gameVersion: gameVersion})
             } else {
                 return Promise.reject('Error searching for sync profile');
             }

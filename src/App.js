@@ -362,6 +362,8 @@ class App extends React.Component {
                             openBackupRestore={this.openBackupRestore}
                             selected={this.state.selectedGame} 
                             settingsOpened={this.state.settingsOpened}
+                            backupPending={this.state.backupPending}
+                            restorePending={this.state.restorePending}
                             latestCloudBackup={this.state.latestCloudBackup}
                             lastRestoreComplete={this.state.lastRestoreComplete} />
                     </div>

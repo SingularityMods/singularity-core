@@ -296,6 +296,12 @@ function restoreGranularBackup(backup, includeSettings) {
         let installPath = gameS[backup.gameVersion].installPath;
         let settingsPath = path.join(installPath, 'WTF');
 
+        if (gameS[backup.gameVersion].sync) {
+            log.info('Addon sync is enabled, disabling before restoring backup');
+            gameS[backup.gameVersion].sync = false;
+            storageService.setGameSettings(backup.gameId.toString(),gameS);
+        }
+
         if (!fs.existsSync(settingsPath)) {
             reject({ 'err': "Settings directory doesn't exist" })
         }
