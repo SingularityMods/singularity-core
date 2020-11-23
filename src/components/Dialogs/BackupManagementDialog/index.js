@@ -178,7 +178,7 @@ export default class BackupManagementDialog extends React.Component {
             Object.assign(tmpBackup, backup) 
             tmpBackup.cloud = false;
             let tmpTime = new Date(backup.time)
-            let time = tmpTime.getDate() + '-' + tmpTime.getMonth() + '-' + tmpTime.getFullYear() + ' ' + tmpTime.getHours() + ':' + tmpTime.getMinutes() + ':' + tmpTime.getSeconds();
+            let time = tmpTime.getFullYear() + '-' + (tmpTime.getMonth()+1) + '-' + tmpTime.getDate() + ' ' + tmpTime.getHours() + ':' + tmpTime.getMinutes() + ':' + tmpTime.getSeconds();
             tmpBackup.formattedTime = time;
             tmpBackup.time = tmpTime;
             tmpBackup.keyField = backup.backupUUID+'-local'
@@ -191,7 +191,7 @@ export default class BackupManagementDialog extends React.Component {
             Object.assign(tmpBackup, backup) 
             tmpBackup.cloud = true;
             let tmpTime = new Date(backup.time)
-            let time = tmpTime.getDate() + '-' + tmpTime.getMonth() + '-' + tmpTime.getFullYear() + ' ' + tmpTime.getHours() + ':' + tmpTime.getMinutes() + ':' + tmpTime.getSeconds();
+            let time = tmpTime.getFullYear() + '-' + (tmpTime.getMonth()+1) + '-' + tmpTime.getDate() + ' ' + tmpTime.getHours() + ':' + tmpTime.getMinutes() + ':' + tmpTime.getSeconds();
             tmpBackup.formattedTime = time;
             tmpBackup.time = tmpTime;
             tmpBackup.keyField = backup.backupUUID+'-cloud'
