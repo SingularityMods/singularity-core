@@ -27,16 +27,16 @@ ipcMain.on('create-sync-profile', async (event, gameId, gameVersion) => {
         .then(res => {
             if (res && res.status === 200 && res.data.success) {
                 log.info('Addon sync profile created and saved');
-                event.sender.send('sync-profile-submitted', true, gameId, gameVersion, null);
+                event.sender.send('sync-status', gameId, gameVersion, 'complete', new Date(), null)
             } else {
                 log.error('Error pushing sync profile to the cloud');
-                event.sender.send('sync-profile-submitted', false, gameId, gameVersion, 'Error pushing sync profile to the cloud'); 
+                event.sender.send('sync-status', gameId, gameVersion, 'error', null, 'Error pushing sync profile to the cloud');
             }
         })
     })
     .catch((err) => {
         log.error('Error pushing sync profile to the cloud');
         log.error(err);
-        event.sender.send('sync-profile-submitted', false, gameId, gameVersion, 'Error pushing sync profile to the cloud'); 
+        event.sender.send('sync-status', gameId, gameVersion, 'error', null, 'Error pushing sync profile to the cloud');
     })
 });

@@ -221,20 +221,28 @@ app.on('ready', () => {
        return syncService.handleSync()
      })
      .then(() => {
-         mainWindow.webContents.send('addon-sync-search-complete');
-         log.info('Finished searching for sync profiles');
+        mainWindow.webContents.send('addon-sync-search-complete');
+        log.info('Finished searching for sync profiles');
+        return fileService.findAndUpdateAddons()
+     })
+     .then( profiles => {
+        syncService.updateSyncProfiles([...profiles]);
      })
      .catch(err => {
          mainWindow.webContents.send('addon-sync-search-complete');
          if (err == 'No Token') {
              log.info('User does not have an authentication session to resume.');
+             fileService.findAndUpdateAddons()
+             .then(() => {
+                log.info('Finished identifying and updating addons.')
+             })
+             .catch(err => {
+                 log.info('Error identifying and updating addons');
+             })
          } else {
              log.info(err);  
          }      
      })
-
-    // Identify addons and check for updates
-    fileService.findAndUpdateAddons();
 
     // Start the addon auto updater
     fileService.setAddonUpdateInterval();

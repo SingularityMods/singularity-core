@@ -30,7 +30,6 @@ export default class AddonSyncToggle extends React.Component {
         this.toggleEnabled = this.toggleEnabled.bind(this);
         this.enableSyncStatusListener = this.enableSyncStatusListener.bind(this);
         this.syncProfileSearchingDoneListener = this.syncProfileSearchingDoneListener.bind(this);
-        this.syncProfileSubmittedListener = this.syncProfileSubmittedListener.bind(this);
         this.syncCompleteListener = this.syncCompleteListener.bind(this);
         this.onCloseConfirmDialog = this.onCloseConfirmDialog.bind(this);
         this.onConfirmUse = this.onConfirmUse.bind(this);
@@ -40,7 +39,6 @@ export default class AddonSyncToggle extends React.Component {
     componentDidMount() {
         ipcRenderer.on('sync-status', this.enableSyncStatusListener);
         ipcRenderer.on('addon-sync-search-complete', this.syncProfileSearchingDoneListener);
-        ipcRenderer.on('sync-profile-submitted', this.syncProfileSubmittedListener);
         ipcRenderer.on('sync-complete',this.syncCompleteListener);
         let searching = ipcRenderer.sendSync('is-sync-profile-updating');
         let enabled = ipcRenderer.sendSync('is-sync-enabled', this.state.gameId, this.state.gameVersion);
@@ -71,14 +69,12 @@ export default class AddonSyncToggle extends React.Component {
     }
 
     componentWillUnmount() {
-        ipcRenderer.removeListener('enable-sync-status', this.enableSyncStatusListener);
+        ipcRenderer.removeListener('sync-status', this.enableSyncStatusListener);
         ipcRenderer.removeListener('addon-sync-search-complete', this.syncProfileSearchingDoneListener);
-        ipcRenderer.removeListener('sync-profile-submitted', this.syncProfileSubmittedListener);
         ipcRenderer.removeListener('sync-complete', this.syncCompleteListener);
     }
 
     syncCompleteListener(event,success, gameId, gameVersion, err) {
-        console.log
         if (gameId == this.state.gameId && gameVersion == this.state.gameVersion) {
             let error = !success ? err : null;
             this.setState({
@@ -128,18 +124,29 @@ export default class AddonSyncToggle extends React.Component {
                         status: 'Waiting for overwrite confirmation'
                     });
                     break;
+                case 'sync-complete':
+                    this.setState({
+                        configuring: false,
+                        syncing: false,
+                        enabled: true,
+                        status: 'Last sync: '+additionalInfo,
+                        syncComplete: true
+                    });
+                    break;
                 case 'complete':
                     ipcRenderer.send('toggle-addon-sync', this.state.gameId, this.state.gameVersion, true)
                     this.setState({
                         configuring: false,
+                        syncing: false,
                         enabled: true,
-                        status: null,
+                        status: 'Last sync: '+additionalInfo,
                         syncComplete: true
                     });
                     break;
                 case 'error':
                     this.setState({
                         configuring: false,
+                        syncing: false,
                         enabled: false,
                         status: null,
                         error: error
@@ -155,24 +162,6 @@ export default class AddonSyncToggle extends React.Component {
             searching: false,
             gettingProfile: true
         });
-    }
-
-    syncProfileSubmittedListener(event, success, gameId, gameVersion, error) {
-        if (gameId == this.state.gameId && gameVersion == this.state.gameVersion) {
-            if (success) {
-                ipcRenderer.send('toggle-addon-sync', this.state.gameId, this.state.gameVersion, true)
-                this.setState({
-                    enabled: true,
-                    configuring: false,
-                    status: null
-                })
-            } else {
-                this.setState({
-                    configuring: false,
-                    error: error
-                })
-            }
-        }
     }
 
     onCloseConfirmDialog() {
@@ -231,7 +220,7 @@ export default class AddonSyncToggle extends React.Component {
                 }
                 <a data-tip data-for="addonSyncToggleTooltip">
                 <Switch
-                    disabled={!this.state.profile || this.state.searching || this.state.configuring}
+                    disabled={!this.state.profile || this.state.searching || this.state.configuring || this.state.syncing}
                     onChange={this.toggleEnabled}
                     checked={this.state.enabled}
                     className="settings-switch"
@@ -250,7 +239,7 @@ export default class AddonSyncToggle extends React.Component {
 
                 </ReactTooltip>
                 <div className={!this.state.profile || !this.state.profile.emailVerified ? "addon-sync-toggle-label disabled" : "addon-sync-toggle-label" }>Sync</div>
-                {this.state.searching || this.state.configuring || this.state.searching
+                {this.state.searching || this.state.configuring || this.state.syncing
                     ? <div className="sync-status-icon status-loading">
                         <a data-tip data-for="syncStatusIcon" data-tip-disable={!this.state.status}>
                             <Spinner animation="border" size="sm" variant={this.state.darkMode ? 'light': 'dark'} role="status" className="sync-pending-spinner"  id="sync-pending-spinner">
@@ -264,7 +253,7 @@ export default class AddonSyncToggle extends React.Component {
                     : this.state.error
                         ? <div className="sync-status-icon">
                             <a data-tip data-for="syncStatusIcon">
-                                <i className="fas fa-exclamation-circle sync-error"></i>
+                                <div><i className="fas fa-exclamation-circle sync-error"></i></div>
                             </a>
                             <ReactTooltip id="syncStatusIcon">
                                 <span>{this.state.error}</span>
@@ -273,8 +262,11 @@ export default class AddonSyncToggle extends React.Component {
                         : this.state.syncComplete
                             ? <div className="sync-status-icon">
                                     <a data-tip data-for="syncStatusIcon">
-                                        <i className="fas fa-check-circle sync-success"></i>
+                                        <div><i className="fas fa-check-circle sync-success"></i></div>
                                     </a>
+                                    <ReactTooltip id="syncStatusIcon">
+                                        <span>{this.state.status}</span>
+                                    </ReactTooltip>
                                 </div>
                             : ''
                 }

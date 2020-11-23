@@ -6,15 +6,16 @@ const {app, ipcMain, BrowserWindow} = require('electron');
 const axios = require('axios');
 const PromisePool = require('es6-promise-pool');
 
+const fileService = require('../services/file-service');
 const storageService = require('../services/storage-service');
 const authService = require('../services/auth-service');
-const fileService = require('./file-service');
+
 
 const log = require('electron-log');
 
 let browserWindowId = 1;
 
-let searching = false;
+let syncing = false;
 let error = null;
 
 var snycProfilesToProcess=[];
@@ -26,7 +27,7 @@ function setBrowserWindow(id) {
 }
 
 let syncInterval = setInterval(() => {
-  if (!searching) {
+  if (!syncing) {
 
     handleSync()
     .then(() => {
@@ -43,7 +44,7 @@ let syncInterval = setInterval(() => {
 function handleSync() {
   return new Promise( (resolve, reject) => {
     log.info('Starting addon sync process');
-    searching = true;
+    syncing = true;
     isSyncEnabled()
     .then((enabled)=>{
       return getSyncProfilesFromCloud(enabled)
@@ -68,15 +69,48 @@ function handleSync() {
       return pool2.start()
     })
     .then(() => {
-      searching = false;
+      syncing = false;
       error = null;
       resolve()
     })
     .catch(err => {
-      searching = false;
+      syncing = false;
       error = 'Error in automatic sync'
       reject(err);
     })
+  })
+}
+
+function updateSyncProfiles(profiles) {
+  return new Promise( (resolve, reject) => {
+    log.info("Updating sync profiles");
+    if (!syncing) {
+      profiles.forEach(profile => {
+        syncProfilesToCreate.push(profile)
+      })
+      let win = BrowserWindow.fromId(browserWindowId);
+      var pool = new PromisePool(createSyncProfileProducer, 3)
+      pool.start()
+      .then(() => {
+        syncing = false;
+        
+        profiles.forEach(profile => {
+          win.webContents.send('sync-status', profile.gameId, profile.gameVersion, 'sync-complete', null, null)  
+        })
+        log.info('Finished updating sync profiles');
+        return resolve();
+      })
+      .catch(err => {
+        syncing = false;
+        error = 'Error in automatic sync'
+        profiles.forEach(profile => {
+          win.webContents.send('sync-status', profile.gameId, profile.gameVersion, 'error', null, 'Error in sync after auto-updating')  
+        })
+        reject(err);
+      })
+    } else {
+      return reject('Already syncing');
+    }
   })
 }
 
@@ -100,7 +134,7 @@ function isSyncEnabled() {
 }
 
 function isSearchingForProfiles() {
-  return searching;
+  return syncing;
 }
 
 function getSyncError() {
@@ -115,7 +149,7 @@ async function getSyncProfilesFromCloud(enabled=[]) {
     return new Promise( (resolve, reject) => {
         if (authService.isAuthenticated()) {
             log.info('Fetching cloud sync profiles'); 
-            searching = true;   
+            syncing = true;   
             error = null;
             let axiosConfig = {
                 headers: {
@@ -127,27 +161,26 @@ async function getSyncProfilesFromCloud(enabled=[]) {
             .then( res => {
               if (res.status === 200 && res.data.success) {
                   log.info('Addon sync profiles found');
-                  var promises = [];
                   resolve({
                     enabled: enabled,
                     profiles: res.data.profiles
                   })
               } else {
                   log.info('No addon sync profiles found');
-                  searching = false;
+                  syncing = false;
                   reject('No addon sync profile found in the cloud')
               }
           })
           .catch((err) => {
               log.error('Error fetching addon sync profiles');
               log.error(err);
-              searching = false;
+              syncing = false;
               error = 'Error fetching sync profile from cloud'
               reject('Error fetching addon sync profiles from the cloud')
           })
         } else {
           log.info('User is not authenticated, skipping addon sync profile search');
-          searching = false;
+          syncing = false;
           error = "Not authenticated, can't retrieve profile"
           resolve('User is not authenticated, skipping addon sync profile search')
       }
@@ -164,6 +197,8 @@ function createSyncProfileObj(gameId, gameVersion) {
               {
                   addonId: addon.addonId,
                   addonName: addon.addonName,
+                  trackBranch: addon.trackBranch,
+                  autoUpdate: addon.autoUpdate,
                   fileId: addon.installedFile.fileId,
                   fileName: addon.installedFile.fileName,
                   fileDate: addon.installedFile.fileDate,
@@ -184,6 +219,9 @@ function createSyncProfileObj(gameId, gameVersion) {
 
 function createAndSaveSyncProfile(obj) {
   return new Promise( (resolve, reject) => {
+    log.info('Creating sync profile for '+obj.gameVersion)
+    let win = BrowserWindow.fromId(browserWindowId);
+    win.webContents.send('sync-status', obj.gameId, obj.gameVersion, 'creating-profile', null, null)  
     createSyncProfileObj(obj.gameId, obj.gameVersion)
     .then(result => {
       let axiosConfig = {
@@ -203,7 +241,11 @@ function createAndSaveSyncProfile(obj) {
         //event.sender.send('sync-profile-submitted', false, gameId, gameVersion, 'Error pushing sync profile to the cloud'); 
         reject('Error pushing sync profile to the cloud');
       }
-  })
+    })
+    .catch(err => {
+      log.error('Error creating and saving sync profile');
+      reject('Error creating and saving sync profile')
+    })
   })
 }
 
@@ -225,6 +267,7 @@ function handleSyncProfileProducer() {
 
 module.exports = {
   setBrowserWindow,
+  updateSyncProfiles,
   handleSync,
   isSearchingForProfiles,
   getSyncError,

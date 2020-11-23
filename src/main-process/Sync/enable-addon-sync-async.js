@@ -34,7 +34,7 @@ ipcMain.on('enable-addon-sync', async (event, gameId, gameVersion) => {
             event.sender.send('sync-status', gameId, gameVersion, 'creating-profile', null, null)  
             syncService.createAndSaveSyncProfile({gameId: gameId, gameVersion: gameVersion})
             .then(() => {
-                event.sender.send('sync-status', gameId, gameVersion, 'complete', null, null)
+                event.sender.send('sync-status', gameId, gameVersion, 'complete', new Date(), null)
             })
             .catch(e =>{
                 console.log(e);

@@ -1,7 +1,11 @@
 const { ipcMain } = require('electron');
 const path = require('path');
-const storageService = require('../../services/storage-service');
+
+const authService = require('../../services/auth-service');
 const fileService = require('../../services/file-service');
+const storageService = require('../../services/storage-service');
+const syncService = require('../../services/sync-service');
+
 
 const log = require('electron-log');
 
@@ -67,6 +71,17 @@ ipcMain.on('install-addon', async (event, gameId, gameVersionFlavor, addon, bran
             gameS[gameVersionFlavor].installedAddons = installedAddons;
             storageService.setGameSettings(gameId.toString(), gameS);
             event.sender.send('addon-installed', installedAddon);
+            if (gameS[gameVersionFlavor].sync && authService.isAuthenticated()) {
+                log.info('Game version is configured to sync, updating profile');
+                syncService.createAndSaveSyncProfile({gameId: gameId, gameVersion: gameVersionFlavor})
+                .then(() => {
+                    log.info('Sync profile updated');
+                })
+                .catch(err => {
+                    log.error('Error saving sync profile');
+                    log.error(err);
+                })
+            }
         })
         .catch(err => {
             log.error(err);

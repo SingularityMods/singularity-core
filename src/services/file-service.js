@@ -14,6 +14,7 @@ const storageService = require('../services/storage-service');
 
 const log = require('electron-log');
 
+
 ncp.limit = 16;
 
 let browserWindowId = 1;
@@ -379,7 +380,7 @@ function syncFromProfile(profile) {
         let installedAddons = gameS[profile.gameVersion].installedAddons;
 
         let win = BrowserWindow.fromId(browserWindowId);
-        win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'sync-started', null);
+        win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'sync-started',null, null);
 
         installedAddons.forEach(addon => {
             
@@ -400,7 +401,7 @@ function syncFromProfile(profile) {
                 }
             } 
         })
-        win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'handling-addons', null);
+        win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'handling-addons', null, null);
         var pool = new PromisePool(installAddonFromSyncProducer, 1)
         pool.start()
         .then (() => {
@@ -409,13 +410,13 @@ function syncFromProfile(profile) {
             //resolve('success');
         })
         .then(() => {
-            win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'deleting-unsynced-addons', null);
+            win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'deleting-unsynced-addons', null, null);
             var removePool = new PromisePool(unInstallAddonFromSyncProducer, 3)
             return removePool.start()       
         })
         .then(() => {
             log.info('Done syncing from profile!');
-            win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'complete', null);
+            win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'complete', new Date(), null);
             return resolve('success');
         })
         .catch(err => {
@@ -858,6 +859,8 @@ function findAndUpdateAddons() {
         let gameS = storageService.getGameSettings(gameId.toString());
         var promises = [];
         let gameVersions = [];
+        let needsSyncProfileUpdate = new Set();
+
         for (const [key, value] of Object.entries(gameS)) {
             var gameVersion = key;
             gameVersions.push(key);
@@ -869,6 +872,9 @@ function findAndUpdateAddons() {
             results.forEach( result => {
                 if (result.status == 'fulfilled') {
                     result.value.toUpdate.forEach(addon => {
+                        if (gameS[addon.gameVersion].sync){
+                            needsSyncProfileUpdate.add({gameId: addon.gameId, gameVersion: addon.gameVersion});
+                        }
                         autoUpdateAddonsLeft.push(addon);
                         toUpdate.push(addon);
                     })
@@ -880,8 +886,7 @@ function findAndUpdateAddons() {
                 log.info('Finished updating addons');
                 let win = BrowserWindow.fromId(browserWindowId);
                 win.webContents.send('addon-autoupdate-complete');
-
-                return resolve()
+                return resolve(needsSyncProfileUpdate)
             })
 
         })
@@ -1254,7 +1259,13 @@ function setAddonUpdateInterval() {
     log.info('Addon update interval set to: ' + appD.addonUpdateInterval);
     updateInterval = setInterval(() => {
         //checkAddons();
-        findAndUpdateAddons();
+        findAndUpdateAddons()
+        .then( profiles => {
+            syncService.updateSyncProfiles([...profiles]);
+         })
+         .catch(error => {
+             log.error('Error while auto-udpating addons');
+         })
     }, checkInterval);
 }
 
@@ -1360,6 +1371,7 @@ function unInstallAddonFromSyncProducer() {
 }
 
 module.exports = {
+    syncFromProfile,
     setBrowserWindow,
     setAPIEndpoint,
     installAddon,
@@ -1377,6 +1389,5 @@ module.exports = {
     findInstalledWoWVersions,
     deleteLocalBackup,
     findAndUpdateAddons,
-    setAddonUpdateInterval,
-    syncFromProfile
+    setAddonUpdateInterval
   };

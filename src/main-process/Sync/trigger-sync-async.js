@@ -30,7 +30,7 @@ ipcMain.on('trigger-sync', async (event, gameId, gameVersion) => {
         })
         .then(() => {
             log.info('Sync process complete');
-            event.sender.send('sync-complete',true, gameId, gameVersion, null);
+            event.sender.send('sync-status', gameId, gameVersion, 'sync-complete', new Date(), null);
         })
         .catch((err) => {
             log.error('Error handling addon sync');

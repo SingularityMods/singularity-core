@@ -19,6 +19,7 @@ export default class Header extends React.Component {
         this.updatePendingListener = this.updatePendingListener.bind(this);
         this.darkModeToggleListener = this.darkModeToggleListener.bind(this);
         this.handleClickUpdate = this.handleClickUpdate.bind(this);
+        this.handleClick = this.handleClick.bind(this);
 
     }
 
