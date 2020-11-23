@@ -50,19 +50,21 @@ function handleSync() {
       return getSyncProfilesFromCloud(enabled)
     })
     .then((obj) => {
-      obj.enabled.forEach(e => {
-        let enabledProfile = obj.profiles.find(p => {
-          return p.gameId === e.gameId && p.gameVersion === e.gameVersion
+      if (obj.enabled) {
+        obj.enabled.forEach(e => {
+          let enabledProfile = obj.profiles.find(p => {
+            return p.gameId === e.gameId && p.gameVersion === e.gameVersion
+          })
+          if (!enabledProfile) {
+            syncProfilesToCreate.push({gameId: e.gameId, gameVersion: e.gameVersion})
+          } else {
+            snycProfilesToProcess.push(enabledProfile)
+          }
         })
-        if (!enabledProfile) {
-          syncProfilesToCreate.push({gameId: e.gameId, gameVersion: e.gameVersion})
-        } else {
-          snycProfilesToProcess.push(enabledProfile)
-        }
-      })
+      }
       var pool = new PromisePool(handleSyncProfileProducer, 1)
       return pool.start()
-
+    
     })
     .then(() => {
       var pool2 = new PromisePool(createSyncProfileProducer, 3)
