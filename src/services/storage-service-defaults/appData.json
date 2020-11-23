@@ -17,6 +17,7 @@
       "darkMode": false,
       "addonUpdateInterval": "1h",
       "backupDir": "",
-      "defaultWowVersion": "wow_retail"
+      "defaultWowVersion": "wow_retail",
+      "closeToTray": false
     }
   }

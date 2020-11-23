@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, autoUpdater, nativeTheme, menu } = require('electron');
+const { app, BrowserWindow, ipcMain, autoUpdater, nativeTheme, menu, Menu, Tray } = require('electron');
 const path = require('path');
 
 // import services 
@@ -17,6 +17,7 @@ log.transports.file.maxSize = 1024 * 1000;
 
 var mainWindow;
 var mainWindowId;
+let tray = null;
 
 const API_ENDPOINT = "https://api.singularitymods.com/api/v1/";
 const PACKAGE_URL = "https://storage.singularitycdn.com/App/Releases/";
@@ -143,6 +144,30 @@ const startAutoUpdater = () => {
     }  
 }
 
+// Handle creating a system tray
+function createTray() {
+    let appIcon = new Tray(path.join(__dirname, 'assets/icons/app_icon.png'));
+    const contextMenu = Menu.buildFromTemplate([
+        {
+            label: 'Show', click: function () {
+                mainWindow.show();
+            }
+        },
+        {
+            label: 'Exit', click: function () {
+                app.isQuiting = true;
+                app.quit();
+            }
+        }
+    ])
+    appIcon.on('double-click', function (event) {
+        mainWindow.show();
+    });
+    appIcon.setToolTip('Singularity');
+    appIcon.setContextMenu(contextMenu);
+    return appIcon;
+}
+
 
 // Create the main browser window for the renderer
 const createWindow = () => {
@@ -265,6 +290,25 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+// Handle close to tray if user has it configured
+mainWindow.on('close', (event) => {
+    if(storageService.getAppData('userConfigurable').closeToTray) {
+        if (!app.isQuiting) {
+            event.preventDefault();
+            mainWindow.hide();
+            mainWindow.setSkipTaskbar(true);
+            tray = createTray();
+        }
+        return false;
+    }
+})
+
+window.on('restore', (event) => {
+    mainWindow.show();
+    mainWindow.setSkipTaskbar(false);
+    tray.destroy();
+})
 
 // Display the app menu when triggered
 ipcMain.on(`display-app-menu`, function (e, args) {

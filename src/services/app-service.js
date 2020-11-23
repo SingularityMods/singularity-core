@@ -222,6 +222,9 @@ function setAppConfig() {
             gameS[gameVersion].sync = false;
             storageService.setGameSettings('1',gameS);
         }
+        let userConfig = storageService.getAppData('userConfigurable')
+        userConfig.minimizeToTray = false;
+        storageService.setAppData('userConfigurable',userConfig);
     }
 
     // Set new version

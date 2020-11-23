@@ -19,6 +19,7 @@ export default class SettingsWindow extends React.Component {
             wowInstallsErr: {}
         }
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
+        this.toggleCloseToTray = this.toggleCloseToTray.bind(this);
         this.toggleUpdateInterval = this.toggleUpdateInterval.bind(this);
         this.toggleDefaultWow = this.toggleDefaultWow.bind(this);
         this.selectBackupDir = this.selectBackupDir.bind(this);
@@ -58,6 +59,15 @@ export default class SettingsWindow extends React.Component {
         ipcRenderer.removeListener('backup-dir-rejected', this.backupDirRejectedListener);
         ipcRenderer.removeListener('installation-path-updated', this.installDirChangeAcceptedListener);
         ipcRenderer.removeListener('installation-not-found', this.installDirChangeRejectedListener);
+    }
+
+    toggleCloseToTray(checked) {
+        let appSettings = this.state.appSettings;
+        appSettings.closeToTray = checked;
+        ipcRenderer.send('set-app-settings', appSettings);
+        this.setState({
+            appSettings: appSettings
+        });
     }
 
     toggleDarkMode(checked) {
@@ -261,6 +271,26 @@ export default class SettingsWindow extends React.Component {
                                                     eventKey='never'
                                                 >Never</Dropdown.Item>
                                             </DropdownButton>
+                                        </Col>
+                                    </Row>
+                                    <Row className="settings-item">
+                                        <Col xs={4} md={3} className="settings-item-name">
+                                            <label>
+                                                <span>Close To System Tray</span>
+                                            </label>
+                                        </Col>
+                                        <Col xs={8} md={9} className="settings-item-config">
+                                            {this.state.appSettings
+                                                ?   <Switch
+                                                    onChange={this.toggleCloseToTray}
+                                                    checked={this.state.appSettings.closeToTray}
+                                                    className="settings-switch"
+                                                    onColor="#ED8323"
+                                                    height={20}
+                                                    width={40}
+                                                    activeBoxShadow="0 0 2px 3px #ED8323" />
+                                                : ''
+                                            }
                                         </Col>
                                     </Row>
                                 </Col>
