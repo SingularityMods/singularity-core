@@ -1,33 +1,34 @@
 import './AddonSyncToggle.css';
 
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import Switch from "react-switch";
 import ReactTooltip from 'react-tooltip';
 import { Spinner } from 'react-bootstrap';
 import { ipcRenderer } from 'electron';
 
 import SyncConfirmDialog from '../Dialogs/SyncConfirmDialog';
+import { propTypes } from 'react-bootstrap/esm/Image';
 
 
-export default class AddonSyncToggle extends React.Component {
+class AddonSyncToggle extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            backupPending: this.props.backupPending,
+            cloudProfileLastSync: null,
+            configuring: false,
+            confirmDialogOpened: false,
+            darkMode: this.props.darkMode,
             enabled: false,
-            profile: this.props.profile,
+            error: null,
             gameId: this.props.gameId,
             gameVersion: this.props.gameVersion,
-            backupPending: this.props.backupPending,
+            profile: this.props.profile,
             restorePending: this.props.restorePending,
-            darkMode: this.props.darkMode,
-            searching: false,
-            syncing: false,
-            configuring: false,
-            error: null,
             status: null,
             syncComplete: false,
-            cloudProfileLastSync: null,
-            confirmDialogOpened: false
+            syncing: false
         }
         this.toggleEnabled = this.toggleEnabled.bind(this);
         this.enableSyncStatusListener = this.enableSyncStatusListener.bind(this);
@@ -251,7 +252,6 @@ export default class AddonSyncToggle extends React.Component {
                 <a data-tip data-for="addonSyncToggleTooltip">
                 <Switch
                     disabled={!this.state.profile 
-                                || this.state.searching 
                                 || this.state.configuring 
                                 || this.state.syncing
                                 || this.state.backupPending
@@ -274,8 +274,7 @@ export default class AddonSyncToggle extends React.Component {
 
                 </ReactTooltip>
                 <div className={!this.state.profile || !this.state.profile.emailVerified ? "addon-sync-toggle-label disabled" : "addon-sync-toggle-label" }>Sync</div>
-                {this.state.searching 
-                    || this.state.configuring 
+                {this.state.configuring 
                     || this.state.syncing
                     || this.state.backupPending
                     || this.state.restorePending
@@ -314,3 +313,14 @@ export default class AddonSyncToggle extends React.Component {
         )
     }
 }
+
+AddonSyncToggle.propTypes = {
+    backupPending: PropTypes.bool,
+    darkMode: PropTypes.bool,
+    gameId: PropTypes.number,
+    gameVersion: PropTypes.string,
+    profile: PropTypes.object,
+    restorePending: PropTypes.bool
+}
+
+export default AddonSyncToggle;

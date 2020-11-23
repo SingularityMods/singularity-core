@@ -79,6 +79,7 @@
     "jsonwebtoken": "^8.5.1",
     "keytar": "^7.0.0",
     "ncp": "^2.0.0",
+    "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-bootstrap": "^1.3.0",
     "react-bootstrap-table-next": "^4.0.3",
