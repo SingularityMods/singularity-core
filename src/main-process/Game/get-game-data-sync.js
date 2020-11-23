@@ -6,7 +6,8 @@ ipcMain.on('get-game-data', (event, gameId) => {
 });
 
 ipcMain.on('get-game-addon-categories', (event, gameId) => {
-    event.returnValue = storageService.getGameData(gameId.toString()).categories;
+    const categories = storageService.getGameData(gameId.toString()).categories;
+    event.returnValue = categories.sort((a, b) => (a.name > b.name) ? 1 : -1);
 });
 
 ipcMain.on('get-game-addon-version', (event, gameId, gameVersion) => {
