@@ -1308,7 +1308,7 @@ function setAddonUpdateInterval() {
              log.error('Error while auto-udpating addons');
              log.error(error);
          })
-    }, 1000 * 60);
+    }, checkInterval);
 }
 
 /*
