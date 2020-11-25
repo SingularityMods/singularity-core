@@ -96,18 +96,22 @@ function updateSyncProfiles(profiles) {
       .then(() => {
         syncing = false;
         
-        profiles.forEach(profile => {
-          win.webContents.send('sync-status', profile.gameId, profile.gameVersion, 'sync-complete', null, null)  
-        })
+        if (win) {
+          profiles.forEach(profile => {
+            win.webContents.send('sync-status', profile.gameId, profile.gameVersion, 'sync-complete', null, null)  
+          })
+        }
         log.info('Finished updating sync profiles');
         return resolve();
       })
       .catch(err => {
         syncing = false;
-        error = 'Error in automatic sync'
-        profiles.forEach(profile => {
-          win.webContents.send('sync-status', profile.gameId, profile.gameVersion, 'error', null, 'Error in sync after auto-updating')  
-        })
+        error = 'Error in automatic sync';
+        if (win) {
+          profiles.forEach(profile => {
+            win.webContents.send('sync-status', profile.gameId, profile.gameVersion, 'error', null, 'Error in sync after auto-updating')  
+          })
+        }
         reject(err);
       })
     } else {
@@ -225,7 +229,9 @@ function createAndSaveSyncProfile(obj) {
   return new Promise( (resolve, reject) => {
     log.info('Updating sync profile for '+obj.gameVersion)
     let win = BrowserWindow.fromId(browserWindowId);
-    win.webContents.send('sync-status', obj.gameId, obj.gameVersion, 'creating-profile', null, null)  
+    if (win) {
+      win.webContents.send('sync-status', obj.gameId, obj.gameVersion, 'creating-profile', null, null)  
+    }
     createSyncProfileObj(obj.gameId, obj.gameVersion)
     .then(result => {
       let axiosConfig = {
