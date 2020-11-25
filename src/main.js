@@ -219,6 +219,23 @@ const createWindow = () => {
             })
 
     })
+
+    // Handle close to tray if user has it configured
+    mainWindow.on('close', (event) => {
+        if(process.platform == 'win32' && storageService.getAppData('userConfigurable').closeToTray && !app.isQuitting) {
+            event.preventDefault();
+            mainWindow.hide();
+            mainWindow.setSkipTaskbar(true);
+            tray = createTray();
+        }
+        return false;
+    })
+
+    mainWindow.on('restore', (event) => {
+        mainWindow.show();
+        mainWindow.setSkipTaskbar(false);
+        tray.destroy();
+    })
 };
 
 
@@ -278,9 +295,10 @@ app.on('ready', () => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+    if (process.platform == 'darwin' && storageService.getAppData('userConfigurable').closeToTray) {
+        return false;
+    }
     app.quit();
-  }
 });
 
 app.on('activate', () => {
@@ -290,25 +308,6 @@ app.on('activate', () => {
     createWindow();
   }
 });
-
-// Handle close to tray if user has it configured
-mainWindow.on('close', (event) => {
-    if(storageService.getAppData('userConfigurable').closeToTray) {
-        if (!app.isQuiting) {
-            event.preventDefault();
-            mainWindow.hide();
-            mainWindow.setSkipTaskbar(true);
-            tray = createTray();
-        }
-        return false;
-    }
-})
-
-window.on('restore', (event) => {
-    mainWindow.show();
-    mainWindow.setSkipTaskbar(false);
-    tray.destroy();
-})
 
 // Display the app menu when triggered
 ipcMain.on(`display-app-menu`, function (e, args) {

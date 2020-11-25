@@ -135,6 +135,7 @@ function isSyncEnabled() {
   })
 }
 
+
 function isSearchingForProfiles() {
   return syncing;
 }
