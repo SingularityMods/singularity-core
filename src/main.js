@@ -18,6 +18,7 @@ log.transports.file.maxSize = 1024 * 1000;
 var mainWindow;
 var mainWindowId;
 let tray = null;
+let isQuitting = false;
 
 const API_ENDPOINT = "https://api.singularitymods.com/api/v1/";
 const PACKAGE_URL = "https://storage.singularitycdn.com/App/Releases/";
@@ -149,13 +150,15 @@ function createTray() {
     let appIcon = new Tray(path.join(__dirname, 'assets/icons/app_icon.png'));
     const contextMenu = Menu.buildFromTemplate([
         {
-            label: 'Show', click: function () {
+            label: 'Open Singularity',
+            click: function () {
                 mainWindow.show();
             }
         },
         {
-            label: 'Exit', click: function () {
-                app.isQuiting = true;
+            label: 'Exit',
+            click: function () {
+                isQuitting = true;
                 app.quit();
             }
         }
@@ -222,17 +225,15 @@ const createWindow = () => {
 
     // Handle close to tray if user has it configured
     mainWindow.on('close', (event) => {
-        if(process.platform == 'win32' && storageService.getAppData('userConfigurable').closeToTray && !app.isQuitting) {
+        if(process.platform == 'win32' && storageService.getAppData('userConfigurable').closeToTray && !isQuitting) {
             event.preventDefault();
             mainWindow.hide();
             mainWindow.setSkipTaskbar(true);
             tray = createTray();
         }
-        return false;
     })
 
-    mainWindow.on('restore', (event) => {
-        mainWindow.show();
+    mainWindow.on('show', (event) => {
         mainWindow.setSkipTaskbar(false);
         tray.destroy();
     })
