@@ -50,7 +50,7 @@ jobs:
       with:
         upload_url: ${{ needs.create_github_release.outputs.upload_url }}
         asset_path: ./out/oss/make/Singularity-Setup.dmg
-        asset_name: Singularity-Setup.dmg
+        asset_name: Singularity-Setup-${{ github.ref }}.dmg
         asset_content_type: application/x-apple-diskimage
 
   build_windows:
@@ -74,5 +74,5 @@ jobs:
       with:
         upload_url: ${{ needs.create_github_release.outputs.upload_url }}
         asset_path: ./out/oss/make/squirrel.windows/x64/Singularity-Setup.exe
-        asset_name: Singularity-Setup.exe
+        asset_name: Singularity-Setup-${{ github.ref }}.exe
         asset_content_type: application/octet-stream
