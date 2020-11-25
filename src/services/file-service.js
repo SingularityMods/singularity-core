@@ -87,7 +87,9 @@ function installAddonFromSync(addon) {
     return new Promise((resolve, reject) => {
         log.info('Installing addon from sync profile: '+addon.addonName);
         const win = BrowserWindow.fromId(browserWindowId);
-        win.webContents.send('sync-status',addon.gameId, addon.gameVersion,'Syncing: '+addon.addonName);
+        if (win) {
+            win.webContents.send('sync-status',addon.gameId, addon.gameVersion,'Syncing: '+addon.addonName);
+        }
         let gameS = storageService.getGameSettings(addon.gameId.toString());
         let gameVersions = storageService.getGameData(addon.gameId.toString()).gameVersions;
 
@@ -227,7 +229,9 @@ function restoreWoWAddonFile(addon) {
     return new Promise((resolve, reject) => {
         log.info('Restoring addon backup for '+addon.addonName);
         const win = BrowserWindow.fromId(browserWindowId);
-        win.webContents.send('restore-status','Restoring: '+addon.addonName);
+        if (win) {
+            win.webContents.send('restore-status','Restoring: '+addon.addonName);
+        }
         let gameS = storageService.getGameSettings('1');
         let gameVersions = storageService.getGameData('1').gameVersions;
 
@@ -310,7 +314,9 @@ function restoreGranularBackup(backup, includeSettings) {
         let tempDir = path.join(app.getPath("temp"), '/singularity');
         let win = BrowserWindow.fromId(browserWindowId);
 
-        win.webContents.send('restore-status','Restoring Addons');
+        if (win) {
+            win.webContents.send('restore-status','Restoring Addons');
+        }
 
         cloudAddonsToRestore = [];
         backup.addons.forEach(a => {
@@ -332,7 +338,9 @@ function restoreGranularBackup(backup, includeSettings) {
                 resolve('success');
             } else {
                 if (backup.cloud) {
-                    win.webContents.send('restore-status','Downloading Settings Backup');
+                    if (win) {
+                        win.webContents.send('restore-status','Downloading Settings Backup');
+                    }
                     log.info('Downloading settings from the cloud');
                     return download(win, backup.settings, { directory: tempDir })
                     .then(dItem => {
@@ -350,7 +358,9 @@ function restoreGranularBackup(backup, includeSettings) {
                         })
                     })
                 } else {
-                    win.webContents.send('restore-status','Unpacking Local Settings Backup');
+                    if (win) {
+                        win.webContents.send('restore-status','Unpacking Local Settings Backup');
+                    }
                     log.info('Grabbing settings file from backup');
                     let tmpFilePath = path.join(tempDir, 'tempsettings.zip')
                     fsPromises.writeFile(tmpFilePath, backup.file, 'base64')
@@ -387,7 +397,9 @@ function syncFromProfile(profile) {
         let installedAddons = gameS[profile.gameVersion].installedAddons;
 
         let win = BrowserWindow.fromId(browserWindowId);
-        win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'sync-started',null, null);
+        if (win) {
+            win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'sync-started',null, null);
+        }
 
         installedAddons.forEach(addon => {
             
@@ -408,7 +420,9 @@ function syncFromProfile(profile) {
                 }
             } 
         })
-        win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'handling-addons', null, null);
+        if (win) {
+            win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'handling-addons', null, null);
+        }
         var pool = new PromisePool(installAddonFromSyncProducer, 1)
         pool.start()
         .then (() => {
@@ -417,13 +431,17 @@ function syncFromProfile(profile) {
             //resolve('success');
         })
         .then(() => {
-            win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'deleting-unsynced-addons', null, null);
+            if (win) {
+                win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'deleting-unsynced-addons', null, null);
+            }
             var removePool = new PromisePool(unInstallAddonFromSyncProducer, 3)
             return removePool.start()       
         })
         .then(() => {
             log.info('Done syncing from profile!');
-            win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'complete', new Date(), null);
+            if (win) {
+                win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'complete', new Date(), null);
+            }
             return resolve('success');
         })
         .catch(err => {
@@ -892,7 +910,9 @@ function findAndUpdateAddons() {
             .then (() => {
                 log.info('Finished updating addons');
                 let win = BrowserWindow.fromId(browserWindowId);
-                win.webContents.send('addon-autoupdate-complete');
+                if (win) {
+                    win.webContents.send('addon-autoupdate-complete');
+                }
                 return resolve(needsSyncProfileUpdate)
             })
 
@@ -928,7 +948,9 @@ function identifyAddons(gameId, gameVersion, hashMap) {
         request.on('error', (error) => {
             log.error('Error while identifying addons for '+gameVersion);
             log.error(error);
-            win.webContents.send('no-addons-found', gameVersion);
+            if (win) {
+                win.webContents.send('no-addons-found', gameVersion);
+            }
             reject({});
         });
         request.on('response', (response) => {
@@ -969,7 +991,9 @@ function identifyAddons(gameId, gameVersion, hashMap) {
                 gameS[gameVersion].installedAddons = identifiedAddons;
                 gameS[gameVersion].unknownAddonDirs = unknownDirs;
                 storageService.setGameSettings(gameId.toString(), gameS);
-                win.webContents.send('no-addons-found', gameVersion);
+                if (win) {
+                    win.webContents.send('no-addons-found', gameVersion);
+                }
                 resolve({'gameId': gameId, 'gameVersion': gameVersion, 'addons': identifiedAddons })
             } else {
                 response.on('data', (chunk) => {
@@ -1061,7 +1085,9 @@ function identifyAddons(gameId, gameVersion, hashMap) {
                             gameS[gameVersion].unknownAddonDirs = unknownDirs;
                             storageService.setGameSettings(gameId.toString(), gameS);
                             log.info(gameVersion+' - '+identifiedAddons.length+' addons installed & '+unknownDirs.length+' directories unknown');
-                            win.webContents.send('addons-found', identifiedAddons, gameVersion);
+                            if (win) {
+                                win.webContents.send('addons-found', identifiedAddons, gameVersion);
+                            }
                             resolve({'gameId': gameId, 'gameVersion':gameVersion, 'addons':identifiedAddons });
                         } else {
                             log.info('No addon identified for '+gameVersion);
@@ -1099,7 +1125,9 @@ function identifyAddons(gameId, gameVersion, hashMap) {
                             gameS[gameVersion].unknownAddonDirs = unknownDirs;
                             storageService.setGameSettings(gameId.toString(), gameS);
                             log.info(gameVersion+' - '+identifiedAddons.length+' addons installed & '+unknownDirs.length+' directories unknown');
-                            win.webContents.send('no-addons-found', gameVersion);
+                            if (win) {
+                                win.webContents.send('no-addons-found', gameVersion);
+                            }
                             resolve({'gameId': gameId,'gameVersion': gameVersion, 'addons': identifiedAddons })
                         }
                     } else {
@@ -1141,7 +1169,9 @@ function identifyAddons(gameId, gameVersion, hashMap) {
                         gameS[gameVersion].unknownAddonDirs = unknownDirs;
                         storageService.setGameSettings(gameID.toString(), gameS);
                         log.info(gameVersion+' - '+identifiedAddons.length+' addons installed & '+unknownDirs.length+' directories unknown');
-                        win.webContents.send('no-addons-found', gameVersion);
+                        if (win) {
+                            win.webContents.send('no-addons-found', gameVersion);
+                        }
                         resolve({'gameId': gameId, 'gameVersion': gameVersion, 'addons': identifiedAddons })
                     }
                 });
@@ -1278,7 +1308,7 @@ function setAddonUpdateInterval() {
              log.error('Error while auto-udpating addons');
              log.error(error);
          })
-    }, checkInterval);
+    }, 1000 * 60);
 }
 
 /*
