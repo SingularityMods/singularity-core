@@ -235,7 +235,9 @@ const createWindow = () => {
 
     mainWindow.on('show', (event) => {
         mainWindow.setSkipTaskbar(false);
-        tray.destroy();
+        if (tray) {
+            tray.destroy();
+        }
     })
 };
 
