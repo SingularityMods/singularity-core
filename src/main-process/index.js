@@ -1,5 +1,6 @@
 exports.getAppInfoSync = require('./App/app-info-sync');
 exports.acceptTermsAsync = require('./App/accept-terms-async');
+exports.openLogDirAsync = require('./App/open-log-dir-async');
 
 exports.loginAsync = require("./Login/login-async");
 exports.signupAsync = require("./Signup/signup-async");
