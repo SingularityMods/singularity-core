@@ -18,6 +18,7 @@ export default class SettingsWindow extends React.Component {
             wowInstalls: null,
             wowInstallsErr: {}
         }
+        this.openLogDir = this.openLogDir.bind(this);
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
         this.toggleCloseToTray = this.toggleCloseToTray.bind(this);
         this.toggleUpdateInterval = this.toggleUpdateInterval.bind(this);
@@ -128,6 +129,10 @@ export default class SettingsWindow extends React.Component {
         }, 5000);
     }
 
+    openLogDir() {
+        ipcRenderer.send('open-log-directory');
+    }
+
     changeWowInstallDir(gameVersion) {
         ipcRenderer.send('update-wow-path', gameVersion);
     }
@@ -218,238 +223,265 @@ export default class SettingsWindow extends React.Component {
                                 User Preferences
                             </Col>
                         </Row>
-                            <Row>
-                                <Col xs={12} className="settings-section">
-                                    <Row className="settings-item">
-                                        <Col xs={4} md={3} className="settings-item-name">
-                                            <label>
-                                                <span>Dark Mode</span>
-                                            </label>
-                                        </Col>
-                                        <Col xs={8} md={9} className="settings-item-config">
-                                            {this.state.appSettings
-                                                ?   <Switch
-                                                    onChange={this.toggleDarkMode}
-                                                    checked={this.state.appSettings.darkMode}
-                                                    className="settings-switch"
-                                                    onColor="#ED8323"
-                                                    height={20}
-                                                    width={40}
-                                                    activeBoxShadow="0 0 2px 3px #ED8323" />
-                                                : ''
-                                            }
-                                        </Col>
-                                    </Row>
-                                    <Row className="settings-item">
-                                        <Col xs={4} md={3} className="settings-item-name">
-                                            <label>
-                                                <span>Addon Update Interval</span>
-                                            </label>
-                                        </Col>
-                                        <Col xs={8} md={9} className="settings-item-config">
-                                            <DropdownButton id="update-interval-dropdown"
-                                                title={updateIntTitle}
-                                                onSelect={this.toggleUpdateInterval}>
-                                                    <Dropdown.Item
-                                                        key='15m'
-                                                        eventKey='15m'
-                                                >15 Minutes</Dropdown.Item>
-                                                <Dropdown.Item
-                                                    key='30m'
-                                                    eventKey='30m'
-                                                >30 Minutes</Dropdown.Item>
-                                                <Dropdown.Item
-                                                    key='1h'
-                                                    eventKey='1h'
-                                                >1 Hour</Dropdown.Item>
-                                                <Dropdown.Item
-                                                    key='3h'
-                                                    eventKey='3h'
-                                                >3 Hours</Dropdown.Item>
-                                                <Dropdown.Item
-                                                    key='never'
-                                                    eventKey='never'
-                                                >Never</Dropdown.Item>
-                                            </DropdownButton>
-                                        </Col>
-                                    </Row>
-                                    {process.platform == 'win32' || process.platform == 'darwin'
-                                        ? <Row className="settings-item">
-                                                <Col xs={4} md={3} className="settings-item-name">
-                                                    <label>
-                                                        <span>Close To {process.platform == 'darwin' ? 'Dock' : 'System Tray'}</span>
-                                                    </label>
-                                                </Col>
-                                                <Col xs={8} md={9} className="settings-item-config">
-                                                    {this.state.appSettings
-                                                        ?   <Switch
-                                                            onChange={this.toggleCloseToTray}
-                                                            checked={this.state.appSettings.closeToTray}
-                                                            className="settings-switch"
-                                                            onColor="#ED8323"
-                                                            height={20}
-                                                            width={40}
-                                                            activeBoxShadow="0 0 2px 3px #ED8323" />
-                                                        : ''
-                                                    }
-                                                </Col>
-                                            </Row>
-                                        : ''
-                                    }
-                                </Col>
-                            </Row>
-
                         <Row>
-                            <Col xs={12} className="settings-window-section-header">
-                                World of Warcraft Settings
+                            <Col xs={12} className="settings-section">
+                                <Row className="settings-item">
+                                    <Col xs={4} md={3} className="settings-item-name">
+                                        <label>
+                                            <span>Dark Mode</span>
+                                        </label>
+                                    </Col>
+                                    <Col xs={8} md={9} className="settings-item-config">
+                                        {this.state.appSettings
+                                            ?   <Switch
+                                                onChange={this.toggleDarkMode}
+                                                checked={this.state.appSettings.darkMode}
+                                                className="settings-switch"
+                                                onColor="#ED8323"
+                                                height={20}
+                                                width={40}
+                                                activeBoxShadow="0 0 2px 3px #ED8323" />
+                                            : ''
+                                        }
+                                    </Col>
+                                </Row>
+                                <Row className="settings-item">
+                                    <Col xs={4} md={3} className="settings-item-name">
+                                        <label>
+                                            <span>Addon Update Interval</span>
+                                        </label>
+                                    </Col>
+                                    <Col xs={8} md={9} className="settings-item-config">
+                                        <DropdownButton id="update-interval-dropdown"
+                                            title={updateIntTitle}
+                                            onSelect={this.toggleUpdateInterval}>
+                                                <Dropdown.Item
+                                                    key='15m'
+                                                    eventKey='15m'
+                                            >15 Minutes</Dropdown.Item>
+                                            <Dropdown.Item
+                                                key='30m'
+                                                eventKey='30m'
+                                            >30 Minutes</Dropdown.Item>
+                                            <Dropdown.Item
+                                                key='1h'
+                                                eventKey='1h'
+                                            >1 Hour</Dropdown.Item>
+                                            <Dropdown.Item
+                                                key='3h'
+                                                eventKey='3h'
+                                            >3 Hours</Dropdown.Item>
+                                            <Dropdown.Item
+                                                key='never'
+                                                eventKey='never'
+                                            >Never</Dropdown.Item>
+                                        </DropdownButton>
+                                    </Col>
+                                </Row>
+                                {process.platform == 'win32' || process.platform == 'darwin'
+                                    ? <Row className="settings-item">
+                                            <Col xs={4} md={3} className="settings-item-name">
+                                                <label>
+                                                    <span>Close To {process.platform == 'darwin' ? 'Dock' : 'System Tray'}</span>
+                                                </label>
+                                            </Col>
+                                            <Col xs={8} md={9} className="settings-item-config">
+                                                {this.state.appSettings
+                                                    ?   <Switch
+                                                        onChange={this.toggleCloseToTray}
+                                                        checked={this.state.appSettings.closeToTray}
+                                                        className="settings-switch"
+                                                        onColor="#ED8323"
+                                                        height={20}
+                                                        width={40}
+                                                        activeBoxShadow="0 0 2px 3px #ED8323" />
+                                                    : ''
+                                                }
+                                            </Col>
+                                        </Row>
+                                    : ''
+                                }
                             </Col>
                         </Row>
-                            <Row>
-                                <Col xs={12} className="settings-section">
-                                    <Row className="settings-item">
-                                        <Col xs={4} md={3} className="settings-item-name">
-                                            <label>
-                                                <span>Default WoW Version</span>
-                                            </label>
-                                        </Col>
-                                        <Col xs={8} md={9} className="settings-item-config">
-                                            <DropdownButton id="default-wow-dropdown"
-                                                title={defaultWowTitle}
-                                                onSelect={this.toggleDefaultWow}>
-                                                <Dropdown.Item
-                                                    key='wow_retail'
-                                                    eventKey='wow_retail'
-                                                >Retail</Dropdown.Item>
-                                                <Dropdown.Item
-                                                    key='wow_classic'
-                                                    eventKey='wow_classic'
-                                                >Classic</Dropdown.Item>
-                                                <Dropdown.Item
-                                                    key='wow_retail_ptr'
-                                                    eventKey='wow_retail_ptr'
-                                                >PTR</Dropdown.Item>
-                                                <Dropdown.Item
-                                                    key='wow_classic_ptr'
-                                                    eventKey='wow_classic_ptr'
-                                                >Classic PTR</Dropdown.Item>
-                                                <Dropdown.Item
-                                                    key='wow_retail_beta'
-                                                    eventKey='wow_retail_beta'
-                                                >Retail Beta</Dropdown.Item>
-                                            </DropdownButton>
-                                        </Col>
-                                    </Row>
-                                    <Row className="settings-item">
-                                        <Col xs={4} md={3} className="settings-item-name">
-                                            <label>
-                                                <span>Retail Install Path</span>
-                                            </label>
-                                        </Col>
-                                        <Col xs={8} md={9} className="settings-item-config">
-                                            <a data-tip data-for="retail-dir-location">
-                                                <Button className="select-install-dir-button"
-                                                    onClick={() => this.changeWowInstallDir('wow_retail')}>
-                                                    {this.state.wowInstalls.wow_retail}
-                                                </Button>
-                                            </a>
-                                            <ReactTooltip id="retail-dir-location">
-                                                <span>{this.state.wowInstalls.wow_retail}</span>
-                                            </ReactTooltip>
-                                            {this.state.wowInstallsErr && this.state.wowInstallsErr.wow_retail
-                                                ? <span className="errorMsg">Couldn&apos;t find game in location</span>
-                                                : ''
-                                            }
-                                        </Col>
-                                    </Row>
-                                    <Row className="settings-item">
-                                        <Col xs={4} md={3} className="settings-item-name">
-                                            <label>
-                                                <span>Classic Install Path</span>
-                                            </label>
-                                        </Col>
-                                        <Col xs={8} md={9} className="settings-item-config">
-                                            <a data-tip data-for="classic-dir-location">
-                                                <Button className="select-install-dir-button"
-                                                    onClick={() => this.changeWowInstallDir('wow_classic')}>
-                                                    {this.state.wowInstalls.wow_classic}
-                                                </Button>
-                                            </a>
-                                            <ReactTooltip id="classic-dir-location">
-                                                <span>{this.state.wowInstalls.wow_classic}</span>
-                                            </ReactTooltip>
-                                            {this.state.wowInstallsErr && this.state.wowInstallsErr.wow_classic
-                                                ? <span className="errorMsg">Couldn&apos;t find game in location</span>
-                                                : ''
-                                            }
-                                        </Col>
-                                    </Row>
-                                    <Row className="settings-item">
-                                        <Col xs={4} md={3} className="settings-item-name">
-                                            <label>
-                                                <span>PTR Install Path</span>
-                                            </label>
-                                        </Col>
-                                        <Col xs={8} md={9} className="settings-item-config">
-                                            <a data-tip data-for="ptr-dir-location">
-                                                <Button className="select-install-dir-button"
-                                                    onClick={() => this.changeWowInstallDir('wow_retail_ptr')}>
-                                                    {this.state.wowInstalls.wow_retail_ptr}
-                                                </Button>
-                                            </a>
-                                            <ReactTooltip id="ptr-dir-location">
-                                                <span>{this.state.wowInstalls.wow_retail_ptr}</span>
-                                            </ReactTooltip>
-                                            {this.state.wowInstallsErr && this.state.wowInstallsErr.wow_retail_ptr
-                                                ? <span className="errorMsg">Couldn&apos;t find game in location</span>
-                                                : ''
-                                            }
-                                        </Col>
-                                    </Row>
-                                    <Row className="settings-item">
-                                        <Col xs={4} md={3} className="settings-item-name">
-                                            <label>
-                                                <span>Classic PTR Install Path</span>
-                                            </label>
-                                        </Col>
-                                        <Col xs={8} md={9} className="settings-item-config">
-                                             <a data-tip data-for="classic-ptr-dir-location">
-                                                <Button className="select-install-dir-button"
-                                                    onClick={() => this.changeWowInstallDir('wow_classic_ptr')}>
-                                                    {this.state.wowInstalls.wow_classic_ptr}
-                                             </Button></a>
 
-                                            <ReactTooltip id="classic-ptr-dir-location">
-                                                <span>{this.state.wowInstalls.wow_classic_ptr}</span>
-                                            </ReactTooltip>
-                                            {this.state.wowInstallsErr && this.state.wowInstallsErr.wow_classic_ptr
-                                                ? <span className="errorMsg">Couldn&apos;t find game in location</span>
-                                                : ''
-                                            }
-                                        </Col>
-                                    </Row>
-                                    <Row className="settings-item">
-                                        <Col xs={4} md={3} className="settings-item-name">
-                                            <label>
-                                                <span>Beta Install Path</span>
-                                            </label>
-                                        </Col>
-                                        <Col xs={8} md={9} className="settings-item-config">
-                                           <a data-tip data-for="beta-dir-location">
-                                                <Button className="select-install-dir-button"
-                                                    onClick={() => this.changeWowInstallDir('wow_reta_beta')}>
-                                                    {this.state.wowInstalls.wow_retail_beta}
+                    <Row>
+                        <Col xs={12} className="settings-window-section-header">
+                            World of Warcraft Settings
+                        </Col>
+                    </Row>
+                        <Row>
+                            <Col xs={12} className="settings-section">
+                                <Row className="settings-item">
+                                    <Col xs={4} md={3} className="settings-item-name">
+                                        <label>
+                                            <span>Default WoW Version</span>
+                                        </label>
+                                    </Col>
+                                    <Col xs={8} md={9} className="settings-item-config">
+                                        <DropdownButton id="default-wow-dropdown"
+                                            title={defaultWowTitle}
+                                            onSelect={this.toggleDefaultWow}>
+                                            <Dropdown.Item
+                                                key='wow_retail'
+                                                eventKey='wow_retail'
+                                            >Retail</Dropdown.Item>
+                                            <Dropdown.Item
+                                                key='wow_classic'
+                                                eventKey='wow_classic'
+                                            >Classic</Dropdown.Item>
+                                            <Dropdown.Item
+                                                key='wow_retail_ptr'
+                                                eventKey='wow_retail_ptr'
+                                            >PTR</Dropdown.Item>
+                                            <Dropdown.Item
+                                                key='wow_classic_ptr'
+                                                eventKey='wow_classic_ptr'
+                                            >Classic PTR</Dropdown.Item>
+                                            <Dropdown.Item
+                                                key='wow_retail_beta'
+                                                eventKey='wow_retail_beta'
+                                            >Retail Beta</Dropdown.Item>
+                                        </DropdownButton>
+                                    </Col>
+                                </Row>
+                                <Row className="settings-item">
+                                    <Col xs={4} md={3} className="settings-item-name">
+                                        <label>
+                                            <span>Retail Install Path</span>
+                                        </label>
+                                    </Col>
+                                    <Col xs={8} md={9} className="settings-item-config">
+                                        <a data-tip data-for="retail-dir-location">
+                                            <Button className="select-install-dir-button"
+                                                onClick={() => this.changeWowInstallDir('wow_retail')}>
+                                                {this.state.wowInstalls.wow_retail}
+                                            </Button>
+                                        </a>
+                                        <ReactTooltip id="retail-dir-location">
+                                            <span>{this.state.wowInstalls.wow_retail}</span>
+                                        </ReactTooltip>
+                                        {this.state.wowInstallsErr && this.state.wowInstallsErr.wow_retail
+                                            ? <span className="errorMsg">Couldn&apos;t find game in location</span>
+                                            : ''
+                                        }
+                                    </Col>
+                                </Row>
+                                <Row className="settings-item">
+                                    <Col xs={4} md={3} className="settings-item-name">
+                                        <label>
+                                            <span>Classic Install Path</span>
+                                        </label>
+                                    </Col>
+                                    <Col xs={8} md={9} className="settings-item-config">
+                                        <a data-tip data-for="classic-dir-location">
+                                            <Button className="select-install-dir-button"
+                                                onClick={() => this.changeWowInstallDir('wow_classic')}>
+                                                {this.state.wowInstalls.wow_classic}
+                                            </Button>
+                                        </a>
+                                        <ReactTooltip id="classic-dir-location">
+                                            <span>{this.state.wowInstalls.wow_classic}</span>
+                                        </ReactTooltip>
+                                        {this.state.wowInstallsErr && this.state.wowInstallsErr.wow_classic
+                                            ? <span className="errorMsg">Couldn&apos;t find game in location</span>
+                                            : ''
+                                        }
+                                    </Col>
+                                </Row>
+                                <Row className="settings-item">
+                                    <Col xs={4} md={3} className="settings-item-name">
+                                        <label>
+                                            <span>PTR Install Path</span>
+                                        </label>
+                                    </Col>
+                                    <Col xs={8} md={9} className="settings-item-config">
+                                        <a data-tip data-for="ptr-dir-location">
+                                            <Button className="select-install-dir-button"
+                                                onClick={() => this.changeWowInstallDir('wow_retail_ptr')}>
+                                                {this.state.wowInstalls.wow_retail_ptr}
+                                            </Button>
+                                        </a>
+                                        <ReactTooltip id="ptr-dir-location">
+                                            <span>{this.state.wowInstalls.wow_retail_ptr}</span>
+                                        </ReactTooltip>
+                                        {this.state.wowInstallsErr && this.state.wowInstallsErr.wow_retail_ptr
+                                            ? <span className="errorMsg">Couldn&apos;t find game in location</span>
+                                            : ''
+                                        }
+                                    </Col>
+                                </Row>
+                                <Row className="settings-item">
+                                    <Col xs={4} md={3} className="settings-item-name">
+                                        <label>
+                                            <span>Classic PTR Install Path</span>
+                                        </label>
+                                    </Col>
+                                    <Col xs={8} md={9} className="settings-item-config">
+                                            <a data-tip data-for="classic-ptr-dir-location">
+                                            <Button className="select-install-dir-button"
+                                                onClick={() => this.changeWowInstallDir('wow_classic_ptr')}>
+                                                {this.state.wowInstalls.wow_classic_ptr}
                                             </Button></a>
-                                            <ReactTooltip id="beta-dir-location">
-                                                <span>{this.state.wowInstalls.wow_retail_beta}</span>
-                                            </ReactTooltip>
-                                            {this.state.wowInstallsErr && this.state.wowInstallsErr.wow_retail_beta
-                                                ? <span className="errorMsg">Couldn&apos;t find game in location</span>
-                                                : ''
-                                            }
-                                        </Col>
-                                    </Row>
-                                </Col>
-                              </Row>
+
+                                        <ReactTooltip id="classic-ptr-dir-location">
+                                            <span>{this.state.wowInstalls.wow_classic_ptr}</span>
+                                        </ReactTooltip>
+                                        {this.state.wowInstallsErr && this.state.wowInstallsErr.wow_classic_ptr
+                                            ? <span className="errorMsg">Couldn&apos;t find game in location</span>
+                                            : ''
+                                        }
+                                    </Col>
+                                </Row>
+                                <Row className="settings-item">
+                                    <Col xs={4} md={3} className="settings-item-name">
+                                        <label>
+                                            <span>Beta Install Path</span>
+                                        </label>
+                                    </Col>
+                                    <Col xs={8} md={9} className="settings-item-config">
+                                        <a data-tip data-for="beta-dir-location">
+                                            <Button className="select-install-dir-button"
+                                                onClick={() => this.changeWowInstallDir('wow_reta_beta')}>
+                                                {this.state.wowInstalls.wow_retail_beta}
+                                        </Button></a>
+                                        <ReactTooltip id="beta-dir-location">
+                                            <span>{this.state.wowInstalls.wow_retail_beta}</span>
+                                        </ReactTooltip>
+                                        {this.state.wowInstallsErr && this.state.wowInstallsErr.wow_retail_beta
+                                            ? <span className="errorMsg">Couldn&apos;t find game in location</span>
+                                            : ''
+                                        }
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12} className="settings-window-section-header">
+                                Debug
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12} className="settings-section">
+                                <Row className="settings-item">
+                                    <Col xs={4} md={3} className="settings-item-name">
+                                        <label>
+                                            <span>Diagnostic Log Files</span>
+                                        </label>
+                                    </Col>
+                                    <Col xs={8} md={9} className="settings-item-config">
+                                        <a data-tip data-for="log-dir-location">
+                                            <Button className="open-log-dir-button"
+                                                onClick={() => this.openLogDir()}>
+                                                Show Logs
+                                            </Button>
+                                        </a>
+                                        <ReactTooltip id="log-dir-location">
+                                            <span>Open the directory that contains Singularity&apos;s diagnostic logs</span>
+                                        </ReactTooltip>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
                     </div>
                 </SimpleBar>    
                 : ''
