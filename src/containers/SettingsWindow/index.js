@@ -273,26 +273,29 @@ export default class SettingsWindow extends React.Component {
                                             </DropdownButton>
                                         </Col>
                                     </Row>
-                                    <Row className="settings-item">
-                                        <Col xs={4} md={3} className="settings-item-name">
-                                            <label>
-                                                <span>Close To {process.platform == 'darwin' ? 'Dock' : 'System Tray'}</span>
-                                            </label>
-                                        </Col>
-                                        <Col xs={8} md={9} className="settings-item-config">
-                                            {this.state.appSettings
-                                                ?   <Switch
-                                                    onChange={this.toggleCloseToTray}
-                                                    checked={this.state.appSettings.closeToTray}
-                                                    className="settings-switch"
-                                                    onColor="#ED8323"
-                                                    height={20}
-                                                    width={40}
-                                                    activeBoxShadow="0 0 2px 3px #ED8323" />
-                                                : ''
-                                            }
-                                        </Col>
-                                    </Row>
+                                    {process.platform == 'win32' || process.platform == 'darwin'
+                                        ? <Row className="settings-item">
+                                                <Col xs={4} md={3} className="settings-item-name">
+                                                    <label>
+                                                        <span>Close To {process.platform == 'darwin' ? 'Dock' : 'System Tray'}</span>
+                                                    </label>
+                                                </Col>
+                                                <Col xs={8} md={9} className="settings-item-config">
+                                                    {this.state.appSettings
+                                                        ?   <Switch
+                                                            onChange={this.toggleCloseToTray}
+                                                            checked={this.state.appSettings.closeToTray}
+                                                            className="settings-switch"
+                                                            onColor="#ED8323"
+                                                            height={20}
+                                                            width={40}
+                                                            activeBoxShadow="0 0 2px 3px #ED8323" />
+                                                        : ''
+                                                    }
+                                                </Col>
+                                            </Row>
+                                        : ''
+                                    }
                                 </Col>
                             </Row>
 
