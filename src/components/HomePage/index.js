@@ -175,7 +175,7 @@ export default class HomePage extends React.Component {
                     </Row>
                     <Row>
                         <Col xs={12} className="homepage-footer">
-                            <div className="footer-link"><a target="_blank" rel="noreferrer" href="https://singularitymods.freshdesk.com/">Support</a></div>
+                            <div className="footer-link"><a target="_blank" rel="noreferrer" href="https://github.com/SingularityMods/singularity-core/issues">Support</a></div>
                         </Col>
                     </Row>
             </div>
