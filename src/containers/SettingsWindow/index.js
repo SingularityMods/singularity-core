@@ -276,7 +276,7 @@ export default class SettingsWindow extends React.Component {
                                     <Row className="settings-item">
                                         <Col xs={4} md={3} className="settings-item-name">
                                             <label>
-                                                <span>Close To {process.platform == 'darwin' ? 'the Dock' : 'System Tray'}</span>
+                                                <span>Close To {process.platform == 'darwin' ? 'Dock' : 'System Tray'}</span>
                                             </label>
                                         </Col>
                                         <Col xs={8} md={9} className="settings-item-config">
