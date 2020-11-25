@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, autoUpdater, nativeTheme, menu } = require('electron');
+const { app, BrowserWindow, ipcMain, autoUpdater, nativeTheme, menu, Menu, Tray } = require('electron');
 const path = require('path');
 
 // import services 
@@ -17,6 +17,8 @@ log.transports.file.maxSize = 1024 * 1000;
 
 var mainWindow;
 var mainWindowId;
+let tray = null;
+let isQuitting = false;
 
 const API_ENDPOINT = "https://api.singularitymods.com/api/v1/";
 const PACKAGE_URL = "https://storage.singularitycdn.com/App/Releases/";
@@ -143,6 +145,32 @@ const startAutoUpdater = () => {
     }  
 }
 
+// Handle creating a system tray
+function createTray() {
+    let appIcon = new Tray(path.join(__dirname, 'assets/icons/app_icon.png'));
+    const contextMenu = Menu.buildFromTemplate([
+        {
+            label: 'Open Singularity',
+            click: function () {
+                mainWindow.show();
+            }
+        },
+        {
+            label: 'Exit',
+            click: function () {
+                isQuitting = true;
+                app.quit();
+            }
+        }
+    ])
+    appIcon.on('double-click', function (event) {
+        mainWindow.show();
+    });
+    appIcon.setToolTip('Singularity');
+    appIcon.setContextMenu(contextMenu);
+    return appIcon;
+}
+
 
 // Create the main browser window for the renderer
 const createWindow = () => {
@@ -193,6 +221,23 @@ const createWindow = () => {
                 mainWindow.webContents.executeJavaScript(`__setTheme()`)
             })
 
+    })
+
+    // Handle close to tray if user has it configured
+    mainWindow.on('close', (event) => {
+        if(process.platform == 'win32' && storageService.getAppData('userConfigurable').closeToTray && !isQuitting) {
+            event.preventDefault();
+            mainWindow.hide();
+            mainWindow.setSkipTaskbar(true);
+            tray = createTray();
+        }
+    })
+
+    mainWindow.on('show', (event) => {
+        mainWindow.setSkipTaskbar(false);
+        if (tray) {
+            tray.destroy();
+        }
     })
 };
 
@@ -253,9 +298,10 @@ app.on('ready', () => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+    if (process.platform == 'darwin' && storageService.getAppData('userConfigurable').closeToTray) {
+        return false;
+    }
     app.quit();
-  }
 });
 
 app.on('activate', () => {

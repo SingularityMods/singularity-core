@@ -10,6 +10,7 @@ const hasha = require('hasha');
 const streamBuffers = require('stream-buffers');
 const PromisePool = require('es6-promise-pool');
 
+const syncService = require('../services/sync-service');
 const storageService = require('../services/storage-service');
 
 const log = require('electron-log');
@@ -1256,6 +1257,7 @@ function setAddonUpdateInterval() {
                 break;
             case 'never':
                 checkInterval = 1000 * 60 * 60 * 24 * 365;
+                break;
             default:
                 checkInterval = 1000 * 60 * 60;
         }
@@ -1267,12 +1269,14 @@ function setAddonUpdateInterval() {
     log.info('Addon update interval set to: ' + appD.addonUpdateInterval);
     updateInterval = setInterval(() => {
         //checkAddons();
+        log.info('Starting addon auto refresh and update');
         findAndUpdateAddons()
         .then( profiles => {
             syncService.updateSyncProfiles([...profiles]);
          })
          .catch(error => {
              log.error('Error while auto-udpating addons');
+             log.error(error);
          })
     }, checkInterval);
 }
