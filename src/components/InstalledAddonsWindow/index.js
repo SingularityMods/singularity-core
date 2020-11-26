@@ -576,6 +576,14 @@ export default class InstalledAddonsWindow extends React.Component {
             return(
             <div className="no-data-label">No Addons Matching That Filter</div>)
         }
+        const noAddonsInstalled = () => {
+            return (
+                <div className="no-data-label no-addons">
+                    <p>It looks like you don't have any addons installed yet!</p>
+                    <p>Try hitting <span className="no-addons-link" onClick={this.findAddons} >Refresh</span> or <span className="no-addons-link" onClick={() => this.props.toggleActiveTab('browse')}>Browse</span> for new ones. You can also restore a <span className="no-addons-link" onClick={this.openBackupDialog}>Backup</span> if you have one or use your sync profile from another computer if you've configured one.</p>
+                </div>
+            )
+        }
         const columns = [{
             dataField: 'addonId',
             hidden: true
@@ -802,7 +810,6 @@ export default class InstalledAddonsWindow extends React.Component {
                 <Row>
                     <Col xs={12} className="installed-addon-window-content">
                         <div>
-                            {this.state.installedAddons && this.state.installedAddons.length > 0 ? (
                                 <div className="addons-window">
                                     <Row className="addon-window-menu">
                                         <Col xs={6} sm={7} xl={7} className="button-col">
@@ -854,47 +861,21 @@ export default class InstalledAddonsWindow extends React.Component {
                                                     installedAddons={this.state.installedAddons}
                                                 />
                                                 <Col xs={12}>
-                                                    {this.state.installedAddons ? (
-                                                        <BootstrapTable
-
-                                                            keyField={'addonId'}
-                                                            data={filteredAddons}
-                                                            columns={columns}
-                                                            selectRow={selectRow}
-                                                            headerClasses='installed-addons-header'
-                                                            rowClasses='installed-addons-row'
-                                                            noDataIndication={noTableData}>
-                                                        </BootstrapTable>
-                                                    ) : (
-                                                            ''
-                                                        )}
+                                                    <BootstrapTable
+                                                        keyField={'addonId'}
+                                                        data={filteredAddons}
+                                                        columns={columns}
+                                                        selectRow={selectRow}
+                                                        headerClasses='installed-addons-header'
+                                                        rowClasses='installed-addons-row'
+                                                        noDataIndication={this.state.installedAddons && this.state.installedAddons.length > 0 ? noTableData : noAddonsInstalled}>
+                                                    </BootstrapTable>
                                                 </Col>
 
                                             </Row>
                                         </SimpleBar> 
-                                    }
-                                     
+                                    }                                 
                                 </div>
-                            ) : (
-                                    <div className="no-addons-found-window">
-                                        <Row>
-                                            <Col xs={12}>
-                                                <h2 className="window-message">It looks like you don&apos;t have any adddons installed yet!</h2>
-                                            </Col>
-                                        </Row>
-                                        <Row>
-                                            <Col xs={12} className="no-addons-found-options">
-                                                <GameMenuButton handleClick={this.props.toggleActiveTab} clickData="browse" type='Browse Addons' />
-                                                <GameMenuButton handleClick={this.findAddons} type='Refresh' />
-                                            </Col>
-                                        </Row>
-                                        {this.state.isRefreshing
-                                            ? <LoadingSpinner />
-                                            : ''
-                                        }
-                                    </div>
-                                )}
-
                         </div>
                     </Col>
                 </Row>

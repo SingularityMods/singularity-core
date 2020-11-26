@@ -157,6 +157,15 @@ margin-left: 0px;
     text-align: center;
 }
 
+.no-data-label.no-addons p{
+    font-size: 1.1rem;
+}
+
+.no-addons-link{
+    color: var(--singularity-orange);
+    cursor: pointer;
+}
+
 .addon-search-field.filter-field {
     float: right;
 }
