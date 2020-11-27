@@ -33,6 +33,7 @@ exports.getGameDataSync = require('./Game/get-game-data-sync');
 exports.getGameSettingsSync = require('./Game/get-game-settings-sync');
 exports.findGameManualAsync = require('./Game/find-game-manual-async');
 exports.findGameAutoAsync = require('./Game/find-game-auto-async');
+exports.setGameDefaultsAsync = require('./Game/set-game-defaults-async');
 
 exports.changeAddonBrachAsync = require('./Addon/change-addon-breach-async');
 exports.findAddonsAsync = require('./Addon/find-addons-async');

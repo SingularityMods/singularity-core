@@ -6,6 +6,10 @@
       "shortName": "wow-retail",
       "installed": false,
       "sync": false,
+      "defaults": {
+        "trackBranch": 1,
+        "autoUpdate": false
+      },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_retail_\\",
       "installedAddons": [],
       "unknownAddonDirs": []
@@ -16,6 +20,10 @@
       "shortName": "wow-classic",
       "installed": false,
       "sync": false,
+      "defaults": {
+        "trackBranch": 1,
+        "autoUpdate": false
+      },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_classic_\\",
       "installedAddons": [],
       "unknownAddonDirs": []
@@ -26,6 +34,10 @@
       "shortName": "wow-retail-ptr",
       "installed": false,
       "sync": false,
+      "defaults": {
+        "trackBranch": 1,
+        "autoUpdate": false
+      },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_ptr_\\",
       "installedAddons": [],
       "unknownAddonDirs": []
@@ -36,6 +48,10 @@
       "shortName": "wow-classic-ptr",
       "installed": false,
       "sync": false,
+      "defaults": {
+        "trackBranch": 1,
+        "autoUpdate": false
+      },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_classic_ptr_\\",
       "installedAddons": [],
       "unknownAddonDirs": []
@@ -45,6 +61,10 @@
       "nickName": "Beta",
       "shortName": "wow-retail-beta",
       "installed": false,
+      "defaults": {
+        "trackBranch": 1,
+        "autoUpdate": false
+      },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_beta_\\",
       "installedAddons": [],
       "unknownAddonDirs": []
