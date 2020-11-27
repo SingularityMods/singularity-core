@@ -35,7 +35,7 @@ ipcMain.on('auto-find-game', (event, gameId) => {
     }
     if (foundInstall) {
         event.sender.send('installation-found');
-        checkAddons();
+        fileService.findAndUpdateAddons();
     } else {
         event.sender.send('installation-not-found', "We couldn't find the game. Try finding it manually?");
     }
