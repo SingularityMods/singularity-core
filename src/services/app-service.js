@@ -220,8 +220,12 @@ function setAppConfig() {
         for (const [key, value] of Object.entries(gameS)) {
             var gameVersion = key;
             gameS[gameVersion].sync = false;
-            storageService.setGameSettings('1',gameS);
+            gameS[gameVersion].defaults = {
+                                                "trackBranch": 1,
+                                                "autoUpdate": false
+                                            };
         }
+        storageService.setGameSettings('1',gameS);
         let userConfig = storageService.getAppData('userConfigurable')
         userConfig.minimizeToTray = false;
         storageService.setAppData('userConfigurable',userConfig);

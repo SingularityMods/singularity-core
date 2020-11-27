@@ -1019,12 +1019,12 @@ function identifyAddons(gameId, gameVersion, hashMap) {
                                     return a.addonId === addon.addonId
                                 });
                                 if (installedVersion) {
-                                    addon.trackBranch = installedVersion.trackBranch || 1;
-                                    addon.autoUpdate = installedVersion.autoUpdate || false;
+                                    addon.trackBranch = installedVersion.trackBranch || gameS[gameVersion].defaults.trackBranch;
+                                    addon.autoUpdate = installedVersion.autoUpdate || gameS[gameVersion].defaults.autoUpdate;
                                     addon.ignoreUpdate = installedVersion.ignoreUpdate || false;
                                 } else {
-                                    addon.trackBranch = 1;
-                                    addon.autoUpdate = false;
+                                    addon.trackBranch = gameS[gameVersion].defaults.trackBranch;
+                                    addon.autoUpdate = gameS[gameVersion].defaults.autoUpdate;
                                     addon.ignoreUpdate = false;
                                 }
  
