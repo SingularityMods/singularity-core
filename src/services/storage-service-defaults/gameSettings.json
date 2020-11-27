@@ -20,6 +20,10 @@
       "shortName": "wow-classic",
       "installed": false,
       "sync": false,
+      "defaults": {
+        "trackBranch": 1,
+        "autoUpdate": false
+      },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_classic_\\",
       "installedAddons": [],
       "unknownAddonDirs": []
