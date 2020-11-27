@@ -16,13 +16,16 @@ export default class SettingsWindow extends React.Component {
             backupDirMsg: "",
             movingBackupDir: false,
             wowInstalls: null,
-            wowInstallsErr: {}
+            wowInstallsErr: {},
+            gameDefaults: null,
         }
         this.openLogDir = this.openLogDir.bind(this);
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
         this.toggleCloseToTray = this.toggleCloseToTray.bind(this);
         this.toggleUpdateInterval = this.toggleUpdateInterval.bind(this);
         this.toggleDefaultWow = this.toggleDefaultWow.bind(this);
+        this.toggleDefaultWowAddonTrack = this.toggleDefaultWowAddonTrack.bind(this);
+        this.toggleDefaultWowAutoUpdate = this.toggleDefaultWowAutoUpdate.bind(this);
         this.selectBackupDir = this.selectBackupDir.bind(this);
         this.movingBackupDirListener = this.movingBackupDirListener.bind(this);
         this.backupDirAcceptedListener = this.backupDirAcceptedListener.bind(this);
@@ -47,9 +50,17 @@ export default class SettingsWindow extends React.Component {
             'wow_retail_beta': gameSettings['wow_retail_beta'].installPath
 
         };
+        const gameDefaults = {
+            'wow_retail': gameSettings['wow_retail'].defaults,
+            'wow_classic': gameSettings['wow_classic'].defaults,
+            'wow_retail_ptr': gameSettings['wow_retail_ptr'].defaults,
+            'wow_classic_ptr': gameSettings['wow_classic_ptr'].defaults,
+            'wow_retail_beta': gameSettings['wow_retail_beta'].defaults
+        }
         this.setState({
             appSettings: appSettings,
-            wowInstalls: wowInstalls
+            wowInstalls: wowInstalls,
+            gameDefaults: gameDefaults
         });
         
     }
@@ -95,6 +106,48 @@ export default class SettingsWindow extends React.Component {
         ipcRenderer.send('set-app-settings', appSettings);
         this.setState({
             appSettings: appSettings
+        })
+    }
+
+    toggleDefaultWowAddonTrack(branch,event) {
+        let gameDefaults = this.state.gameDefaults;
+        gameDefaults[event.target.attributes.gameversion.value].trackBranch = parseInt(branch);
+        ipcRenderer.send('set-game-defaults',1, event.target.attributes.gameversion.value ,gameDefaults[event.target.attributes.gameversion.value]);
+        this.setState({
+            gameDefaults: gameDefaults
+        })
+    }
+
+    toggleDefaultWowAutoUpdate(checked, event, id) {
+        let gameDefaults = this.state.gameDefaults
+        switch(id) {
+            case 'wow_retail_auto_update':
+                gameDefaults['wow_retail'].autoUpdate = checked;
+                ipcRenderer.send('set-game-defaults',1, 'wow_retail' ,gameDefaults.wow_retail);
+                break;
+            case 'wow_classic_auto_update':
+                gameDefaults['wow_classic'].autoUpdate = checked;
+                ipcRenderer.send('set-game-defaults',1, 'wow_classic' ,gameDefaults.wow_classic);
+                break;
+            case 'wow_retail_ptr_auto_update':
+                gameDefaults['wow_retail_ptr'].autoUpdate = checked;
+                ipcRenderer.send('set-game-defaults',1, 'wow_retail_ptr' ,gameDefaults.wow_retail_ptr);
+                break;
+            case 'wow_classic_ptr_auto_update':
+                gameDefaults['wow_classic_ptr'].autoUpdate = checked;
+                ipcRenderer.send('set-game-defaults',1, 'wow_classic_ptr' ,gameDefaults.wow_classic_ptr);
+                break;
+            case 'wow_retail_beta_auto_update':
+                gameDefaults['wow_retail_beta'].autoUpdate = checked;
+                ipcRenderer.send('set-game-defaults',1, 'wow_retail_beta' ,gameDefaults.wow_retail_beta);
+                break;
+            case 'wow_classic_beta_auto_update':
+                gameDefaults['wow_classic_beta'].autoUpdate = checked;
+                ipcRenderer.send('set-game-defaults',1, 'wow_classic_beta' ,gameDefaults.wow_classic_beta);
+                break;
+        }
+        this.setState({
+            gameDefaults: gameDefaults
         })
     }
 
@@ -202,6 +255,21 @@ export default class SettingsWindow extends React.Component {
 
             }
         }
+
+        function getDefaultTrackTile(track) {
+            switch(track) {
+                case 1:
+                    return 'Release'
+                    break;
+                case 2:
+                    return 'Beta';
+                    break;
+                case 3:
+                    return 'Alpha';
+                    break;
+            }
+        }
+       
         return (
     
             <div className="SettingsWindow">
@@ -369,6 +437,55 @@ export default class SettingsWindow extends React.Component {
                                 <Row className="settings-item">
                                     <Col xs={4} md={3} className="settings-item-name">
                                         <label>
+                                            <span>Retail Default Addon Track</span>
+                                        </label>
+                                    </Col>
+                                    <Col xs={8} md={9} className="settings-item-config">
+                                        <DropdownButton id="default-wow-retail-track-dropdown"
+                                            title={getDefaultTrackTile(this.state.gameDefaults.wow_retail.trackBranch)}
+                                            onSelect={this.toggleDefaultWowAddonTrack}>
+                                            <Dropdown.Item
+                                                gameversion="wow_retail"
+                                                key={1}
+                                                eventKey={1}
+                                            >Release</Dropdown.Item>
+                                            <Dropdown.Item
+                                                gameversion="wow_retail"
+                                                key={2}
+                                                eventKey={2}
+                                            >Beta</Dropdown.Item>
+                                            <Dropdown.Item
+                                                gameversion="wow_retail"
+                                                key={3}
+                                                eventKey={3}
+                                            >Alpha</Dropdown.Item>
+                                        </DropdownButton>
+                                    </Col>
+                                </Row>
+                                <Row className="settings-item">
+                                    <Col xs={4} md={3} className="settings-item-name">
+                                        <label>
+                                            <span>Retail Default Auto Update</span>
+                                        </label>
+                                    </Col>
+                                    <Col xs={8} md={9} className="settings-item-config">
+                                        {this.state.appSettings
+                                            ?   <Switch
+                                                onChange={this.toggleDefaultWowAutoUpdate}
+                                                checked={this.state.gameDefaults.wow_retail.autoUpdate}
+                                                gameversion='wow_retail'
+                                                id="wow_retail_auto_update"
+                                                onColor="#ED8323"
+                                                height={20}
+                                                width={40}
+                                                activeBoxShadow="0 0 2px 3px #ED8323" />
+                                            : ''
+                                        }
+                                    </Col>
+                                </Row>
+                                <Row className="settings-item">
+                                    <Col xs={4} md={3} className="settings-item-name">
+                                        <label>
                                             <span>Classic Install Path</span>
                                         </label>
                                     </Col>
@@ -384,6 +501,55 @@ export default class SettingsWindow extends React.Component {
                                         </ReactTooltip>
                                         {this.state.wowInstallsErr && this.state.wowInstallsErr.wow_classic
                                             ? <span className="errorMsg">Couldn&apos;t find game in location</span>
+                                            : ''
+                                        }
+                                    </Col>
+                                </Row>
+                                <Row className="settings-item">
+                                    <Col xs={4} md={3} className="settings-item-name">
+                                        <label>
+                                            <span>Classic Default Addon Track</span>
+                                        </label>
+                                    </Col>
+                                    <Col xs={8} md={9} className="settings-item-config">
+                                        <DropdownButton id="default-wow-retail-track-dropdown"
+                                            title={getDefaultTrackTile(this.state.gameDefaults.wow_classic.trackBranch)}
+                                            onSelect={this.toggleDefaultWowAddonTrack}>
+                                            <Dropdown.Item
+                                                gameversion="wow_classic"
+                                                key={1}
+                                                eventKey={1}
+                                            >Release</Dropdown.Item>
+                                            <Dropdown.Item
+                                                gameversion="wow_classic"
+                                                key={2}
+                                                eventKey={2}
+                                            >Beta</Dropdown.Item>
+                                            <Dropdown.Item
+                                                gameversion="wow_classic"
+                                                key={3}
+                                                eventKey={3}
+                                            >Alpha</Dropdown.Item>
+                                        </DropdownButton>
+                                    </Col>
+                                </Row>
+                                <Row className="settings-item">
+                                    <Col xs={4} md={3} className="settings-item-name">
+                                        <label>
+                                            <span>Classic Default Auto Update</span>
+                                        </label>
+                                    </Col>
+                                    <Col xs={8} md={9} className="settings-item-config">
+                                        {this.state.appSettings
+                                            ?   <Switch
+                                                onChange={this.toggleDefaultWowAutoUpdate}
+                                                checked={this.state.gameDefaults.wow_classic.autoUpdate}
+                                                gameversion='wow_classic'
+                                                id="wow_classic_auto_update"
+                                                onColor="#ED8323"
+                                                height={20}
+                                                width={40}
+                                                activeBoxShadow="0 0 2px 3px #ED8323" />
                                             : ''
                                         }
                                     </Col>
@@ -413,6 +579,55 @@ export default class SettingsWindow extends React.Component {
                                 <Row className="settings-item">
                                     <Col xs={4} md={3} className="settings-item-name">
                                         <label>
+                                            <span>PTR Default Addon Track</span>
+                                        </label>
+                                    </Col>
+                                    <Col xs={8} md={9} className="settings-item-config">
+                                        <DropdownButton id="default-wow-retail-track-dropdown"
+                                            title={getDefaultTrackTile(this.state.gameDefaults.wow_retail_ptr.trackBranch)}
+                                            onSelect={this.toggleDefaultWowAddonTrack}>
+                                            <Dropdown.Item
+                                                gameversion="wow_retail_ptr"
+                                                key={1}
+                                                eventKey={1}
+                                            >Release</Dropdown.Item>
+                                            <Dropdown.Item
+                                                gameversion="wow_retail_ptr"
+                                                key={2}
+                                                eventKey={2}
+                                            >Beta</Dropdown.Item>
+                                            <Dropdown.Item
+                                                gameversion="wow_retail_ptr"
+                                                key={3}
+                                                eventKey={3}
+                                            >Alpha</Dropdown.Item>
+                                        </DropdownButton>
+                                    </Col>
+                                </Row>
+                                <Row className="settings-item">
+                                    <Col xs={4} md={3} className="settings-item-name">
+                                        <label>
+                                            <span>Retail PTR Default Auto Update</span>
+                                        </label>
+                                    </Col>
+                                    <Col xs={8} md={9} className="settings-item-config">
+                                        {this.state.appSettings
+                                            ?   <Switch
+                                                onChange={this.toggleDefaultWowAutoUpdate}
+                                                checked={this.state.gameDefaults.wow_retail_ptr.autoUpdate}
+                                                gameversion='wow_retail_ptr'
+                                                id="wow_retail_ptr_auto_update"
+                                                onColor="#ED8323"
+                                                height={20}
+                                                width={40}
+                                                activeBoxShadow="0 0 2px 3px #ED8323" />
+                                            : ''
+                                        }
+                                    </Col>
+                                </Row>
+                                <Row className="settings-item">
+                                    <Col xs={4} md={3} className="settings-item-name">
+                                        <label>
                                             <span>Classic PTR Install Path</span>
                                         </label>
                                     </Col>
@@ -435,6 +650,55 @@ export default class SettingsWindow extends React.Component {
                                 <Row className="settings-item">
                                     <Col xs={4} md={3} className="settings-item-name">
                                         <label>
+                                            <span>Classic PTR Default Addon Track</span>
+                                        </label>
+                                    </Col>
+                                    <Col xs={8} md={9} className="settings-item-config">
+                                        <DropdownButton id="default-wow-retail-track-dropdown"
+                                            title={getDefaultTrackTile(this.state.gameDefaults.wow_classic_ptr.trackBranch)}
+                                            onSelect={this.toggleDefaultWowAddonTrack}>
+                                            <Dropdown.Item
+                                                gameversion="wow_classic_ptr"
+                                                key={1}
+                                                eventKey={1}
+                                            >Release</Dropdown.Item>
+                                            <Dropdown.Item
+                                                gameversion="wow_classic_ptr"
+                                                key={2}
+                                                eventKey={2}
+                                            >Beta</Dropdown.Item>
+                                            <Dropdown.Item
+                                                gameversion="wow_classic_ptr"
+                                                key={3}
+                                                eventKey={3}
+                                            >Alpha</Dropdown.Item>
+                                        </DropdownButton>
+                                    </Col>
+                                </Row>
+                                <Row className="settings-item">
+                                    <Col xs={4} md={3} className="settings-item-name">
+                                        <label>
+                                            <span>Classic PTR Default Auto Update</span>
+                                        </label>
+                                    </Col>
+                                    <Col xs={8} md={9} className="settings-item-config">
+                                        {this.state.appSettings
+                                            ?   <Switch
+                                                onChange={this.toggleDefaultWowAutoUpdate}
+                                                checked={this.state.gameDefaults.wow_classic_ptr.autoUpdate}
+                                                gameversion='wow_classic_ptr'
+                                                id="wow_classic_ptr_auto_update"
+                                                onColor="#ED8323"
+                                                height={20}
+                                                width={40}
+                                                activeBoxShadow="0 0 2px 3px #ED8323" />
+                                            : ''
+                                        }
+                                    </Col>
+                                </Row>
+                                <Row className="settings-item">
+                                    <Col xs={4} md={3} className="settings-item-name">
+                                        <label>
                                             <span>Beta Install Path</span>
                                         </label>
                                     </Col>
@@ -449,6 +713,55 @@ export default class SettingsWindow extends React.Component {
                                         </ReactTooltip>
                                         {this.state.wowInstallsErr && this.state.wowInstallsErr.wow_retail_beta
                                             ? <span className="errorMsg">Couldn&apos;t find game in location</span>
+                                            : ''
+                                        }
+                                    </Col>
+                                </Row>
+                                <Row className="settings-item">
+                                    <Col xs={4} md={3} className="settings-item-name">
+                                        <label>
+                                            <span>Beta Default Addon Track</span>
+                                        </label>
+                                    </Col>
+                                    <Col xs={8} md={9} className="settings-item-config">
+                                        <DropdownButton id="default-wow-retail-track-dropdown"
+                                            title={getDefaultTrackTile(this.state.gameDefaults.wow_retail_beta.trackBranch)}
+                                            onSelect={this.toggleDefaultWowAddonTrack}>
+                                            <Dropdown.Item
+                                                gameversion="wow_retail_beta"
+                                                key={1}
+                                                eventKey={1}
+                                            >Release</Dropdown.Item>
+                                            <Dropdown.Item
+                                                gameversion="wow_retail_beta"
+                                                key={2}
+                                                eventKey={2}
+                                            >Beta</Dropdown.Item>
+                                            <Dropdown.Item
+                                                gameversion="wow_retail_beta"
+                                                key={3}
+                                                eventKey={3}
+                                            >Alpha</Dropdown.Item>
+                                        </DropdownButton>
+                                    </Col>
+                                </Row>
+                                <Row className="settings-item">
+                                    <Col xs={4} md={3} className="settings-item-name">
+                                        <label>
+                                            <span>Retail Beta Default Auto Update</span>
+                                        </label>
+                                    </Col>
+                                    <Col xs={8} md={9} className="settings-item-config">
+                                        {this.state.appSettings
+                                            ?   <Switch
+                                                onChange={this.toggleDefaultWowAutoUpdate}
+                                                checked={this.state.gameDefaults.wow_retail_beta.autoUpdate}
+                                                gameversion='wow_retail_beta'
+                                                id="wow_retail_beta_auto_update"
+                                                onColor="#ED8323"
+                                                height={20}
+                                                width={40}
+                                                activeBoxShadow="0 0 2px 3px #ED8323" />
                                             : ''
                                         }
                                     </Col>
