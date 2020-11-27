@@ -56,6 +56,22 @@ export default class HomePage extends React.Component {
                         <SimpleBar scrollbarMaxSize={50} className={process.platform === 'darwin' ? "home-page-bar mac" : "home-page-bar" } >
                             <div >
                                 <h3 className="release-notes-title">Release Notes</h3>
+                                <h5>1.0.4 <span className="release-note-date">2020-11-27</span></h5>
+                                <h5 className="release-note-section-header">Bug Fixes:</h5>
+                                <p className="release-note-bullet"> - Fixed an issue that caused Singularity to throw an error when attempting to identify installed addons after identifying game location.</p>
+                                <hr />
+                                <h5>1.0.3 <span className="release-note-date">2020-11-21</span></h5>
+                                <h5 className="release-note-section-header">Bug Fixes:</h5>
+                                <p className="release-note-bullet"> - Fixed an issue that caused Singularity to throw an error when attempting to identify a game installation automatically.</p>
+                                <hr />
+                                <h5>1.0.2 <span className="release-note-date">2020-11-20</span></h5>
+                                <h5 className="release-note-section-header">Bug Fixes:</h5>
+                                <p className="release-note-bullet"> - Updated dependency in singularity-core.</p>
+                                <hr />
+                                <h5>1.0.1 <span className="release-note-date">2020-11-20</span></h5>
+                                <h5 className="release-note-section-header">Bug Fixes:</h5>
+                                <p className="release-note-bullet"> - Fixed an issue that caused Singularity to throw an error when attempting to identify a game installation manually.</p>
+                                <hr />
                                 <h5>1.0.0 <span className="release-note-date">2020-11-20</span></h5>
                                 <p>Singularity is now open source! Check out the repository <a className="release-notes-link" target="_blank" rel="noreferrer" href="https://github.com/SingularityMods/singularity-core">on GitHub</a> to contribute and submit issues.</p>
                                 <h5 className="release-note-section-header">New Features:</h5>

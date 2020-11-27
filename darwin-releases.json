@@ -1,6 +1,26 @@
 {
-"currentRelease": "1.0.1",
+"currentRelease": "1.0.4",
 	"releases": [
+		{
+			"version": "1.0.4",
+			"updateTo": {
+				"version": "1.0.4",
+				"pub_date": "2020-11-27T00:00:00",
+				"notes": "Fixed an issue with automatically finding WoW installations.",
+				"name": "1.0.4",
+				"url": "https://storage.singularitycdn.com/App/Releases/Mac/Singularity-darwin-x64-1.0.4.zip"
+			}
+		},
+		{
+			"version": "1.0.3",
+			"updateTo": {
+				"version": "1.0.3",
+				"pub_date": "2020-11-20T03:00:00",
+				"notes": "Fixed an issue with automatically finding WoW installations.",
+				"name": "1.0.3",
+				"url": "https://storage.singularitycdn.com/App/Releases/Mac/Singularity-darwin-x64-1.0.3.zip"
+			}
+		},
 		{
 			"version": "1.0.1",
 			"updateTo": {
