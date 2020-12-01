@@ -1,9 +1,4 @@
 {
-<<<<<<< HEAD
-"currentRelease": "1.0.3",
-	"releases": [
-		{
-=======
 "currentRelease": "1.0.4",
 	"releases": [
 		{
@@ -17,7 +12,6 @@
 			}
 		},
 		{
->>>>>>> main
 			"version": "1.0.3",
 			"updateTo": {
 				"version": "1.0.3",

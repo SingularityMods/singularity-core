@@ -1,15 +1,10 @@
-const electron = require('electron');
-const path = require('path');
-const fs = require('fs');
-const fsPromises = require('fs').promises;
-const {app, ipcMain, BrowserWindow} = require('electron');
+const {app, BrowserWindow} = require('electron');
 const axios = require('axios');
 const PromisePool = require('es6-promise-pool');
 
+const authService = require('../services/auth-service');
 const fileService = require('../services/file-service');
 const storageService = require('../services/storage-service');
-const authService = require('../services/auth-service');
-
 
 const log = require('electron-log');
 
@@ -225,6 +220,10 @@ function createSyncProfileObj(gameId, gameVersion) {
   })
 }
 
+function startSyncFromProfile(profile) {
+ return fileService.syncFromProfile(profile)
+}
+
 function createAndSaveSyncProfile(obj) {
   return new Promise( (resolve, reject) => {
     log.info('Updating sync profile for '+obj.gameVersion)
@@ -269,7 +268,7 @@ function createSyncProfileProducer() {
 
 function handleSyncProfileProducer() {
   if (snycProfilesToProcess.length > 0) {
-      return fileService.syncFromProfile(snycProfilesToProcess.pop())
+      return startSyncFromProfile(snycProfilesToProcess.pop())
   } else {
       return null
   }
