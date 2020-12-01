@@ -3,7 +3,7 @@ import 'simplebar/dist/simplebar.min.css';
 
 import SimpleBar from 'simplebar-react';
 import * as React from 'react';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Button } from 'react-bootstrap';
 const { ipcRenderer } = require('electron');
 
 import AddonScreenshotsTab from '../AddonScreenshotsTab'
@@ -344,6 +344,12 @@ export default class AddonDetailsWindow extends React.Component {
                                 <GameMenuButton className={this.state.activeTab == 2 ? 'active-tab' : 'hidden'} handleClick={this.toggleDetailSection} clickData={2} type='Changelog' />
                                 <GameMenuButton className={this.state.activeTab == 3 ? 'active-tab' : ''} handleClick={this.toggleDetailSection} clickData={3} type='Screenshot' />
                                 <GameMenuButton className={this.state.activeTab == 4 ? 'active-tab' : ''} handleClick={this.toggleDetailSection} clickData={4} type='Versions' />
+                                {
+                                    this.state.addon && this.state.addon.addonUrl
+                                    ?<Button className="addon-page-link"><a target="_blank" href={this.state.addon.addonUrl}>Homepage<i className="addon-page-link-icon fas fa-external-link-alt"></i></a></Button>
+                                    : ''
+                                }
+
                             </Col>
                         </Row>
                         <Row className="addon-details-section">
