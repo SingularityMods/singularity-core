@@ -32,6 +32,7 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 // every hour from then after.
 const startAutoUpdater = () => {
     log.info('Starting Singularity Auto Updater');
+    let beta = storageService.getAppData('userConfigurable').beta;
     //autoUpdater.logger = log;
     //autoUpdater.logger.transports.file.level = "info"
     if (process.platform === "win32") {
@@ -47,6 +48,9 @@ const startAutoUpdater = () => {
                 log.error(error);
             });
             autoUpdater.setFeedURL(`${PACKAGE_URL}Win/`);
+            if (beta) {
+                autoUpdater.channel = 'beta';
+            }
 
             // Unset the update pending notification, just in case it is still set
             autoUpdater.addListener('update-not-available', (event) => {
@@ -105,6 +109,9 @@ const startAutoUpdater = () => {
                 log.error(error);
             });
             autoUpdater.setFeedURL({url: feedURL, serverType:'json'});
+            if (beta) {
+                autoUpdater.channel = 'beta';
+            }
 
             autoUpdater.addListener('update-not-available', (event) => {
                 storageService.setAppData('updatePending', false);

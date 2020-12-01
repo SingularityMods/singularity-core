@@ -13,6 +13,7 @@
     "start": "electron-forge start",
     "package": "cross-env BUILD_ENV=oss electron-forge package",
     "package-prod": "cross-env BUILD_ENV=prod electron-forge package",
+    "package-beta": "cross-env BUILD_ENV=beta electron-forge package",
     "make": "cross-env BUILD_ENV=oss electron-forge make",
     "make-prod": "cross-env BUILD_ENV=prod electron-forge make",
     "publish": "electron-forge publish",

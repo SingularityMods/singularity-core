@@ -21,6 +21,7 @@ export default class SettingsWindow extends React.Component {
         }
         this.openLogDir = this.openLogDir.bind(this);
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
+        this.toggleBeta = this.toggleBeta.bind(this);
         this.toggleCloseToTray = this.toggleCloseToTray.bind(this);
         this.toggleUpdateInterval = this.toggleUpdateInterval.bind(this);
         this.toggleDefaultWow = this.toggleDefaultWow.bind(this);
@@ -85,6 +86,15 @@ export default class SettingsWindow extends React.Component {
     toggleDarkMode(checked) {
         let appSettings = this.state.appSettings;
         appSettings.darkMode = checked;
+        ipcRenderer.send('set-app-settings', appSettings);
+        this.setState({
+            appSettings: appSettings
+        });
+    }
+
+    toggleBeta(checked) {
+        let appSettings = this.state.appSettings;
+        appSettings.beta = checked;
         ipcRenderer.send('set-app-settings', appSettings);
         this.setState({
             appSettings: appSettings
@@ -288,7 +298,7 @@ export default class SettingsWindow extends React.Component {
                         </Row>
                         <Row>
                             <Col xs={12} className="settings-window-section-header">
-                                User Preferences
+                                App Preferences
                             </Col>
                         </Row>
                         <Row>
@@ -369,6 +379,26 @@ export default class SettingsWindow extends React.Component {
                                         </Row>
                                     : ''
                                 }
+                                <Row className="settings-item">
+                                    <Col xs={4} md={3} className="settings-item-name">
+                                        <label>
+                                            <span>Singularity Beta Opt-In</span>
+                                        </label>
+                                    </Col>
+                                    <Col xs={8} md={9} className="settings-item-config">
+                                        {this.state.appSettings
+                                            ?   <Switch
+                                                onChange={this.toggleBeta}
+                                                checked={this.state.appSettings.beta}
+                                                className="settings-switch"
+                                                onColor="#ED8323"
+                                                height={20}
+                                                width={40}
+                                                activeBoxShadow="0 0 2px 3px #ED8323" />
+                                            : ''
+                                        }
+                                    </Col>
+                                </Row>
                             </Col>
                         </Row>
 

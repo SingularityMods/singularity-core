@@ -100,6 +100,47 @@ module.exports = {
         "config": {}
       }
     ],
+    beta:[
+      {
+
+        "name": "@electron-forge/maker-squirrel",
+        "config": {
+            "name": "Singularity",
+            "setupExe":"Singularity-Setup.exe",
+            "icon": path.join(__dirname, 'assets/icons/app_icon'),
+            "setupIcon": path.join(__dirname, 'assets/icons/app_icon.ico'),
+            "iconUrl": "https://storage.singularitycdn.com/icons/app/app_icon.ico",
+            "loadingGif": path.join(__dirname, 'assets/gifs/loading.gif'),
+            "remoteReleases": "https://storage.singularitycdn.com/App/Releases/Win/Beta/",
+            "certificateFile": "SingularityWinDistribution.pfx",
+            certificatePassword: process.env.SINGULARITY_CERT_PASSWORD,
+            "rfc3161TimeStampServer": "http://timestamp.comodoca.com"
+        }
+      },
+      {
+        "name": '@electron-forge/maker-dmg',
+        "config": {
+          "name": "Singularity-Setup",
+          "background": path.join(__dirname, 'assets/images/darwin-background.png'),
+          "icon": path.join(__dirname, "assets/icons/app_icon.icns"),
+          "overwrite": true
+        }
+      },
+      {
+        "name": "@electron-forge/maker-zip",
+        "platforms": [
+          "darwin"
+        ]
+      },
+      {
+        "name": "@electron-forge/maker-deb",
+        "config": {}
+      },
+      {
+        "name": "@electron-forge/maker-rpm",
+        "config": {}
+      }
+    ],
     oss: [
       {
         "name": "@electron-forge/maker-squirrel",

@@ -18,6 +18,7 @@
       "addonUpdateInterval": "1h",
       "backupDir": "",
       "defaultWowVersion": "wow_retail",
-      "closeToTray": false
+      "closeToTray": false,
+      "beta": false
     }
   }
