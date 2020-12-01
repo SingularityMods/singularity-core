@@ -18,6 +18,12 @@ Clone this repository locally :
 git clone https://github.com/singularitymods/singularity-core.git
 ```
 
+If on Windows, install required build tools as an administrator
+```bash
+npm install --global node-gyp
+npm install --global --production windows-build-tools
+```
+
 Install dependencies with npm :
 
 ```bash

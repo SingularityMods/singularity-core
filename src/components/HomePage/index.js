@@ -56,6 +56,20 @@ export default class HomePage extends React.Component {
                         <SimpleBar scrollbarMaxSize={50} className={process.platform === 'darwin' ? "home-page-bar mac" : "home-page-bar" } >
                             <div >
                                 <h3 className="release-notes-title">Release Notes</h3>
+                                <h5>1.1.0 <span className="release-note-date">2020-12-1</span></h5>
+                                <h5 className="release-note-section-header">New Features:</h5>
+                                <p className="release-note-bullet"> - You can now sync installed addons between multiple computers. After enabling the sync profile, Singularity will sync from the profile every 5 minutes. *</p>
+                                <p className="release-note-bullet"> - You can now configure Singularity to instead minimize to the system tray on close under the settings menu.</p>
+                                <p className="release-note-bullet"> - After detecting installed game versions if Singularity does not detect any installed addons, you can now choose to restore a backup if one exists.</p>
+                                <p className="release-note-bullet"> - You can now configure the default release channel (alpha, beta, release) for newly installed addons under the settings menu.</p>
+                                <p className="release-note-bullet"> - You can now configure whether Singularity automatically updates newly installed addons under the settings menu.</p>
+                                <p className="release-note-bullet"> - You can now browse directly to an addons website from the addon details window.</p>
+                                <p className="release-note-bullet"> - You can now open the directory containing Singularity's debug logs from a link in the settings menu.</p>
+                                <h5 className="release-note-section-header">Bug Fixes:</h5>
+                                <p className="release-note-bullet"> - The addon category dropdown is now sorted alphabetically.</p>
+                                <br />
+                                <p>* Requires a Singularity account.</p>
+                                <br />
                                 <h5>1.0.4 <span className="release-note-date">2020-11-27</span></h5>
                                 <h5 className="release-note-section-header">Bug Fixes:</h5>
                                 <p className="release-note-bullet"> - Fixed an issue that caused Singularity to throw an error when attempting to identify installed addons after identifying game location.</p>

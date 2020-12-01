@@ -111,7 +111,7 @@ const startAutoUpdater = () => {
             });
             let feedURL = `${PACKAGE_URL}Mac/darwin-releases.json`
             if (beta) {
-                feedURL = `${PACKAGE_URL}Mac/Beta/darwin-releases.json`
+                feedURL = `${PACKAGE_URL}Mac/darwin-releases-beta.json`
             }
             autoUpdater.setFeedURL({url: feedURL, serverType:'json'});
             
@@ -380,9 +380,6 @@ ipcMain.on('install-pending-update', (event, args) => {
         }
     }
 })
-
-
-
 
 
 

@@ -1,4 +1,4 @@
-const { ipcMain, BrowserWindow } = require('electron');
+const { app, ipcMain, BrowserWindow, autoUpdater } = require('electron');
 const storageService = require('../../services/storage-service');
 const fileService = require('../../services/file-service');
 
@@ -15,6 +15,9 @@ ipcMain.on('set-app-settings', (event, appSettings) => {
                 mainWindow.webContents.executeJavaScript(`__setTheme()`)
                 event.sender.send('darkmode-toggle', appSettings.darkMode);
             });
+    }
+    if (app.isPackaged && prevSettings.beta != appSettings.beta) {
+        autoUpdater.checkForUpdates();
     }
     if (prevSettings.addonUpdateInterval != appSettings.addonUpdateInterval) {
         fileService.setAddonUpdateInterval();

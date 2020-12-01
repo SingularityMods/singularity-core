@@ -215,7 +215,7 @@ function setAppConfig() {
         storageService.setAppData('sidebarMinimized', false);
     } 
 
-    if (version < app.getVersion()) {
+    if (version < '1.1.0') {
         let gameS = storageService.getGameSettings('1');  
         for (const [key, value] of Object.entries(gameS)) {
             var gameVersion = key;
