@@ -47,10 +47,12 @@ const startAutoUpdater = () => {
             autoUpdater.on("error", (event, error) => {
                 log.error(error);
             });
-            autoUpdater.setFeedURL(`${PACKAGE_URL}Win/`);
+            
+            let feedURL = `${PACKAGE_URL}Win/`
             if (beta) {
-                autoUpdater.channel = 'beta';
+                feedURL = `${PACKAGE_URL}Win/Beta/`
             }
+            autoUpdater.setFeedURL(feedUrl);
 
             // Unset the update pending notification, just in case it is still set
             autoUpdater.addListener('update-not-available', (event) => {
@@ -104,14 +106,15 @@ const startAutoUpdater = () => {
             // Skip auto update on first run
         } else {
             log.info('Initializing Auto Updater');
-            let feedURL = `${PACKAGE_URL}Mac/darwin-releases.json`
             autoUpdater.on("error", (event, error) => {
                 log.error(error);
             });
-            autoUpdater.setFeedURL({url: feedURL, serverType:'json'});
+            let feedURL = `${PACKAGE_URL}Mac/darwin-releases.json`
             if (beta) {
-                autoUpdater.channel = 'beta';
+                feedURL = `${PACKAGE_URL}Mac/Beta/darwin-releases.json`
             }
+            autoUpdater.setFeedURL({url: feedURL, serverType:'json'});
+            
 
             autoUpdater.addListener('update-not-available', (event) => {
                 storageService.setAppData('updatePending', false);
