@@ -1,8 +1,9 @@
 import './GameSquare.css';
 
 import * as React from 'react';
+import PropTypes from 'prop-types';
 
-export default class GameSquare extends React.Component {
+class GameSquare extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -24,3 +25,13 @@ export default class GameSquare extends React.Component {
         )
     }
 }
+
+GameSquare.propTypes = {
+    gameIconPath: PropTypes.string,
+    gameId: PropTypes.number,
+    gameName: PropTypes.string,
+    gameTilePath: PropTypes.string,
+    onClick: PropTypes.func
+}
+
+export default GameSquare;

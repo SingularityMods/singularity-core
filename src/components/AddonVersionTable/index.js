@@ -1,13 +1,13 @@
 import './AddonVersionTable.css';
 
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { Row, Col } from 'react-bootstrap';
-import SimpleBar from 'simplebar-react';
 import BootstrapTable from 'react-bootstrap-table-next';
 
 import UpdateAddonButton from '../Buttons/UpdateAddonButton';
 
-export default class AddonVersionTable extends React.Component {
+class AddonVersionTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -104,3 +104,13 @@ export default class AddonVersionTable extends React.Component {
         )
     }
 }
+
+AddonVersionTable.propTypes = {
+    addon: PropTypes.object,
+    currentlyInstallingFile: PropTypes.string,
+    gameVersion: PropTypes.string,
+    installedAddon: PropTypes.object,
+    handleInstall: PropTypes.func
+}
+
+export default AddonVersionTable;

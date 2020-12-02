@@ -1,11 +1,11 @@
 import './AuthDialog.css';
 
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { Row, Col, Tabs, Tab, Button, Form, FormControl, FormGroup, Spinner } from 'react-bootstrap';
-
 import { ipcRenderer } from 'electron';
 
-export default class AuthDialog extends React.Component {
+class AuthDialog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -724,3 +724,12 @@ export default class AuthDialog extends React.Component {
         )
     }
 }
+
+AuthDialog.propTypes = {
+    authTab: PropTypes.string,
+    darkMode: PropTypes.bool,
+    onClose: PropTypes.func,
+    toggleTab: PropTypes.func
+}
+
+export default AuthDialog;

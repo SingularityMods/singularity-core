@@ -64,7 +64,7 @@ export default class HomePage extends React.Component {
                                 <p className="release-note-bullet"> - You can now configure the default release channel (alpha, beta, release) for newly installed addons under the settings menu.</p>
                                 <p className="release-note-bullet"> - You can now configure whether Singularity automatically updates newly installed addons under the settings menu.</p>
                                 <p className="release-note-bullet"> - You can now browse directly to an addons website from the addon details window.</p>
-                                <p className="release-note-bullet"> - You can now open the directory containing Singularity's debug logs from a link in the settings menu.</p>
+                                <p className="release-note-bullet"> - You can now open the directory containing Singularity&apos;s debug logs from a link in the settings menu.</p>
                                 <h5 className="release-note-section-header">Bug Fixes:</h5>
                                 <p className="release-note-bullet"> - The addon category dropdown is now sorted alphabetically.</p>
                                 <p className="release-note-bullet"> - Fixed an issue that could cause Singularity to only half-load the selected theme.</p>

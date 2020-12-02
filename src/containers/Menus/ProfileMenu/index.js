@@ -2,11 +2,12 @@ import './ProfileMenu.css';
 
 import { Container, Row, Col } from 'react-bootstrap';
 import * as React from 'react';
+import PropTypes from 'prop-types';
 const { ipcRenderer } = require('electron');
 
 
 
-export default class Header extends React.Component {
+class ProfileMenu extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -97,3 +98,11 @@ export default class Header extends React.Component {
         )
     }
 }
+
+ProfileMenu.propTypes = {
+    handleClose: PropTypes.func,
+    onOpenAuth: PropTypes.func,
+    onOpenSettings: PropTypes.func
+}
+
+export default ProfileMenu;

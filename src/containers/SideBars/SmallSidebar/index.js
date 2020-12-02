@@ -2,10 +2,11 @@ import './SmallSidebar.css';
 
 import { Col } from 'react-bootstrap';
 import * as React from 'react';
+import PropTypes from 'prop-types';
 const { ipcRenderer } = require('electron');
 import GameSquare from '../../../components/GameSquare';
 
-export default class SmallSidebar extends React.Component {
+class SmallSidebar extends React.Component {
     constructor(props) {
         super(props);
         this.handleClick = this.handleClick.bind(this);
@@ -33,3 +34,9 @@ export default class SmallSidebar extends React.Component {
         )
     }
 }
+
+SmallSidebar.propTypes = {
+    onClick: PropTypes.func
+}
+
+export default SmallSidebar;

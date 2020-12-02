@@ -1,9 +1,10 @@
 import './GameWindowMenu.css';
 
 import * as React from 'react';
-import { Row, Col, Tabs, Tab, Button, DropdownButton, Dropdown } from 'react-bootstrap';
+import PropTypes from 'prop-types';
+import { Row, Col, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
 
-export default class GameWindowMenu extends React.Component {
+class GameWindowMenu extends React.Component {
     constructor(props) {
         super(props);
         var selectedVersionObj = this.props.installedVersions.filter(obj => {
@@ -99,3 +100,14 @@ export default class GameWindowMenu extends React.Component {
         )
     }
 }
+
+GameWindowMenu.propTypes = {
+    activeTab: PropTypes.string,
+    gameId: PropTypes.number,
+    installedVersions: PropTypes.array,
+    selectedGameVersion: PropTypes.string,
+    toggleActiveTab: PropTypes.func,
+    toggleGameVersion: PropTypes.func
+}
+
+export default GameWindowMenu;

@@ -2,11 +2,10 @@ import './AddonContextMenu.css';
 
 import { Container, Row, Col } from 'react-bootstrap';
 import * as React from 'react';
-const { ipcRenderer } = require('electron');
+import PropTypes from 'prop-types';
 
 
-
-export default class Header extends React.Component {
+class AddonContextMenu extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -400,3 +399,16 @@ export default class Header extends React.Component {
         )
     }
 }
+
+AddonContextMenu.propTypes = {
+    handleChangeAutoUpdate: PropTypes.func,
+    handleChangeBranch: PropTypes.func,
+    handleChangeIgnoreUpdate: PropTypes.func,
+    handleOpenDir: PropTypes.func,
+    handleReinstall: PropTypes.func,
+    handleUninstall: PropTypes.func,
+    handleUpdate: PropTypes.func,
+    installedAddons: PropTypes.array,
+}
+
+export default AddonContextMenu;

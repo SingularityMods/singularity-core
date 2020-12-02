@@ -1,10 +1,8 @@
 import './LoadingSpinner.css';
 
-import { Container, Row, Col } from 'react-bootstrap';
 import * as React from 'react';
 
-
-export default class LoadingSpinner extends React.Component {
+class LoadingSpinner extends React.Component {
     render() {
         return (
             <div className="LoadingSpinner">
@@ -13,3 +11,5 @@ export default class LoadingSpinner extends React.Component {
         )
     }
 }
+
+export default LoadingSpinner

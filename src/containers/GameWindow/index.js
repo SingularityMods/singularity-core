@@ -1,6 +1,7 @@
 import './GameWindow.css';
 
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { Row, Col } from 'react-bootstrap';
 const { ipcRenderer } = require('electron');
 
@@ -10,7 +11,7 @@ import InstalledAddonsWindow from '../../components/InstalledAddonsWindow';
 import BrowseAddonsWindow from '../../components/BrowseAddonsWindow';
 import AddonDetailsWindow from '../../components/AddonDetailsWindow';
 
-export default class GameWindow extends React.Component {
+class GameWindow extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -184,3 +185,15 @@ export default class GameWindow extends React.Component {
         )
     }
 }
+
+GameWindow.propTypes = {
+    backupPending: PropTypes.bool,
+    gameId: PropTypes.number,
+    latestCloudBackup: PropTypes.object,
+    lastRestoreComplete: PropTypes.object,
+    openBackupManagementDialog: PropTypes.func,
+    openBackupRestore: PropTypes.func,
+    restorePending: PropTypes.bool
+}
+
+export default GameWindow;

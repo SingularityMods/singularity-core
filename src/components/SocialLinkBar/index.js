@@ -3,7 +3,7 @@ import './SocialLinkBar.css';
 import * as React from 'react';
 import { Row, Col } from 'react-bootstrap';
 
-export default class SocialLinkBar extends React.Component {
+class SocialLinkBar extends React.Component {
     render() {
         return (
             <Row className="SocialLinkBar">
@@ -25,3 +25,5 @@ export default class SocialLinkBar extends React.Component {
         )
     }
 }
+
+export default SocialLinkBar;

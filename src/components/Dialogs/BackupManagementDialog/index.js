@@ -1,8 +1,8 @@
 import './BackupManagementDialog.css';
 
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { Row, Col, Spinner, Button } from 'react-bootstrap';
-
 import ReactTooltip from 'react-tooltip';
 import Switch from "react-switch";
 import BootstrapTable from 'react-bootstrap-table-next';
@@ -10,7 +10,7 @@ import SimpleBar from 'simplebar-react';
 
 import { ipcRenderer } from 'electron';
 
-export default class BackupManagementDialog extends React.Component {
+class BackupManagementDialog extends React.Component {
     constructor(props) {
         super(props);
 
@@ -414,3 +414,16 @@ export default class BackupManagementDialog extends React.Component {
         )
     }
 }
+
+BackupManagementDialog.propTypes = {
+    backupPending: PropTypes.bool,
+    backupState: PropTypes.string,
+    latestCloudBackup: PropTypes.object,
+    onExit: PropTypes.func,
+    onOpenBackup: PropTypes.func,
+    onSubmit: PropTypes.func,
+    opts: PropTypes.object,
+    restorePending: PropTypes.bool,
+}
+
+export default BackupManagementDialog;

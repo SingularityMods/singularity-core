@@ -33,7 +33,7 @@ class App extends React.Component {
         super(props);
 
         this.state = {
-            selectedGame: '',
+            selectedGame: null,
             selectedBackup: null,
             backupDialogOpts: null,
             backupManagementOpts: null,
@@ -275,7 +275,7 @@ class App extends React.Component {
 
     deselectAll() {
         this.setState({
-            selectedGame: '',
+            selectedGame: null,
             settingsOpened: false,
             authOpened: null
         });

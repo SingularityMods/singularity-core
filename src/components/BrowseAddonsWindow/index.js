@@ -3,9 +3,9 @@ import 'simplebar/dist/simplebar.min.css';
 
 import SimpleBar from 'simplebar-react';
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { Row, Col, Form, DropdownButton, Dropdown } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
-import InfiniteScroll from 'react-infinite-scroller'
 const { ipcRenderer } = require('electron');
 
 import CategoryButton from '../CategoryButton';
@@ -14,7 +14,7 @@ import GameMenuButton from '../Buttons/GameMenuButton';
 
 import LoadingSpinner from '../LoadingSpinner';
 
-export default class BrowseAddonsWindow extends React.Component {
+class BrowseAddonsWindow extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -500,3 +500,11 @@ export default class BrowseAddonsWindow extends React.Component {
         )
     }
 }
+
+BrowseAddonsWindow.propTypes = {
+    gameId: PropTypes.number,
+    gameVersion: PropTypes.string,
+    onSelectAddon: PropTypes.func
+}
+
+export default BrowseAddonsWindow;

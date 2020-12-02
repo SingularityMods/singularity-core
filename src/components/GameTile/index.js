@@ -1,8 +1,9 @@
 import './GameTile.css';
 
 import * as React from 'react';
+import PropTypes from 'prop-types';
 
-export default class GameTile extends React.Component {
+class GameTile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -25,3 +26,13 @@ export default class GameTile extends React.Component {
         )
     }
 }
+
+GameTile.propTypes = {
+    gameIconPath: PropTypes.string,
+    gameId: PropTypes.number,
+    gameName: PropTypes.string,
+    gameTilePath: PropTypes.string,
+    onClick: PropTypes.func
+}
+
+export default GameTile;

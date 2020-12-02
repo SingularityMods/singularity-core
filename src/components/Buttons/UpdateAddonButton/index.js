@@ -1,9 +1,10 @@
 import './UpdateAddonButton.css';
 
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { Button } from 'react-bootstrap';
 
-export default class UpdateAddonButton extends React.Component {
+class UpdateAddonButton extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -19,3 +20,13 @@ export default class UpdateAddonButton extends React.Component {
         )  
     }
 }
+
+UpdateAddonButton.propTypes = {
+    className: PropTypes.string,
+    clickData: PropTypes.node,
+    disabled: PropTypes.bool,
+    handleClick: PropTypes.func,
+    type: PropTypes.string
+}
+
+export default UpdateAddonButton;

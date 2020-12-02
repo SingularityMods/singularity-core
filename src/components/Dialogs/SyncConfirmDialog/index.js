@@ -1,11 +1,13 @@
 import './SyncConfirmDialog.css';
 
 import * as React from 'react';
+import PropTypes from 'prop-types';
+
 import { Row, Col } from 'react-bootstrap';
 
 import UpdateAddonButton from '../../Buttons/UpdateAddonButton';
 
-export default class SyncConfirmDialog extends React.Component {
+class SyncConfirmDialog extends React.Component {
     constructor(props) {
         super(props);
 
@@ -43,3 +45,13 @@ export default class SyncConfirmDialog extends React.Component {
         )
     }
 }
+
+SyncConfirmDialog.propTypes = {
+    cloudProfileLastSync: PropTypes.object,
+    exit: PropTypes.func,
+    overwrite: PropTypes.func,
+    use: PropTypes.func
+}
+
+export default SyncConfirmDialog;
+

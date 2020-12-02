@@ -1,6 +1,7 @@
 import './SettingsWindow.css';
 
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { Row, Col, Button, DropdownButton, Dropdown } from 'react-bootstrap';
 import Switch from "react-switch";
 const { ipcRenderer } = require('electron');
@@ -8,7 +9,7 @@ import SimpleBar from 'simplebar-react'
 import ReactTooltip from 'react-tooltip';
 
 
-export default class SettingsWindow extends React.Component {
+class SettingsWindow extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -833,3 +834,9 @@ export default class SettingsWindow extends React.Component {
         )
     }
 }
+
+SettingsWindow.propTypes = {
+    onClose: PropTypes.func
+}
+
+export default SettingsWindow;

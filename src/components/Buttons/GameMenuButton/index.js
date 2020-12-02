@@ -1,9 +1,10 @@
 import './GameMenuButton.css';
 
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { Button } from 'react-bootstrap';
 
-export default class GameWindowButton extends React.Component {
+class GameWindowButton extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -21,6 +22,16 @@ export default class GameWindowButton extends React.Component {
                         {this.props.type}
                     </Button >
                 )
-    )
+        )
     }
 }
+
+GameWindowButton.propTypes = {
+    className: PropTypes.string,
+    clickData: PropTypes.node,
+    disabled: PropTypes.bool,
+    handleClick: PropTypes.func,
+    type: PropTypes.string
+}
+
+export default GameWindowButton;

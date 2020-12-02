@@ -2,14 +2,14 @@ import './BigSidebar.css';
 
 import { Col } from 'react-bootstrap';
 import * as React from 'react';
+import PropTypes from 'prop-types';
 const { ipcRenderer } = require('electron');
 
 import ReactTooltip from 'react-tooltip';
 
 import GameTile from '../../../components/GameTile';
 
-
-export default class BigSidebar extends React.Component {
+class BigSidebar extends React.Component {
     constructor(props) {
         super(props);  
         this.handleClick = this.handleClick.bind(this);
@@ -49,3 +49,10 @@ export default class BigSidebar extends React.Component {
         )
     }
 }
+
+BigSidebar.propTypes = {
+    onClick: PropTypes.func,
+    onToggle: PropTypes.func
+}
+
+export default BigSidebar;

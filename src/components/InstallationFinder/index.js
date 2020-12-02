@@ -2,11 +2,13 @@ import './InstallationFinder.css';
 
 import { Row, Col } from 'react-bootstrap';
 import * as React from 'react';
+import PropTypes from 'prop-types';
+
 import { ipcRenderer } from 'electron';
 
 import LoadingSpinner from '../LoadingSpinner';
 
-export default class InstallationFinder extends React.Component {
+class InstallationFinder extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -83,3 +85,9 @@ export default class InstallationFinder extends React.Component {
         )
     }
 }
+
+InstallationFinder.propTypes = {
+    gameId: PropTypes.number
+}
+
+export default InstallationFinder;

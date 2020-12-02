@@ -1,14 +1,14 @@
 import './BackupRestoreDialog.css';
 
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { Row, Col, Form, Spinner, Button, ButtonGroup } from 'react-bootstrap';
-
 import BootstrapTable from 'react-bootstrap-table-next';
 import SimpleBar from 'simplebar-react';
 
 import { ipcRenderer } from 'electron';
 
-export default class BackupRestoreDialog extends React.Component {
+class BackupRestoreDialog extends React.Component {
     constructor(props) {
         super(props);
 
@@ -267,3 +267,14 @@ export default class BackupRestoreDialog extends React.Component {
         )
     }
 }
+
+BackupRestoreDialog.propTypes = {
+    backup: PropTypes.object,
+    backupPending: PropTypes.bool,
+    onExit: PropTypes.func,
+    onSubmit: PropTypes.func,
+    restorePending: PropTypes.bool,
+    restoreState: PropTypes.string,
+}
+
+export default BackupRestoreDialog;

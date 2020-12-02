@@ -4,6 +4,7 @@ import 'simplebar/dist/simplebar.min.css';
 import SimpleBar from 'simplebar-react';
 
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { Row, Col, Button, Form } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 const { ipcRenderer } = require('electron');
@@ -16,7 +17,7 @@ import AddonSyncToggle from '../AddonSyncToggle';
 
 import AddonContextMenu from '../../containers/Menus/AddonContextMenu';
 
-export default class InstalledAddonsWindow extends React.Component {
+class InstalledAddonsWindow extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -883,3 +884,17 @@ export default class InstalledAddonsWindow extends React.Component {
         )
     }
 }
+
+InstalledAddonsWindow.propTypes = {
+    appUUID: PropTypes.string,
+    backupPending: PropTypes.bool,
+    gameId: PropTypes.number,
+    gameVersion: PropTypes.string,
+    lastRestoreComplete: PropTypes.object,
+    onSelectAddon: PropTypes.func,
+    openBackupManagementDialog: PropTypes.func,
+    restorePending: PropTypes.bool,
+    toggleActiveTab: PropTypes.func
+}
+
+export default InstalledAddonsWindow;

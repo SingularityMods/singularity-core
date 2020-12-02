@@ -2,12 +2,13 @@ import './MinimizedSidebar.css';
 
 import { Col } from 'react-bootstrap';
 import * as React from 'react';
+import PropTypes from 'prop-types';
 const { ipcRenderer } = require('electron');
 import ReactTooltip from 'react-tooltip';
 
 import GameSquare from '../../../components/GameSquare';
 
-export default class MinimizedSidebar extends React.Component {
+class MinimizedSidebar extends React.Component {
     constructor(props) {
         super(props);
         this.handleClick = this.handleClick.bind(this);
@@ -45,3 +46,10 @@ export default class MinimizedSidebar extends React.Component {
         )
     }
 }
+
+MinimizedSidebar.propTypes = {
+    onClick: PropTypes.func,
+    onToggle: PropTypes.func
+}
+
+export default MinimizedSidebar;

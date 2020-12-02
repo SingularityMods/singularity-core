@@ -1,10 +1,11 @@
 import './AuthBar.css';
 
-import { Container, Row, Col, Button } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import * as React from 'react';
+import PropTypes from 'prop-types';
 const { ipcRenderer } = require('electron');
 
-export default class AuthBar extends React.Component {
+class AuthBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -51,3 +52,9 @@ export default class AuthBar extends React.Component {
         )
     }
 }
+
+AuthBar.propTypes = {
+    onOpenProfileMenu: PropTypes.func
+}
+
+export default AuthBar;

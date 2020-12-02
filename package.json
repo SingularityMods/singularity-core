@@ -86,7 +86,6 @@
     "react-bootstrap-table-next": "^4.0.3",
     "react-dom": "^16.13.1",
     "react-hot-loader": "^4.12.21",
-    "react-infinite-scroller": "^1.2.4",
     "react-switch": "^5.0.1",
     "react-tooltip": "^4.2.10",
     "simplebar-react": "^2.2.1",

@@ -1,10 +1,9 @@
 import './CategoryButton.css';
 
-import { Container, Row, Col } from 'react-bootstrap';
 import * as React from 'react';
+import PropTypes from 'prop-types';
 
-
-export default class CategoryButton extends React.Component {
+class CategoryButton extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -26,3 +25,12 @@ export default class CategoryButton extends React.Component {
         )
     }
 }
+
+CategoryButton.propTypes = {
+    categoryIcon: PropTypes.string,
+    categoryId: PropTypes.number,
+    categoryName: PropTypes.string,
+    onClick: PropTypes.func
+}
+
+export default CategoryButton;

@@ -1,9 +1,10 @@
 import './AddonScreenshotsTab.css';
 
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { Row, Col } from 'react-bootstrap';
 
-export default class AddonScreenshotsTab extends React.Component {
+class AddonScreenshotsTab extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -23,3 +24,9 @@ export default class AddonScreenshotsTab extends React.Component {
         )
     }
 }
+
+AddonScreenshotsTab.propTypes = {
+    screenshots: PropTypes.array
+}
+
+export default AddonScreenshotsTab;

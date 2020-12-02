@@ -1,11 +1,12 @@
 import './ConfirmationDialog.css';
 
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { Row, Col } from 'react-bootstrap';
 
 import UpdateAddonButton from '../../Buttons/UpdateAddonButton';
 
-export default class ConfirmationDialog extends React.Component {
+class ConfirmationDialog extends React.Component {
     constructor(props) {
         super(props);
 
@@ -46,3 +47,11 @@ export default class ConfirmationDialog extends React.Component {
         )
     }
 }
+
+ConfirmationDialog.propTypes = {
+    accept: PropTypes.func,
+    message: PropTypes.string,
+    reject: PropTypes.func
+}
+
+export default ConfirmationDialog;

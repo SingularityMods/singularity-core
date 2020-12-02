@@ -1,13 +1,14 @@
 import './MainContent.css';
 
-import { Container, Row, Col } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 import * as React from 'react';
+import PropTypes from 'prop-types';
 
 import HomePage from '../../components/HomePage';
 import GameWindow from '../GameWindow';
 import SettingsWindow from '../SettingsWindow';
 
-export default class MainContent extends React.Component {
+class MainContent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -50,3 +51,19 @@ export default class MainContent extends React.Component {
         )
     }
 }
+
+MainContent.propTypes = {
+    authOpened: PropTypes.bool,
+    backupPending: PropTypes.bool,
+    closeSettings: PropTypes.func,
+    latestCloudBackup: PropTypes.object,
+    lastRestoreComplete: PropTypes.object,
+    openBackupManagementDialog: PropTypes.func,
+    openBackupRestore: PropTypes.func,
+    openSettings: PropTypes.func,
+    restorePending: PropTypes.bool,
+    selected: PropTypes.number,
+    settingsOpened: PropTypes.bool
+}
+
+export default MainContent;

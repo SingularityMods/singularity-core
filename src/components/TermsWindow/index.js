@@ -2,11 +2,12 @@ import './TermsWindow.css';
 
 import { Container, Row, Col } from 'react-bootstrap';
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import SimpleBar from 'simplebar-react';
 
 const scrollableNodeRef = React.createRef();
 
-export default class TermsWindow extends React.Component {
+class TermsWindow extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -24,10 +25,6 @@ export default class TermsWindow extends React.Component {
             scrollableNodeRef.current.scrollTop = 0;
         }
 
-    }
-
-    handleClick() {
-        this.props.onClick(this.props.categoryId);
     }
 
     render() {
@@ -66,3 +63,13 @@ export default class TermsWindow extends React.Component {
         )
     }
 }
+
+TermsWindow.propTypes = {
+    handleAccept: PropTypes.func,
+    handleDecline: PropTypes.func,
+    onClick: PropTypes.func,
+    termType: PropTypes.string,
+    text: PropTypes.string
+}
+
+export default TermsWindow;

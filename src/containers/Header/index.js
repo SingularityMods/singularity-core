@@ -1,14 +1,16 @@
 import './Header.css';
 
-import { Container, Row, Col } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import * as React from 'react';
+import PropTypes from 'prop-types';
+
 const { ipcRenderer } = require('electron');
 
 import AuthBar from '../../components/AuthBar';
 import AppMenu from '../AppMenu';
 
 
-export default class Header extends React.Component {
+class Header extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -112,3 +114,11 @@ export default class Header extends React.Component {
         )
     }
 }
+
+Header.propTypes = {
+    onClick: PropTypes.func,
+    onOpenAuth: PropTypes.func,
+    onOpenProfileMenu: PropTypes.func
+}
+
+export default Header;

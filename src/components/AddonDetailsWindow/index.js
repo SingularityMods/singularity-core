@@ -3,6 +3,7 @@ import 'simplebar/dist/simplebar.min.css';
 
 import SimpleBar from 'simplebar-react';
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { Row, Col, Button } from 'react-bootstrap';
 const { ipcRenderer } = require('electron');
 
@@ -16,7 +17,7 @@ import ConfirmationDialog from '../Dialogs/ConfirmationDialog';
 import LoadingSpinner from '../LoadingSpinner';
 
 
-export default class AddonDetailsWindow extends React.Component {
+class AddonDetailsWindow extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -374,3 +375,12 @@ export default class AddonDetailsWindow extends React.Component {
         )
     }
 }
+
+AddonDetailsWindow.propTypes = {
+    addonId: PropTypes.string,
+    gameId: PropTypes.number,
+    gameVersion: PropTypes.string,
+    handleGoBack: PropTypes.func
+};
+
+export default AddonDetailsWindow;
