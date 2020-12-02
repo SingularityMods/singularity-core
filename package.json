@@ -13,9 +13,9 @@
     "start": "electron-forge start",
     "package": "cross-env BUILD_ENV=oss electron-forge package",
     "package-prod": "cross-env BUILD_ENV=prod electron-forge package",
-    "package-beta": "cross-env BUILD_ENV=beta electron-forge package",
     "make": "cross-env BUILD_ENV=oss electron-forge make",
     "make-prod": "cross-env BUILD_ENV=prod electron-forge make",
+    "make-beta": "cross-env BUILD_ENV=beta electron-forge make",
     "publish": "electron-forge publish",
     "lint": "npx eslint ./src",
     "test": "mocha --timeout 20000 \"./test/**/*test-*.js\""

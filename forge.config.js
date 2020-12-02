@@ -37,6 +37,38 @@ module.exports = {
             },
             appCopyright: "Copyright (C) 2020 Singularity Mods LLC"
         },
+        beta: {
+          asar: false,
+          overwrite: true,
+          "ignore": [
+            "/bin/",
+            "/obj/",
+            "/out/",
+            "/.git/",
+            "/node_modules/",
+            "/package-lock.json",
+            "/entitlements.plist",
+            "forge.config.js",
+            "/tslint.json",
+            "/.editorconfig",
+            "/.gitignore",
+            "/README.md"
+          ],
+          icon: path.join(__dirname, 'assets/icons/app_icon'),
+          osxSign: {
+          identity: "Developer ID Application: Singularity Mods LLC (K3X44TCN7V)",
+          "hardened-runtime": true,
+          'gatekeeper-assess': false,
+          "entitlements": "entitlements.plist",
+          "entitlements-inherit": "entitlements.plist",
+          "signature-flags": "library"
+          },
+          osxNotarize: {
+          "appleId": "admin@singularitymods.com",
+          "appleIdPassword": password,
+          },
+          appCopyright: "Copyright (C) 2020 Singularity Mods LLC"
+      },
         oss: {
             asar: true,
             overwrite: true,
