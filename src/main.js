@@ -408,6 +408,7 @@ ipcMain.on('install-pending-update', (event, args) => {
     if (storageService.getAppData('updatePending')) {
         storageService.setAppData('updatePending', false);
         try {
+            isQuitting = true;
             autoUpdater.quitAndInstall();
         } catch (err) {
             log.error(err);
