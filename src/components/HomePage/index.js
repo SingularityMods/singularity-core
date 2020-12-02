@@ -56,7 +56,7 @@ export default class HomePage extends React.Component {
                         <SimpleBar scrollbarMaxSize={50} className={process.platform === 'darwin' ? "home-page-bar mac" : "home-page-bar" } >
                             <div >
                                 <h3 className="release-notes-title">Release Notes</h3>
-                                <h5>1.1.0 <span className="release-note-date">2020-12-1</span></h5>
+                                <h5>1.1.0-beta.0 <span className="release-note-date">2020-12-2</span></h5>
                                 <h5 className="release-note-section-header">New Features:</h5>
                                 <p className="release-note-bullet"> - You can now sync installed addons between multiple computers. After enabling the sync profile, Singularity will sync from the profile every 5 minutes. *</p>
                                 <p className="release-note-bullet"> - You can now configure Singularity to instead minimize to the system tray on close under the settings menu.</p>
@@ -67,6 +67,8 @@ export default class HomePage extends React.Component {
                                 <p className="release-note-bullet"> - You can now open the directory containing Singularity's debug logs from a link in the settings menu.</p>
                                 <h5 className="release-note-section-header">Bug Fixes:</h5>
                                 <p className="release-note-bullet"> - The addon category dropdown is now sorted alphabetically.</p>
+                                <p className="release-note-bullet"> - Fixed an issue that could cause Singularity to only half-load the selected theme.</p>
+                                <p className="release-note-bullet"> - Fixed an issue that could cause Singularity to not check for app updates after initial installation or update.</p>
                                 <br />
                                 <p>* Requires a Singularity account.</p>
                                 <br />
