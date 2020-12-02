@@ -4,6 +4,8 @@ const fileService = require('../../services/file-service');
 
 const log = require('electron-log');
 
+const PACKAGE_URL = "https://storage.singularitycdn.com/App/Releases/";
+
 ipcMain.on('set-app-settings', (event, appSettings) => {
     let prevSettings = storageService.getAppData('userConfigurable');
     storageService.setAppData('userConfigurable', appSettings);
@@ -17,6 +19,19 @@ ipcMain.on('set-app-settings', (event, appSettings) => {
             });
     }
     if (app.isPackaged && prevSettings.beta != appSettings.beta) {
+        if (process.platform == 'win32') {
+            let feedURL = `${PACKAGE_URL}Win/`
+            if (appSettings.beta) {
+                feedURL = `${PACKAGE_URL}Win/Beta/`
+            }
+            autoUpdater.setFeedURL(feedUrl);     
+        } else if (process.platform == 'darwin') {
+            let feedURL = `${PACKAGE_URL}Mac/darwin-releases.json`
+            if (appSettings.beta) {
+                feedURL = `${PACKAGE_URL}Mac/darwin-releases-beta.json`
+            }
+            autoUpdater.setFeedURL({url: feedURL, serverType:'json'});
+        }
         autoUpdater.checkForUpdates();
     }
     if (prevSettings.addonUpdateInterval != appSettings.addonUpdateInterval) {
