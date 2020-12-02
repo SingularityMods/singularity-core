@@ -36,120 +36,116 @@ const startAutoUpdater = () => {
     //autoUpdater.logger.transports.file.level = "info"
     if (process.platform === "win32") {
         // WINDOWS
+        log.info('Initializing Auto Updater');
+        // The Squirrel application will watch the provided URL
+        autoUpdater.on("error", (event, error) => {
+            log.error(error);
+        });
+        
+        let feedURL = `${PACKAGE_URL}Win/`;
+        if (beta) {
+            feedURL = `${PACKAGE_URL}Win/Beta/`;
+        }
+        autoUpdater.setFeedURL(feedURL);
+
+        // Unset the update pending notification, just in case it is still set
+        autoUpdater.addListener('update-not-available', (event) => {
+            storageService.setAppData('updatePending', false);
+            //appData.set('updatePending', false);
+        })
+
+        // Notify the renderer that an update is pending
+        autoUpdater.addListener("update-downloaded", (event, releaseNotes, releaseName) => {
+            storageService.setAppData('updatePending', true);
+            //appData.set('updatePending', true);
+            if (mainWindow) {
+                mainWindow.webContents.send('update-pending');
+            }
+            
+        });
+
+        autoUpdater.addListener("error", (event, error) => {
+            log.error(error);
+        });
+
         var cmds = process.argv;
         if (cmds.indexOf('--squirrel-firstrun') > -1) {
-            log.info('First execution since install/update, stopping auto updater');
             // Skip auto update on first run
+            log.info('First execution since install/update, stopping auto updater');
         } else {
-            log.info('Initializing Auto Updater');
-            // The Squirrel application will watch the provided URL
-            autoUpdater.on("error", (event, error) => {
-                log.error(error);
-            });
-            
-            let feedURL = `${PACKAGE_URL}Win/`;
-            if (beta) {
-                feedURL = `${PACKAGE_URL}Win/Beta/`;
-            }
-            autoUpdater.setFeedURL(feedURL);
-
-            // Unset the update pending notification, just in case it is still set
-            autoUpdater.addListener('update-not-available', (event) => {
-                storageService.setAppData('updatePending', false);
-                //appData.set('updatePending', false);
-            })
-
-            // Notify the renderer that an update is pending
-            autoUpdater.addListener("update-downloaded", (event, releaseNotes, releaseName) => {
-                storageService.setAppData('updatePending', true);
-                //appData.set('updatePending', true);
-                if (mainWindow) {
-                    mainWindow.webContents.send('update-pending');
-                }
-                
-            });
-
-            autoUpdater.addListener("error", (event, error) => {
-                log.error(error);
-            });
-
             // Check for updates immediately
             try {
                 autoUpdater.checkForUpdates()
             } catch (err) {
                 log.error('Error checking for app update');
                 log.error(err);
-            }   
-            //autoUpdater.checkForUpdates().catch(err => {
-            //    log.error('Error checking for app update');
-            //    log.error(err);
-            //})
+            }  
+        } 
 
-            // Also check once every hour
-            setInterval(() => {
-                log.info('Checking for app update');
-                try {
-                    autoUpdater.checkForUpdates()
-                } catch (err) {
-                    log.error('Error checking for app update');
-                    log.error(err);
-                }   
-            }, 1000 * 60 * 60);
-        }
+        // Also check once every hour
+        setInterval(() => {
+            log.info('Checking for app update');
+            try {
+                autoUpdater.checkForUpdates()
+            } catch (err) {
+                log.error('Error checking for app update');
+                log.error(err);
+            }   
+        }, 1000 * 60 * 60);
+        
     } else if (process.platform === "darwin") {
         // MACOS
-        var cmds = process.argv;
-        log.info(process.env.BUILD_ENV);
-        if (cmds.indexOf('--squirrel-firstrun') > -1) {
-            log.info('First execution since install/update, stopping auto updater');
-            // Skip auto update on first run
-        } else {
-            log.info('Initializing Auto Updater');
-            autoUpdater.on("error", (event, error) => {
-                log.error(error);
-            });
-            let feedURL = `${PACKAGE_URL}Mac/darwin-releases.json`
-            if (beta) {
-                feedURL = `${PACKAGE_URL}Mac/darwin-releases-beta.json`
+        log.info('Initializing Auto Updater');
+        autoUpdater.on("error", (event, error) => {
+            log.error(error);
+        });
+        let feedURL = `${PACKAGE_URL}Mac/darwin-releases.json`
+        if (beta) {
+            feedURL = `${PACKAGE_URL}Mac/darwin-releases-beta.json`
+        }
+        autoUpdater.setFeedURL({url: feedURL, serverType:'json'});
+        
+
+        autoUpdater.addListener('update-not-available', (event) => {
+            storageService.setAppData('updatePending', false);
+        })
+
+        // Notify the renderer that an update is pending
+        autoUpdater.addListener("update-downloaded", (event, releaseNotes, releaseName) => {
+            storageService.setAppData('updatePending', true);
+            if (mainWindow) {
+                mainWindow.webContents.send('update-pending');
             }
-            autoUpdater.setFeedURL({url: feedURL, serverType:'json'});
-            
+        });
 
-            autoUpdater.addListener('update-not-available', (event) => {
-                storageService.setAppData('updatePending', false);
-            })
+        autoUpdater.addListener("error", (event, error) => {
+            log.error(error);
+        });
 
-            // Notify the renderer that an update is pending
-            autoUpdater.addListener("update-downloaded", (event, releaseNotes, releaseName) => {
-                storageService.setAppData('updatePending', true);
-                if (mainWindow) {
-                    mainWindow.webContents.send('update-pending');
-                }
-            });
-
-            autoUpdater.addListener("error", (event, error) => {
-                log.error(error);
-            });
-
+        var cmds = process.argv;
+        if (cmds.indexOf('--squirrel-firstrun') > -1) {
+            // Skip auto update on first run
+            log.info('First execution since install/update, stopping auto updater');
+        } else {
             // Check for updates immediately
             try {
                 autoUpdater.checkForUpdates()
             } catch (err) {
                 log.error('Error checking for app update');
                 log.error(err);
-            }   
-
-            // Also check once every hour
-            setInterval(() => {
-                log.info('Checking for app update');
-                try {
-                    autoUpdater.checkForUpdates()
-                } catch (err) {
-                    log.error('Error checking for app update');
-                    log.error(err);
-                }   
-            }, 1000 * 60 * 60);
+            }  
         }
+
+        // Also check once every hour
+        setInterval(() => {
+            log.info('Checking for app update');
+            try {
+                autoUpdater.checkForUpdates()
+            } catch (err) {
+                log.error('Error checking for app update');
+                log.error(err);
+            }   
+        }, 1000 * 60 * 60);
         
     }  
 }
@@ -268,34 +264,74 @@ app.on('ready', () => {
     createWindow();
 
      // Start the auth refresh and addon check procedures
-     authService.refreshTokens()
-     .then(() => {
-       log.info('Authentication token refresh succesful');
-       return fileService.handleSync()
-     })
-     .then(() => {
-        mainWindow.webContents.send('addon-sync-search-complete');
-        log.info('Finished searching for sync profiles');
-        return fileService.findAndUpdateAddons()
-     })
-     .then( profiles => {
-        fileService.updateSyncProfiles([...profiles]);
-     })
-     .catch(err => {
-         mainWindow.webContents.send('addon-sync-search-complete');
-         if (err == 'No Token') {
-             log.info('User does not have an authentication session to resume.');
-             fileService.findAndUpdateAddons()
-             .then(() => {
-                log.info('Finished identifying and updating addons.')
-             })
-             .catch(err => {
-                 log.info('Error identifying and updating addons');
-             })
-         } else {
-             log.info(err);  
-         }      
-     })
+    if (process.platform === 'win32') {
+        var cmd = process.argv[1]; 
+        if (cmd === '--squirrel-install' 
+            || cmd === '--squirrel-updated'
+            || cmd === '--squirrel-uninstall'
+            || cmd === '--squirrel-obsolete') {
+            log.info('Singularity is being updated or installed, skipping some features')
+        } else {
+            authService.refreshTokens()
+            .then(() => {
+            log.info('Authentication token refresh succesful');
+            return fileService.handleSync()
+            })
+            .then(() => {
+                mainWindow.webContents.send('addon-sync-search-complete');
+                log.info('Finished searching for sync profiles');
+                return fileService.findAndUpdateAddons()
+            })
+            .then( profiles => {
+                fileService.updateSyncProfiles([...profiles]);
+            })
+            .catch(err => {
+                mainWindow.webContents.send('addon-sync-search-complete');
+                if (err == 'No Token') {
+                    log.info('User does not have an authentication session to resume.');
+                    fileService.findAndUpdateAddons()
+                    .then(() => {
+                        log.info('Finished identifying and updating addons.')
+                    })
+                    .catch(err => {
+                        log.info('Error identifying and updating addons');
+                    })
+                } else {
+                    log.info(err);  
+                }      
+            })
+        }
+    } else {
+        authService.refreshTokens()
+        .then(() => {
+        log.info('Authentication token refresh succesful');
+        return fileService.handleSync()
+        })
+        .then(() => {
+            mainWindow.webContents.send('addon-sync-search-complete');
+            log.info('Finished searching for sync profiles');
+            return fileService.findAndUpdateAddons()
+        })
+        .then( profiles => {
+            fileService.updateSyncProfiles([...profiles]);
+        })
+        .catch(err => {
+            mainWindow.webContents.send('addon-sync-search-complete');
+            if (err == 'No Token') {
+                log.info('User does not have an authentication session to resume.');
+                fileService.findAndUpdateAddons()
+                .then(() => {
+                    log.info('Finished identifying and updating addons.')
+                })
+                .catch(err => {
+                    log.info('Error identifying and updating addons');
+                })
+            } else {
+                log.info(err);  
+            }      
+        })
+    }
+     
 
     // Start the addon auto updater
     fileService.setAddonUpdateInterval();

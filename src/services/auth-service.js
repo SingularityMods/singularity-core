@@ -99,6 +99,7 @@ async function refreshTokens() {
         return reject(err);
       }
       log.error('Error refreshing tokens');
+      log.error(err);
       if (err.code && err.code == 'ENOTFOUND') {
         log.error('Lost network connection, leave user session');
         return reject(err);
