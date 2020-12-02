@@ -193,6 +193,7 @@ const createWindow = () => {
       minHeight: 550,
       webPreferences: {
           nodeIntegration: true,
+          devTools: !app.isPackaged,
           preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
       },
       icon: path.join(__dirname, 'assets/icons/app_icon.png'),
