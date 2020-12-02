@@ -208,6 +208,7 @@ const createWindow = () => {
     let osTheme = nativeTheme.shouldUseDarkColors ? 'dark' : 'light';
     mainWindow.webContents.executeJavaScript(`localStorage.setItem('user_theme','${userTheme}')`);
     mainWindow.webContents.executeJavaScript(`localStorage.setItem('os_theme','${osTheme}')`);
+    mainWindow.webContents.executeJavaScript(`__setTheme()`)
 
     // Load the app entry point
     mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
