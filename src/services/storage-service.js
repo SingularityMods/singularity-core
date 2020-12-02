@@ -10,7 +10,7 @@ let syncProfileDefault = require('./storage-service-defaults/syncProfile.json');
 
 const log = require('electron-log');
 
-const userDataPath = (electron.app || electron.remote.app).getPath('userData');
+const userDataPath = (electron.app).getPath('userData');
 
 let gameSettings = null;
 let appData = null;
