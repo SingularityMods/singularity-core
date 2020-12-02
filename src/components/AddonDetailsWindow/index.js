@@ -346,7 +346,7 @@ export default class AddonDetailsWindow extends React.Component {
                                 <GameMenuButton className={this.state.activeTab == 4 ? 'active-tab' : ''} handleClick={this.toggleDetailSection} clickData={4} type='Versions' />
                                 {
                                     this.state.addon && this.state.addon.addonUrl
-                                    ?<Button className="addon-page-link"><a target="_blank" href={this.state.addon.addonUrl}>Homepage<i className="addon-page-link-icon fas fa-external-link-alt"></i></a></Button>
+                                    ?<Button className="addon-page-link"><a target="_blank" rel="noreferrer" href={this.state.addon.addonUrl}>Homepage<i className="addon-page-link-icon fas fa-external-link-alt"></i></a></Button>
                                     : ''
                                 }
 

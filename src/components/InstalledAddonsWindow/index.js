@@ -579,8 +579,8 @@ export default class InstalledAddonsWindow extends React.Component {
         const noAddonsInstalled = () => {
             return (
                 <div className="no-data-label no-addons">
-                    <p>It looks like you don't have any addons installed yet!</p>
-                    <p>Try hitting <span className="no-addons-link" onClick={this.findAddons} >Refresh</span> or <span className="no-addons-link" onClick={() => this.props.toggleActiveTab('browse')}>Browse</span> for new ones. You can also restore a <span className="no-addons-link" onClick={this.openBackupDialog}>Backup</span> if you have one or use your sync profile from another computer if you've configured one.</p>
+                    <p>It looks like you don&apos;t have any addons installed yet!</p>
+                    <p>Try hitting <span className="no-addons-link" onClick={this.findAddons} >Refresh</span> or <span className="no-addons-link" onClick={() => this.props.toggleActiveTab('browse')}>Browse</span> for new ones. You can also restore a <span className="no-addons-link" onClick={this.openBackupDialog}>Backup</span> if you have one or use your sync profile from another computer if you&apos;ve configured one.</p>
                 </div>
             )
         }
