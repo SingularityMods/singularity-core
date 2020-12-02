@@ -80,7 +80,7 @@ export default class AddonVersionTable extends React.Component {
                     )
                 }
                 return (
-                    <UpdateAddonButton handleClick={() => this.props.handeInstall(this.state.addon,cellContent)} type='Install' />
+                    <UpdateAddonButton handleClick={() => this.props.handleInstall(this.state.addon,cellContent)} type='Install' />
                 )
             }
         }]

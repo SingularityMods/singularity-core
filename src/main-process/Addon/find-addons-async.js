@@ -4,7 +4,6 @@ const axios = require('axios');
 const authService = require('../../services/auth-service');
 const fileService = require('../../services/file-service');
 const storageService = require('../../services/storage-service');
-const syncService = require('../../services/sync-service');
 
 const log = require('electron-log');
 
@@ -42,7 +41,7 @@ ipcMain.on('find-addons-async', async (event, gameId, gameVersion) =>{
                         fileService.syncFromProfile(res.data.profile)      
                     } else if (res.status === 200 ){
                         log.info('No addon sync profile found');
-                        syncService.createAndSaveSyncProfile({gameId: gameId, gameVersion: gameVersion})
+                        fileService.createAndSaveSyncProfile({gameId: gameId, gameVersion: gameVersion})
                     } else {
                         return Promise.reject('Error searching for sync profile');
                     }

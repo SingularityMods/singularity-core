@@ -4,8 +4,6 @@ const path = require('path');
 const authService = require('../../services/auth-service');
 const fileService = require('../../services/file-service');
 const storageService = require('../../services/storage-service');
-const syncService = require('../../services/sync-service');
-
 
 const log = require('electron-log');
 
@@ -73,7 +71,7 @@ ipcMain.on('install-addon', async (event, gameId, gameVersionFlavor, addon, bran
             event.sender.send('addon-installed', installedAddon);
             if (gameS[gameVersionFlavor].sync && authService.isAuthenticated()) {
                 log.info('Game version is configured to sync, updating profile');
-                syncService.createAndSaveSyncProfile({gameId: gameId, gameVersion: gameVersionFlavor})
+                fileService.createAndSaveSyncProfile({gameId: gameId, gameVersion: gameVersionFlavor})
                 .then(() => {
                     log.info('Sync profile updated');
                 })

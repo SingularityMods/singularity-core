@@ -1,6 +1,5 @@
 const {app, ipcMain} = require('electron');
 const authService = require('../../services/auth-service');
-const syncService = require('../../services/sync-service');
 const fileService = require('../../services/file-service');
 
 const axios = require('axios');
@@ -23,7 +22,7 @@ ipcMain.on('trigger-sync', async (event, gameId, gameVersion) => {
                 return fileService.syncFromProfile(res.data.profile)      
             } else if (res.status === 200 ){
                 log.info('No addon sync profile found');
-                return syncService.createAndSaveSyncProfile({gameId: gameId, gameVersion: gameVersion})
+                return fileService.createAndSaveSyncProfile({gameId: gameId, gameVersion: gameVersion})
             } else {
                 return Promise.reject('Error searching for sync profile');
             }

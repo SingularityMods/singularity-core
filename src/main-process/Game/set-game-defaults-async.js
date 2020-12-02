@@ -1,6 +1,5 @@
 const { ipcMain, BrowserWindow } = require('electron');
 const storageService = require('../../services/storage-service');
-const fileService = require('../../services/file-service');
 
 const log = require('electron-log');
 

@@ -6,7 +6,6 @@ const appService = require('./services/app-service');
 const storageService = require('./services/storage-service');
 const authService = require('./services/auth-service');
 const fileService = require('./services/file-service');
-const syncService = require('./services/sync-service');
 
 // import ipc handlers
 var routes = require("./main-process");
@@ -206,7 +205,6 @@ const createWindow = () => {
     mainWindowId = mainWindow.id;
     authService.setBrowserWindow(mainWindowId);
     fileService.setBrowserWindow(mainWindowId);
-    syncService.setBrowserWindow(mainWindowId);
 
     // Set the user and OS theme in the browser window
     let userTheme = storageService.getAppData('userConfigurable').darkMode ? 'dark' : 'light';
@@ -273,7 +271,7 @@ app.on('ready', () => {
      authService.refreshTokens()
      .then(() => {
        log.info('Authentication token refresh succesful');
-       return syncService.handleSync()
+       return fileService.handleSync()
      })
      .then(() => {
         mainWindow.webContents.send('addon-sync-search-complete');
@@ -281,7 +279,7 @@ app.on('ready', () => {
         return fileService.findAndUpdateAddons()
      })
      .then( profiles => {
-        syncService.updateSyncProfiles([...profiles]);
+        fileService.updateSyncProfiles([...profiles]);
      })
      .catch(err => {
          mainWindow.webContents.send('addon-sync-search-complete');

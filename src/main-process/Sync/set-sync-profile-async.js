@@ -3,7 +3,6 @@ const { v4: uuidv4 } = require('uuid');
 const storageService = require('../../services/storage-service');
 const authService = require('../../services/auth-service');
 const fileService = require('../../services/file-service');
-const syncService = require('../../services/sync-service');
 
 const path = require('path');
 const axios = require('axios');
@@ -15,7 +14,7 @@ const log = require('electron-log');
 
 ipcMain.on('create-sync-profile', async (event, gameId, gameVersion) => {
     log.info('Creating addon sync profile');
-    syncService.createSyncProfileObj(gameId, gameVersion)
+    fileService.createSyncProfileObj(gameId, gameVersion)
     .then(profile => {
         let axiosConfig = {
             headers: {

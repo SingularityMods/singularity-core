@@ -3,7 +3,6 @@ const { v4: uuidv4 } = require('uuid');
 const storageService = require('../../services/storage-service');
 const authService = require('../../services/auth-service');
 const fileService = require('../../services/file-service');
-const syncService = require('../../services/sync-service');
 
 const path = require('path');
 const axios = require('axios');
@@ -32,7 +31,7 @@ ipcMain.on('enable-addon-sync', async (event, gameId, gameVersion) => {
         } else {
             log.info('No addon sync profile found');
             event.sender.send('sync-status', gameId, gameVersion, 'creating-profile', null, null)  
-            syncService.createAndSaveSyncProfile({gameId: gameId, gameVersion: gameVersion})
+            fileService.createAndSaveSyncProfile({gameId: gameId, gameVersion: gameVersion})
             .then(() => {
                 event.sender.send('sync-status', gameId, gameVersion, 'complete', new Date(), null)
             })
@@ -52,7 +51,7 @@ ipcMain.on('enable-addon-sync', async (event, gameId, gameVersion) => {
     })
 
 /*
-    syncService.createSyncProfileObj(gameId, gameVersion)
+    fileService.createSyncProfileObj(gameId, gameVersion)
     .then(profile => {
         let axiosConfig = {
             headers: {

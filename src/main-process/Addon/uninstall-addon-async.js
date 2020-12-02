@@ -4,7 +4,6 @@ const path = require('path');
 const authService = require('../../services/auth-service');
 const fileService = require('../../services/file-service');
 const storageService = require('../../services/storage-service');
-const syncService = require('../../services/sync-service');
 
 const log = require('electron-log');
 
@@ -33,7 +32,7 @@ ipcMain.on('uninstall-addon', async (event, gameId, gameVersion, addonId) => {
                 event.sender.send('addon-uninstalled', addonId);
                 if (gameS[gameVersion].sync && authService.isAuthenticated()) {
                     log.info('Game version is configured to sync, updating profile');
-                    syncService.createAndSaveSyncProfile({gameId: gameId, gameVersion: gameVersion})
+                    fileService.createAndSaveSyncProfile({gameId: gameId, gameVersion: gameVersion})
                     .then(() => {
                         log.info('Sync profile updated');
                     })

@@ -89,7 +89,9 @@ async function refreshTokens() {
     .then (res => {
       log.info('User auth token refreshed');
       let win = BrowserWindow.fromId(browserWindowId);
-      win.webContents.send('auth-event', 'refresh', true, null);
+      if (win) {
+        win.webContents.send('auth-event', 'refresh', true, null);
+      }
       resolve();
     })
     .catch(err => {
@@ -105,7 +107,9 @@ async function refreshTokens() {
         .then (() => {
           log.info('User deauthenticated');
           let win = BrowserWindow.fromId(browserWindowId);
-          win.webContents.send('auth-event', 'logout', true, null);
+          if (win) {
+            win.webContents.send('auth-event', 'logout', true, null);
+          }
           reject(err);
         })
         .catch (err => {

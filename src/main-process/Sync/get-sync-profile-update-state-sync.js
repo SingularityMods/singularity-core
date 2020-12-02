@@ -1,8 +1,9 @@
 const { ipcMain } = require('electron');
-const syncService = require('../../services/sync-service');
+
+const fileService = require('../../services/file-service');
 
 const log = require('electron-log');
 
 ipcMain.on('is-sync-profile-updating', (event) => {
-    event.returnValue = syncService.isSearchingForProfiles();
+    event.returnValue = fileService.isSearchingForProfiles();
 })

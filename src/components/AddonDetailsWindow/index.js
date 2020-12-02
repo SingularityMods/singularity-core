@@ -41,6 +41,7 @@ export default class AddonDetailsWindow extends React.Component {
         this.addonInstalledListener = this.addonInstalledListener.bind(this);
         this.addonUninstalledListener = this.addonUninstalledListener.bind(this);
         this.installAddon = this.installAddon.bind(this);
+        this.reinstallAddon = this.reinstallAddon.bind(this);
         this.updateAddon = this.updateAddon.bind(this);
         this.uninstallAddon = this.uninstallAddon.bind(this);
         this.confirmUninstall = this.confirmUninstall.bind(this);
@@ -173,8 +174,7 @@ export default class AddonDetailsWindow extends React.Component {
 
     reinstallAddon() {
         let addon = this.state.installedAddon
-        let installedFile = addon.installedFile.fileId;
-
+        let installedFile = addon.installedFile._id || addon.installedFile.fileId;
         ipcRenderer.send('install-addon-file', this.state.gameId, this.state.gameVersion, addon, installedFile);
         this.setState({
             currentlyUpdating: true
@@ -359,7 +359,7 @@ export default class AddonDetailsWindow extends React.Component {
                                     1: <div dangerouslySetInnerHTML={{ __html: this.state.addon.description }}></div>,
                                     2: 'test 2',
                                         3: <AddonScreenshotsTab screenshots={this.state.addon.screenshots} />,
-                                        4: <AddonVersionTable gameVersion={this.state.gameVersion} addon={this.state.addon} installedAddon={this.state.installedAddon} currentlyInstallingFile={this.state.currentlyInstallingFile} handeInstall={this.installAddonFile} />,
+                                        4: <AddonVersionTable gameVersion={this.state.gameVersion} addon={this.state.addon} installedAddon={this.state.installedAddon} currentlyInstallingFile={this.state.currentlyInstallingFile} handleInstall={this.installAddonFile} />,
                                 }[this.state.activeTab]
                                 
                             : ''
