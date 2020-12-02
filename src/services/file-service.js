@@ -1171,12 +1171,9 @@ function syncFromProfile(profile) {
         }
         var pool = new PromisePool(_installAddonFromSyncProducer, 1)
         pool.start()
-        .then (() => {
-            log.info('All addons updated/installed from sync profile');
-            return ''
-            //resolve('success');
-        })
         .then(() => {
+            log.info('All addons updated/installed from sync profile');
+            log.info('Removing addons that do not exist in the sync profile');
             if (win) {
                 win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'deleting-unsynced-addons', null, null);
             }
@@ -1193,6 +1190,9 @@ function syncFromProfile(profile) {
         .catch(err => {
             log.error(err);
             reject('Error syncing from profile');
+            if (win) {
+                win.webContents.send('sync-status',profile.gameId, profile.gameVersion,'error', new Date(), 'Error syncing addons');
+            }
         })
     })
 }
@@ -1563,6 +1563,7 @@ function _restoreWoWAddonFile(addon) {
 
 function _uninstallAddonFromSync(addon) {
     return new Promise((resolve, reject) => {
+        log.info('Uninstalling addon: '+addon.addonName);
         let gameS = storageService.getGameSettings(addon.gameId.toString());
         let gameVersions = storageService.getGameData(addon.gameId.toString()).gameVersions;
 
@@ -1586,6 +1587,7 @@ function _uninstallAddonFromSync(addon) {
             })
             .catch((e) => {
                 log.error(e);
+                reject(e);
             })
     });
 }
