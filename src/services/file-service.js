@@ -1583,11 +1583,12 @@ function _uninstallAddonFromSync(addon) {
         }
         Promise.allSettled(promises)
             .then( () => {
-                resolve('success');
+                log.info('Sucessfully uninstalled addon: '+addon.addonName);
+                return resolve('success');
             })
             .catch((e) => {
                 log.error(e);
-                reject(e);
+                return reject(e);
             })
     });
 }
@@ -1600,13 +1601,15 @@ function _uninstallDir(p, d) {
                 fs.rmdir(directory, { recursive: true }, (err) => {
                     if (err) {
                         log.error(err);
-                        reject(err);
+                        return reject(err);
                     }
-                    resolve();
+                    return resolve();
                 });
+            } else {
+                return resolve()
             }
         } else {
-            resolve();
+            return resolve();
         }       
     })
 }
