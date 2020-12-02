@@ -48,11 +48,11 @@ const startAutoUpdater = () => {
                 log.error(error);
             });
             
-            let feedURL = `${PACKAGE_URL}Win/`
+            let feedURL = `${PACKAGE_URL}Win/`;
             if (beta) {
-                feedURL = `${PACKAGE_URL}Win/Beta/`
+                feedURL = `${PACKAGE_URL}Win/Beta/`;
             }
-            autoUpdater.setFeedURL(feedUrl);
+            autoUpdater.setFeedURL(feedURL);
 
             // Unset the update pending notification, just in case it is still set
             autoUpdater.addListener('update-not-available', (event) => {

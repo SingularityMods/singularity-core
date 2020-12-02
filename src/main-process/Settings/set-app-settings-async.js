@@ -24,7 +24,7 @@ ipcMain.on('set-app-settings', (event, appSettings) => {
             if (appSettings.beta) {
                 feedURL = `${PACKAGE_URL}Win/Beta/`
             }
-            autoUpdater.setFeedURL(feedUrl);     
+            autoUpdater.setFeedURL(feedURL);     
         } else if (process.platform == 'darwin') {
             let feedURL = `${PACKAGE_URL}Mac/darwin-releases.json`
             if (appSettings.beta) {
