@@ -295,7 +295,7 @@ app.on('ready', () => {
                 log.info('Error identifying and updating addons');
               });
           } else {
-            log.info(err);
+            log.info(err.message);
           }
         });
     }

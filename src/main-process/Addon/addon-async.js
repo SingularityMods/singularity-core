@@ -1,6 +1,9 @@
-import { ipcMain, net, shell } from 'electron';
+import { app, ipcMain, net, shell } from 'electron';
+import axios from 'axios';
 import log from 'electron-log';
 import path from 'path';
+
+import AppConfig from '../../config/app.config';
 
 import { getAccessToken, isAuthenticated } from '../../services/auth.service';
 import {
@@ -27,7 +30,7 @@ ipcMain.on('addon-search', (event, gameId, gameVersion, searchFilter, categoryId
   if (categoryId == null) {
       categoryId = 0;
   }
-  const request = net.request(`https://api.singularitymods.com/api/v1/addons/search?gameId=${gameId}&gameVersionFlavor=${addonVersion}&filter=${searchFilter}&category=${categoryId}&index=${index}`);
+  const request = net.request(`${AppConfig.API_URL}/addons/search?gameId=${gameId}&gameVersionFlavor=${addonVersion}&filter=${searchFilter}&category=${categoryId}&index=${index}`);
   request.setHeader('x-app-uuid', getAppData('UUID'));
   let body = ''
   request.on('error', (error) => {
@@ -182,7 +185,7 @@ ipcMain.on('find-addons-async', async (event, gameId, gameVersion) =>{
                   'x-auth': getAccessToken()}
               };
               event.sender.send('sync-status', gameId, gameVersion, 'checking-cloud', null, null)   
-              axios.get(`https://api.singularitymods.com/api/v1/user/sync/get?gameId=${gameId}&gameVersion=${gameVersion}`, axiosConfig)
+              axios.get(`${AppConfig.API_URL}/user/sync/get?gameId=${gameId}&gameVersion=${gameVersion}`, axiosConfig)
               .then( res => {
                   if (res.status === 200 && res.data.success) {
                       log.info('Addon sync profile found');
@@ -220,7 +223,7 @@ ipcMain.on('find-addons-async', async (event, gameId, gameVersion) =>{
 })
 
 ipcMain.on('get-addon-info', (event, addonId) => {
-    const request = net.request(`https://api.singularitymods.com/api/v1/addon/${addonId}`);
+    const request = net.request(`${AppConfig.API_URL}/addon/${addonId}`);
     request.setHeader('x-app-uuid', getAppData('UUID'));
     let body = ''
     request.on('error', (error) => {
@@ -322,7 +325,7 @@ ipcMain.on('install-addon', async (event, gameId, gameVersionFlavor, addon, bran
 })
 
 ipcMain.on('install-addon-file', async (event, gameId, gameVersionFlavor, addon, fileId) => {
-  const request = net.request(`https://api.singularitymods.com/api/v1/file/${fileId}`);
+  const request = net.request(`${AppConfig.API_URL}/file/${fileId}`);
   request.setHeader('x-app-uuid', getAppData('UUID'));
   let body = ''
   request.on('error', (error) => {

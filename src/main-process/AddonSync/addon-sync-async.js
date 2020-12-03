@@ -2,35 +2,34 @@ import {app, ipcMain} from 'electron';
 import axios from 'axios';
 import log from 'electron-log';
 
+import AppConfig from '../../config/app.config';
+
 import { getAccessToken, isAuthenticated } from '../../services/auth.service';
 import {
   createAndSaveSyncProfile, 
   createSyncProfileObj,
-  isSearchingForProfiles,
   syncFromProfile 
 } from '../../services/file.service';
 import { getGameSettings, setGameSettings } from '../../services/storage.service';
 
 ipcMain.on('create-sync-profile', async (event, gameId, gameVersion) => {
     log.info('Creating addon sync profile');
-    createSyncProfileObj(gameId, gameVersion)
-    .then(profile => {
-        let axiosConfig = {
-            headers: {
-            'Content-Type': 'application/json;charset=UTF-8',
-            'User-Agent': 'Singularity-'+app.getVersion(),
-            'x-auth': getAccessToken()}
-        };
-        return axios.post(`https://api.singularitymods.com/api/v1/user/sync/set`,profile, axiosConfig)
-        .then(res => {
-            if (res && res.status === 200 && res.data.success) {
-                log.info('Addon sync profile created and saved');
-                event.sender.send('sync-status', gameId, gameVersion, 'complete', new Date(), null)
-            } else {
-                log.error('Error pushing sync profile to the cloud');
-                event.sender.send('sync-status', gameId, gameVersion, 'error', null, 'Error pushing sync profile to the cloud');
-            }
-        })
+    const syncProfile = createSyncProfileObj(gameId, gameVersion);
+    const axiosConfig = {
+        headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'User-Agent': 'Singularity-'+app.getVersion(),
+        'x-auth': getAccessToken()}
+    };
+    return axios.post(`${AppConfig.API_URL}/user/sync/set`,syncProfile, axiosConfig)
+    .then(res => {
+        if (res && res.status === 200 && res.data.success) {
+            log.info('Addon sync profile created and saved');
+            event.sender.send('sync-status', gameId, gameVersion, 'complete', new Date(), null)
+        } else {
+            log.error('Error pushing sync profile to the cloud');
+            event.sender.send('sync-status', gameId, gameVersion, 'error', null, 'Error pushing sync profile to the cloud');
+        }
     })
     .catch((err) => {
         log.error('Error pushing sync profile to the cloud');
@@ -49,7 +48,7 @@ ipcMain.on('enable-addon-sync', async (event, gameId, gameVersion) => {
         'User-Agent': 'Singularity-'+app.getVersion(),
         'x-auth': getAccessToken()}
     };
-    axios.get(`https://api.singularitymods.com/api/v1/user/sync/get?gameId=${gameId}&gameVersion=${gameVersion}`, axiosConfig)
+    axios.get(`${AppConfig.API_URL}/user/sync/get?gameId=${gameId}&gameVersion=${gameVersion}`, axiosConfig)
     .then( res => {
         if (res.status === 200 && res.data.success) {
             log.info('Addon sync profile found');
@@ -86,14 +85,14 @@ ipcMain.on('toggle-addon-sync', (event, gameId, gameVersion, toggle) => {
 
 ipcMain.on('trigger-sync', async (event, gameId, gameVersion) => {
     if (isAuthenticated()) {
-        log.info('Fetching addon sync profile');    
+        log.info('Fetching addon sync profile');
         let axiosConfig = {
             headers: {
             'Content-Type': 'application/json;charset=UTF-8',
             'User-Agent': 'Singularity-'+app.getVersion(),
             'x-auth': getAccessToken()}
         };
-        axios.get(`https://api.singularitymods.com/api/v1/user/sync/get?gameId=${gameId}&gameVersion=${gameVersion}`, axiosConfig)
+        axios.get(`${AppConfig.API_URL}/user/sync/get?gameId=${gameId}&gameVersion=${gameVersion}`, axiosConfig)
         .then( res => {
             if (res.status === 200 && res.data.success) {
                 log.info('Addon sync profile found');

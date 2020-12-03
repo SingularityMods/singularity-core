@@ -1,4 +1,4 @@
-import { getMainBrowserWindow } from './electron.service';
+import getMainBrowserWindow from './electron.service';
 
 const axios = require('axios');
 const keytar = require('keytar');

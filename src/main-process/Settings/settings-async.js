@@ -5,7 +5,7 @@ import path from 'path';
 
 import AppConfig from '../../config/app.config';
 
-import { getMainBrowserWindow } from '../../services/electron.service';
+import getMainBrowserWindow from '../../services/electron.service';
 import { findInstalledWoWVersions, setAddonUpdateInterval } from '../../services/file.service';
 import {
   getAppData,

@@ -15,6 +15,8 @@
         "react"
     ],
     "rules": {
-        "import/no-extraneous-dependencies": ["error", {"devDependencies": true}]
+        "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
+        "no-use-before-define": ["error", { "functions": false }],
+        "no-underscore-dangle": "off"
     }
 }
