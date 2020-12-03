@@ -42,6 +42,7 @@ class SettingsWindow extends React.Component {
         ipcRenderer.on('backup-dir-rejected', this.backupDirRejectedListener);
         ipcRenderer.on('installation-path-updated', this.installDirChangeAcceptedListener);
         ipcRenderer.on('installation-not-found', this.installDirChangeRejectedListener);
+        console.log('mount');
         const appSettings = ipcRenderer.sendSync('get-app-settings');
         const gameSettings = ipcRenderer.sendSync('get-game-settings',1);
         const wowInstalls = {

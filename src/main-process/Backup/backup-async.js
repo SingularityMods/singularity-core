@@ -1,20 +1,24 @@
-const {app, ipcMain} = require('electron');
-const { v4: uuidv4 } = require('uuid');
-const { Readable } = require('stream') 
-const storageService = require('../../services/storage-service');
-const authService = require('../../services/auth-service');
-const fileService = require('../../services/file-service');
+import {app, ipcMain} from 'electron';
+import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
+import os from 'os';
+import log from 'electron-log';
 
-const path = require('path');
-const axios = require('axios');
-const os = require('os');
+import AppConfig from '../../config/app.config';
 
-const log = require('electron-log');
+import { getAccessToken, isAuthenticated } from '../../services/auth.service';
+import {
+  createGranularBackupObj,
+  deleteLocalBackup,
+  restoreGranularBackup
+} from '../../services/file.service';
+import { getAppData, getBackupDataAsync, saveBackupInfo } from '../../services/storage.service';
+
 
 ipcMain.on('create-granular-backup', async (event, gameId, gameVersion, cloud) => {
     log.info('Creating granular backup');
     event.sender.send('backup-status', 'Initializing Backup'); 
-    fileService.createGranularBackupObj(gameId, gameVersion)
+    createGranularBackupObj(gameId, gameVersion)
     .then( backupObj => {
         var fileData = {
             version: 2,
@@ -24,13 +28,13 @@ ipcMain.on('create-granular-backup', async (event, gameId, gameVersion, cloud) =
             gameId: gameId,
             gameVersion: gameVersion,
             addons: backupObj.addons,
-            uuid: storageService.getAppData('UUID'),
+            uuid: getAppData('UUID'),
             hostname: os.hostname()
         };
         let size = Buffer.byteLength(JSON.stringify(fileData))
         fileData.size = size;
         event.sender.send('backup-status', 'Saving Backup Locally'); 
-        return storageService.saveBackupInfo(gameId.toString(), gameVersion, fileData)
+        return saveBackupInfo(gameId.toString(), gameVersion, fileData)
         .then(() =>{
             return fileData
         })
@@ -52,15 +56,14 @@ ipcMain.on('create-granular-backup', async (event, gameId, gameVersion, cloud) =
                 headers: {
                 'Content-Type': 'application/json;charset=UTF-8',
                 'User-Agent': 'Singularity-'+app.getVersion(),
-                'x-auth': authService.getAccessToken()}
+                'x-auth': getAccessToken()}
             };
             event.sender.send('backup-status', 'Saving Addon Backup To Cloud'); 
-            return axios.post(`https://api.singularitymods.com/api/v1/user/backup`,postData, axiosConfig)
+            return axios.post(`${AppConfig.API_URL}/user/backup`,postData, axiosConfig)
             .then( res => {
                 if (res && res.status === 200 && res.data.success) {
                         log.info('Cloud backup info saved');
                         let uploadUrl = res.data.uploadUrl;
-                        let backupId = res.data.backupId
                         let putConfig = {
                             'maxContentLength': Infinity,
                             'maxBodyLength': Infinity,
@@ -83,9 +86,9 @@ ipcMain.on('create-granular-backup', async (event, gameId, gameVersion, cloud) =
                                     headers: {
                                         'Content-Type': 'application/json;charset=UTF-8',
                                         'User-Agent': 'Singularity-'+app.getVersion(),
-                                        'x-auth': authService.getAccessToken()}
+                                        'x-auth': getAccessToken()}
                                 }
-                                return axios.post(`https://api.singularitymods.com/api/v1/user/confirmbackup`,confirmPostData, comirmPostConfig)
+                                return axios.post(`${AppConfig.API_URL}/user/confirmbackup`,confirmPostData, comirmPostConfig)
                             }
                         })
                         .then ( res3 => {
@@ -99,8 +102,6 @@ ipcMain.on('create-granular-backup', async (event, gameId, gameVersion, cloud) =
                                 }
                             }
                         })
-        
-                        //event.sender.send('granular-backup-complete', true, 'cloud', gameId, gameVersion, null);          
                 } else {
                     log.error('Error creating cloud backup');
                     event.sender.send('granular-backup-complete', false, 'cloud', gameId, gameVersion, null); 
@@ -117,4 +118,98 @@ ipcMain.on('create-granular-backup', async (event, gameId, gameVersion, cloud) =
         log.error(err);
         event.sender.send('granular-backup-complete', false, 'cloud', gameId, gameVersion, null); 
     })
+});
+
+ipcMain.on('delete-granular-backup', async (event, backup) => {
+  log.info('Deleting granular backup');
+  deleteLocalBackup(backup)
+  .then(() => {
+      if (backup.cloud) {
+          log.info('Deleting cloud backup');
+          var postData = {
+              backupUUID: backup.backupUUID
+          };
+          let axiosConfig = {
+              headers: {
+              'Content-Type': 'application/json;charset=UTF-8',
+              'User-Agent': 'Singularity-'+app.getVersion(),
+              'x-auth': getAccessToken()}
+          };
+          return axios.post(`${AppConfig.API_URL}/user/deletebackup`,postData, axiosConfig)
+      } else {
+          log.info('Local backup deleted');
+          event.sender.send('delete-backup-complete', true, null); 
+          return Promise.resolve(null)
+      }       
+  })
+  .then( res => {
+      if (res) {
+          if (res.status === 200) {
+              log.info('Cloud backup deleted');
+              event.sender.send('delete-backup-complete', true, null);          
+          } else {
+              log.error('Error deleting cloud backup');
+              event.sender.send('delete-backup-complete', false, null); 
+          }
+      }
+  })
+  .catch((err) => {
+      log.error('Error deleting cloud backup');
+      log.error(err);
+      event.sender.send('delete-backup-complete', false, null); 
+  })
+});
+
+ipcMain.on('get-cloud-backups', async (event, gameId, gameVersion) => {
+  if (isAuthenticated()) {
+      log.info('Fetching cloud backups');    
+      let axiosConfig = {
+          headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+          'User-Agent': 'Singularity-'+app.getVersion(),
+          'x-auth': getAccessToken()}
+      };
+      axios.get(`${AppConfig.API_URL}/user/backups?gameId=${gameId}&gameVersion=${gameVersion}&version=2`, axiosConfig)
+      .then( res => {
+          if (res.status === 200 && res.data.success) {
+              log.info('Cloud backups found');
+              event.sender.send('cloud-backups-found', true, gameId, gameVersion, res.data.backups, null)       
+          } else {
+              log.info('No cloud backups found');
+              event.sender.send('cloud-backups-found',false, gameId, gameVersion, null, 'No cloud backups found')
+          }
+      })
+      .catch((err) => {
+          log.error('Error fetching cloud backups');
+          log.error(err);
+          event.sender.send('cloud-backups-found',false, gameId, gameVersion, null, 'No cloud backups found')
+      })
+  } else {
+      log.info('User is not authenticated, skipping cloud backup fetch');
+      event.sender.send('cloud-backups-found',false, gameId, gameVersion, null, 'No cloud backups found')
+  }
+});
+
+ipcMain.on('get-local-backups', (event, gameId, gameVersion) => {
+  getBackupDataAsync(gameId.toString())
+  .then(backupData => {
+      event.sender.send('local-backups-found', true, gameId, gameVersion, backupData[gameVersion].backups, null)
+  })
+  .catch(err => {
+      log.error('Error retrieving local backups');
+      log.error(err);
+      event.sender.send('local-backups-found',false, gameId, gameVersion, null, 'Error searching for local backups')
+  })
+})
+
+ipcMain.on('restore-granular-backup', async (event, backup, includeSettings) => {
+  log.info('Restoring granular backup'); 
+  restoreGranularBackup(backup, includeSettings)
+  .then( success => {
+      event.sender.send('granular-restore-complete', true, null);
+  })
+  .catch( err => {
+      event.sender.send('granular-restore-complete', false, err);
+  })
+
 });
