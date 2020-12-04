@@ -1,15 +1,14 @@
-const electron = require('electron');
-const path = require('path');
-const fs = require('fs');
-const fsPromises = require('fs').promises;
-const log = require('electron-log');
-const gameDataDefaults = require('./storage-service-defaults/gameData.json');
-const gameSettingsDefaults = require('./storage-service-defaults/gameSettings.json');
-const appDataDefaults = require('./storage-service-defaults/appData.json');
-const backupDataDefaults = require('./storage-service-defaults/backupData.json');
-const syncProfileDefault = require('./storage-service-defaults/syncProfile.json');
+import { app } from 'electron';
+import path from 'path';
+import fs, { promises as fsPromises } from 'fs';
+import log from 'electron-log';
+import gameDataDefaults from './storage-service-defaults/gameData.json';
+import gameSettingsDefaults from './storage-service-defaults/gameSettings.json';
+import appDataDefaults from './storage-service-defaults/appData.json';
+import backupDataDefaults from './storage-service-defaults/backupData.json';
+import syncProfileDefault from './storage-service-defaults/syncProfile.json';
 
-const userDataPath = (electron.app).getPath('userData');
+const userDataPath = (app).getPath('userData');
 
 let gameSettings = null;
 let appData = null;

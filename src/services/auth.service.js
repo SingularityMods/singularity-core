@@ -1,17 +1,18 @@
+import { app } from 'electron';
+import axios from 'axios';
+import keytar from 'keytar';
+import os from 'os';
+import jwt from 'jsonwebtoken';
+import log from 'electron-log';
+
 import getMainBrowserWindow from './electron.service';
 
-const axios = require('axios');
-const keytar = require('keytar');
-const os = require('os');
-const jwt = require('jsonwebtoken');
+import {
+  getAppData,
+} from './storage.service';
 
 const keytarService = 'Singularity';
 const keytarAccount = os.userInfo().username;
-
-const { app } = require('electron');
-
-const log = require('electron-log');
-const storageService = require('./storage.service');
 
 let accessToken = null;
 let profile = null;
@@ -68,7 +69,7 @@ async function refreshTokens() {
           },
           data: {
             refresh_token: token,
-            uuid: storageService.getAppData('UUID'),
+            uuid: getAppData('UUID'),
           },
         };
         return axios(refreshOptions);

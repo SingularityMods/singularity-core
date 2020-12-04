@@ -1,20 +1,20 @@
-import { app, ipcMain, shell} from 'electron';
+import { app, ipcMain, shell } from 'electron';
 import os from 'os';
 import path from 'path';
 import log from 'electron-log';
 
 import { getAppData, setAppData } from '../../services/storage.service';
 
-ipcMain.on('accept-terms', (event, termType) => {
-  log.info('Accepted '+termType);
-  let terms = getAppData(termType);
-    terms.accepted = true;
-    terms.acceptedOn = new Date();
-    setAppData(termType, terms);
-})
+ipcMain.on('accept-terms', (_event, termType) => {
+  log.info(`Accepted ${termType}`);
+  const terms = getAppData(termType);
+  terms.accepted = true;
+  terms.acceptedOn = new Date();
+  setAppData(termType, terms);
+});
 
-ipcMain.on('open-log-directory', (event) => {
-  log.info("Opening log directory");
+ipcMain.on('open-log-directory', () => {
+  log.info('Opening log directory');
   let logDir;
 
   if (process.platform === 'darwin') {

@@ -1,12 +1,17 @@
+import { app } from 'electron';
+import axios from 'axios';
+import { vf as uuidv4 } from 'uuid';
+import log from 'electron-log';
+
 import AppConfig from '../config/app.config';
-
-const axios = require('axios');
-const { v4: uuidv4 } = require('uuid');
-
-const { app } = require('electron');
-
-const log = require('electron-log');
-const storageService = require('./storage.service');
+import {
+  getGameSettings,
+  getAppData,
+  getGameData,
+  setGameSettings,
+  setAppData,
+  setGameData,
+} from './storage.service';
 
 function getLatestTerms() {
   log.info('Checking for latest ToS');
@@ -14,19 +19,19 @@ function getLatestTerms() {
     const axiosConfig = {
       headers: {
         'User-Agent': `Singularity-${app.getVersion()}`,
-        'x-app-uuid': storageService.getAppData('UUID'),
+        'x-app-uuid': getAppData('UUID'),
       },
     };
     axios.get(`${AppConfig.API_URL}app/latest/tos`, axiosConfig)
       .then((response) => {
         if (response.status === 200) {
           const tos = response.data;
-          const currentTos = storageService.getAppData('tos');
+          const currentTos = getAppData('tos');
           if (tos.version > currentTos.version) {
             currentTos.version = tos.version;
             currentTos.accepted = false;
             currentTos.text = tos.text;
-            storageService.setAppData('tos', currentTos);
+            setAppData('tos', currentTos);
             log.info('New ToS found');
             return resolve(true);
           }
@@ -50,19 +55,19 @@ function getLatestPrivacy() {
     const axiosConfig = {
       headers: {
         'User-Agent': `Singularity-${app.getVersion()}`,
-        'x-app-uuid': storageService.getAppData('UUID'),
+        'x-app-uuid': getAppData('UUID'),
       },
     };
     axios.get(`${AppConfig.API_URL}app/latest/privacy`, axiosConfig)
       .then((response) => {
         if (response.status === 200) {
           const privacy = response.data;
-          const currentPrivacy = storageService.getAppData('privacy');
+          const currentPrivacy = getAppData('privacy');
           if (privacy.version > currentPrivacy.version) {
             currentPrivacy.version = privacy.version;
             currentPrivacy.accepted = false;
             currentPrivacy.text = privacy.text;
-            storageService.setAppData('privacy', currentPrivacy);
+            setAppData('privacy', currentPrivacy);
             log.info('New Privacy Policy found');
             return resolve(true);
           }
@@ -80,10 +85,10 @@ function getLatestPrivacy() {
 }
 
 function setAppConfig() {
-  const version = storageService.getAppData('version');
+  const version = getAppData('version');
 
   if (version < '0.3.0') {
-    const gameD = storageService.getGameData('1');
+    const gameD = getGameData('1');
     gameD.gameVersions.wow_retail.settingsBackup = '';
     gameD.gameVersions.wow_retail.addonBackup = '';
     gameD.gameVersions.wow_classic.settingsBackup = '';
@@ -92,10 +97,10 @@ function setAppConfig() {
     gameD.gameVersions.wow_retail_ptr.addonBackup = '';
     gameD.gameVersions.wow_classic_ptr.settingsBackup = '';
     gameD.gameVersions.wow_classic_ptr.addonBackup = '';
-    storageService.setGameData('1', gameD);
+    setGameData('1', gameD);
   }
   if (version < '0.3.2') {
-    const gameS = storageService.getGameSettings('1');
+    const gameS = getGameSettings('1');
     gameS.wow_retail_beta = {
       name: 'World of Warcraft Beta',
       nickName: 'Beta',
@@ -105,8 +110,8 @@ function setAppConfig() {
       installedAddons: [],
       unknownAddonDirs: [],
     };
-    storageService.setGameSettings('1', gameS);
-    const gameD = storageService.getGameData('1');
+    setGameSettings('1', gameS);
+    const gameD = getGameData('1');
     gameD.gameVersions.wow_retail_beta = {
       name: 'World of Warcraft Beta',
       nickName: 'Beta',
@@ -122,10 +127,10 @@ function setAppConfig() {
       settingsBackup: '',
       addonBackup: '',
     };
-    storageService.setGameData('1', gameD);
+    setGameData('1', gameD);
   }
   if (version < '0.4.0') {
-    const wowData = storageService.getGameData('1');
+    const wowData = getGameData('1');
     if (!('macFlavorString' in wowData.gameVersions.wow_retail)) {
       wowData.gameVersions.wow_retail.macFlavorString = '/_retail_';
       wowData.gameVersions.wow_retail.macAddonDir = 'Interface/Addons/';
@@ -137,11 +142,11 @@ function setAppConfig() {
       wowData.gameVersions.wow_classic_ptr.macAddonDir = 'Interface/Addons/';
       wowData.gameVersions.wow_retail_beta.macFlavorString = '/_beta_';
       wowData.gameVersions.wow_retail_beta.macAddonDir = 'Interface/Addons/';
-      storageService.setGameData('1', wowData);
+      setGameData('1', wowData);
     }
   }
   if (version < '0.5.0') {
-    const gameS = storageService.getGameSettings('1');
+    const gameS = getGameSettings('1');
     Object.entries(gameS).forEach((gameVersion) => {
       const fixedAddons = [];
       const { installedAddons } = gameS[gameVersion];
@@ -155,11 +160,11 @@ function setAppConfig() {
         fixedAddons.push(newAddon);
       });
       gameS[gameVersion].installedAddons = fixedAddons;
-      storageService.setGameSettings('1', gameS);
+      setGameSettings('1', gameS);
     });
   }
   if (version < '0.6.0') {
-    const gameS = storageService.getGameSettings('1');
+    const gameS = getGameSettings('1');
     if (!('wow_retail_beta' in gameS)) {
       gameS.wow_retail_beta = {
         name: 'World of Warcraft Beta',
@@ -171,8 +176,8 @@ function setAppConfig() {
         unknownAddonDirs: [],
       };
     }
-    storageService.setGameSettings('1', gameS);
-    const wowData = storageService.getGameData('1');
+    setGameSettings('1', gameS);
+    const wowData = getGameData('1');
     if (!('wow_retaul_beta' in wowData.gameVersions)) {
       wowData.gameVersions.wow_retail_beta = {
         name: 'World of Warcraft Beta',
@@ -192,20 +197,20 @@ function setAppConfig() {
     } else if (!('macAddonDir' in wowData.gameVersions.wow_retail_beta)) {
       wowData.gameVersions.wow_retail_beta.macAddonDir = 'Interface/Addons/';
     }
-    storageService.setGameData('1', wowData);
-    const userConf = storageService.getAppData('userConfigurable');
+    setGameData('1', wowData);
+    const userConf = getAppData('userConfigurable');
     if (!('defaultWowVersion' in userConf)) {
       userConf.defaultWowVersion = 'wow_retail';
     }
-    storageService.setAppData('userConfigurable', userConf);
+    setAppData('userConfigurable', userConf);
   }
 
   if (version < '1.0.0') {
-    storageService.setAppData('sidebarMinimized', false);
+    setAppData('sidebarMinimized', false);
   }
 
   if (version < '1.1.0') {
-    const gameS = storageService.getGameSettings('1');
+    const gameS = getGameSettings('1');
     Object.entries(gameS).forEach((gameVersion) => {
       gameS[gameVersion].sync = false;
       gameS[gameVersion].defaults = {
@@ -213,19 +218,19 @@ function setAppConfig() {
         autoUpdate: false,
       };
     });
-    storageService.setGameSettings('1', gameS);
-    const userConfig = storageService.getAppData('userConfigurable');
+    setGameSettings('1', gameS);
+    const userConfig = getAppData('userConfigurable');
     userConfig.minimizeToTray = false;
     userConfig.beta = true;
-    storageService.setAppData('userConfigurable', userConfig);
+    setAppData('userConfigurable', userConfig);
   }
 
   // Set new version
-  storageService.setAppData('version', app.getVersion());
+  setAppData('version', app.getVersion());
 
   // Set UUID if it doesn't exist
-  if (storageService.getAppData('UUID') === '') {
-    storageService.setAppData('UUID', uuidv4());
+  if (getAppData('UUID') === '') {
+    setAppData('UUID', uuidv4());
   }
 }
 

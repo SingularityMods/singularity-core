@@ -1,23 +1,33 @@
+import { app, net } from 'electron';
+import { download } from 'electron-dl';
+import extract from 'extract-zip';
+import { ncp } from 'ncp';
+import archiver from 'archiver';
+import path from 'path';
+import fs, { promises as fsPromises } from 'fs';
+import hasha from 'hasha';
+import streamBuffers from 'stream-buffers';
+import PromisePool from 'es6-promise-pool';
+import axios from 'axios';
+
+import log from 'electron-log';
+import AppConfig from '../config/app.config';
 import getMainBrowserWindow from './electron.service';
 
-import AppConfig from '../config/app.config';
+import {
+  isAuthenticated,
+  getAccessToken,
 
-const { app, net } = require('electron');
-const { download } = require('electron-dl');
-const extract = require('extract-zip');
-const { ncp } = require('ncp');
-const archiver = require('archiver');
-const path = require('path');
-const fs = require('fs');
-const fsPromises = require('fs').promises;
-const hasha = require('hasha');
-const streamBuffers = require('stream-buffers');
-const PromisePool = require('es6-promise-pool');
-const axios = require('axios');
-
-const log = require('electron-log');
-const authService = require('./auth.service');
-const storageService = require('./storage.service');
+} from './auth.service';
+import {
+  getGameSettings,
+  getAppData,
+  getGameData,
+  setGameSettings,
+  setAppData,
+  deleteBackupInfo,
+  getLocalAddonSyncProfile,
+} from './storage.service';
 
 let syncing = false;
 let error = null;
@@ -188,7 +198,7 @@ function createAndSaveSyncProfile(obj) {
       headers: {
         'Content-Type': 'application/json;charset=UTF-8',
         'User-Agent': `Singularity-${app.getVersion()}`,
-        'x-auth': authService.getAccessToken(),
+        'x-auth': getAccessToken(),
       },
     };
     axios.post('https://api.singularitymods.com/api/v1/user/sync/set', syncProfile, axiosConfig)
@@ -210,7 +220,7 @@ function createAndSaveSyncProfile(obj) {
 
 function createGranularBackupObj(gameId, gameVersion) {
   return new Promise((resolve, reject) => {
-    const gameS = storageService.getGameSettings(gameId.toString());
+    const gameS = getGameSettings(gameId.toString());
     const { installPath } = gameS[gameVersion];
     const settingsPath = path.join(installPath, 'WTF');
     const { installedAddons } = gameS[gameVersion];
@@ -272,7 +282,7 @@ function createGranularBackupObj(gameId, gameVersion) {
 }
 
 function createSyncProfileObj(gameId, gameVersion) {
-  const gameS = storageService.getGameSettings(gameId.toString());
+  const gameS = getGameSettings(gameId.toString());
   const { installedAddons } = gameS[gameVersion];
   const addons = [];
   installedAddons.forEach((addon) => {
@@ -293,7 +303,7 @@ function createSyncProfileObj(gameId, gameVersion) {
   });
   return {
     gameId,
-    uuid: storageService.getAppData('UUID'),
+    uuid: getAppData('UUID'),
     gameVersion,
     addons,
   };
@@ -301,7 +311,7 @@ function createSyncProfileObj(gameId, gameVersion) {
 
 function deleteLocalBackup(backup) {
   return new Promise((resolve, reject) => {
-    storageService.deleteBackupInfo(backup.gameId.toString(), backup.gameVersion, backup)
+    deleteBackupInfo(backup.gameId.toString(), backup.gameVersion, backup)
       .then(() => {
         resolve();
       })
@@ -317,7 +327,7 @@ function findAndUpdateAddons() {
   return new Promise((resolve, reject) => {
     log.info('Checking for installed addons');
     const gameId = 1;
-    const gameS = storageService.getGameSettings(gameId.toString());
+    const gameS = getGameSettings(gameId.toString());
     const promises = [];
     const gameVersions = [];
     const needsSyncProfileUpdate = new Set();
@@ -364,7 +374,7 @@ function findAndUpdateAddons() {
 // For the sepected path, attempt to find any installed WoW versions in either the path root
 // or for each game version directory
 function findInstalledWoWVersions(selectedPath) {
-  const { gameVersions } = storageService.getGameData('1');
+  const { gameVersions } = getGameData('1');
   const installedVersions = [];
   Object.entries(gameVersions).forEach(([gameVersion]) => {
     if (process.platform === 'win32') {
@@ -501,8 +511,22 @@ function fingerprintAllAsync(gameId, installDir, addonDir) {
   });
 }
 
+function getAddonDir(gameId, gameVersion) {
+  const gameS = getGameSettings(gameId.toString());
+  const { gameVersions } = getGameData(gameId.toString());
+  let addonDir;
+  if (process.platform === 'win32') {
+    addonDir = path.join(gameS[gameVersion].installPath,
+      gameVersions[gameVersion].addonDir);
+  } else if (process.platform === 'darwin') {
+    addonDir = path.join(gameS[gameVersion].installPath,
+      gameVersions[gameVersion].macAddonDir);
+  }
+  return addonDir;
+}
+
 async function getLocalSyncProfile(gameId, gameVersion) {
-  return storageService.getLocalAddonSyncProfile(gameId, gameVersion);
+  return getLocalAddonSyncProfile(gameId, gameVersion);
 }
 
 function getSyncError() {
@@ -511,7 +535,7 @@ function getSyncError() {
 
 async function getSyncProfilesFromCloud(enabled = []) {
   return new Promise((resolve, reject) => {
-    if (authService.isAuthenticated()) {
+    if (isAuthenticated()) {
       log.info('Fetching cloud sync profiles');
       syncing = true;
       error = null;
@@ -519,7 +543,7 @@ async function getSyncProfilesFromCloud(enabled = []) {
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
           'User-Agent': `Singularity-${app.getVersion()}`,
-          'x-auth': authService.getAccessToken(),
+          'x-auth': getAccessToken(),
         },
       };
       axios.get('https://api.singularitymods.com/api/v1/user/sync/get?all=true', axiosConfig)
@@ -598,8 +622,8 @@ function handleSync() {
 // and fingerprints and attempt to identify the installed addons via the api
 function identifyAddons(gameId, gameVersion, hashMap) {
   return new Promise((resolve, reject) => {
-    const gameS = storageService.getGameSettings(gameId.toString());
-    const { gameVersions } = storageService.getGameData(gameId.toString());
+    const gameS = getGameSettings(gameId.toString());
+    const { gameVersions } = getGameData(gameId.toString());
     const { addonVersion } = gameVersions[gameVersion];
     const win = getMainBrowserWindow();
     const hashes = [];
@@ -612,7 +636,7 @@ function identifyAddons(gameId, gameVersion, hashMap) {
       method: 'POST',
       url: `${AppConfig.API_URL}/addons/fingerprint`,
     });
-    request.setHeader('x-app-uuid', storageService.getAppData('UUID'));
+    request.setHeader('x-app-uuid', getAppData('UUID'));
     request.setHeader('x-app-platform', process.platform);
     let body = '';
     request.on('error', (requestErr) => {
@@ -662,7 +686,7 @@ function identifyAddons(gameId, gameVersion, hashMap) {
 
         gameS[gameVersion].installedAddons = identifiedAddons;
         gameS[gameVersion].unknownAddonDirs = unknownDirs;
-        storageService.setGameSettings(gameId.toString(), gameS);
+        setGameSettings(gameId.toString(), gameS);
         if (win) {
           win.webContents.send('no-addons-found', gameVersion);
         }
@@ -758,7 +782,7 @@ function identifyAddons(gameId, gameVersion, hashMap) {
 
               gameS[gameVersion].installedAddons = identifiedAddons;
               gameS[gameVersion].unknownAddonDirs = unknownDirs;
-              storageService.setGameSettings(gameId.toString(), gameS);
+              setGameSettings(gameId.toString(), gameS);
               log.info(`${gameVersion} - ${identifiedAddons.length} addons installed & ${unknownDirs.length} directories unknown`);
               if (win) {
                 win.webContents.send('addons-found', identifiedAddons, gameVersion);
@@ -798,7 +822,7 @@ function identifyAddons(gameId, gameVersion, hashMap) {
 
               gameS[gameVersion].installedAddons = identifiedAddons;
               gameS[gameVersion].unknownAddonDirs = unknownDirs;
-              storageService.setGameSettings(gameId.toString(), gameS);
+              setGameSettings(gameId.toString(), gameS);
               log.info(`${gameVersion} - ${identifiedAddons.length} addons installed & ${unknownDirs.length} directories unknown`);
               if (win) {
                 win.webContents.send('no-addons-found', gameVersion);
@@ -844,7 +868,7 @@ function identifyAddons(gameId, gameVersion, hashMap) {
 
             gameS[gameVersion].installedAddons = identifiedAddons;
             gameS[gameVersion].unknownAddonDirs = unknownDirs;
-            storageService.setGameSettings(gameId.toString(), gameS);
+            setGameSettings(gameId.toString(), gameS);
             log.info(`${gameVersion} - ${identifiedAddons.length} addons installed & ${unknownDirs.length} directories unknown`);
             if (win) {
               win.webContents.send('no-addons-found', gameVersion);
@@ -961,14 +985,14 @@ function restoreAddonSettings(gameId, gameVersion, settingsDir, backupDir) {
 
 function restoreGranularBackup(backup, includeSettings) {
   return new Promise((resolve, reject) => {
-    const gameS = storageService.getGameSettings(backup.gameId.toString());
+    const gameS = getGameSettings(backup.gameId.toString());
     const { installPath } = gameS[backup.gameVersion];
     const settingsPath = path.join(installPath, 'WTF');
 
     if (gameS[backup.gameVersion].sync) {
       log.info('Addon sync is enabled, disabling before restoring backup');
       gameS[backup.gameVersion].sync = false;
-      storageService.setGameSettings(backup.gameId.toString(), gameS);
+      setGameSettings(backup.gameId.toString(), gameS);
     }
 
     if (!fs.existsSync(settingsPath)) {
@@ -1043,7 +1067,7 @@ function restoreGranularBackup(backup, includeSettings) {
 // Check for and install addons at the user-configured interval.
 // Default to every hour.
 function setAddonUpdateInterval() {
-  const appD = storageService.getAppData('userConfigurable');
+  const appD = getAppData('userConfigurable');
   let checkInterval = 1000 * 60 * 60;
   if (appD.addonUpdateInterval) {
     switch (appD.addonUpdateInterval) {
@@ -1067,7 +1091,7 @@ function setAddonUpdateInterval() {
     }
   } else {
     appD.addonUpdateInterval = '1h';
-    storageService.setAppData('userConfigurable', appD);
+    setAppData('userConfigurable', appD);
     checkInterval = 1000 * 60 * 60;
   }
   log.info(`Addon update interval set to: ${appD.addonUpdateInterval}`);
@@ -1098,7 +1122,7 @@ function setAddonUpdateInterval() {
 function syncFromProfile(profile) {
   return new Promise((resolve, reject) => {
     log.info(`Handling sync for ${profile.gameVersion}`);
-    const gameS = storageService.getGameSettings(profile.gameId.toString());
+    const gameS = getGameSettings(profile.gameId.toString());
     const { installedAddons } = gameS[profile.gameVersion];
 
     const win = getMainBrowserWindow();
@@ -1262,8 +1286,8 @@ function updateSyncProfiles(profiles) {
  */
 function _autoUpdateAddon(updateObj) {
   return new Promise((resolve, reject) => {
-    const gameS = storageService.getGameSettings(updateObj.gameId.toString());
-    const { gameVersions } = storageService.getGameData(updateObj.gameId.toString());
+    const gameS = getGameSettings(updateObj.gameId.toString());
+    const { gameVersions } = getGameData(updateObj.gameId.toString());
     let addonDir = '';
     if (process.platform === 'win32') {
       addonDir = path.join(gameS[updateObj.gameVersion].installPath,
@@ -1291,7 +1315,7 @@ function _autoUpdateAddon(updateObj) {
         installedAddons.push(addon);
         gameS[updateObj.gameVersion].installedAddons = installedAddons;
 
-        storageService.setGameSettings(updateObj.gameId.toString(), gameS);
+        setGameSettings(updateObj.gameId.toString(), gameS);
         resolve();
       })
       .catch((err) => {
@@ -1303,8 +1327,8 @@ function _autoUpdateAddon(updateObj) {
 function _findAddonsForGameVersion(gameId, gameVersion) {
   return new Promise((resolve, reject) => {
     log.info(`Finding addons for ${gameVersion}`);
-    const gameS = storageService.getGameSettings(gameId.toString());
-    const { gameVersions } = storageService.getGameData(gameId.toString());
+    const gameS = getGameSettings(gameId.toString());
+    const { gameVersions } = getGameData(gameId.toString());
     const { addonVersion } = gameVersions[gameVersion];
     let addonDir = '';
     if (process.platform === 'win32') {
@@ -1351,8 +1375,8 @@ function _installAddonFromSync(addon) {
     if (win) {
       win.webContents.send('sync-status', addon.gameId, addon.gameVersion, `Syncing: ${addon.addonName}`);
     }
-    const gameS = storageService.getGameSettings(addon.gameId.toString());
-    const { gameVersions } = storageService.getGameData(addon.gameId.toString());
+    const gameS = getGameSettings(addon.gameId.toString());
+    const { gameVersions } = getGameData(addon.gameId.toString());
 
     let addonDir = '';
     if (process.platform === 'win32') {
@@ -1404,7 +1428,7 @@ function _installAddonFromSync(addon) {
 
 function _isSyncEnabled() {
   return new Promise((resolve, reject) => {
-    const gameS = storageService.getGameSettings('1');
+    const gameS = getGameSettings('1');
     const enabled = [];
     Object.entries(gameS).forEach(([gameVersion]) => {
       if (gameVersion.sync) {
@@ -1473,8 +1497,8 @@ function _restoreWoWAddonFile(addon) {
     if (win) {
       win.webContents.send('restore-status', `Restoring: ${addon.addonName}`);
     }
-    const gameS = storageService.getGameSettings('1');
-    const { gameVersions } = storageService.getGameData('1');
+    const gameS = getGameSettings('1');
+    const { gameVersions } = getGameData('1');
 
     let addonDir = '';
     if (process.platform === 'win32') {
@@ -1527,8 +1551,8 @@ function _restoreWoWAddonFile(addon) {
 function _uninstallAddonFromSync(addon) {
   return new Promise((resolve, reject) => {
     log.info(`Uninstalling addon: ${addon.addonName}`);
-    const gameS = storageService.getGameSettings(addon.gameId.toString());
-    const { gameVersions } = storageService.getGameData(addon.gameId.toString());
+    const gameS = getGameSettings(addon.gameId.toString());
+    const { gameVersions } = getGameData(addon.gameId.toString());
 
     let addonDir = '';
     if (process.platform === 'win32') {
@@ -1643,6 +1667,7 @@ export {
   findAndUpdateAddons,
   findInstalledWoWVersions,
   fingerprintAllAsync,
+  getAddonDir,
   getLocalSyncProfile,
   getSyncError,
   getSyncProfilesFromCloud,
