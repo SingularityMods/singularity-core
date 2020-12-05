@@ -47,7 +47,7 @@ class SyncConfirmDialog extends React.Component {
 }
 
 SyncConfirmDialog.propTypes = {
-    cloudProfileLastSync: PropTypes.object,
+    cloudProfileLastSync: PropTypes.string,
     exit: PropTypes.func,
     overwrite: PropTypes.func,
     use: PropTypes.func

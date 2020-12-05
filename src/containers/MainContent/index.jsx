@@ -12,6 +12,7 @@ function MainContent(props) {
   const {
     backupPending,
     closeSettings,
+    darkMode,
     latestCloudBackup,
     lastRestoreComplete,
     openBackupManagementDialog,
@@ -24,11 +25,12 @@ function MainContent(props) {
   return (
     <Col md={11} lg={9} className="Main-Content no-float">
       {settingsOpened
-        ? <SettingsWindow onClose={closeSettings} />
+        ? <SettingsWindow darkMode={darkMode} onClose={closeSettings} />
         : ''}
       {selected
         ? (
           <GameWindow
+            darkMode={darkMode}
             gameId={selected}
             openBackupManagementDialog={openBackupManagementDialog}
             openBackupRestore={openBackupRestore}
@@ -38,7 +40,7 @@ function MainContent(props) {
             lastRestoreComplete={lastRestoreComplete}
           />
         )
-        : <HomePage openSettings={openSettings} />}
+        : <HomePage darkMode={darkMode} openSettings={openSettings} />}
     </Col>
   );
 }
@@ -46,6 +48,7 @@ function MainContent(props) {
 MainContent.propTypes = {
   backupPending: PropTypes.bool.isRequired,
   closeSettings: PropTypes.func.isRequired,
+  darkMode: PropTypes.bool.isRequired,
   latestCloudBackup: PropTypes.instanceOf(Date).isRequired,
   lastRestoreComplete: PropTypes.instanceOf(Date).isRequired,
   openBackupManagementDialog: PropTypes.func.isRequired,

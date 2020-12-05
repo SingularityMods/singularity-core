@@ -339,6 +339,7 @@ class App extends React.Component {
           ? (
             <BackupRestoreDialog
               backup={selectedBackup}
+              darkMode={darkMode}
               onSubmit={this.submitRestoreDialog}
               onExit={this.closeBackupRestore}
               restoreState={restoreState}
@@ -350,6 +351,7 @@ class App extends React.Component {
         {backupManagementOpts && !selectedBackup
           ? (
             <BackupManagementDialog
+              darkMode={darkMode}
               opts={backupManagementOpts}
               onSubmit={this.submitBackupManagementDialog}
               onExit={this.closeBackupManagementDialog}
@@ -365,6 +367,7 @@ class App extends React.Component {
         {profileMenuOpened
           ? (
             <ProfileMenu
+              darkMode={darkMode}
               key={profileMenuOpened}
               handleClose={this.closeProfileMenu}
               onOpenAuth={this.openAuth}
@@ -376,6 +379,7 @@ class App extends React.Component {
           {newPrivacy
             ? (
               <TermsWindow
+                darkMode={darkMode}
                 termType="privacy"
                 text={privacyText}
                 handleAccept={this.acceptTerms}
@@ -386,6 +390,7 @@ class App extends React.Component {
           {newTos
             ? (
               <TermsWindow
+                darkMode={darkMode}
                 termType="tos"
                 text={tosText}
                 handleAccept={this.acceptTerms}
@@ -394,11 +399,24 @@ class App extends React.Component {
             )
             : ''}
           <div className="wrapper">
-            <SmallSidebar onClick={this.selectGame} />
+            <SmallSidebar darkMode={darkMode} onClick={this.selectGame} />
             {minimizeSidebar
-              ? <MinimizedSidebar onClick={this.selectGame} onToggle={this.toggleBigSidebar} />
-              : <BigSidebar onClick={this.selectGame} onToggle={this.toggleBigSidebar} />}
+              ? (
+                <MinimizedSidebar
+                  darkMode={darkMode}
+                  onClick={this.selectGame}
+                  onToggle={this.toggleBigSidebar}
+                />
+              )
+              : (
+                <BigSidebar
+                  darkMode={darkMode}
+                  onClick={this.selectGame}
+                  onToggle={this.toggleBigSidebar}
+                />
+              )}
             <MainContent
+              darkMode={darkMode}
               openSettings={this.openSettings}
               closeSettings={this.closeSettings}
               openBackupManagementDialog={this.openBackupManagementDialog}

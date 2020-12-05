@@ -137,6 +137,7 @@ class GameWindow extends React.Component {
     } = this.state;
     const {
       backupPending,
+      darkMode,
       restorePending,
       latestCloudBackup,
       lastRestoreComplete,
@@ -155,6 +156,7 @@ class GameWindow extends React.Component {
             {selectedGameVersion ? (
               <div>
                 <GameWindowMenu
+                  darkMode={darkMode}
                   gameId={gameId}
                   selectedGameVersion={selectedGameVersion}
                   activeTab={activeTab}
@@ -164,6 +166,7 @@ class GameWindow extends React.Component {
                 />
                 {selectedAddon ? (
                   <AddonDetailsWindow
+                    darkMode={darkMode}
                     addonId={selectedAddon}
                     gameId={gameId}
                     gameVersion={selectedGameVersion}
@@ -174,6 +177,7 @@ class GameWindow extends React.Component {
                     {activeTab === 'installed' ? (
                       <InstalledAddonsWindow
                         appUUID={appUUID}
+                        darkMode={darkMode}
                         gameId={gameId}
                         gameVersion={selectedGameVersion}
                         backupPending={backupPending}
@@ -187,6 +191,7 @@ class GameWindow extends React.Component {
                       />
                     ) : (
                       <BrowseAddonsWindow
+                        darkMode={darkMode}
                         gameId={gameId}
                         gameVersion={selectedGameVersion}
                         onSelectAddon={this.selectAddon}
@@ -200,6 +205,7 @@ class GameWindow extends React.Component {
               <div>
 
                 <InstallationFinder
+                  darkMode={darkMode}
                   gameId={gameId}
                   callback={this.installationFinderListener}
                 />
@@ -214,6 +220,7 @@ class GameWindow extends React.Component {
 
 GameWindow.propTypes = {
   backupPending: PropTypes.bool.isRequired,
+  darkMode: PropTypes.bool.isRequired,
   gameId: PropTypes.number.isRequired,
   latestCloudBackup: PropTypes.instanceOf(Date).isRequired,
   lastRestoreComplete: PropTypes.instanceOf(Date).isRequired,

@@ -38,7 +38,7 @@ class InstalledAddonsWindow extends React.Component {
             toUpdate: [],
             profile: null,
             selectedBackup: null,
-            darkMode: false
+            darkMode: this.props.darkMode
         }
 
         this.autoUpdateCompleteListener = this.autoUpdateCompleteListener.bind(this);
@@ -125,7 +125,6 @@ class InstalledAddonsWindow extends React.Component {
         ipcRenderer.on('addon-installed', this.addonInstalledListener);
         ipcRenderer.on('addon-uninstalled', this.addonUninstalledListener);
         ipcRenderer.on('addon-settings-updated', this.addonSettingsUpdatedListener);
-        const darkMode = ipcRenderer.sendSync('is-dark-mode');
         const gameSettings = ipcRenderer.sendSync('get-game-settings', this.state.gameId);
         const addonVersion = ipcRenderer.sendSync('get-game-addon-version', this.props.gameId, this.props.gameVersion);
         let profile = ipcRenderer.sendSync('get-profile');
@@ -184,7 +183,6 @@ class InstalledAddonsWindow extends React.Component {
             isRefreshing: false,
             filter: '',
             profile: profile,
-            darkMode: darkMode
         });
     }
 
@@ -825,7 +823,7 @@ class InstalledAddonsWindow extends React.Component {
                                                 gameVersion={this.state.gameVersion}
                                                 backupPending={this.state.backupPending}
                                                 restorePending={this.state.restorePending}
-                                                darkMode={this.state.darkMode} />
+                                                darkMode={this.props.darkMode} />
                                         </Col>
                                         <Col xs={4} sm={3} xl={3} className="filter-col">
                                             <Form.Group>
