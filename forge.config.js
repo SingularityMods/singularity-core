@@ -214,12 +214,12 @@ module.exports = {
     ['@electron-forge/plugin-webpack', {
         mainConfig: path.resolve(__dirname, 'webpack.main.config.js'),
         renderer: {
-            config: path.resolve(__dirname, 'webpack.renderer.config.js'),
-            entryPoints: [{
-                html: path.resolve(__dirname, 'src/index.html'),
-                js: path.resolve(__dirname, 'src/renderer.js'),
-                name: 'main_window',
-            }]
+          config: path.resolve(__dirname, 'webpack.renderer.config.js'),
+          entryPoints: [{
+              html: path.resolve(__dirname, 'src/index.html'),
+              js: path.resolve(__dirname, 'src/renderer.jsx'),
+              name: 'main_window',
+          }]
         }
     }]
   ],

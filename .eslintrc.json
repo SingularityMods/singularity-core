@@ -3,7 +3,7 @@
         "browser": true,
         "es2021": true
     },
-    "extends": "plugin:react/recommended",
+    "extends": "airbnb",
     "parserOptions": {
         "ecmaFeatures": {
             "jsx": true
@@ -15,5 +15,17 @@
         "react"
     ],
     "rules": {
+        "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
+        "no-bitwise":  ["error", { "allow": ["|"] }],
+        "no-param-reassign": ["error", { "ignorePropertyModificationsFor": ["event.returnValue"] }],
+        "no-use-before-define": ["error", { "functions": false }],
+        "no-underscore-dangle": "off",
+        "react/forbid-prop-types": "off",
+        "react/no-danger": "off",
+        "react/no-did-update-set-state": "off"
+    },
+    "globals": {
+      "MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY": true,
+      "MAIN_WINDOW_WEBPACK_ENTRY": true
     }
 }

@@ -65,14 +65,22 @@
 }
 
 .backup-management-confirm-option {
+  float:left;
     margin-top: 40px;
 }
 
 .backup-management-cloud-label{
+  float:left;
     margin-left: 5px;
     margin-bottom:0;
 }
+.cloud-backup-toggle {
+  float:left;
+}
 
+.cloud-backup-tooltip {
+  float:left;
+}
 
 .backup-management-confirm .backup-dialog-button {
     float: left;

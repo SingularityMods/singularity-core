@@ -57,6 +57,10 @@
     padding: 5px;
 }
 
+.terms-button:focus {
+  outline: none;
+}
+
 .terms-window-scrollbar {
     height: calc(100vh - 250px);
     overflow: auto;

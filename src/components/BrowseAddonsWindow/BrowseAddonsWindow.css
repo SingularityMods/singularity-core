@@ -103,6 +103,9 @@
     color: var(--singularity-orange);
     text-decoration-color: var(--singularity-orange);
 }
+.browse-addon-name:focus{
+  outline: none;
+}
 
 
 

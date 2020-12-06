@@ -3,14 +3,6 @@
     padding-right: 0;
 }
 
-.button-col {
-
-}
-
-.filter-col{ 
-
-}
-
 .context-class {
     color: red;
 }
@@ -164,6 +156,14 @@ margin-left: 0px;
 .no-addons-link{
     color: var(--singularity-orange);
     cursor: pointer;
+}
+
+.no-addons-link:focus{
+  outline:none;
+}
+
+.browse-addon-name:focus {
+  outline: none;
 }
 
 .addon-search-field.filter-field {
