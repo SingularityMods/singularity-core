@@ -228,7 +228,7 @@ function setAppConfig() {
         storageService.setGameSettings('1',gameS);
         let userConfig = storageService.getAppData('userConfigurable')
         userConfig.minimizeToTray = false;
-        userConfig.beta = true;
+        userConfig.beta = false;
         storageService.setAppData('userConfigurable',userConfig);
     }
 
