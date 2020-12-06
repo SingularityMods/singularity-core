@@ -1119,7 +1119,7 @@ function setAddonUpdateInterval() {
         log.info('Starting addon auto refresh and update');
         findAndUpdateAddons()
         .then( profiles => {
-            syncService.updateSyncProfiles([...profiles]);
+            updateSyncProfiles([...profiles]);
          })
          .catch(error => {
              log.error('Error while auto-udpating addons');
