@@ -32,8 +32,8 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 const startAutoUpdater = () => {
     log.info('Starting Singularity Auto Updater');
     let beta = storageService.getAppData('userConfigurable').beta;
-    //autoUpdater.logger = log;
-    //autoUpdater.logger.transports.file.level = "info"
+    autoUpdater.logger = log;
+    autoUpdater.logger.transports.file.level = "info"
     if (process.platform === "win32") {
         // WINDOWS
         log.info('Initializing Auto Updater');
