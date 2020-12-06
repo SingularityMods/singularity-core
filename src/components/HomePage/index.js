@@ -71,7 +71,7 @@ export default class HomePage extends React.Component {
                                 <p className="release-note-bullet"> - Fixed an issue that could cause Singularity to not check for app updates after initial installation or update.</p>
                                 <br />
                                 <p>* Requires a Singularity account.</p>
-                                <br />
+                                <hr />
                                 <h5>1.0.4 <span className="release-note-date">2020-11-27</span></h5>
                                 <h5 className="release-note-section-header">Bug Fixes:</h5>
                                 <p className="release-note-bullet"> - Fixed an issue that caused Singularity to throw an error when attempting to identify installed addons after identifying game location.</p>
