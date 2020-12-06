@@ -1,6 +1,16 @@
 {
-"currentRelease": "1.0.4",
+"currentRelease": "1.1.0",
 	"releases": [
+		{
+			"version": "1.1.0",
+			"updateTo": {
+				"version": "1.1.0",
+				"pub_date": "2020-12-05T00:00:00",
+				"notes": "Added addon sync and several app improvements.",
+				"name": "1.1.0",
+				"url": "https://storage.singularitycdn.com/App/Releases/Mac/Singularity-darwin-x64-1.1.0.zip"
+			}
+		},
 		{
 			"version": "1.0.4",
 			"updateTo": {
