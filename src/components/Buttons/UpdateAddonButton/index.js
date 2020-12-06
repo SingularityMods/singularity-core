@@ -23,7 +23,7 @@ class UpdateAddonButton extends React.Component {
 
 UpdateAddonButton.propTypes = {
     className: PropTypes.string,
-    clickData: PropTypes.node,
+    clickData: PropTypes.any,
     disabled: PropTypes.bool,
     handleClick: PropTypes.func,
     type: PropTypes.string
