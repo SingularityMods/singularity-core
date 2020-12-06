@@ -15,7 +15,7 @@
 }
 
 .find-game-button:focus {
-  outlone: none;
+  outline: none;
 }
 
 .find-game-button:active,
