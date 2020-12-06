@@ -44,7 +44,7 @@ const startAutoUpdater = () => {
   log.info('Starting Singularity Auto Updater');
   const { beta } = getAppData('userConfigurable');
   autoUpdater.logger = log;
-  autoUpdater.logger.transports.file.level = "info"
+  autoUpdater.logger.transports.file.level = 'info';
   if (process.platform === 'win32') {
     // WINDOWS
     log.info('Initializing Auto Updater');
