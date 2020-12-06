@@ -1152,7 +1152,7 @@ function syncFromProfile(profile) {
             let profileMatch = profile.addons.find( a => {
                 return a.addonId == addon.addonId
             })
-            if (!profileMatch) {
+            if (!profileMatch && !addon.unknownUpdate && !addon.brokenInstallation) {
                 addon.gameId = profile.gameId;
                 addon.gameVersion = profile.gameVersion;
                 log.info('Addon '+addon.addonName+' not in sync profile, add to remove list');
