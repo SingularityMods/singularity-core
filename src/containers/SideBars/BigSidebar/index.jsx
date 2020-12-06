@@ -40,7 +40,7 @@ function BigSidebar(props) {
         gameName={gameName}
         gameIconPath={gameIconPath}
         gameTilePath={gameTilePath}
-        onClick={onClick}
+        onClick={() => onClick(gameId)}
       />
     </Col>
   );

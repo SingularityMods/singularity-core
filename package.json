@@ -17,7 +17,7 @@
     "make-prod": "cross-env BUILD_ENV=prod electron-forge make",
     "make-beta": "cross-env BUILD_ENV=beta electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "npx eslint ./src",
+    "lint": "npx eslint ./src --ext .js,.jsx",
     "test": "mocha --timeout 20000 \"./test/**/*test-*.js\""
   },
   "keywords": [

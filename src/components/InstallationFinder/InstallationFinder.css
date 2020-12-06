@@ -14,6 +14,10 @@
     background-color: var(--secondary-color);
 }
 
+.find-game-button:focus {
+  outlone: none;
+}
+
 .find-game-button:active,
 .find-game-button:focus{
     outline:none;

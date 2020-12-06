@@ -9,7 +9,6 @@ import {
 } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 
-import CategoryButton from '../CategoryButton';
 import UpdateAddonButton from '../Buttons/UpdateAddonButton';
 import GameMenuButton from '../Buttons/GameMenuButton';
 
@@ -21,23 +20,15 @@ class BrowseAddonsWindow extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      gameId: this.props.gameId,
-      gameVersion: this.props.gameVersion,
       addonVersion: '',
-      gameName: '',
       installedAddons: [],
       addonList: [],
-      hasMoreAddons: true,
       categories: [],
       page: 0,
       pageSize: 50,
-      selectedView: 1,
-      activeTab: 1,
-      errorMessage: '',
       currentlyUpdating: [],
       erroredUpdates: [],
       searchFilter: '',
-      typing: false,
       typingTimeout: 0,
       selectedCategory: '',
       noAddonsFound: false,
@@ -47,7 +38,6 @@ class BrowseAddonsWindow extends React.Component {
     };
     this.installAddon = this.installAddon.bind(this);
     this.refreshSearch = this.refreshSearch.bind(this);
-    this.toggleView = this.toggleView.bind(this);
     this.loadMoreAddons = this.loadMoreAddons.bind(this);
     this.addonInstalledListener = this.addonInstalledListener.bind(this);
     this.addonSearchListener = this.addonSearchListener.bind(this);
@@ -58,34 +48,26 @@ class BrowseAddonsWindow extends React.Component {
     this.toggleCategory = this.toggleCategory.bind(this);
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.gameVersion !== prevProps.gameVersion) {
-      ipcRenderer.send('addon-search', this.state.gameId, this.state.gameVersion, this.state.searchFilter, 0, this.state.page, this.state.pageSize);
-      const gameSettings = ipcRenderer.sendSync('get-game-settings', this.props.gameId);
-      const addonVersion = ipcRenderer.sendSync('get-game-addon-version', this.state.gameId, this.props.gameVersion);
-      this.setState({
-        installedAddons: gameSettings[this.props.gameVersion].installedAddons,
-        gameName: gameSettings[this.props.gameVersion].name,
-        addonList: [],
-        selectedCategory: '',
-        page: 0,
-        searching: true,
-        gameVersion: this.props.gameVersion,
-        addonVersion,
-      });
-    }
-  }
-
   componentDidMount() {
-    ipcRenderer.send('addon-search', this.state.gameId, this.state.gameVersion, this.state.searchFilter, this.state.selectedCategory, this.state.page, this.state.pageSize);
+    const {
+      page,
+      pageSize,
+      searchFilter,
+      selectedCategory,
+    } = this.state;
+    const {
+      gameId,
+      gameVersion,
+    } = this.props;
+    ipcRenderer.send('addon-search', gameId, gameVersion, searchFilter, selectedCategory, page, pageSize);
     ipcRenderer.on('addon-installed', this.addonInstalledListener);
     ipcRenderer.on('addon-search-result', this.addonSearchListener);
     ipcRenderer.on('additional-addon-search-result', this.additionalAddonsListener);
     ipcRenderer.on('addon-search-error', this.addonSearchErrorListener);
     ipcRenderer.on('addon-search-no-result', this.addonSearchNoResultListener);
-    const gameSettings = ipcRenderer.sendSync('get-game-settings', this.state.gameId);
-    const categories = ipcRenderer.sendSync('get-game-addon-categories', this.state.gameId);
-    const addonVersion = ipcRenderer.sendSync('get-game-addon-version', this.state.gameId, this.state.gameVersion);
+    const gameSettings = ipcRenderer.sendSync('get-game-settings', gameId);
+    const categories = ipcRenderer.sendSync('get-game-addon-categories', gameId);
+    const addonVersion = ipcRenderer.sendSync('get-game-addon-version', gameId, gameVersion);
     categories.unshift({
       categoryId: 0,
       name: 'All',
@@ -93,12 +75,36 @@ class BrowseAddonsWindow extends React.Component {
       rootCategoryId: 0,
     });
     this.setState({
-      gameName: gameSettings[this.state.gameVersion].name,
-      installedAddons: gameSettings[this.state.gameVersion].installedAddons,
+      installedAddons: gameSettings[gameVersion].installedAddons,
       categories,
       searching: true,
       addonVersion,
     });
+  }
+
+  componentDidUpdate(prevProps) {
+    const {
+      page,
+      pageSize,
+      searchFilter,
+    } = this.state;
+    const {
+      gameId,
+      gameVersion,
+    } = this.props;
+    if (gameVersion !== prevProps.gameVersion) {
+      ipcRenderer.send('addon-search', gameId, gameVersion, searchFilter, 0, page, pageSize);
+      const gameSettings = ipcRenderer.sendSync('get-game-settings', gameId);
+      const addonVersion = ipcRenderer.sendSync('get-game-addon-version', gameId, gameVersion);
+      this.setState({
+        installedAddons: gameSettings[gameVersion].installedAddons,
+        addonList: [],
+        selectedCategory: '',
+        page: 0,
+        searching: true,
+        addonVersion,
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -109,27 +115,32 @@ class BrowseAddonsWindow extends React.Component {
     ipcRenderer.removeListener('addon-search-error', this.addonSearchErrorListener);
   }
 
-  addonInstalledListener(event, installedAddon) {
-    const installedAddons = this.state.installedAddons.map((addon) => {
+  addonInstalledListener(_event, installedAddon) {
+    const {
+      currentlyUpdating,
+      erroredUpdates,
+      installedAddons,
+    } = this.state;
+    const currentlyInstalledAddons = installedAddons.map((addon) => {
       if (addon.addonId !== installedAddon.addonId) {
         return addon;
       }
       return installedAddon;
     });
-    if (!installedAddons.includes(installedAddon)) {
-      installedAddons.splice(0, 0, installedAddon);
+    if (!currentlyInstalledAddons.includes(installedAddon)) {
+      currentlyInstalledAddons.splice(0, 0, installedAddon);
     }
 
-    const currentlyUpdating = this.state.currentlyUpdating.filter((obj) => obj !== installedAddon.addonId);
-    const erroredUpdates = this.state.erroredUpdates.filter((obj) => obj !== installedAddon.addonId);
+    const newCurrentlyUpdating = currentlyUpdating.filter((obj) => obj !== installedAddon.addonId);
+    const newErroredUpdates = erroredUpdates.filter((obj) => obj !== installedAddon.addonId);
     this.setState({
-      installedAddons,
-      currentlyUpdating,
-      erroredUpdates,
+      installedAddons: currentlyInstalledAddons,
+      currentlyUpdating: newCurrentlyUpdating,
+      erroredUpdates: newErroredUpdates,
     });
   }
 
-  addonSearchListener(event, addons) {
+  addonSearchListener(_event, addons) {
     if (addons && addons.length > 0) {
       this.setState({
         addonList: addons,
@@ -147,7 +158,7 @@ class BrowseAddonsWindow extends React.Component {
     }
   }
 
-  addonSearchNoResultListener(event) {
+  addonSearchNoResultListener() {
     this.setState({
       searching: false,
       loadingMore: false,
@@ -155,7 +166,7 @@ class BrowseAddonsWindow extends React.Component {
     });
   }
 
-  addonSearchErrorListener(event) {
+  addonSearchErrorListener() {
     this.setState({
       searching: false,
       loadingMore: false,
@@ -163,9 +174,13 @@ class BrowseAddonsWindow extends React.Component {
     });
   }
 
-  additionalAddonsListener(event, addons) {
-    const a = this.state.addonList;
-    const newPage = this.state.page + 1;
+  additionalAddonsListener(_event, addons) {
+    const {
+      addonList,
+      page,
+    } = this.state;
+    const a = addonList;
+    const newPage = page + 1;
     if (addons && addons.length > 0) {
       this.setState({
         addonList: a.concat(addons),
@@ -183,30 +198,55 @@ class BrowseAddonsWindow extends React.Component {
     }
   }
 
+  timeoutAddon(addon) {
+    const {
+      currentlyUpdating,
+      erroredUpdates,
+    } = this.state;
+    if (currentlyUpdating.includes(addon.addonId)) {
+      const newErroredUpdates = erroredUpdates.slice();
+      erroredUpdates.splice(0, 0, addon.addonId);
+      const newCurrentlyUpdating = currentlyUpdating.filter((obj) => obj !== addon.addonId);
+
+      this.setState({
+        erroredUpdates: newErroredUpdates,
+        currentlyUpdating: newCurrentlyUpdating,
+      });
+    }
+  }
+
   installAddon(addon) {
+    const {
+      currentlyUpdating,
+    } = this.state;
+    const {
+      gameId,
+      gameVersion,
+    } = this.props;
     const branch = 1;
-    ipcRenderer.send('install-addon', this.state.gameId, this.state.gameVersion, addon, branch);
-    const currentlyUpdating = this.state.currentlyUpdating.slice();
+    ipcRenderer.send('install-addon', gameId, gameVersion, addon, branch);
+    const newCurrentlyUpdating = currentlyUpdating.slice();
     currentlyUpdating.splice(0, 0, addon.addonId);
     this.setState({
-      currentlyUpdating,
+      currentlyUpdating: newCurrentlyUpdating,
     });
 
     setTimeout(() => {
-      if (this.state.currentlyUpdating.includes(addon.addonId)) {
-        const erroredUpdates = this.state.erroredUpdates.slice();
-        erroredUpdates.splice(0, 0, addon.addonId);
-        const currentlyUpdating = this.state.currentlyUpdating.filter((obj) => obj !== addon.addonId);
-
-        this.setState({
-          erroredUpdates,
-          currentlyUpdating,
-        });
-      }
+      this.timeoutAddon(addon);
     }, 30000);
   }
 
   refreshSearch() {
+    const {
+      searchFilter,
+      selectedCategory,
+      page,
+      pageSize,
+    } = this.state;
+    const {
+      gameId,
+      gameVersion,
+    } = this.props;
     this.setState({
       addonList: [],
       searching: true,
@@ -216,28 +256,38 @@ class BrowseAddonsWindow extends React.Component {
       erroredUpdates: [],
 
     });
-    ipcRenderer.send('addon-search', this.state.gameId, this.state.gameVersion, this.state.searchFilter, this.state.selectedCategory, this.state.page, this.state.pageSize);
+    ipcRenderer.send('addon-search', gameId, gameVersion, searchFilter, selectedCategory, page, pageSize);
   }
 
   loadMoreAddons() {
-    ipcRenderer.send('addon-search', this.state.gameId, this.state.gameVersion, this.state.searchFilter, this.state.selectedCategory, this.state.page + 1, this.state.pageSize);
+    const {
+      searchFilter,
+      selectedCategory,
+      page,
+      pageSize,
+    } = this.state;
+    const {
+      gameId,
+      gameVersion,
+    } = this.props;
+    ipcRenderer.send('addon-search', gameId, gameVersion, searchFilter, selectedCategory, page + 1, pageSize);
     this.setState({
       loadingMore: true,
     });
   }
 
-  toggleView(selectedtab) {
-    this.setState({
-      selectedView: selectedtab,
-    });
-  }
-
   toggleCategory(category) {
-    if (category == null) {
-      category = 0;
-    }
+    const {
+      searchFilter,
+      pageSize,
+    } = this.state;
+    const {
+      gameId,
+      gameVersion,
+    } = this.props;
+    const searchCategory = category || 0;
 
-    ipcRenderer.send('addon-search', this.state.gameId, this.state.gameVersion, this.state.searchFilter, category, 0, this.state.pageSize);
+    ipcRenderer.send('addon-search', gameId, gameVersion, searchFilter, searchCategory, 0, pageSize);
     this.setState({
       selectedCategory: category,
       page: 0,
@@ -247,14 +297,15 @@ class BrowseAddonsWindow extends React.Component {
 
   changeFilter(event) {
     const self = this;
-
-    if (this.state.typingTimeout) {
-      clearTimeout(this.state.typingTimeout);
+    const {
+      typingTimeout,
+    } = this.state;
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
     }
 
     this.setState({
       searchFilter: event.target.value,
-      typing: false,
       typingTimeout: setTimeout(() => {
         self.refreshSearch();
       }, 700),
@@ -262,7 +313,26 @@ class BrowseAddonsWindow extends React.Component {
   }
 
   render() {
-    const selectedCat = this.state.categories.filter((category) => parseInt(category.categoryId) === parseInt(this.state.selectedCategory));
+    const {
+      additionalAddons,
+      addonList,
+      addonVersion,
+      categories,
+      currentlyUpdating,
+      erroredUpdates,
+      installedAddons,
+      loadingMore,
+      noAddonsFound,
+      selectedCategory,
+      searchFilter,
+      searching,
+    } = this.state;
+    const {
+      gameVersion,
+      onSelectAddon,
+    } = this.props;
+    const selectedCat = categories.filter((category) => (
+      parseInt(category.categoryId, 10) === parseInt(selectedCategory, 10)));
     let selectedCategoryName = 'Category';
     if (selectedCat.length > 0) {
       selectedCategoryName = selectedCat[0].name;
@@ -270,26 +340,29 @@ class BrowseAddonsWindow extends React.Component {
     const browseAddonsColumns = [{
       dataField: 'addonName',
       text: 'Addon',
-      formatter: (cellContent, row, rowIndex) => {
-        if (!row.primaryCategory) {
-          console.log(row);
-        }
-        return (
-          <div className="browse-addon-title-column">
-            <img className="browse-addon-table-img" src={row.primaryCategory.iconUrl} />
-            <a href="#" className="browse-addon-name" onClick={() => this.props.onSelectAddon(row.addonId)}>{cellContent}</a>
+      formatter: (cellContent, row) => (
+        <div className="browse-addon-title-column">
+          <img className="browse-addon-table-img" alt="Addon icon" src={row.primaryCategory.iconUrl} />
+          <div
+            className="browse-addon-name"
+            role="button"
+            tabIndex="0"
+            onClick={() => onSelectAddon(row.addonId)}
+            onKeyPress={() => onSelectAddon(row.addonId)}
+          >
+            {cellContent}
           </div>
-        );
-      },
+        </div>
+      ),
     }, {
       dataField: 'addonId',
       text: 'Action',
       formatExtraData: {
-        installedAddons: this.state.installedAddons,
-        gameVersion: this.state.gameVersion,
-        addonVersion: this.state.addonVersion,
-        currentlyUpdating: this.state.currentlyUpdating,
-        erroredUpdates: this.state.erroredUpdates,
+        installedAddons,
+        gameVersion,
+        addonVersion,
+        currentlyUpdating,
+        erroredUpdates,
       },
       formatter: (cellContent, row, rowIndex, extraData) => {
         if (extraData.erroredUpdates.includes(row.addonId)) {
@@ -301,8 +374,8 @@ class BrowseAddonsWindow extends React.Component {
         }
         let installed = false;
         let installedFileDate;
-        for (var i = 0; i < extraData.installedAddons.length; i++) {
-          if (extraData.installedAddons[i].addonId == cellContent.toString()) {
+        for (let i = 0; i < extraData.installedAddons.length; i += 1) {
+          if (extraData.installedAddons[i].addonId === cellContent.toString()) {
             installed = true;
             installedFileDate = Date.parse(extraData.installedAddons[i].fileDate);
           }
@@ -313,30 +386,31 @@ class BrowseAddonsWindow extends React.Component {
           );
         }
 
-        for (var i = 0; i < row.latestFiles.length; i++) {
-          if (row.latestFiles[i].gameVersionFlavor == extraData.addonVersion && row.latestFiles[i].releaseType == 1) {
+        for (let i = 0; i < row.latestFiles.length; i += 1) {
+          if (row.latestFiles[i].gameVersionFlavor === extraData.addonVersion
+              && row.latestFiles[i].releaseType === 1) {
             const fileDate = Date.parse(row.latestFiles[i].fileDate);
             if (fileDate > installedFileDate) {
               return (
                 <UpdateAddonButton handleClick={this.installAddon} clickData={row} type="Update" />
               );
             }
-            return (
-              <span className="label label-danger">Up To Date</span>
-            );
           }
         }
+        return (
+          <span className="label label-danger">Up To Date</span>
+        );
       },
     }, {
       dataField: 'totalDownloadCount',
       text: 'Downloads',
-      formatter: (cellContent, row, rowIndex) => {
+      formatter: (cellContent) => {
         if (cellContent > 1000000) {
-          var downloadCount = cellContent.toString().slice(0, -5);
+          const downloadCount = cellContent.toString().slice(0, -5);
           const lastNum = downloadCount.charAt(downloadCount.length - 1);
           return `${downloadCount.slice(0, -1)}.${lastNum}M`;
         } if (cellContent > 1000) {
-          var downloadCount = cellContent.toString().slice(0, -2);
+          const downloadCount = cellContent.toString().slice(0, -2);
           const lastNum = downloadCount.charAt(downloadCount.length - 1);
           return `${downloadCount.slice(0, -1)}.${lastNum}K`;
         }
@@ -345,10 +419,10 @@ class BrowseAddonsWindow extends React.Component {
     }, {
       dataField: 'latestFiles',
       text: 'Latest',
-      formatExtraData: this.state.gameVersion,
-      formatter: (cellContent, row, rowIndex, gameVersion) => {
-        for (let i = 0; i < cellContent.length; i++) {
-          if (cellContent[i].gameVersionFlavor == gameVersion && cellContent[i].releaseType == 1) {
+      formatExtraData: gameVersion,
+      formatter: (cellContent, row, rowIndex, gameV) => {
+        for (let i = 0; i < cellContent.length; i += 1) {
+          if (cellContent[i].gameVersionFlavor === gameV && cellContent[i].releaseType === 1) {
             const fileDate = new Date(Date.parse(cellContent[i].fileDate));
             const [month, date, year] = fileDate.toLocaleDateString().split('/');
             return (
@@ -356,11 +430,12 @@ class BrowseAddonsWindow extends React.Component {
             );
           }
         }
+        return '';
       },
     }, {
       dataField: 'categories',
       text: 'Category',
-      formatter: (cellContent, row, rowIndex) => {
+      formatter: (cellContent) => {
         if (cellContent[0] && cellContent[0].name) {
           return (
             cellContent[0].name
@@ -372,15 +447,18 @@ class BrowseAddonsWindow extends React.Component {
       dataField: 'category',
       isDummyField: true,
       text: 'Game Version',
-      formatExtraData: this.state.addonVersion,
-      formatter: (cellContent, row, rowIndex, addonVersion) => {
-        for (let i = 0; i < row.latestFiles.length; i++) {
-          if (row.latestFiles[i].gameVersionFlavor == addonVersion && row.latestFiles[i].releaseType == 1) {
+      formatExtraData: addonVersion,
+      formatter: (cellContent, row, rowIndex, addonV) => {
+        for (let i = 0; i < row.latestFiles.length; i += 1) {
+          if (row.latestFiles[i].gameVersionFlavor === addonV
+              && row.latestFiles[i].releaseType === 1
+          ) {
             return (
               row.latestFiles[i].gameVersion[0]
             );
           }
         }
+        return '';
       },
     }, {
       dataField: 'author',
@@ -400,7 +478,7 @@ class BrowseAddonsWindow extends React.Component {
                   title={selectedCategoryName}
                   onSelect={this.toggleCategory}
                 >
-                  {this.state.categories && this.state.categories.map((category, index, a) => (
+                  {categories && categories.map((category) => (
                     <Dropdown.Item
                       key={category.categoryId}
                       eventKey={category.categoryId}
@@ -418,68 +496,49 @@ class BrowseAddonsWindow extends React.Component {
                     name="searchFilter"
                     className="addon-search-field"
                     placeholder="Search"
-                    defaultValue={this.state.searchFilter}
-                    onChange={this.changeFilter.bind(this)}
+                    defaultValue={searchFilter}
+                    onChange={this.changeFilter}
                   />
                 </Form.Group>
               </Col>
             </Row>
-            {!this.state.searching
-              ? (this.state.selectedView == 'featured'
-                ? (
-                  <div className="category-window">
-                    <Row>
-                      <h1 className="category-window-title">Categories</h1>
-                    </Row>
-                    <Row className="category-selection">
-                      {this.state.categories && this.state.categories.map((category, index, a) => (
-                        <CategoryButton
-                          key={category.categoryId}
-                          categoryId={category.categoryId}
-                          categoryName={category.name}
-                          categoryIcon={category.iconUrl}
+            {searching
+              ? <div className="loading"><LoadingSpinner /></div>
+              : ''}
+            {!searching && noAddonsFound
+              ? <div className="search-error">Looks like we couldn&apos;t find any addons for that search...</div>
+              : ''}
+            {!searching && !noAddonsFound
+              ? (
+                <SimpleBar scrollbarMaxSize={50} className={process.platform === 'darwin' ? 'addon-table-scrollbar mac' : 'addon-table-scrollbar'}>
+                  <Row className="addon-table">
+                    <Col xs={12}>
+                      {addonList ? (
+                        <BootstrapTable
+                          keyField="addonId"
+                          className="browse-addon-table"
+                          headerClasses="browse-addons-header"
+                          data={addonList}
+                          columns={browseAddonsColumns}
                         />
-                      ))}
-                    </Row>
-                  </div>
-                ) : (
-                  this.state.noAddonsFound
-                    ? <div className="search-error">Looks like we couldn&apos;t find any addons for that search...</div>
-                    : (
-                      <SimpleBar scrollbarMaxSize={50} className={process.platform === 'darwin' ? 'addon-table-scrollbar mac' : 'addon-table-scrollbar'}>
-                        <Row className="addon-table">
-                          <Col xs={12}>
-                            {this.state.addonList ? (
-                              <BootstrapTable
-                                keyField="addonId"
-                                className="browse-addon-table"
-                                headerClasses="browse-addons-header"
-                                data={this.state.addonList}
-                                columns={browseAddonsColumns}
-                              />
-                            ) : (
-                              ''
-                            )}
-                          </Col>
-                        </Row>
-                        {this.state.loadingMore
-                          ? <LoadingSpinner />
-                          : ''}
-                        <Row>
-                          <Col xs={12}>
-                            {this.state.additionalAddons
-                              ? <div className="load-more" onClick={this.loadMoreAddons}>load more</div>
-                              : ''}
-
-                          </Col>
-                        </Row>
-
-                      </SimpleBar>
-                    )
-                )
-              ) : (
-                <div className="loading"><LoadingSpinner /></div>
-              )}
+                      ) : (
+                        ''
+                      )}
+                    </Col>
+                  </Row>
+                  {loadingMore
+                    ? <LoadingSpinner />
+                    : ''}
+                  <Row>
+                    <Col xs={12}>
+                      {additionalAddons
+                        ? <div className="load-more" role="button" tabIndex="0" onClick={this.loadMoreAddons} onKeyPress={this.loadMoreAddons}>load more</div>
+                        : ''}
+                    </Col>
+                  </Row>
+                </SimpleBar>
+              )
+              : ''}
           </Col>
         </Row>
       </div>
@@ -488,9 +547,9 @@ class BrowseAddonsWindow extends React.Component {
 }
 
 BrowseAddonsWindow.propTypes = {
-  gameId: PropTypes.number,
-  gameVersion: PropTypes.string,
-  onSelectAddon: PropTypes.func,
+  gameId: PropTypes.number.isRequired,
+  gameVersion: PropTypes.string.isRequired,
+  onSelectAddon: PropTypes.func.isRequired,
 };
 
 export default BrowseAddonsWindow;

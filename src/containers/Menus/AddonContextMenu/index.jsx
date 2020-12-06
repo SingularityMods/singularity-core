@@ -34,6 +34,13 @@ class AddonContextMenu extends React.Component {
     this.onHoverBranchOption = this.onHoverBranchOption.bind(this);
     this.onHoverDirMenu = this.onHoverDirMenu.bind(this);
     this.onHoverDirOption = this.onHoverDirOption.bind(this);
+    this.closeBranchMenu = this.closeBranchMenu.bind(this);
+    this.closeBranchOption = this.closeBranchOption.bind(this);
+    this.closeSettingsMenu = this.closeSettingsMenu.bind(this);
+    this.closeSettingsOption = this.closeSettingsOption.bind(this);
+    this.closeDirMenu = this.closeDirMenu.bind(this);
+    this.closeDirOption = this.closeDirOption.bind(this);
+    this.getDirectoryOptions = this.getDirectoryOptions.bind(this);
   }
 
   componentDidMount() {
@@ -112,8 +119,8 @@ class AddonContextMenu extends React.Component {
       let clickX = event.pageX - 230;
       let clickY = event.layerY;
 
-      if ((window.innerHeight - event.pageY) < 150) {
-        clickY -= 150;
+      if ((window.innerHeight - event.pageY) < 200) {
+        clickY -= 120;
       }
 
       if (clickX + 800 > window.innerWidth) {
@@ -171,7 +178,7 @@ class AddonContextMenu extends React.Component {
       this.setState({ hoverBranchOption: toggle });
     } else {
       this.hoverBranchOptTimeout = setTimeout(() => {
-        this.setState({ hoverBranchOption: toggle });
+        this.closeBranchOption();
       }, 60);
     }
   }
@@ -181,7 +188,7 @@ class AddonContextMenu extends React.Component {
       this.setState({ hoverBranchMenu: toggle });
     } else {
       this.hoverBranchMenuTimeout = setTimeout(() => {
-        this.setState({ hoverBranchMenu: toggle });
+        this.closeBranchMenu();
       }, 60);
     }
   }
@@ -191,7 +198,7 @@ class AddonContextMenu extends React.Component {
       this.setState({ hoverSettingsOption: toggle });
     } else {
       this.hoverSettingsOptTimeout = setTimeout(() => {
-        this.setState({ hoverSettingsOption: toggle });
+        this.closeSettingsOption();
       }, 60);
     }
   }
@@ -201,7 +208,7 @@ class AddonContextMenu extends React.Component {
       this.setState({ hoverSettingsMenu: toggle });
     } else {
       this.hoverSettingsMenuTimeout = setTimeout(() => {
-        this.setState({ hoverSettingsMenu: toggle });
+        this.closeSettingsMenu();
       }, 60);
     }
   }
@@ -211,7 +218,7 @@ class AddonContextMenu extends React.Component {
       this.setState({ hoverDirOption: toggle });
     } else {
       this.hoverDirOptTimeout = setTimeout(() => {
-        this.setState({ hoverDirOption: toggle });
+        this.closeDirOption();
       }, 60);
     }
   }
@@ -221,9 +228,63 @@ class AddonContextMenu extends React.Component {
       this.setState({ hoverDirMenu: toggle });
     } else {
       this.hoverDirMenuTimeout = setTimeout(() => {
-        this.setState({ hoverDirMenu: toggle });
+        this.closeDirMenu();
       }, 60);
     }
+  }
+
+  getDirectoryOptions() {
+    const {
+      modules,
+    } = this.state;
+    const {
+      handleOpenDir,
+    } = this.props;
+    if (modules && modules.length === 1) {
+      return (
+        <Col xs={12} onClick={() => handleOpenDir(modules[0].folderName)}>
+          <div><i className="fas fa-folder context-menu-item-icon" /></div>
+          <div className="context-menu-item-lable">Browse Folder</div>
+        </Col>
+      );
+    } if (modules && modules.length > 1) {
+      return (
+        <Col
+          xs={12}
+          onMouseEnter={() => this.onHoverDirMenu(true)}
+          onMouseLeave={() => this.onHoverDirMenu(false)}
+        >
+          <div><i className="fas fa-folder context-menu-item-icon" /></div>
+          <div className="context-menu-item-lable">Browse Folders</div>
+          <div><i className="fas fa-chevron-right context-menu-item-arrow" /></div>
+        </Col>
+      );
+    }
+    return '';
+  }
+
+  closeBranchOption() {
+    this.setState({ hoverBranchOption: false });
+  }
+
+  closeBranchMenu() {
+    this.setState({ hoverBranchMenu: false });
+  }
+
+  closeSettingsOption() {
+    this.setState({ hoverSettingsOption: false });
+  }
+
+  closeSettingsMenu() {
+    this.setState({ hoverSettingsMenu: false });
+  }
+
+  closeDirOption() {
+    this.setState({ hoverDirOption: false });
+  }
+
+  closeDirMenu() {
+    this.setState({ hoverDirMenu: false });
   }
 
   render() {
@@ -286,29 +347,6 @@ class AddonContextMenu extends React.Component {
           <div className="context-menu-item-lable">Update</div>
         </Col>
       );
-    }
-    function getDirectoryOptions() {
-      if (modules && modules.length === 1) {
-        return (
-          <Col xs={12} onClick={() => handleOpenDir(modules[0].folderName)}>
-            <div><i className="fas fa-folder context-menu-item-icon" /></div>
-            <div className="context-menu-item-lable">Browse Folder</div>
-          </Col>
-        );
-      } if (modules && modules.length > 1) {
-        return (
-          <Col
-            xs={12}
-            onMouseEnter={() => this.onHoverDirMenu(true)}
-            onMouseLeave={() => this.onHoverDirMenu(false)}
-          >
-            <div><i className="fas fa-folder context-menu-item-icon" /></div>
-            <div className="context-menu-item-lable">Browse Folders</div>
-            <div><i className="fas fa-chevron-right context-menu-item-arrow" /></div>
-          </Col>
-        );
-      }
-      return '';
     }
     return (
       <div id="cmenu">
@@ -473,7 +511,7 @@ class AddonContextMenu extends React.Component {
                         </Col>
                       </Row>
                       <Row className="context-menu-item">
-                        {getDirectoryOptions()}
+                        {this.getDirectoryOptions()}
                       </Row>
                       <Row className="context-menu-item context-uninstall">
                         <Col xs={12} onClick={() => handleUninstall(title)}>

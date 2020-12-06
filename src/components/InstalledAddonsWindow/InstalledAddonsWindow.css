@@ -166,6 +166,14 @@ margin-left: 0px;
     cursor: pointer;
 }
 
+.no-addons-link:focus{
+  outline:none;
+}
+
+.browse-addon-name:focus {
+  outline: none;
+}
+
 .addon-search-field.filter-field {
     float: right;
 }

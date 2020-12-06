@@ -29,6 +29,10 @@
     overflow:hidden;
 }
 
+.auth-user-icon:focus{
+  outline:none;
+}
+
 .auth-user-icon img {
     height: 40px;
 }
