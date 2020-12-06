@@ -252,6 +252,7 @@ class AddonSyncToggle extends React.Component {
                 <a data-tip data-for="addonSyncToggleTooltip">
                 <Switch
                     disabled={!this.state.profile 
+                                || !this.state.profile.emailVerified
                                 || this.state.configuring 
                                 || this.state.syncing
                                 || this.state.backupPending

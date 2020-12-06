@@ -7,7 +7,7 @@
     "url": "git://github.com/singularitymods/singularity-core.git"
   },
   "description": "Singularity is the single app for your addon management.",
-  "version": "1.1.0-beta.0",
+  "version": "1.1.0",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",

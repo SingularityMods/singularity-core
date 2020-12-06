@@ -327,7 +327,7 @@ class SettingsWindow extends React.Component {
                                 <Row className="settings-item">
                                     <Col xs={4} md={3} className="settings-item-name">
                                         <label>
-                                            <span>Addon Update Interval</span>
+                                            <span>Addon Update Check Interval</span>
                                         </label>
                                     </Col>
                                     <Col xs={8} md={9} className="settings-item-config">

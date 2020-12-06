@@ -101,7 +101,6 @@ async function refreshTokens() {
         log.error('Lost network connection, leave user session');
         return reject(err);
       } else {
-        MZPXRxksoV40gxh3ftfohBQm
         logout()
         .then (() => {
           log.info('User deauthenticated');
