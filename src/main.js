@@ -30,6 +30,7 @@ log.transports.file.level = 'info';
 log.transports.file.maxSize = 1024 * 1000;
 
 let mainWindow;
+let splash;
 let tray = null;
 let isQuitting = false;
 
@@ -181,6 +182,21 @@ function createTray() {
   return appIcon;
 }
 
+function createSplashWindow() {
+  splash = new BrowserWindow({
+    width: 400,
+    height: 300,
+    frame: false,
+    alwaysOnTop: true,
+    webPreferences: {
+      nodeIntegration: true,
+      devTools: true,
+      preload: SPLASH_WINDOW_PRELOAD_WEBPACK_ENTRY,
+    }});
+  splash.loadURL(SPLASH_WINDOW_WEBPACK_ENTRY);
+  log.info('splash loaded');
+}
+
 // Create the main browser window for the renderer
 const createWindow = () => {
   log.info('Create browser window');
@@ -201,6 +217,7 @@ const createWindow = () => {
     },
     icon: path.join(__dirname, 'assets/icons/app_icon.png'),
     frame,
+    show: false,
   });
 
   // Set the user and OS theme in the browser window
@@ -212,6 +229,12 @@ const createWindow = () => {
 
   // Load the app entry point
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+
+  mainWindow.once('ready-to-show', () => {
+    log.info('Main window set');
+    splash.hide();
+    mainWindow.show();
+  });
 
   // Set a listener for external link clicks and open them
   // in the user's main browser instead of the app
@@ -249,6 +272,7 @@ const createWindow = () => {
 
 // Listener that is called once the app window is loaded
 app.on('ready', () => {
+  createSplashWindow();
   log.info('Singularity App Ready');
   initStorage();
   setAppConfig();
