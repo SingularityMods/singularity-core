@@ -315,7 +315,7 @@ app.on('ready', () => {
       })
       .catch((err) => {
         mainWindow.webContents.send('addon-sync-search-complete');
-        if (err === 'No Token') {
+        if (err.message === 'No Token') {
           log.info('User does not have an authentication session to resume.');
           findAndUpdateAddons()
             .then(() => {
@@ -325,7 +325,7 @@ app.on('ready', () => {
               log.info('Error identifying and updating addons');
             });
         } else {
-          log.info(err);
+          log.info(err.message);
         }
       });
   }
