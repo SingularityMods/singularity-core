@@ -83,6 +83,7 @@
 .browse-addon-table-img {
     height: 30px;
     margin-right: 5px;
+    float:left;
 }
 
 .browse-addon-table td {

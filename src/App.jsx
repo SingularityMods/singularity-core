@@ -49,6 +49,7 @@ class App extends React.Component {
       minimizeSidebar: false,
       latestCloudBackup: new Date(),
       lastRestoreComplete: new Date(),
+      games: null,
     };
 
     this.granularBackupCompleteListener = this.granularBackupCompleteListener.bind(this);
@@ -80,6 +81,12 @@ class App extends React.Component {
     ipcRenderer.on('darkmode-toggle', this.darkModeToggleListener);
     ipcRenderer.on('backup-status', this.backupStateListener);
     ipcRenderer.on('restore-status', this.restoreStateListener);
+    ipcRenderer.invoke('get-games')
+      .then((games) => {
+        this.setState({
+          games,
+        });
+      });
     const termsObj = ipcRenderer.sendSync('get-new-terms');
     const appSettings = ipcRenderer.sendSync('get-app-settings');
     const sidebarMinimized = ipcRenderer.sendSync('is-sidebar-minimized');
@@ -308,6 +315,7 @@ class App extends React.Component {
       backupPending,
       backupState,
       darkMode,
+      games,
       latestCloudBackup,
       lastRestoreComplete,
       minimizeSidebar,
@@ -399,13 +407,18 @@ class App extends React.Component {
             )
             : ''}
           <div className="wrapper">
-            <SmallSidebar darkMode={darkMode} onClick={this.selectGame} />
+            <SmallSidebar
+              darkMode={darkMode}
+              onClick={this.selectGame}
+              games={games}
+            />
             {minimizeSidebar
               ? (
                 <MinimizedSidebar
                   darkMode={darkMode}
                   onClick={this.selectGame}
                   onToggle={this.toggleBigSidebar}
+                  games={games}
                 />
               )
               : (
@@ -413,6 +426,7 @@ class App extends React.Component {
                   darkMode={darkMode}
                   onClick={this.selectGame}
                   onToggle={this.toggleBigSidebar}
+                  games={games}
                 />
               )}
             <MainContent

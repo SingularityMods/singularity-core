@@ -345,14 +345,19 @@ class AddonDetailsWindow extends React.Component {
                   <Col xs="3"><GameMenuButton handleClick={handleGoBack} type="Back" /></Col>
                 </Row>
                 <Row className="addon-info-row">
-                  <Col xs="2" className="addon-icon">
-                    {addon && addon.primaryCategory ? (
-                      <img src={addon.primaryCategory.iconUrl} className="addon-details-icon" alt="Addont icon" />
-                    ) : (
-                      ''
-                    )}
+                  <Col xs="3" className="addon-icon">
+                    {addon && addon.screenshots && addon.screenshots.length > 0
+                      ? <img src={addon.screenshots[0].url} className="addon-details-icon" alt="Addont icon" />
+                      : ''}
+                    {addon
+                      && (!addon.screenshots || !addon.screenshots.length > 0)
+                      && addon.primaryCategory ? (
+                        <img src={addon.primaryCategory.iconUrl} className="addon-details-icon" alt="Addont icon" />
+                      ) : (
+                        ''
+                      )}
                   </Col>
-                  <Col xs="10" lg="8" className="addon-info">
+                  <Col xs="9" lg="8" className="addon-info">
                     <Row>
                       <Col xs="10">
                         <span className="addon-info-bold">{addon.addonName}</span>

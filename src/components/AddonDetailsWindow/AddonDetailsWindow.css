@@ -9,11 +9,17 @@
 }
 
 .addon-info {
+  margin-left:-25px;
     color: var(--text-color);
 }
 
+.addon-info-row .addon-icon {
+  max-width: fit-content;
+}
+
 .addon-details-icon {
-    height: 100px;
+    max-width: 150px;
+    max-height: 100px;
 }
 
 .addon-details-top-menu {
@@ -141,3 +147,4 @@
 .addon-page-link-icon{
     margin-left: 5px;
 }
+

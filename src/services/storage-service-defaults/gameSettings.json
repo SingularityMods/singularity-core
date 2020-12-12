@@ -11,6 +11,7 @@
         "autoUpdate": false
       },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_retail_\\",
+      "addonPath": "",
       "installedAddons": [],
       "unknownAddonDirs": []
     },
@@ -25,6 +26,7 @@
         "autoUpdate": false
       },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_classic_\\",
+      "addonPath": "",
       "installedAddons": [],
       "unknownAddonDirs": []
     },
@@ -39,6 +41,7 @@
         "autoUpdate": false
       },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_ptr_\\",
+      "addonPath": "",
       "installedAddons": [],
       "unknownAddonDirs": []
     },
@@ -53,6 +56,7 @@
         "autoUpdate": false
       },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_classic_ptr_\\",
+      "addonPath": "",
       "installedAddons": [],
       "unknownAddonDirs": []
     },
@@ -66,6 +70,24 @@
         "autoUpdate": false
       },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_beta_\\",
+      "addonPath": "",
+      "installedAddons": [],
+      "unknownAddonDirs": []
+    }
+  },
+  "2": {
+    "eso": {
+      "name": "Elder Scrolls Online",
+      "nickName": "ESO",
+      "shortName": "eso",
+      "installed": false,
+      "sync": false,
+      "defaults": {
+        "trackBranch": 1,
+        "autoUpdate": false
+      },
+      "installPath": "",
+      "addonPath": "",
       "installedAddons": [],
       "unknownAddonDirs": []
     }

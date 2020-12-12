@@ -225,6 +225,70 @@ function setAppConfig() {
     setAppData('userConfigurable', userConfig);
   }
 
+  if (version < app.getVersion()) {
+    const gameS = {
+      eso: {
+        name: 'Elder Scrolls Online',
+        nickName: 'ESO',
+        shortName: 'eso',
+        installed: false,
+        sync: false,
+        defaults: {
+          trackBranch: 1,
+          autoUpdate: false,
+        },
+        installPath: '',
+        installedAddons: [],
+        unknownAddonDirs: [],
+      },
+    };
+    setGameSettings('2', gameS);
+
+    const gameD = {
+      name: 'Elder Scrolls Online',
+      gameType: 1,
+
+      bannerPath: '../img/banners/eso-banner.png',
+      iconPath: '../img/icons/eso-icon.png',
+      tilePath: '../img/tiles/eso-tile.png',
+      gameVersions: {
+        eso: {
+          name: 'Elder Scrolls Online',
+          nickName: 'ESO',
+          shortName: 'eso',
+          addonVersion: 'eso',
+          flavorString: 'eso',
+          macFlavorString: '/_retail_',
+          gameDir: {
+            win: [
+              'The Elder Scrolls Online/game/client/eso.exe',
+              'The Elder Scrolls Online/game/client/eso64.exe',
+            ],
+            mac: ['The Elder Scrolls Online/game_mac/pubplayerclient/eso.app'],
+            linux: [
+              'The Elder Scrolls Online/game/client/eso.exe',
+              'The Elder Scrolls Online/game/client/eso64.exe',
+            ],
+          },
+          addonDir: 'Elder Scrolls Online/live/AddoOns/',
+          likelyInstallPaths: {
+            win: ['C:/Program Files (x86)/Steam/steamapps/common/Zenimax Online/'],
+            mac: ['%USERDATA%/Steam/steamapps/common/Zenimax Online/'],
+            linux: ['C:/Program Files (x86)/Steam/steamapps/common/Zenimax Online/'],
+          },
+          likelyAddonPaths: {
+            win: ['%DOCUMENTS%/'],
+            mac: ['%DOCUMENTS%/'],
+            linux: ['%DOCUMENTS%/'],
+          },
+        },
+      },
+      categories: [],
+    };
+
+    setGameData('2', gameD);
+  }
+
   // Set new version
   setAppData('version', app.getVersion());
 
