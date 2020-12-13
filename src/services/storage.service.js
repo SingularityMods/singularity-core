@@ -104,18 +104,18 @@ function getBackupDataAsync(key) {
 }
 
 function getInstalledGames() {
-  let installed = [];
-  Object.keys(gameSettings).forEach(gameId => {
+  const installed = [];
+  Object.keys(gameSettings).forEach((gameId) => {
     let gameInstalled = false;
-    Object.keys(gameSettings[gameId]).forEach((gameVersion) => {     
+    Object.keys(gameSettings[gameId]).forEach((gameVersion) => {
       if (gameSettings[gameId][gameVersion].installed) {
-        gameInstalled = true
+        gameInstalled = true;
       }
-    })
+    });
     if (gameInstalled) {
       installed.push(gameId);
     }
-  })
+  });
   return installed;
 }
 

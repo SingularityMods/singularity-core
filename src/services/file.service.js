@@ -327,23 +327,23 @@ function deleteLocalBackup(backup) {
 function findAndUpdateAddons() {
   return new Promise((resolve, reject) => {
     log.info('Checking for installed addons');
-    
+
     const promises = [];
     const needsSyncProfileUpdate = new Set();
     const installedGames = getInstalledGames();
-    installedGames.forEach(gameId => {
+    installedGames.forEach((gameId) => {
       const gameS = getGameSettings(gameId.toString());
       Object.entries(gameS).forEach(([gameVersion]) => {
         promises.push(_findAddonsForGameVersion(gameId, gameVersion));
       });
-    })
+    });
     Promise.allSettled(promises)
       .then((results) => {
         const toUpdate = [];
         results.forEach((result) => {
           if (result.status === 'fulfilled') {
             result.value.toUpdate.forEach((addon) => {
-              if (gameS[addon.gameVersion].sync) {
+              if (addon.gameS[addon.gameVersion].sync) {
                 needsSyncProfileUpdate.add({
                   gameId: addon.gameId,
                   gameVersion: addon.gameVersion,
@@ -428,7 +428,7 @@ function updateESOAddonPath(selectedPath) {
     const gameS = getGameSettings('2');
     const gameD = getGameData('2');
     gameS.eso.addonPath = selectedPath;
-    gameS.eso.settingsPath = path.join(gameS.eso.addonPath,'../../../',gameD.settingsDir)
+    gameS.eso.settingsPath = path.join(gameS.eso.addonPath, '../../../', gameD.settingsDir);
     setGameSettings('2', gameS);
     return resolve();
   });
@@ -468,107 +468,6 @@ function findInstalledGame(gameId, selectedPath) {
         return reject(e);
       });
   });
-}
-
-// For the sepected path, attempt to find any installed WoW versions in either the path root
-// or for each game version directory
-function findInstalledWoWVersions(selectedPath) {
-  const { gameVersions } = getGameData('1');
-  const installedVersions = [];
-  Object.entries(gameVersions).forEach(([gameVersion]) => {
-    if (process.platform === 'win32') {
-      const exePath = path.join(selectedPath, gameVersions[gameVersion].executable);
-      const { flavorString } = gameVersions[gameVersion];
-
-      if (fs.existsSync(exePath)) {
-        // Identify version
-        const flavorFile = path.join(selectedPath, '.flavor.info');
-        if (fs.existsSync(flavorFile)) {
-          const text = fs.readFileSync(flavorFile).toString('utf-8').split('\n');
-          if (text[1] === flavorString) {
-            installedVersions.push(gameVersion);
-          }
-        }
-      } else {
-        let p = '';
-        let f = '';
-        switch (gameVersion) {
-          case 'wow_retail':
-            p = path.join(selectedPath, '_retail_', gameVersions[gameVersion].executable);
-            f = path.join(selectedPath, '_retail_', '.flavor.info');
-            break;
-          case 'wow_classic':
-            p = path.join(selectedPath, '_classic_', gameVersions[gameVersion].executable);
-            f = path.join(selectedPath, '_classic_', '.flavor.info');
-            break;
-          case 'wow_retail_ptr':
-            p = path.join(selectedPath, '_ptr_', gameVersions[gameVersion].executable);
-            f = path.join(selectedPath, '_ptr_', '.flavor.info');
-            break;
-          case 'wow_classic_ptr':
-            p = path.join(selectedPath, '_classic_ptr_', gameVersions[gameVersion].executable);
-            f = path.join(selectedPath, '_classic_ptr_', '.flavor.info');
-            break;
-          case 'wow_retail_beta':
-            p = path.join(selectedPath, '_beta_', gameVersions[gameVersion].executable);
-            f = path.join(selectedPath, '_beta_', '.flavor.info');
-            break;
-          case 'wow_classic_beta':
-            p = path.join(selectedPath, '_classic_beta_', gameVersions[gameVersion].executable);
-            f = path.join(selectedPath, '_classic_beta_', '.flavor.info');
-            break;
-          default:
-            p = path.join(selectedPath, '_retail_', gameVersions[gameVersion].executable);
-            f = path.join(selectedPath, '_retail_', '.flavor.info');
-            break;
-        }
-        if (fs.existsSync(p)) {
-          if (fs.existsSync(f)) {
-            const text = fs.readFileSync(f).toString('utf-8').split('\n');
-            if (text[1] === flavorString) {
-              installedVersions.push(gameVersion);
-            }
-          }
-        }
-      }
-    } else if (process.platform === 'darwin') {
-      const exePath = path.join(selectedPath, gameVersions[gameVersion].macExecutable);
-      if (fs.existsSync(exePath)) {
-        if (exePath.includes(gameVersions[gameVersion].macFlavorString)) {
-          installedVersions.push(gameVersion);
-        }
-      } else {
-        let p = '';
-        switch (gameVersion) {
-          case 'wow_retail':
-            p = path.join(selectedPath, '_retail_', gameVersions[gameVersion].macExecutable);
-            break;
-          case 'wow_classic':
-            p = path.join(selectedPath, '_classic_', gameVersions[gameVersion].macExecutable);
-            break;
-          case 'wow_retail_ptr':
-            p = path.join(selectedPath, '_ptr_', gameVersions[gameVersion].macExecutable);
-            break;
-          case 'wow_classic_ptr':
-            p = path.join(selectedPath, '_classic_ptr_', gameVersions[gameVersion].macExecutable);
-            break;
-          case 'wow_retail_beta':
-            p = path.join(selectedPath, '_beta_', gameVersions[gameVersion].macExecutable);
-            break;
-          case 'wow_classic_beat':
-            p = path.join(selectedPath, '_classic_beta_', gameVersions[gameVersion].macExecutable);
-            break;
-          default:
-            p = path.join(selectedPath, '_retail_', gameVersions[gameVersion].macExecutable);
-            break;
-        }
-        if (fs.existsSync(p)) {
-          installedVersions.push(gameVersion);
-        }
-      }
-    }
-  });
-  return installedVersions;
 }
 
 function fingerprintAllAsync(gameId, addonDir) {
@@ -1838,7 +1737,6 @@ export {
   deleteLocalBackup,
   findAndUpdateAddons,
   findInstalledGame,
-  findInstalledWoWVersions,
   fingerprintAllAsync,
   getAddonDir,
   getLocalSyncProfile,

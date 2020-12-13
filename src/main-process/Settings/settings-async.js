@@ -11,7 +11,6 @@ import AppConfig from '../../config/app.config';
 import getMainBrowserWindow from '../../services/electron.service';
 import {
   findInstalledGame,
-  findInstalledWoWVersions,
   setAddonUpdateInterval,
   updateESOAddonPath,
 } from '../../services/file.service';
@@ -188,7 +187,7 @@ ipcMain.on('update-wow-path', (event, gameVersion) => {
     properties: ['openDirectory'],
   }).then((result) => {
     if (!result.canceled && result.filePaths) {
-      const installedVersions = findInstalledWoWVersions(result.filePaths[0]);
+      const installedVersions = findInstalledGame(gameId, result.filePaths[0]);
       if (installedVersions && installedVersions.length > 0) {
         const currentSettings = getGameSettings(gameId.toString());
         const gameD = getGameData(gameId.toString());
@@ -248,8 +247,8 @@ ipcMain.on('update-wow-path', (event, gameVersion) => {
               break;
           }
           currentSettings[gameVersion].installPath = p;
-          currentSettings[gameVersion].addonPath = path.join(p,gameD.addonDir);
-          currentSettings[gameVersion].settingsPath = path.join(p,gameD.settingsDir);
+          currentSettings[gameVersion].addonPath = path.join(p, gameD.addonDir);
+          currentSettings[gameVersion].settingsPath = path.join(p, gameD.settingsDir);
           setGameSettings(gameId.toString(), currentSettings);
           event.sender.send('installation-path-updated', gameVersion, p);
         } else {
