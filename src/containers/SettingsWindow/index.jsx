@@ -347,7 +347,7 @@ class SettingsWindow extends React.Component {
                           <Col xs={4} md={3} className="settings-item-name">
                             <div>
                               Close To
-                              {process.platform === 'darwin' ? 'Dock' : 'System Tray'}
+                              {process.platform === 'darwin' ? ' Dock' : ' System Tray'}
                             </div>
                           </Col>
                           <Col xs={8} md={9} className="settings-item-config">
