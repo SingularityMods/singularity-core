@@ -9,9 +9,14 @@ import ncp from 'ncp';
 import AppConfig from '../../config/app.config';
 
 import getMainBrowserWindow from '../../services/electron.service';
-import { findInstalledWoWVersions, setAddonUpdateInterval } from '../../services/file.service';
+import {
+  findInstalledGame,
+  setAddonUpdateInterval,
+  updateESOAddonPath,
+} from '../../services/file.service';
 import {
   getAppData,
+  getGameData,
   getGameSettings,
   setAppData,
   setGameSettings,
@@ -106,15 +111,86 @@ ipcMain.on('toggle-sidebar', (event, toggle) => {
   setAppData('sidebarMinimized', toggle);
 });
 
+ipcMain.handle('update-eso-addon-path', () => new Promise((resolve, reject) => {
+  dialog.showOpenDialog({
+    properties: ['openDirectory'],
+  })
+    .then((result) => {
+      if (result.canceled) {
+        return resolve({
+          success: true,
+          message: '',
+        });
+      } if (!result.filePaths) {
+        return resolve({
+          success: false,
+          message: 'Select the directory where your game is installed',
+        });
+      }
+      const [resultPath] = result.filePaths;
+      return updateESOAddonPath(resultPath)
+        .then(() => resolve({
+          success: true,
+        }));
+    })
+    .catch((err) => {
+      log.error(err);
+      return reject(new Error('Error updating path'));
+    });
+}));
+
+ipcMain.handle('update-eso-install-path', () => new Promise((resolve, reject) => {
+  dialog.showOpenDialog({
+    properties: ['openDirectory'],
+  })
+    .then((result) => {
+      if (result.canceled) {
+        return resolve({
+          success: true,
+          message: '',
+        });
+      } if (!result.filePaths) {
+        return resolve({
+          success: false,
+          message: 'Select the directory where your game is installed',
+        });
+      }
+      const [resultPath] = result.filePaths;
+      return findInstalledGame('2', resultPath)
+        .then((installedVersions) => {
+          if (installedVersions && installedVersions.length > 0) {
+            return resolve({
+              success: true,
+              message: '',
+              path: resultPath,
+            });
+          }
+          return resolve({
+            success: false,
+            message: 'Could not find the game in that directory',
+          });
+        })
+        .catch(() => resolve({
+          success: false,
+          message: 'Could not find the game in that directory',
+        }));
+    })
+    .catch((err) => {
+      log.error(err);
+      return reject(new Error('Error updating path'));
+    });
+}));
+
 ipcMain.on('update-wow-path', (event, gameVersion) => {
   const gameId = 1;
   dialog.showOpenDialog({
     properties: ['openDirectory'],
   }).then((result) => {
     if (!result.canceled && result.filePaths) {
-      const installedVersions = findInstalledWoWVersions(result.filePaths[0]);
+      const installedVersions = findInstalledGame(gameId, result.filePaths[0]);
       if (installedVersions && installedVersions.length > 0) {
         const currentSettings = getGameSettings(gameId.toString());
+        const gameD = getGameData(gameId.toString());
         if (installedVersions.includes(gameVersion)) {
           currentSettings[gameVersion].installed = true;
           let p;
@@ -171,6 +247,8 @@ ipcMain.on('update-wow-path', (event, gameVersion) => {
               break;
           }
           currentSettings[gameVersion].installPath = p;
+          currentSettings[gameVersion].addonPath = path.join(p, gameD.addonDir);
+          currentSettings[gameVersion].settingsPath = path.join(p, gameD.settingsDir);
           setGameSettings(gameId.toString(), currentSettings);
           event.sender.send('installation-path-updated', gameVersion, p);
         } else {

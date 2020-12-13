@@ -16,17 +16,22 @@ class SettingsWindow extends React.Component {
     super(props);
     this.state = {
       appSettings: null,
+      esoSettings: null,
+      esoSettingsErr: {},
       wowInstalls: null,
       wowInstallsErr: {},
       gameDefaults: null,
     };
+    this.changeESOAddonDir = this.changeESOAddonDir.bind(this);
+    this.changeESOInstallDir = this.changeESOInstallDir.bind(this);
     this.toggleDarkMode = this.toggleDarkMode.bind(this);
     this.toggleBeta = this.toggleBeta.bind(this);
     this.toggleCloseToTray = this.toggleCloseToTray.bind(this);
     this.toggleUpdateInterval = this.toggleUpdateInterval.bind(this);
     this.toggleDefaultWow = this.toggleDefaultWow.bind(this);
+    this.toggleDefaultESOAddonTrack = this.toggleDefaultESOAddonTrack.bind(this);
     this.toggleDefaultWowAddonTrack = this.toggleDefaultWowAddonTrack.bind(this);
-    this.toggleDefaultWowAutoUpdate = this.toggleDefaultWowAutoUpdate.bind(this);
+    this.toggleDefaultAutoUpdate = this.toggleDefaultAutoUpdate.bind(this);
     this.installDirChangeAcceptedListener = this.installDirChangeAcceptedListener.bind(this);
     this.installDirChangeRejectedListener = this.installDirChangeRejectedListener.bind(this);
   }
@@ -36,6 +41,7 @@ class SettingsWindow extends React.Component {
     ipcRenderer.on('installation-not-found', this.installDirChangeRejectedListener);
     const appSettings = ipcRenderer.sendSync('get-app-settings');
     const gameSettings = ipcRenderer.sendSync('get-game-settings', 1);
+    const esoConfig = ipcRenderer.sendSync('get-game-settings', 2);
     const wowInstalls = {
       wow_retail: gameSettings.wow_retail.installPath,
       wow_classic: gameSettings.wow_classic.installPath,
@@ -44,15 +50,21 @@ class SettingsWindow extends React.Component {
       wow_retail_beta: gameSettings.wow_retail_beta.installPath,
 
     };
+    const esoSettings = {
+      installPath: esoConfig.eso.installPath,
+      addonPath: esoConfig.eso.addonPath,
+    };
     const gameDefaults = {
       wow_retail: gameSettings.wow_retail.defaults,
       wow_classic: gameSettings.wow_classic.defaults,
       wow_retail_ptr: gameSettings.wow_retail_ptr.defaults,
       wow_classic_ptr: gameSettings.wow_classic_ptr.defaults,
       wow_retail_beta: gameSettings.wow_retail_beta.defaults,
+      eso: esoConfig.eso.defaults,
     };
     this.setState({
       appSettings,
+      esoSettings,
       wowInstalls,
       gameDefaults,
     });
@@ -61,6 +73,53 @@ class SettingsWindow extends React.Component {
   componentWillUnmount() {
     ipcRenderer.removeListener('installation-path-updated', this.installDirChangeAcceptedListener);
     ipcRenderer.removeListener('installation-not-found', this.installDirChangeRejectedListener);
+  }
+
+  changeESOAddonDir() {
+    ipcRenderer.invoke('update-eso-addon-path')
+      .then((result) => {
+        if (result.success) {
+          const { esoSettings } = this.state;
+          const newSettings = ipcRenderer.sendSync('get-game-settings', 2);
+          esoSettings.addonPath = newSettings.eso.addonPath;
+          this.setState({
+            esoSettings,
+          });
+        } else {
+          const { esoSettingsErr } = this.state;
+          esoSettingsErr.addonPath = true;
+          this.setState({
+            esoSettingsErr,
+          });
+        }
+      });
+  }
+
+  changeESOInstallDir() {
+    ipcRenderer.invoke('update-eso-install-path')
+      .then((result) => {
+        if (result.success) {
+          const { esoSettings } = this.state;
+          const newSettings = ipcRenderer.sendSync('get-game-settings', 2);
+          esoSettings.installPath = newSettings.eso.installPath;
+          this.setState({
+            esoSettings,
+          });
+        } else {
+          const { esoSettingsErr } = this.state;
+          esoSettingsErr.installPath = true;
+          this.setState({
+            esoSettingsErr,
+          });
+        }
+      })
+      .catch(() => {
+        const { esoSettingsErr } = this.state;
+        esoSettingsErr.installPath = true;
+        this.setState({
+          esoSettingsErr,
+        });
+      });
   }
 
   toggleCloseToTray(checked) {
@@ -108,6 +167,15 @@ class SettingsWindow extends React.Component {
     });
   }
 
+  toggleDefaultESOAddonTrack(branch) {
+    const { gameDefaults } = this.state;
+    gameDefaults.eso.trackBranch = parseInt(branch, 10);
+    ipcRenderer.send('set-game-defaults', 2, 'eso', gameDefaults.eso);
+    this.setState({
+      gameDefaults,
+    });
+  }
+
   toggleDefaultWowAddonTrack(branch, event) {
     const { gameDefaults } = this.state;
     gameDefaults[event.target.attributes.gameversion.value].trackBranch = parseInt(branch, 10);
@@ -117,9 +185,13 @@ class SettingsWindow extends React.Component {
     });
   }
 
-  toggleDefaultWowAutoUpdate(checked, event, id) {
+  toggleDefaultAutoUpdate(checked, event, id) {
     const { gameDefaults } = this.state;
     switch (id) {
+      case 'eso_auto_update':
+        gameDefaults.eso.autoUpdate = checked;
+        ipcRenderer.send('set-game-defaults', 2, 'eso', gameDefaults.eso);
+        break;
       case 'wow_retail_auto_update':
         gameDefaults.wow_retail.autoUpdate = checked;
         ipcRenderer.send('set-game-defaults', 1, 'wow_retail', gameDefaults.wow_retail);
@@ -176,6 +248,8 @@ class SettingsWindow extends React.Component {
   render() {
     const {
       appSettings,
+      esoSettings,
+      esoSettingsErr,
       gameDefaults,
       wowInstalls,
       wowInstallsErr,
@@ -257,7 +331,7 @@ class SettingsWindow extends React.Component {
     return (
 
       <div className="SettingsWindow">
-        {(appSettings && wowInstalls)
+        {(appSettings && wowInstalls && esoSettings)
           ? (
             <SimpleBar scrollbarMaxSize={50} className="settings-scrollbar">
               <div>
@@ -347,7 +421,7 @@ class SettingsWindow extends React.Component {
                           <Col xs={4} md={3} className="settings-item-name">
                             <div>
                               Close To
-                              {process.platform === 'darwin' ? 'Dock' : 'System Tray'}
+                              {process.platform === 'darwin' ? ' Dock' : ' System Tray'}
                             </div>
                           </Col>
                           <Col xs={8} md={9} className="settings-item-config">
@@ -379,6 +453,112 @@ class SettingsWindow extends React.Component {
                               onChange={this.toggleBeta}
                               checked={appSettings.beta}
                               className="settings-switch"
+                              onColor="#ED8323"
+                              height={20}
+                              width={40}
+                              activeBoxShadow="0 0 2px 3px #ED8323"
+                            />
+                          )
+                          : ''}
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={12} className="settings-window-section-header">
+                    Elder Scrolls Online Settings
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={12} className="settings-section">
+                    <Row className="settings-item">
+                      <Col xs={4} md={3} className="settings-item-name">
+                        <div>Install Path</div>
+                      </Col>
+                      <Col xs={8} md={9} className="settings-item-config">
+                        <p data-tip data-for="eso-install-dir-location">
+                          <Button
+                            className="select-install-dir-button"
+                            onClick={() => this.changeESOInstallDir()}
+                          >
+                            {esoSettings.installPath}
+                          </Button>
+                        </p>
+                        <ReactTooltip id="eso-install-dir-location">
+                          <span>{esoSettings.installPath}</span>
+                        </ReactTooltip>
+                        {esoSettingsErr && esoSettingsErr.installPath
+                          ? <span className="errorMsg">Couldn&apos;t find game in location</span>
+                          : ''}
+                      </Col>
+                    </Row>
+                    <Row className="settings-item">
+                      <Col xs={4} md={3} className="settings-item-name">
+                        <div>Addon Path</div>
+                      </Col>
+                      <Col xs={8} md={9} className="settings-item-config">
+                        <p data-tip data-for="eso-addon-dir-location">
+                          <Button
+                            className="select-install-dir-button"
+                            onClick={() => this.changeESOAddonDir()}
+                          >
+                            {esoSettings.addonPath}
+                          </Button>
+                        </p>
+                        <ReactTooltip id="eso-addon-dir-location">
+                          <span>{esoSettings.addonPath}</span>
+                        </ReactTooltip>
+                        {esoSettingsErr && esoSettingsErr.addonPath
+                          ? <span className="errorMsg">Couldn&apos;t find game addons in location</span>
+                          : ''}
+                      </Col>
+                    </Row>
+                    <Row className="settings-item">
+                      <Col xs={4} md={3} className="settings-item-name">
+                        <div>Default Addon Track</div>
+                      </Col>
+                      <Col xs={8} md={9} className="settings-item-config">
+                        <DropdownButton
+                          id="default-eso-track-dropdown"
+                          title={getDefaultTrackTile(gameDefaults.eso.trackBranch)}
+                          onSelect={this.toggleDefaultESOAddonTrack}
+                        >
+                          <Dropdown.Item
+                            gameversion="eso"
+                            key={1}
+                            eventKey={1}
+                          >
+                            Release
+                          </Dropdown.Item>
+                          <Dropdown.Item
+                            gameversion="eso"
+                            key={2}
+                            eventKey={2}
+                          >
+                            Beta
+                          </Dropdown.Item>
+                          <Dropdown.Item
+                            gameversion="eso"
+                            key={3}
+                            eventKey={3}
+                          >
+                            Alpha
+                          </Dropdown.Item>
+                        </DropdownButton>
+                      </Col>
+                    </Row>
+                    <Row className="settings-item">
+                      <Col xs={4} md={3} className="settings-item-name">
+                        <div>Default Auto Update</div>
+                      </Col>
+                      <Col xs={8} md={9} className="settings-item-config">
+                        {appSettings
+                          ? (
+                            <Switch
+                              onChange={this.toggleDefaultAutoUpdate}
+                              checked={gameDefaults.eso.autoUpdate}
+                              gameversion="eso"
+                              id="eso_auto_update"
                               onColor="#ED8323"
                               height={20}
                               width={40}
@@ -504,7 +684,7 @@ class SettingsWindow extends React.Component {
                         {appSettings
                           ? (
                             <Switch
-                              onChange={this.toggleDefaultWowAutoUpdate}
+                              onChange={this.toggleDefaultAutoUpdate}
                               checked={gameDefaults.wow_retail.autoUpdate}
                               gameversion="wow_retail"
                               id="wow_retail_auto_update"
@@ -580,7 +760,7 @@ class SettingsWindow extends React.Component {
                         {appSettings
                           ? (
                             <Switch
-                              onChange={this.toggleDefaultWowAutoUpdate}
+                              onChange={this.toggleDefaultAutoUpdate}
                               checked={gameDefaults.wow_classic.autoUpdate}
                               gameversion="wow_classic"
                               id="wow_classic_auto_update"
@@ -656,7 +836,7 @@ class SettingsWindow extends React.Component {
                         {appSettings
                           ? (
                             <Switch
-                              onChange={this.toggleDefaultWowAutoUpdate}
+                              onChange={this.toggleDefaultAutoUpdate}
                               checked={gameDefaults.wow_retail_ptr.autoUpdate}
                               gameversion="wow_retail_ptr"
                               id="wow_retail_ptr_auto_update"
@@ -733,7 +913,7 @@ class SettingsWindow extends React.Component {
                         {appSettings
                           ? (
                             <Switch
-                              onChange={this.toggleDefaultWowAutoUpdate}
+                              onChange={this.toggleDefaultAutoUpdate}
                               checked={gameDefaults.wow_classic_ptr.autoUpdate}
                               gameversion="wow_classic_ptr"
                               id="wow_classic_ptr_auto_update"
@@ -809,7 +989,7 @@ class SettingsWindow extends React.Component {
                         {appSettings
                           ? (
                             <Switch
-                              onChange={this.toggleDefaultWowAutoUpdate}
+                              onChange={this.toggleDefaultAutoUpdate}
                               checked={gameDefaults.wow_retail_beta.autoUpdate}
                               gameversion="wow_retail_beta"
                               id="wow_retail_beta_auto_update"

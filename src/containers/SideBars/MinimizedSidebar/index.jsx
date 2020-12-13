@@ -7,13 +7,8 @@ import ReactTooltip from 'react-tooltip';
 
 import GameSquare from '../../../components/GameSquare';
 
-const { ipcRenderer } = require('electron');
-
 function MinimizedSidebar(props) {
-  const { onClick, onToggle } = props;
-  const gameId = 1;
-  const gameName = ipcRenderer.sendSync('get-game-name', gameId);
-  const gameIconPath = ipcRenderer.sendSync('get-game-icon-path', gameId);
+  const { onClick, onToggle, games } = props;
   return (
     <Col xs={2} className="MinimizedSidebar d-none d-lg-block">
       <div
@@ -33,19 +28,29 @@ function MinimizedSidebar(props) {
       <div className="sidebar-title">
         Games
       </div>
-      <GameSquare
-        gameId={gameId}
-        gameName={gameName}
-        gameIconPath={gameIconPath}
-        onClick={onClick}
-      />
+      {games && games.map((game) => (
+        <GameSquare
+          key={game.gameId}
+          gameId={game.gameId}
+          gameName={game.name}
+          gameIconPath={game.iconPath}
+          gameTilePath={game.tilePath}
+          onClick={() => onClick(game.gameId)}
+        />
+      ))}
+
     </Col>
   );
 }
 
 MinimizedSidebar.propTypes = {
+  games: PropTypes.object,
   onClick: PropTypes.func.isRequired,
   onToggle: PropTypes.func.isRequired,
+};
+
+MinimizedSidebar.defaultProps = {
+  games: {},
 };
 
 export default MinimizedSidebar;

@@ -5,30 +5,34 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import GameSquare from '../../../components/GameSquare';
 
-const { ipcRenderer } = require('electron');
-
 function SmallSidebar(props) {
-  const { onClick } = props;
-  const gameId = 1;
-  const gameName = ipcRenderer.sendSync('get-game-name', gameId);
-  const gameIconPath = ipcRenderer.sendSync('get-game-icon-path', gameId);
+  const { onClick, games } = props;
   return (
     <Col xs={2} className="SmallSidebar d-block d-lg-none">
       <div className="sidebar-title">
         Games
       </div>
-      <GameSquare
-        gameId={gameId}
-        gameName={gameName}
-        gameIconPath={gameIconPath}
-        onClick={onClick}
-      />
+      {games && games.map((game) => (
+        <GameSquare
+          key={game.gameId}
+          gameId={game.gameId}
+          gameName={game.name}
+          gameIconPath={game.iconPath}
+          gameTilePath={game.tilePath}
+          onClick={() => onClick(game.gameId)}
+        />
+      ))}
     </Col>
   );
 }
 
 SmallSidebar.propTypes = {
+  games: PropTypes.object,
   onClick: PropTypes.func.isRequired,
+};
+
+SmallSidebar.defaultProps = {
+  games: {},
 };
 
 export default SmallSidebar;

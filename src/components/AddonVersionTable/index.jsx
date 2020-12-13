@@ -48,11 +48,11 @@ class AddonVersionTable extends React.Component {
     const {
       handleInstall,
     } = this.props;
-    let addonVersion;
-    if (['wow_retail', 'wow_retail_ptr', 'wow_retail_beta'].includes(gameVersion)) {
-      addonVersion = 'retail';
-    } else {
-      addonVersion = 'classic';
+    let tableData;
+    if (['wow_retail', 'wow_retail_ptr', 'wow_retail_beta', 'eso'].includes(gameVersion)) {
+      tableData = addon.latestRetailFiles;
+    } else if (['wow_classic', 'wow_classic_ptr', 'wow_classic_beta'].includes(gameVersion)) {
+      tableData = addon.latestClassicFiles;
     }
     const columns = [{
       dataField: 'fileName',
@@ -114,9 +114,7 @@ class AddonVersionTable extends React.Component {
               <BootstrapTable
                 className="addon-version-table"
                 keyField="_id"
-                data={addonVersion === 'retail'
-                  ? addon.latestRetailFiles
-                  : addon.latestClassicFiles}
+                data={tableData}
                 columns={columns}
               />
             )

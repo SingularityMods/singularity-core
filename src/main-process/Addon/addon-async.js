@@ -16,7 +16,6 @@ import {
 } from '../../services/storage.service';
 import {
   createAndSaveSyncProfile,
-  getAddonDir,
   fingerprintAllAsync,
   identifyAddons,
   installAddon,
@@ -148,21 +147,10 @@ ipcMain.on('change-addon-ignore-update', (event, gameId, gameVersion, addonId, t
 ipcMain.on('find-addons-async', async (event, gameId, gameVersion) => {
   log.info('Called: find-addons');
   const gameS = getGameSettings(gameId.toString());
-  const { gameVersions } = getGameData(gameId.toString());
   if (gameS[gameVersion].sync) {
     event.sender.send('sync-status', gameId, gameVersion, 'sync-started', null, null);
   }
-
-  let hashMap = {};
-  if (process.platform === 'win32') {
-    hashMap = await fingerprintAllAsync(gameId,
-      gameS[gameVersion].installPath,
-      gameVersions[gameVersion].addonDir);
-  } else if (process.platform === 'darwin') {
-    hashMap = await fingerprintAllAsync(gameId,
-      gameS[gameVersion].installPath,
-      gameVersions[gameVersion].macAddonDir);
-  }
+  const hashMap = await fingerprintAllAsync(gameId, gameS[gameVersion].addonPath);
   log.info(`Fingerprinted ${Object.keys(hashMap).length}directories for ${gameVersion}`);
   identifyAddons(gameId.toString(), gameVersion, hashMap)
     .then(() => {
@@ -241,14 +229,13 @@ ipcMain.on('install-addon', async (event, gameId, gameVersionFlavor, addon, bran
   const gameS = getGameSettings(gameId.toString());
   const { gameVersions } = getGameData(gameId.toString());
   const addonVersionFlavor = gameVersions[gameVersionFlavor].addonVersion;
-  const addonDir = getAddonDir(gameId, gameVersionFlavor);
   let installedFile = {};
   addon.latestFiles.forEach((file) => {
     if (file.gameVersionFlavor === addonVersionFlavor && file.releaseType === branch) {
       installedFile = file;
     }
   });
-  installAddon(gameId, addonDir, installedFile)
+  installAddon(gameId, gameS[gameVersionFlavor].addonPath, installedFile)
     .then(() => {
       const trackBranch = addon.trackBranch || 1;
       const autoUpdate = addon.autoUpdate || false;
@@ -327,10 +314,8 @@ ipcMain.on('install-addon-file', async (event, gameId, gameVersionFlavor, addon,
         const gameS = getGameSettings(gameId.toString());
         const { gameVersions } = getGameData(gameId.toString());
         const { addonVersion } = gameVersions[gameVersionFlavor];
-        const addonDir = getAddonDir(gameId, gameVersionFlavor);
-
         const installedFile = f;
-        installAddon(gameId, addonDir, installedFile)
+        installAddon(gameId, gameS[gameVersionFlavor].addonPath, installedFile)
           .then(() => {
             let updateAvailable = false;
             let updateFile = {};
@@ -397,17 +382,17 @@ ipcMain.on('install-addon-file', async (event, gameId, gameVersionFlavor, addon,
 });
 
 ipcMain.on('open-addon-directory', (event, gameId, gameVersion, directory) => {
-  const addonDir = path.join(getAddonDir(gameId, gameVersion), directory);
+  const gameS = getGameSettings(gameId.toString());
+  const addonDir = path.join(gameS[gameVersion].addonPath, directory);
   shell.openPath(addonDir);
 });
 
 ipcMain.on('uninstall-addon', async (event, gameId, gameVersion, addonId) => {
   const gameS = getGameSettings(gameId.toString());
-  const addonDir = getAddonDir(gameId, gameVersion);
   let { installedAddons } = gameS[gameVersion];
   const addon = installedAddons.find((a) => a.addonId === addonId);
   if (addon) {
-    uninstallAddon(gameId, addonDir, addon)
+    uninstallAddon(gameId, gameS[gameVersion].addonPath, addon)
       .then(() => {
         installedAddons = installedAddons.filter((obj) => obj.addonId !== addonId);
         gameS[gameVersion].installedAddons = installedAddons;
@@ -438,13 +423,12 @@ ipcMain.on('update-addon', async (event, gameId, gameVersion, addon) => {
   const gameS = getGameSettings(gameId.toString());
   const { gameVersions } = getGameData(gameId.toString());
   const { addonVersion } = gameVersions[gameVersion];
-  const addonDir = getAddonDir(gameId, gameVersion);
   const possibleFiles = addon.latestFiles.filter((file) => (
     file.releaseType <= addon.trackBranch && file.gameVersionFlavor === addonVersion
   ));
   if (possibleFiles && possibleFiles.length > 0) {
     const latestFile = possibleFiles.reduce((a, b) => (a.fileDate > b.fileDate ? a : b));
-    updateAddon(gameId, addonDir, addon, latestFile)
+    updateAddon(gameId, gameS[gameVersion].addonPath, addon, latestFile)
       .then(() => {
         const installedAddon = addon;
         installedAddon.updateAvailable = false;

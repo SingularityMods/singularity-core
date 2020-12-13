@@ -1,11 +1,31 @@
 {
     "1": {
       "name": "World of Warcraft",
-      "gameType": 1,
-  
       "bannerPath": "../img/banners/wow-banner.png",
       "iconPath": "../img/icons/wow-icon.png",
       "tilePath": "../img/tiles/wow-tile.png",
+      "manifestFile" : ".toc",
+      "likelyInstallPaths":{
+        "win":[
+          "C:/Program Files (x86)/",
+          "C:/Users/Public/Games/",
+          "C:/"
+        ],
+        "mac":["/Applications/"],
+        "linux":["C:/Program Files (x86)/"]
+      },
+      "addonDir": "Interface/Addons/",
+      "settingsDir": "WTF/",
+      "addonDirLocation":{
+        "win":"%GAMEDIR%",
+        "mac":"%GAMEDIR%",
+        "linux":"%GAMEDIR%"
+      },
+      "settingsDirLocation": {
+        "win":"%GAMEDIR%",
+        "mac":"%GAMEDIR%",
+        "linux":"%GAMEDIR%"
+      },
       "gameVersions": {
         "wow_retail": {
           "name": "World of Warcraft",
@@ -18,10 +38,15 @@
           "defaultMacInstallPath": "/Applications/World of Warcraft/_retail_/",
           "executable": "Wow.exe",
           "macExecutable": "World of Warcraft.app",
-          "addonDir": "Interface\\Addons\\",
-          "macAddonDir": "Interface/Addons/",
-          "settingsBackup": "",
-          "addonBackup": ""
+          "gameDir": {
+            "win": [
+              "World of Warcraft/_retail_/Wow.exe"
+            ],
+            "mac": ["World of Warcraft/_retail_/World of Warcraft.app"],
+            "linux": [
+              "World of Warcraft/_retail_/Wow.exe"
+            ]
+          }
         },
         "wow_classic": {
           "name": "World of Warcraft Classic",
@@ -34,10 +59,15 @@
           "defaultMacInstallPath": "/Applications/World of Warcraft/_classic_/",
           "executable": "WowClassic.exe",
           "macExecutable": "World of Warcraft Classic.app",
-          "addonDir": "Interface\\Addons\\",
-          "macAddonDir": "Interface/Addons/",
-          "settingsBackup": "",
-          "addonBackup": ""
+          "gameDir": {
+            "win": [
+              "World of Warcraft/_classic_/WowClassic.exe"
+            ],
+            "mac": ["World of Warcraft/_classic_/World of Warcraft Classic.app"],
+            "linux": [
+              "World of Warcraft/_classic_/WowClassic.exe"
+            ]
+          }
         },
         "wow_retail_ptr": {
           "name": "World of Warcraft PTR",
@@ -50,10 +80,15 @@
           "defaultMacInstallPath": "/Applications/World of Warcraft/_ptr_/",
           "executable": "WowT.exe",
           "macExecutable": "World of Warcraft Test.app",
-          "addonDir": "Interface\\Addons\\",
-          "macAddonDir": "Interface/Addons/",
-          "settingsBackup": "",
-          "addonBackup": ""
+          "gameDir": {
+            "win": [
+              "World of Warcraft/_ptr_/WowT.exe"
+            ],
+            "mac": ["World of Warcraft/_ptr_/World of Warcraft Test.app"],
+            "linux": [
+              "World of Warcraft/_ptr_/WowT.exe"
+            ]
+          }
         },
         "wow_classic_ptr": {
           "name": "World of Warcraft Classic PTR",
@@ -66,10 +101,15 @@
           "defaultMacInstallPath": "/Applications/World of Warcraft/_classic_ptr_/",
           "executable": "WowClassicT.exe",
           "macExecutable": "World of Warcraft Classic Test.app",
-          "addonDir": "Interface\\Addons\\",
-          "macAddonDir": "Interface/Addons/",
-          "settingsBackup": "",
-          "addonBackup": ""
+          "gameDir": {
+            "win": [
+              "World of Warcraft/_classic_ptr_/WowClassicT.exe"
+            ],
+            "mac": ["World of Warcraft/_classic_ptr_/World of Warcraft Classic Test.app"],
+            "linux": [
+              "World of Warcraft/_classic_ptr_/WowClassicT.exe"
+            ]
+          }
         },
         "wow_retail_beta": {
           "name": "World of Warcraft Beta",
@@ -82,10 +122,36 @@
           "defaultMacInstallPath": "/Applications/World of Warcraft/_beta_/",
           "executable": "WowB.exe",
           "macExecutable": "World of Warcraft Beta.app",
-          "addonDir": "Interface\\Addons\\",
-          "macAddonDir": "Interface/Addons/",
-          "settingsBackup": "",
-          "addonBackup": ""
+          "gameDir": {
+            "win": [
+              "World of Warcraft/_beta_/WowB.exe"
+            ],
+            "mac": ["World of Warcraft/_beta_/World of Warcraft Beta.app"],
+            "linux": [
+              "World of Warcraft/_beta_/WowB.exe"
+            ]
+          }
+        },
+        "wow_classic_beta": {
+          "name": "World of Warcraft Classic Beta",
+          "nickName": "Classic Beta",
+          "shortName": "wow-classic-beta",
+          "addonVersion": "wow_classic",
+          "flavorString": "wow_classic_beta",
+          "macFlavorString": "/_beta_",
+          "defaultWinInstallPath": "C:\\Program Files (x86)\\World of Warcraft\\__classic_beta_\\",
+          "defaultMacInstallPath": "/Applications/World of Warcraft/_classic_beta_/",
+          "executable": "WowClassicB.exe",
+          "macExecutable": "World of Warcraft Classic Beta.app",
+          "gameDir": {
+            "win": [
+              "World of Warcraft/_classic_beta_/WowClassicB.exe"
+            ],
+            "mac": ["World of Warcraft/_classic_beta_/World of Warcraft Classic Beta.app"],
+            "linux": [
+              "World of Warcraft/_classic_beta_/WowClassicB.exe"
+            ]
+          }
         }
   
       },
@@ -883,6 +949,60 @@
           "curseCategoryId": 99999
         }
       ]
+    },
+    "2": {
+      "name": "Elder Scrolls Online",
+      "bannerPath": "../img/banners/eso-banner.png",
+      "iconPath": "../img/icons/eso-icon.png",
+      "tilePath": "../img/tiles/eso-tile.png",
+      "manifestFile" : ".txt",
+      "likelyInstallPaths":{
+        "win":[
+          "C:/Program Files (x86)/Steam/steamapps/common/Zenimax Online/",
+          "C:/Program Files (x86)/Zenimax Online/"
+        ],
+        "mac":[
+          "%USERDATA%/Steam/steamapps/common/Zenimax Online/",
+          "/Applications/Zenimax Online/",
+          "/Applications/Games/ESO/"],
+        "linux":[
+          "C:/Program Files (x86)/Steam/steamapps/common/Zenimax Online/",
+          "C:/Program Files (x86)/Zenimax Online/"
+        ]
+      },
+      "addonDir": "Elder Scrolls Online/live/AddoOns/",
+      "settingsDir": "Elder Scrolls Online/live/AddOns/",
+      "addonDirLocation":{
+        "win":"%DOCUMENTS%",
+        "mac":"%DOCUMENTS%",
+        "linux":"%DOCUMENTS%"
+      },
+      "settingsDirLocation":{
+        "win":"%DOCUMENTS%",
+        "mac":"%DOCUMENTS%",
+        "linux":"%DOCUMENTS%"
+      },
+      "gameVersions": {
+        "eso": {
+          "name": "Elder Scrolls Online",
+          "nickName": "ESO",
+          "shortName": "eso",
+          "addonVersion": "eso",
+          "flavorString": "eso",
+          "gameDir": {
+            "win": [
+              "The Elder Scrolls Online/game/client/eso.exe",
+              "The Elder Scrolls Online/game/client/eso64.exe"
+            ],
+            "mac": ["The Elder Scrolls Online/game_mac/pubplayerclient/eso.app"],
+            "linux": [
+              "The Elder Scrolls Online/game/client/eso.exe",
+              "The Elder Scrolls Online/game/client/eso64.exe"
+            ]
+          }
+        }
+      },
+      "categories":[]
     }
   }
   

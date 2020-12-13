@@ -11,6 +11,8 @@
         "autoUpdate": false
       },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_retail_\\",
+      "addonPath": "",
+      "settingsPath": "",
       "installedAddons": [],
       "unknownAddonDirs": []
     },
@@ -25,6 +27,8 @@
         "autoUpdate": false
       },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_classic_\\",
+      "addonPath": "",
+      "settingsPath": "",
       "installedAddons": [],
       "unknownAddonDirs": []
     },
@@ -39,6 +43,8 @@
         "autoUpdate": false
       },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_ptr_\\",
+      "addonPath": "",
+      "settingsPath": "",
       "installedAddons": [],
       "unknownAddonDirs": []
     },
@@ -53,6 +59,8 @@
         "autoUpdate": false
       },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_classic_ptr_\\",
+      "addonPath": "",
+      "settingsPath": "",
       "installedAddons": [],
       "unknownAddonDirs": []
     },
@@ -66,6 +74,41 @@
         "autoUpdate": false
       },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_beta_\\",
+      "addonPath": "",
+      "settingsPath": "",
+      "installedAddons": [],
+      "unknownAddonDirs": []
+    },
+    "wow_classic_beta": {
+      "name": "World of Warcraft Classic Beta",
+      "nickName": "Classic Beta",
+      "shortName": "wow-classic-beta",
+      "installed": false,
+      "defaults": {
+        "trackBranch": 1,
+        "autoUpdate": false
+      },
+      "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_classic_beta_\\",
+      "addonPath": "",
+      "settingsPath": "",
+      "installedAddons": [],
+      "unknownAddonDirs": []
+    }
+  },
+  "2": {
+    "eso": {
+      "name": "Elder Scrolls Online",
+      "nickName": "ESO",
+      "shortName": "eso",
+      "installed": false,
+      "sync": false,
+      "defaults": {
+        "trackBranch": 1,
+        "autoUpdate": false
+      },
+      "installPath": "",
+      "addonPath": "",
+      "settingsPath": "",
       "installedAddons": [],
       "unknownAddonDirs": []
     }

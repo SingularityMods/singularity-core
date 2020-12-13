@@ -8,14 +8,8 @@ import ReactTooltip from 'react-tooltip';
 
 import GameTile from '../../../components/GameTile';
 
-const { ipcRenderer } = require('electron');
-
 function BigSidebar(props) {
-  const { onClick, onToggle } = props;
-  const gameId = 1;
-  const gameName = ipcRenderer.sendSync('get-game-name', gameId);
-  const gameIconPath = ipcRenderer.sendSync('get-game-icon-path', gameId);
-  const gameTilePath = ipcRenderer.sendSync('get-game-tile-path', gameId);
+  const { onClick, onToggle, games } = props;
   return (
     <Col lg={3} className="BigSidebar d-none d-lg-block">
       <div
@@ -35,20 +29,28 @@ function BigSidebar(props) {
       <div className="sidebar-title">
         Games
       </div>
-      <GameTile
-        gameId={gameId}
-        gameName={gameName}
-        gameIconPath={gameIconPath}
-        gameTilePath={gameTilePath}
-        onClick={() => onClick(gameId)}
-      />
+      {games && games.map((game) => (
+        <GameTile
+          key={game.gameId}
+          gameId={game.gameId}
+          gameName={game.name}
+          gameIconPath={game.iconPath}
+          gameTilePath={game.tilePath}
+          onClick={() => onClick(game.gameId)}
+        />
+      ))}
     </Col>
   );
 }
 
 BigSidebar.propTypes = {
+  games: PropTypes.object,
   onClick: PropTypes.func.isRequired,
   onToggle: PropTypes.func.isRequired,
+};
+
+BigSidebar.defaultProps = {
+  games: {},
 };
 
 export default BigSidebar;
