@@ -103,6 +103,22 @@ function getBackupDataAsync(key) {
   });
 }
 
+function getInstalledGames() {
+  let installed = [];
+  Object.keys(gameSettings).forEach(gameId => {
+    let gameInstalled = false;
+    Object.keys(gameSettings[gameId]).forEach((gameVersion) => {     
+      if (gameSettings[gameId][gameVersion].installed) {
+        gameInstalled = true
+      }
+    })
+    if (gameInstalled) {
+      installed.push(gameId);
+    }
+  })
+  return installed;
+}
+
 function setGameSettings(key, val) {
   gameSettings[key] = val;
   const filePath = path.join(userDataPath, 'game-settings.json');
@@ -253,6 +269,7 @@ function setBackupData(key, val) {
 
 export {
   initStorage,
+  getInstalledGames,
   getGameSettings,
   getAppData,
   getGameData,

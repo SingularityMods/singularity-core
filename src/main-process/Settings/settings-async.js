@@ -17,6 +17,7 @@ import {
 } from '../../services/file.service';
 import {
   getAppData,
+  getGameData,
   getGameSettings,
   setAppData,
   setGameSettings,
@@ -190,6 +191,7 @@ ipcMain.on('update-wow-path', (event, gameVersion) => {
       const installedVersions = findInstalledWoWVersions(result.filePaths[0]);
       if (installedVersions && installedVersions.length > 0) {
         const currentSettings = getGameSettings(gameId.toString());
+        const gameD = getGameData(gameId.toString());
         if (installedVersions.includes(gameVersion)) {
           currentSettings[gameVersion].installed = true;
           let p;
@@ -246,6 +248,8 @@ ipcMain.on('update-wow-path', (event, gameVersion) => {
               break;
           }
           currentSettings[gameVersion].installPath = p;
+          currentSettings[gameVersion].addonPath = path.join(p,gameD.addonDir);
+          currentSettings[gameVersion].settingsPath = path.join(p,gameD.settingsDir);
           setGameSettings(gameId.toString(), currentSettings);
           event.sender.send('installation-path-updated', gameVersion, p);
         } else {

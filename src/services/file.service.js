@@ -23,6 +23,7 @@ import {
   getGameSettings,
   getAppData,
   getGameData,
+  getInstalledGames,
   setGameSettings,
   setAppData,
   deleteBackupInfo,
@@ -326,16 +327,16 @@ function deleteLocalBackup(backup) {
 function findAndUpdateAddons() {
   return new Promise((resolve, reject) => {
     log.info('Checking for installed addons');
-    const gameId = 1;
-    const gameS = getGameSettings(gameId.toString());
+    
     const promises = [];
-    const gameVersions = [];
     const needsSyncProfileUpdate = new Set();
-
-    Object.entries(gameS).forEach(([gameVersion]) => {
-      gameVersions.push(gameVersion);
-      promises.push(_findAddonsForGameVersion(gameId, gameVersion));
-    });
+    const installedGames = getInstalledGames();
+    installedGames.forEach(gameId => {
+      const gameS = getGameSettings(gameId.toString());
+      Object.entries(gameS).forEach(([gameVersion]) => {
+        promises.push(_findAddonsForGameVersion(gameId, gameVersion));
+      });
+    })
     Promise.allSettled(promises)
       .then((results) => {
         const toUpdate = [];
@@ -374,7 +375,6 @@ function findAndUpdateAddons() {
 function autoFindGame(gameId) {
   return new Promise((resolve, reject) => {
     let installFound = false;
-    const { gameVersions } = getGameData(gameId.toString());
     let platform;
     if (process.platform === 'win32') {
       platform = 'win';
@@ -383,20 +383,27 @@ function autoFindGame(gameId) {
     } else {
       platform = 'linux';
     }
+    const {
+      gameVersions,
+      addonDir,
+      likelyInstallPaths,
+      settingsDir,
+      addonDirLocation,
+      settingsDirLocation,
+    } = getGameData(gameId.toString());
     const promises = [];
     Object.entries(gameVersions).forEach(([gameVersion]) => {
-      const {
-        gameDir, likelyInstallPaths, addonDir, addonDirLocation,
-      } = gameVersions[gameVersion];
+      const { gameDir } = gameVersions[gameVersion];
       likelyInstallPaths[platform].forEach((dir) => {
         promises.push(_checkForGameVersion({
           selectedPath: dir,
-          gameDir,
           gameId,
           gameVersion,
+          gameDir,
           addonDir,
+          settingsDir,
           addonDirLocation,
-          platform,
+          settingsDirLocation,
         }));
       });
     });
@@ -419,7 +426,9 @@ function autoFindGame(gameId) {
 function updateESOAddonPath(selectedPath) {
   return new Promise((resolve) => {
     const gameS = getGameSettings('2');
+    const gameD = getGameData('2');
     gameS.eso.addonPath = selectedPath;
+    gameS.eso.settingsPath = path.join(gameS.eso.addonPath,'../../../',gameD.settingsDir)
     setGameSettings('2', gameS);
     return resolve();
   });
@@ -427,26 +436,21 @@ function updateESOAddonPath(selectedPath) {
 
 function findInstalledGame(gameId, selectedPath) {
   return new Promise((resolve, reject) => {
-    const { gameVersions } = getGameData(gameId.toString());
-    let platform;
-    if (process.platform === 'win32') {
-      platform = 'win';
-    } else if (process.platform === 'darwin') {
-      platform = 'mac';
-    } else {
-      platform = 'linux';
-    }
+    const {
+      gameVersions, addonDir, settingsDir, addonDirLocation, settingsDirLocation,
+    } = getGameData(gameId.toString());
     const promises = [];
     Object.entries(gameVersions).forEach(([gameVersion]) => {
-      const { gameDir, addonDir, addonDirLocation } = gameVersions[gameVersion];
+      const { gameDir } = gameVersions[gameVersion];
       promises.push(_checkForGameVersion({
         gameId,
         gameVersion,
         gameDir,
         selectedPath,
         addonDir,
+        settingsDir,
         addonDirLocation,
-        platform,
+        settingsDirLocation,
       }));
     });
     Promise.allSettled(promises)
@@ -567,41 +571,39 @@ function findInstalledWoWVersions(selectedPath) {
   return installedVersions;
 }
 
-function fingerprintAllAsync(gameId, installDir, addonDir) {
+function fingerprintAllAsync(gameId, addonDir) {
   return new Promise((resolve, reject) => {
-    if (gameId === 1) {
-      // World of Warcraft
-      const p = path.join(installDir, addonDir);
-      if (!fs.existsSync(p)) {
-        resolve({});
-      } else {
-        fs.promises.readdir(p, { withFileTypes: true })
-          .then((files) => files.filter((dirent) => dirent.isDirectory())
-            .map((dirent) => dirent.name)).then((addonDirs) => {
-            const promises = [];
-            addonDirs.forEach((dir) => {
-              promises.push(_readAddonDir(p, dir));
-            });
-            Promise.allSettled(promises)
-              .then((results) => {
-                const addonHashMap = {};
-                results.forEach((result) => {
-                  if (result.status === 'fulfilled') {
-                    addonHashMap[result.value.d] = result.value.hash;
-                  }
-                });
-                resolve(addonHashMap);
-              })
-              .catch((e) => {
-                log.error(e);
-                reject(e);
-              });
-          })
-          .catch((err) => {
-            log.error(err);
-            reject(err);
+    if (!fs.existsSync(addonDir)) {
+      log.info('Addon directory does not exists');
+      resolve({});
+    } else {
+      fs.promises.readdir(addonDir, { withFileTypes: true })
+        .then((files) => files.filter((dirent) => dirent.isDirectory())
+          .map((dirent) => dirent.name)).then((addonDirs) => {
+          const promises = [];
+          const { manifestFile } = getGameData(gameId.toString());
+          addonDirs.forEach((dir) => {
+            promises.push(_readAddonDir(manifestFile, addonDir, dir));
           });
-      }
+          Promise.allSettled(promises)
+            .then((results) => {
+              const addonHashMap = {};
+              results.forEach((result) => {
+                if (result.status === 'fulfilled') {
+                  addonHashMap[result.value.d] = result.value.hash;
+                }
+              });
+              resolve(addonHashMap);
+            })
+            .catch((e) => {
+              log.error(e);
+              reject(e);
+            });
+        })
+        .catch((err) => {
+          log.error(err);
+          reject(err);
+        });
     }
   });
 }
@@ -753,9 +755,9 @@ function identifyAddons(gameId, gameVersion, hashMap) {
         const identifiedAddons = [];
         const unknownDirs = [];
         const identifiedDirs = [];
-        Object.entries(hashMap).forEach(([, hash]) => {
-          if (!identifiedDirs.includes(hash)) {
-            unknownDirs.push(hash);
+        Object.entries(hashMap).forEach(([dir]) => {
+          if (!identifiedDirs.includes(dir)) {
+            unknownDirs.push(dir);
           }
         });
 
@@ -849,9 +851,9 @@ function identifyAddons(gameId, gameVersion, hashMap) {
                   });
                 }
               });
-              Object.entries(hashMap).forEach(([, hash]) => {
-                if (!identifiedDirs.includes(hash)) {
-                  unknownDirs.push(hash);
+              Object.entries(hashMap).forEach(([dir]) => {
+                if (!identifiedDirs.includes(dir)) {
+                  unknownDirs.push(dir);
                 }
               });
 
@@ -889,9 +891,9 @@ function identifyAddons(gameId, gameVersion, hashMap) {
               resolve({ gameId, gameVersion, addons: identifiedAddons });
             } else {
               log.info(`No addon identified for ${gameVersion}`);
-              Object.entries(hashMap).forEach(([, hash]) => {
-                if (!identifiedDirs.includes(hash)) {
-                  unknownDirs.push(hash);
+              Object.entries(hashMap).forEach(([dir]) => {
+                if (!identifiedDirs.includes(dir)) {
+                  unknownDirs.push(dir);
                 }
               });
 
@@ -935,9 +937,9 @@ function identifyAddons(gameId, gameVersion, hashMap) {
             const unknownDirs = [];
             const identifiedDirs = [];
 
-            Object.entries(hashMap).forEach(([, hash]) => {
-              if (!identifiedDirs.includes(hash)) {
-                unknownDirs.push(hash);
+            Object.entries(hashMap).forEach(([dir]) => {
+              if (!identifiedDirs.includes(dir)) {
+                unknownDirs.push(dir);
               }
             });
 
@@ -1432,13 +1434,22 @@ function _checkDirforGame(dir) {
 function _checkForGameVersion(gameObj) {
   const {
     selectedPath,
-    gameDir,
     gameId,
     gameVersion,
+    gameDir,
     addonDir,
     addonDirLocation,
-    platform,
+    settingsDir,
+    settingsDirLocation,
   } = gameObj;
+  let platform;
+  if (process.platform === 'win32') {
+    platform = 'win';
+  } else if (process.platform === 'darwin') {
+    platform = 'mac';
+  } else {
+    platform = 'linux';
+  }
   return new Promise((resolve, reject) => {
     const possibleLocations = [];
     gameDir[platform].forEach((directory) => {
@@ -1470,6 +1481,12 @@ function _checkForGameVersion(gameObj) {
             const docDir = app.getPath('documents');
             gameS[gameVersion].addonPath = path.join(docDir, addonDir);
           }
+          if (settingsDirLocation[platform] === '%GAMEDIR%') {
+            gameS[gameVersion].settingsPath = path.join(installDir, settingsDir);
+          } else if (settingsDirLocation[platform] === '%DOCUMENTS%') {
+            const docDir = app.getPath('documents');
+            gameS[gameVersion].settingsPath = path.join(docDir, settingsDir);
+          }
           setGameSettings(gameId.toString(), gameS);
         }
         return resolve({
@@ -1490,13 +1507,7 @@ function _findAddonsForGameVersion(gameId, gameVersion) {
     const gameS = getGameSettings(gameId.toString());
     const { gameVersions } = getGameData(gameId.toString());
     const { addonVersion } = gameVersions[gameVersion];
-    let addonDir = '';
-    if (process.platform === 'win32') {
-      addonDir = gameVersions[gameVersion].addonDir;
-    } else if (process.platform === 'darwin') {
-      addonDir = gameVersions[gameVersion].macAddonDir;
-    }
-    fingerprintAllAsync(gameId, gameS[gameVersion].installPath, addonDir)
+    fingerprintAllAsync(gameId, gameS[gameVersion].addonPath)
       .then((hashMap) => identifyAddons(gameId.toString(), gameVersion, hashMap))
       .then((result) => {
         log.info('Checking for addons that are configured to auto update');
@@ -1604,7 +1615,7 @@ function _isSyncEnabled() {
     return reject(new Error('Sync is not enabled on any games or game versions'));
   });
 }
-function _readAddonDir(p, d) {
+function _readAddonDir(manifestFile, p, d) {
   return new Promise((resolve, reject) => {
     let tocFile;
     const addonFileHashes = [];
@@ -1619,7 +1630,7 @@ function _readAddonDir(p, d) {
         for (let i = 0; i < addonFiles.length; i += 1) {
           const filename = path.join(addonDir, addonFiles[i]);
 
-          if (filename.indexOf('.toc') >= 0) {
+          if (filename.indexOf(manifestFile) >= 0) {
             tocFile = filename;
             addonFileHashes.push(hasha.fromFileSync(tocFile, { algorithm: 'md5' }));
             break;
