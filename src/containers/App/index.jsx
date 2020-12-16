@@ -10,18 +10,19 @@ import './App.css';
 import { hot } from 'react-hot-loader';
 import { Container, Row } from 'react-bootstrap';
 import * as React from 'react';
+import * as Sentry from '@sentry/electron';
 
 import Header from '../Header';
 
 import AuthDialog from '../../components/Dialogs/AuthDialog';
 import BackupManagementDialog from '../../components/Dialogs/BackupManagementDialog';
 import BackupRestoreDialog from '../../components/Dialogs/BackupRestoreDialog';
+import TermsDialog from '../../components/Dialogs/TermsDialog';
 
 import BigSidebar from '../SideBars/BigSidebar';
 import SmallSidebar from '../SideBars/SmallSidebar';
 import MinimizedSidebar from '../SideBars/MinimizedSidebar';
 import MainContent from '../MainContent';
-import TermsWindow from '../../components/TermsWindow';
 import ProfileMenu from '../Menus/ProfileMenu';
 
 const { ipcRenderer } = require('electron');
@@ -37,10 +38,9 @@ class App extends React.Component {
       settingsOpened: false,
       profileMenuOpened: false,
       authOpened: null,
-      newPrivacy: false,
-      privacyText: '',
-      newTos: false,
-      tosText: '',
+      termsAccepted: false,
+      telemetryPrompted: false,
+      telemetryEnabled: false,
       darkMode: false,
       backupState: null,
       restoreState: null,
@@ -53,6 +53,7 @@ class App extends React.Component {
     };
 
     this.granularBackupCompleteListener = this.granularBackupCompleteListener.bind(this);
+    this.telemetryToggleListener = this.telemetryToggleListener.bind(this);
     this.selectGame = this.selectGame.bind(this);
     this.deselectAll = this.deselectAll.bind(this);
     this.openBackupManagementDialog = this.openBackupManagementDialog.bind(this);
@@ -69,6 +70,8 @@ class App extends React.Component {
     this.openAuth = this.openAuth.bind(this);
     this.closeAuth = this.closeAuth.bind(this);
     this.acceptTerms = this.acceptTerms.bind(this);
+    this.acceptTelemetry = this.acceptTelemetry.bind(this);
+    this.declineTelemetry = this.declineTelemetry.bind(this);
     this.darkModeToggleListener = this.darkModeToggleListener.bind(this);
     this.openProfileMenu = this.openProfileMenu.bind(this);
     this.closeProfileMenu = this.closeProfileMenu.bind(this);
@@ -79,34 +82,38 @@ class App extends React.Component {
     ipcRenderer.on('granular-backup-complete', this.granularBackupCompleteListener);
     ipcRenderer.on('granular-restore-complete', this.restoreCompleteListener);
     ipcRenderer.on('darkmode-toggle', this.darkModeToggleListener);
+    ipcRenderer.on('telemetry-toggle', this.telemetryToggleListener);
     ipcRenderer.on('backup-status', this.backupStateListener);
     ipcRenderer.on('restore-status', this.restoreStateListener);
+    ipcRenderer.invoke('get-terms')
+      .then((terms) => {
+        this.setState({
+          termsAccepted: terms.accepted,
+        });
+      });
+    ipcRenderer.invoke('get-telemetry-status')
+      .then((telemetry) => {
+        if (telemetry.enabled) {
+          Sentry.getCurrentHub().getClient().getOptions().enabled = true; 
+        }
+        this.setState({
+          telemetryPrompted: telemetry.prompted,
+          telemetryEnabled: telemetry.enabled
+        });
+      });
     ipcRenderer.invoke('get-games')
       .then((games) => {
         this.setState({
           games,
         });
       });
-    const termsObj = ipcRenderer.sendSync('get-new-terms');
     const appSettings = ipcRenderer.sendSync('get-app-settings');
     const sidebarMinimized = ipcRenderer.sendSync('is-sidebar-minimized');
     const { darkMode } = appSettings;
     const stateTermsObj = {
-      newPrivacy: false,
-      privacyText: '',
-      newTos: false,
-      tosText: '',
       darkMode,
       minimizeSidebar: sidebarMinimized,
     };
-    if (termsObj.privacy) {
-      stateTermsObj.newPrivacy = true;
-      stateTermsObj.privacyText = termsObj.privacyText;
-    }
-    if (termsObj.tos) {
-      stateTermsObj.newTos = true;
-      stateTermsObj.tosText = termsObj.tosText;
-    }
     this.setState(stateTermsObj);
   }
 
@@ -114,6 +121,7 @@ class App extends React.Component {
     ipcRenderer.removeListener('granular-backup-complete', this.granularBackupCompleteListener);
     ipcRenderer.removeListener('granular-restore-complete', this.restoreCompleteListener);
     ipcRenderer.removeListener('darkmode-toggle', this.darkModeToggleListener);
+    ipcRenderer.removeListener('telemetry-toggle', this.telemetryToggleListener);
     ipcRenderer.removeListener('backup-status', this.backupStateListener);
     ipcRenderer.removeListener('restore-status', this.restoreStateListener);
   }
@@ -125,6 +133,20 @@ class App extends React.Component {
     this.setState({
       darkMode,
     });
+  }
+
+  telemetryToggleListener(event, enabled) {
+    const { telemetryEnabled } = this.state;
+    if (telemetryEnabled !== enabled) {
+      if (enabled) {
+        Sentry.getCurrentHub().getClient().getOptions().enabled = true; 
+      } else {
+        Sentry.getCurrentHub().getClient().getOptions().enabled = false; 
+      }
+      this.setState({
+        telemetryEnabled: enabled
+      })
+    }
   }
 
   /*
@@ -291,18 +313,26 @@ class App extends React.Component {
   }
 
   acceptTerms(termType) {
-    ipcRenderer.send('accept-terms', termType);
-    if (termType === 'privacy') {
+    if (termType === 'terms') {
+      ipcRenderer.send('accept-terms', termType);
       this.setState({
-        newPrivacy: false,
-        privacyText: '',
-      });
-    } else if (termType === 'tos') {
-      this.setState({
-        newTos: false,
-        tosText: '',
+        termsAccepted: true,
       });
     }
+  }
+
+  acceptTelemetry() {
+    ipcRenderer.send('telemetry-response', true);
+    this.setState({
+      telemetryPrompted: true,
+    });
+  }
+
+  declineTelemetry() {
+    ipcRenderer.send('telemetry-response', false);
+    this.setState({
+      telemetryPrompted: true,
+    });
   }
 
   render() {
@@ -319,19 +349,39 @@ class App extends React.Component {
       latestCloudBackup,
       lastRestoreComplete,
       minimizeSidebar,
-      newPrivacy,
-      newTos,
-      privacyText,
       profileMenuOpened,
       restorePending,
       restoreState,
       selectedBackup,
       selectedGame,
       settingsOpened,
-      tosText,
+      telemetryPrompted,
+      termsAccepted,
     } = this.state;
     return (
       <Container className="Main-Container Override">
+        {!termsAccepted
+          ? (
+            <TermsDialog
+              title="The Legal Bit"
+              type="terms"
+              text={"<p>We built Singularity specifically because privacy is important and how others treat your privacy should matter. By clicking Accept below, you agree to Singularity's <a target='_blank' rel='noreferrer' href='https://singularitymods.com/privacy'>Privacy Policy</a> and <a target='_blank' rel='noreferrer' href='https://singularitymods.com/terms'>Terms of Service</a>. If you have any questions or concerns, please do not hesitate to reach out to us through Twitter or Discord.</p>"}
+              handleAccept={this.acceptTerms}
+              handleDecline={declineTerms}
+            />
+          )
+          : ''}
+        {termsAccepted && !telemetryPrompted
+          ? (
+            <TermsDialog
+              title="Like Working Apps?"
+              type="telemetry"
+              text={"<p>Help us find bugs before you notice them and before they become a problem. By clicking accept below, you agree to sharing crash reports and performance metrics to help us keep Singularity chugging along. This is absolutely NOT required to use Singularity to it's fullest.</p>"}
+              handleAccept={this.acceptTelemetry}
+              handleDecline={this.declineTelemetry}
+            />
+          )
+          : ''}
         {authOpened
           ? (
             <AuthDialog
@@ -384,28 +434,6 @@ class App extends React.Component {
           )
           : ''}
         <Row className="fill">
-          {newPrivacy
-            ? (
-              <TermsWindow
-                darkMode={darkMode}
-                termType="privacy"
-                text={privacyText}
-                handleAccept={this.acceptTerms}
-                handleDecline={declineTerms}
-              />
-            )
-            : ''}
-          {newTos
-            ? (
-              <TermsWindow
-                darkMode={darkMode}
-                termType="tos"
-                text={tosText}
-                handleAccept={this.acceptTerms}
-                handleDecline={declineTerms}
-              />
-            )
-            : ''}
           <div className="wrapper">
             <SmallSidebar
               darkMode={darkMode}

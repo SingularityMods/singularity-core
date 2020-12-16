@@ -1,0 +1,111 @@
+
+
+.terms-dialog-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000000aa;
+  z-index: 100;
+}
+
+
+
+.terms-dialog-content {
+  color: var(--text-color);
+  position: relative;
+  margin: 100px auto 0;
+  height: 200px;
+  width: 500px;
+  border: 1px solid #ED8323;
+  border-radius: 5px;
+  background-color: var(--dialog-background-color);
+  padding: 0 5px;
+  box-shadow: 0px 0px 5px 0px var(--primary-color);
+  -webkit-app-region: no-drag;
+}
+
+.terms-dialog-content a {
+  color: var(--singularity-orange);
+}
+
+.terms-dialog-control {
+  text-align:center;
+}
+
+.terms-dialog-header h1 {
+  text-align: center;
+  font-size: 1.4rem;
+  margin:10px 0;
+}
+.terms-dialog-body{
+  padding:0 10px;
+}
+.terms-dialog-text {
+  overflow: scroll;
+  padding: 25px;
+
+}
+
+.terms-body-text ol{
+  font-size: 0.85rem;
+  padding-left: 25px;
+}
+
+.terms-dialog-contorl {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.terms-button {
+  margin-left:10px;
+  margin-right: 10px;
+  color: var(--text-color);
+  background-color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 3px;
+  padding: 5px;
+}
+
+.terms-button:focus {
+outline: none;
+}
+
+.terms-dialog-scrollbar {
+  height: calc(100vh - 250px);
+  overflow: auto;
+}
+
+.terms-dialog-scrollbar .simplebar-scrollbar {
+  background-color: #8f8f8f;
+  width: 8px;
+  border-radius: 5px;
+}
+
+.terms-button.btn.btn-primary {
+  background-color: var(--singularity-orange);
+}
+
+.terms-button.btn.btn-primary:focus {
+  background-color: var(--singularity-orange);
+  border-color: var(--singularity-orange);
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  outline:none;
+}
+
+.terms-button.btn.btn-primary:active {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+  -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
+  box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
+  outline:none;
+}
+
+.terms-button.btn.btn-primary:not(:disabled):not(.disabled):active {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+  -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
+  box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
+}

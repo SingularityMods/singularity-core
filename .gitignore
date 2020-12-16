@@ -3,6 +3,11 @@
 obj/
 bin/
 
+#Sentry
+sentry-symbols.js
+sentry.properties
+.electron-symbols
+
 #Logs
 logs
 *.log

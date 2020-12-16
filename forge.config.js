@@ -8,18 +8,22 @@ module.exports = {
         prod: {
             asar: false,
             overwrite: true,
-            "ignore": [
+            ignore: [
               "/bin/",
               "/obj/",
               "/out/",
               "/.git/",
-              "/node_modules/",
+              "/node_modules",
+              "/.electron-symbols",
               "/package-lock.json",
               "/entitlements.plist",
               "forge.config.js",
               "/tslint.json",
               "/.editorconfig",
               "/.gitignore",
+              "/.sentry-symbols.js",
+              "/.sentry.properties",
+              "/.SingularityWinDistribution.pfx",
               "/README.md"
             ],
             icon: path.join(__dirname, 'assets/icons/app_icon'),
@@ -40,11 +44,13 @@ module.exports = {
         beta: {
           asar: false,
           overwrite: true,
-          "ignore": [
+          ignore: [
             "/bin/",
             "/obj/",
             "/out/",
             "/.git/",
+            "/node_modules",
+            "/.electron-symbols",
             "/node_modules/",
             "/package-lock.json",
             "/entitlements.plist",
@@ -52,6 +58,9 @@ module.exports = {
             "/tslint.json",
             "/.editorconfig",
             "/.gitignore",
+            "/.sentry-symbols.js",
+            "/.sentry.properties",
+            "/.SingularityWinDistribution.pfx",
             "/README.md"
           ],
           icon: path.join(__dirname, 'assets/icons/app_icon'),
@@ -72,11 +81,13 @@ module.exports = {
         oss: {
             asar: true,
             overwrite: true,
-            "ignore": [
+            ignore: [
               "/bin/",
               "/obj/",
               "/out/",
               "/.git/",
+              "/node_modules",
+              "/.electron-symbols",
               "/node_modules/",
               "/package-lock.json",
               "/entitlements.plist",
@@ -84,6 +95,9 @@ module.exports = {
               "/tslint.json",
               "/.editorconfig",
               "/.gitignore",
+              "/.sentry-symbols.js",
+              "/.sentry.properties",
+              "/.SingularityWinDistribution.pfx",
               "/README.md"
             ],
             icon: path.join(__dirname, 'assets/icons/app_icon'),

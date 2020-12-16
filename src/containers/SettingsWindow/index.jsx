@@ -32,6 +32,7 @@ class SettingsWindow extends React.Component {
     this.toggleDefaultESOAddonTrack = this.toggleDefaultESOAddonTrack.bind(this);
     this.toggleDefaultWowAddonTrack = this.toggleDefaultWowAddonTrack.bind(this);
     this.toggleDefaultAutoUpdate = this.toggleDefaultAutoUpdate.bind(this);
+    this.toggleTelemetry = this.toggleTelemetry.bind(this);
     this.installDirChangeAcceptedListener = this.installDirChangeAcceptedListener.bind(this);
     this.installDirChangeRejectedListener = this.installDirChangeRejectedListener.bind(this);
   }
@@ -144,6 +145,15 @@ class SettingsWindow extends React.Component {
     const { appSettings } = this.state;
     appSettings.beta = checked;
     ipcRenderer.send('set-app-settings', appSettings);
+    this.setState({
+      appSettings,
+    });
+  }
+
+  toggleTelemetry(checked) {
+    const { appSettings } = this.state;
+    appSettings.telemetry = checked;
+    ipcRenderer.send('telemetry-response', checked);
     this.setState({
       appSettings,
     });
@@ -461,6 +471,34 @@ class SettingsWindow extends React.Component {
                           )
                           : ''}
                       </Col>
+                    </Row>
+                    <Row className="settings-item">
+                      <Col xs={4} md={3} className="settings-item-name">
+                        <div>Enable Telemetry</div>
+                      </Col>
+                      <Col xs={8} md={9} className="settings-item-config">
+                        {appSettings
+                          ? (
+                            <p data-tip data-for="telemetry-toggle">
+                              <Switch
+                                onChange={this.toggleTelemetry}
+                                checked={appSettings.telemetry}
+                                className="settings-switch"
+                                onColor="#ED8323"
+                                height={20}
+                                width={40}
+                                activeBoxShadow="0 0 2px 3px #ED8323"
+                              />
+                            </p>
+                          )
+                          : ''}
+                      </Col>
+                      <ReactTooltip id="telemetry-toggle">
+                        <span>
+                          Share anonymized crash reports and performance metrics with
+                          Singularity developers.
+                        </span>
+                      </ReactTooltip>
                     </Row>
                   </Col>
                 </Row>
