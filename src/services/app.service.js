@@ -387,11 +387,19 @@ function setAppConfig() {
       gameDir: {
         win: [
           'World of Warcraft/_classic_beta_/WowClassicB.exe',
+<<<<<<< HEAD
         ],
         mac: ['World of Warcraft/_classic_beta_/World of Warcraft Classic Beta.app'],
         linux: [
           'World of Warcraft/_classic_beta_/WowClassicB.exe',
         ],
+=======
+        ],
+        mac: ['World of Warcraft/_classic_beta_/World of Warcraft Classic Beta.app'],
+        linux: [
+          'World of Warcraft/_classic_beta_/WowClassicB.exe',
+        ],
+>>>>>>> develop
       },
     };
     setGameData('1', wowD);
@@ -423,6 +431,7 @@ function setAppConfig() {
       unknownAddonDirs: [],
     };
     setGameSettings('1', wowS);
+<<<<<<< HEAD
     const userConfig = getAppData('userConfigurable');
     userConfig.telemetry = false;
     setAppData('userConfigurable', userConfig);
@@ -438,6 +447,8 @@ function setAppConfig() {
     setAppData('privacy', privSettings);
     setAppData('tos', tosSettings);
     setAppData('terms', terms);
+=======
+>>>>>>> develop
   }
 
   // Set new version
