@@ -61,6 +61,30 @@ class ProfileMenu extends React.Component {
             </Row>
           )
           : ''}
+        <Row className="profile-menu-item">
+          <Col xs={12} id="profile-menu-github" className="profile-menu-github">
+          <a target="_blank"  rel="noreferrer" href="https://discord.gg/hqJX3jZkJS">
+            <div><i className="fab fa-discord profile-menu-item-icon" /></div>
+            <div className="profile-menu-item-lable">Discord Server</div>
+            <div><i className="fas fa-external-link-alt profile-menu-item-icon external-icon" /></div>
+          </a>
+          </Col>
+        </Row>
+        <Row className="profile-menu-item">
+          <Col xs={12} id="profile-menu-patreon" className="profile-menu-patreon">
+            <a target="_blank"  rel="noreferrer" href="https://patreon.com/xorro">
+              <div><i className="fab fa-patreon profile-menu-item-icon" /></div>
+              <div className="profile-menu-item-lable">Support Us</div>
+              <div><i className="fas fa-external-link-alt profile-menu-item-icon external-icon" /></div>
+            </a> 
+          </Col>
+        </Row>
+        <Row className="profile-menu-item">
+          <Col xs={12} id="profile-menu-settings" className="profile-menu-settings" onClick={onOpenSettings}>
+            <div><i className="fas fa-cog profile-menu-item-icon" /></div>
+            <div className="profile-menu-item-lable">Settings</div>
+          </Col>
+        </Row>
         {profile
           ? (
             <Row className="profile-menu-item">
@@ -91,12 +115,6 @@ class ProfileMenu extends React.Component {
               </Col>
             </Row>
           )}
-        <Row className="profile-menu-item">
-          <Col xs={12} id="profile-menu-settings" className="profile-menu-settings" onClick={onOpenSettings}>
-            <div><i className="fas fa-cog profile-menu-item-icon" /></div>
-            <div className="profile-menu-item-lable">Settings</div>
-          </Col>
-        </Row>
         <Row className="profile-menu-item">
           <Col xs={12} id="profile-menu-exit" className="profile-menu-exit" onClick={handleClose}>
             <div><i className="fas fa-times profile-menu-item-icon" /></div>
