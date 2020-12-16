@@ -32,10 +32,6 @@
           "nickName": "Retail",
           "shortName": "wow-retail",
           "addonVersion": "wow_retail",
-          "flavorString": "wow",
-          "macFlavorString": "/_retail_",
-          "defaultWinInstallPath": "C:\\Program Files (x86)\\World of Warcraft\\_retail_\\",
-          "defaultMacInstallPath": "/Applications/World of Warcraft/_retail_/",
           "executable": "Wow.exe",
           "macExecutable": "World of Warcraft.app",
           "gameDir": {
@@ -53,10 +49,6 @@
           "nickName": "Classic",
           "shortName": "wow-classic",
           "addonVersion": "wow_classic",
-          "flavorString": "wow_classic",
-          "macFlavorString": "/_classic_",
-          "defaultWinInstallPath": "C:\\Program Files (x86)\\World of Warcraft\\_classic_\\",
-          "defaultMacInstallPath": "/Applications/World of Warcraft/_classic_/",
           "executable": "WowClassic.exe",
           "macExecutable": "World of Warcraft Classic.app",
           "gameDir": {
@@ -74,10 +66,6 @@
           "nickName": "PTR",
           "shortName": "wow-retail-ptr",
           "addonVersion": "wow_retail",
-          "flavorString": "wowt",
-          "macFlavorString": "/_ptr_",
-          "defaultWinInstallPath": "C:\\Program Files (x86)\\World of Warcraft\\_ptr_\\",
-          "defaultMacInstallPath": "/Applications/World of Warcraft/_ptr_/",
           "executable": "WowT.exe",
           "macExecutable": "World of Warcraft Test.app",
           "gameDir": {
@@ -95,10 +83,6 @@
           "nickName": "Classic PTR",
           "shortName": "wow-classic-ptr",
           "addonVersion": "wow_classic",
-          "flavorString": "wow_classic_ptr",
-          "macFlavorString": "/_classic_ptr_",
-          "defaultWinInstallPath": "C:\\Program Files (x86)\\World of Warcraft\\_classic_ptr_\\",
-          "defaultMacInstallPath": "/Applications/World of Warcraft/_classic_ptr_/",
           "executable": "WowClassicT.exe",
           "macExecutable": "World of Warcraft Classic Test.app",
           "gameDir": {
@@ -116,10 +100,6 @@
           "nickName": "Beta",
           "shortName": "wow-retail-beta",
           "addonVersion": "wow_retail",
-          "flavorString": "wow_beta",
-          "macFlavorString": "/_beta_",
-          "defaultWinInstallPath": "C:\\Program Files (x86)\\World of Warcraft\\_beta_\\",
-          "defaultMacInstallPath": "/Applications/World of Warcraft/_beta_/",
           "executable": "WowB.exe",
           "macExecutable": "World of Warcraft Beta.app",
           "gameDir": {
@@ -139,8 +119,6 @@
           "addonVersion": "wow_classic",
           "flavorString": "wow_classic_beta",
           "macFlavorString": "/_beta_",
-          "defaultWinInstallPath": "C:\\Program Files (x86)\\World of Warcraft\\__classic_beta_\\",
-          "defaultMacInstallPath": "/Applications/World of Warcraft/_classic_beta_/",
           "executable": "WowClassicB.exe",
           "macExecutable": "World of Warcraft Classic Beta.app",
           "gameDir": {
