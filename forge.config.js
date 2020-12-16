@@ -216,10 +216,15 @@ module.exports = {
         renderer: {
           config: path.resolve(__dirname, 'webpack.renderer.config.js'),
           entryPoints: [{
-              html: path.resolve(__dirname, 'src/index.html'),
-              js: path.resolve(__dirname, 'src/renderer.jsx'),
+              html: path.resolve(__dirname, 'src/windows/Main/index.html'),
+              js: path.resolve(__dirname, 'src/windows/Main/renderer.jsx'),
               name: 'main_window',
-          }]
+          },
+          {
+            html: path.resolve(__dirname, 'src/windows/Splash/index.html'),
+            js: path.resolve(__dirname, 'src/windows/Splash/renderer.jsx'),
+            name: 'splash_window',
+        }]
         }
     }]
   ],

@@ -2,27 +2,27 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'simplebar/dist/simplebar.min.css';
 import '@fortawesome/fontawesome-free/js/all';
 
-import './Themes.css';
+import '../../Themes.css';
 
-import './Fonts.css';
+import '../../Fonts.css';
 import './App.css';
 
 import { hot } from 'react-hot-loader';
 import { Container, Row } from 'react-bootstrap';
 import * as React from 'react';
 
-import Header from './containers/Header';
+import Header from '../Header';
 
-import AuthDialog from './components/Dialogs/AuthDialog';
-import BackupManagementDialog from './components/Dialogs/BackupManagementDialog';
-import BackupRestoreDialog from './components/Dialogs/BackupRestoreDialog';
+import AuthDialog from '../../components/Dialogs/AuthDialog';
+import BackupManagementDialog from '../../components/Dialogs/BackupManagementDialog';
+import BackupRestoreDialog from '../../components/Dialogs/BackupRestoreDialog';
 
-import BigSidebar from './containers/SideBars/BigSidebar';
-import SmallSidebar from './containers/SideBars/SmallSidebar';
-import MinimizedSidebar from './containers/SideBars/MinimizedSidebar';
-import MainContent from './containers/MainContent';
-import TermsWindow from './components/TermsWindow';
-import ProfileMenu from './containers/Menus/ProfileMenu';
+import BigSidebar from '../SideBars/BigSidebar';
+import SmallSidebar from '../SideBars/SmallSidebar';
+import MinimizedSidebar from '../SideBars/MinimizedSidebar';
+import MainContent from '../MainContent';
+import TermsWindow from '../../components/TermsWindow';
+import ProfileMenu from '../Menus/ProfileMenu';
 
 const { ipcRenderer } = require('electron');
 

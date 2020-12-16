@@ -53,6 +53,10 @@ module.exports = {
                   from: path.resolve(__dirname, 'src', asset),
                   to: path.resolve(__dirname, '.webpack/renderer/main_window', asset)
               },
+              {
+                from: path.resolve(__dirname, 'src', asset),
+                to: path.resolve(__dirname, '.webpack/renderer/splash_window', asset)
+            },
 
           ]
       });

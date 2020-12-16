@@ -1,0 +1,93 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Open Sans";
+}
+
+html, body, #root, .App, .Override.container, .Override .col-md-3, .Override .col-md-1, .Override .col {
+  height: 100%;
+  color: black;
+}
+
+.row {
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+h2 {
+  font-size: 1rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+}
+h5 {
+  font-size: 0.9rem;
+}
+
+p {
+  font-size: 0.8rem;
+}
+
+/*
+.Override *:before, .Override *:after {
+  display: none;
+}*/
+
+.Override.container:before {
+  content: '';
+  display: block;
+  float: left;
+  height: 100%;
+}
+
+.Override .fill {
+  color: #efefef;
+  position: relative;
+  display: block;
+}
+
+  .Override .fill:after {
+      content: '';
+      display: block;
+      clear: left;
+  }
+
+.Override .wrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.header-row {
+  z-index: -1;
+}
+.Splash-Container {
+  padding: 0;
+  margin: 0;
+  max-width: none;
+  width: 100%;
+  overflow: hidden;
+}
+
+.splash-window {
+  padding: 0;
+}
+
+.splash-message {
+  position: fixed;
+  font-size: 0.8rem;
+  bottom:15px;
+  color: white;
+}
+
+.wrapper {
+  background-color: var(--background-color);
+}
+
+.splash-window {
+  color: black;
+}

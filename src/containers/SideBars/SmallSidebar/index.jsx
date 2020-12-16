@@ -27,7 +27,7 @@ function SmallSidebar(props) {
 }
 
 SmallSidebar.propTypes = {
-  games: PropTypes.object,
+  games: PropTypes.array,
   onClick: PropTypes.func.isRequired,
 };
 

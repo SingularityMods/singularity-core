@@ -44,7 +44,7 @@ function MinimizedSidebar(props) {
 }
 
 MinimizedSidebar.propTypes = {
-  games: PropTypes.object,
+  games: PropTypes.array,
   onClick: PropTypes.func.isRequired,
   onToggle: PropTypes.func.isRequired,
 };

@@ -9,12 +9,15 @@ import {
   shell,
   Tray,
 } from 'electron';
+
 import path from 'path';
 import log from 'electron-log';
 
-import AppConfig from './config/app.config';
 import { setAppConfig } from './services/app.service';
-import { initStorage, getAppData, setAppData } from './services/storage.service';
+import {
+  checkForSquirrels,
+  runAutoUpdater,
+} from './services/electron.service';
 import { refreshTokens } from './services/auth.service';
 import {
   findAndUpdateAddons,
@@ -22,6 +25,7 @@ import {
   setAddonUpdateInterval,
   updateSyncProfiles,
 } from './services/file.service';
+import { initStorage, getAppData, setAppData } from './services/storage.service';
 
 // import ipc handlers
 require('./main-process');
@@ -30,130 +34,16 @@ log.transports.file.level = 'info';
 log.transports.file.maxSize = 1024 * 1000;
 
 let mainWindow;
+let splash;
 let tray = null;
 let isQuitting = false;
+let mainWindowReady = false;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
+if (checkForSquirrels()) {
+  isQuitting = true;
   app.quit();
 }
-
-// Start the auto-updater and configure it to check immediately and once
-// every hour from then after.
-const startAutoUpdater = () => {
-  log.info('Starting Singularity Auto Updater');
-  const { beta } = getAppData('userConfigurable');
-  autoUpdater.logger = log;
-  autoUpdater.logger.transports.file.level = 'info';
-  if (process.platform === 'win32') {
-    // WINDOWS
-    log.info('Initializing Auto Updater');
-    // The Squirrel application will watch the provided URL
-    autoUpdater.on('error', (event, error) => {
-      log.error(error);
-    });
-
-    let feedURL = `${AppConfig.PACKAGE_URL}/Win/`;
-    if (beta) {
-      feedURL = `${AppConfig.PACKAGE_URL}/Win/Beta/`;
-    }
-    autoUpdater.setFeedURL(feedURL);
-
-    // Unset the update pending notification, just in case it is still set
-    autoUpdater.addListener('update-not-available', () => {
-      setAppData('updatePending', false);
-    });
-
-    // Notify the renderer that an update is pending
-    autoUpdater.addListener('update-downloaded', () => {
-      setAppData('updatePending', true);
-      if (mainWindow) {
-        mainWindow.webContents.send('update-pending');
-      }
-    });
-
-    autoUpdater.addListener('error', (event, error) => {
-      log.error(error);
-    });
-
-    const cmds = process.argv;
-    if (cmds.indexOf('--squirrel-firstrun') > -1) {
-      // Skip auto update on first run
-      log.info('First execution since install/update, stopping auto updater');
-    } else {
-      // Check for updates immediately
-      try {
-        autoUpdater.checkForUpdates();
-      } catch (err) {
-        log.error('Error checking for app update');
-        log.error(err);
-      }
-    }
-
-    // Also check once every hour
-    setInterval(() => {
-      log.info('Checking for app update');
-      try {
-        autoUpdater.checkForUpdates();
-      } catch (err) {
-        log.error('Error checking for app update');
-        log.error(err);
-      }
-    }, 1000 * 60 * 60);
-  } else if (process.platform === 'darwin') {
-    // MACOS
-    log.info('Initializing Auto Updater');
-    autoUpdater.on('error', (event, error) => {
-      log.error(error);
-    });
-    let feedURL = `${AppConfig.PACKAGE_URL}/Mac/darwin-releases.json`;
-    if (beta) {
-      feedURL = `${AppConfig.PACKAGE_URL}/Mac/darwin-releases-beta.json`;
-    }
-    autoUpdater.setFeedURL({ url: feedURL, serverType: 'json' });
-
-    autoUpdater.addListener('update-not-available', () => {
-      setAppData('updatePending', false);
-    });
-
-    // Notify the renderer that an update is pending
-    autoUpdater.addListener('update-downloaded', () => {
-      setAppData('updatePending', true);
-      if (mainWindow) {
-        mainWindow.webContents.send('update-pending');
-      }
-    });
-
-    autoUpdater.addListener('error', (event, error) => {
-      log.error(error);
-    });
-
-    const cmds = process.argv;
-    if (cmds.indexOf('--squirrel-firstrun') > -1) {
-      // Skip auto update on first run
-      log.info('First execution since install/update, stopping auto updater');
-    } else {
-      // Check for updates immediately
-      try {
-        autoUpdater.checkForUpdates();
-      } catch (err) {
-        log.error('Error checking for app update');
-        log.error(err);
-      }
-    }
-
-    // Also check once every hour
-    setInterval(() => {
-      log.info('Checking for app update');
-      try {
-        autoUpdater.checkForUpdates();
-      } catch (err) {
-        log.error('Error checking for app update');
-        log.error(err);
-      }
-    }, 1000 * 60 * 60);
-  }
-};
 
 // Handle creating a system tray
 function createTray() {
@@ -181,8 +71,38 @@ function createTray() {
   return appIcon;
 }
 
+function createSplashWindow() {
+  splash = new BrowserWindow({
+    width: 400,
+    height: 300,
+    frame: false,
+    alwaysOnTop: true,
+    webPreferences: {
+      nodeIntegration: true,
+      devTools: true,
+      preload: SPLASH_WINDOW_PRELOAD_WEBPACK_ENTRY,
+    },
+  });
+  splash.loadURL(SPLASH_WINDOW_WEBPACK_ENTRY);
+  log.info('Splash loaded');
+  splash.on('closed', () => {
+    splash = null;
+  });
+}
+
+function showMainWindow() {
+  if (mainWindowReady) {
+    log.info('Hide splash and show main window');
+    splash.close();
+    mainWindow.show();
+  } else {
+    log.info('Waiting for main window to be ready');
+    setTimeout(showMainWindow, 1000);
+  }
+}
+
 // Create the main browser window for the renderer
-const createWindow = () => {
+function createWindow() {
   log.info('Create browser window');
   const frame = (process.platform === 'win32')
     ? !app.isPackaged
@@ -201,7 +121,11 @@ const createWindow = () => {
     },
     icon: path.join(__dirname, 'assets/icons/app_icon.png'),
     frame,
+    show: false,
   });
+
+  // Load the app entry point
+  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
   // Set the user and OS theme in the browser window
   const userTheme = getAppData('userConfigurable').darkMode ? 'dark' : 'light';
@@ -210,8 +134,10 @@ const createWindow = () => {
   mainWindow.webContents.executeJavaScript(`localStorage.setItem('os_theme','${osTheme}')`);
   mainWindow.webContents.executeJavaScript('__setTheme()');
 
-  // Load the app entry point
-  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+  mainWindow.once('ready-to-show', () => {
+    log.info('Main window set');
+    mainWindowReady = true;
+  });
 
   // Set a listener for external link clicks and open them
   // in the user's main browser instead of the app
@@ -245,21 +171,41 @@ const createWindow = () => {
       tray.destroy();
     }
   });
-};
+  setInterval(() => {
+    let window = mainWindow;
+    let newWinCreated = false;
+    if (!window) {
+      window = new BrowserWindow({ height: 0, width: 0, show: false });
+      newWinCreated = true;
+    }
+    runAutoUpdater(window, false)
+      .then(() => {
+        if (newWinCreated) {
+          window.close();
+        }
+      });
+  }, 1000 * 60 * 2);
+}
 
 // Listener that is called once the app window is loaded
 app.on('ready', () => {
   log.info('Singularity App Ready');
+  // Create splash window
+  createSplashWindow();
+  // Initialize Storage
+
   initStorage();
   setAppConfig();
 
   // Start the auto-updater if the app isn't in development mode
-  if (app.isPackaged) {
-    startAutoUpdater();
-  }
+  // if (app.isPackaged) {
+  //  startAutoUpdater();
+  // } else {
+  //  startupUpdateCheck = false;
+  // }
 
   // Create the main window
-  createWindow();
+  // createWindow();
 
   // Start the auth refresh and addon check procedures
   if (process.platform === 'win32') {
@@ -268,9 +214,18 @@ app.on('ready', () => {
             || cmd === '--squirrel-updated'
             || cmd === '--squirrel-uninstall'
             || cmd === '--squirrel-obsolete') {
-      log.info('Singularity is being updated or installed, skipping some features');
+      log.info('Singularity is being updated or installed, skipping pausing app launch');
+      if (splash) {
+        splash.webContents.send('startup-state', 'updating-app');
+      }
+
+      // createWindow();
     } else {
-      refreshTokens()
+      runAutoUpdater(splash, true)
+        .then(() => {
+          createWindow();
+        })
+        .then(() => refreshTokens())
         .then(() => {
           log.info('Authentication token refresh succesful');
           return handleSync();
@@ -283,6 +238,9 @@ app.on('ready', () => {
         .then((profiles) => {
           updateSyncProfiles([...profiles]);
         })
+        .then(() => {
+          showMainWindow();
+        })
         .catch((err) => {
           mainWindow.webContents.send('addon-sync-search-complete');
           if (err.message === 'No Token') {
@@ -290,17 +248,24 @@ app.on('ready', () => {
             findAndUpdateAddons()
               .then(() => {
                 log.info('Finished identifying and updating addons.');
+                showMainWindow();
               })
               .catch(() => {
                 log.info('Error identifying and updating addons');
+                showMainWindow();
               });
           } else {
             log.info(err.message);
+            showMainWindow();
           }
         });
     }
   } else {
-    refreshTokens()
+    runAutoUpdater(splash, true)
+      .then(() => {
+        createWindow();
+      })
+      .then(() => refreshTokens())
       .then(() => {
         log.info('Authentication token refresh succesful');
         return handleSync();
@@ -313,6 +278,9 @@ app.on('ready', () => {
       .then((profiles) => {
         updateSyncProfiles([...profiles]);
       })
+      .then(() => {
+        showMainWindow();
+      })
       .catch((err) => {
         mainWindow.webContents.send('addon-sync-search-complete');
         if (err.message === 'No Token') {
@@ -320,12 +288,15 @@ app.on('ready', () => {
           findAndUpdateAddons()
             .then(() => {
               log.info('Finished identifying and updating addons.');
+              showMainWindow();
             })
             .catch(() => {
               log.info('Error identifying and updating addons');
+              showMainWindow();
             });
         } else {
           log.info(err.message);
+          showMainWindow();
         }
       });
   }

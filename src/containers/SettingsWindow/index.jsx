@@ -481,11 +481,11 @@ class SettingsWindow extends React.Component {
                             className="select-install-dir-button"
                             onClick={() => this.changeESOInstallDir()}
                           >
-                            {esoSettings.installPath}
+                            {esoSettings.installPath || 'Not Installed'}
                           </Button>
                         </p>
                         <ReactTooltip id="eso-install-dir-location">
-                          <span>{esoSettings.installPath}</span>
+                          <span>{esoSettings.installPath || 'Not Installed'}</span>
                         </ReactTooltip>
                         {esoSettingsErr && esoSettingsErr.installPath
                           ? <span className="errorMsg">Couldn&apos;t find game in location</span>
@@ -502,11 +502,11 @@ class SettingsWindow extends React.Component {
                             className="select-install-dir-button"
                             onClick={() => this.changeESOAddonDir()}
                           >
-                            {esoSettings.addonPath}
+                            {esoSettings.addonPath || 'Not Installed'}
                           </Button>
                         </p>
                         <ReactTooltip id="eso-addon-dir-location">
-                          <span>{esoSettings.addonPath}</span>
+                          <span>{esoSettings.addonPath || 'Not Installed'}</span>
                         </ReactTooltip>
                         {esoSettingsErr && esoSettingsErr.addonPath
                           ? <span className="errorMsg">Couldn&apos;t find game addons in location</span>
@@ -631,11 +631,11 @@ class SettingsWindow extends React.Component {
                             className="select-install-dir-button"
                             onClick={() => changeWowInstallDir('wow_retail')}
                           >
-                            {wowInstalls.wow_retail}
+                            {wowInstalls.wow_retail || 'Not Installed'}
                           </Button>
                         </p>
                         <ReactTooltip id="retail-dir-location">
-                          <span>{wowInstalls.wow_retail}</span>
+                          <span>{wowInstalls.wow_retail || 'Not Installed'}</span>
                         </ReactTooltip>
                         {wowInstallsErr && wowInstallsErr.wow_retail
                           ? <span className="errorMsg">Couldn&apos;t find game in location</span>
@@ -707,11 +707,11 @@ class SettingsWindow extends React.Component {
                             className="select-install-dir-button"
                             onClick={() => changeWowInstallDir('wow_classic')}
                           >
-                            {wowInstalls.wow_classic}
+                            {wowInstalls.wow_classic || 'Not Installed'}
                           </Button>
                         </p>
                         <ReactTooltip id="classic-dir-location">
-                          <span>{wowInstalls.wow_classic}</span>
+                          <span>{wowInstalls.wow_classic || 'Not Installed'}</span>
                         </ReactTooltip>
                         {wowInstallsErr && wowInstallsErr.wow_classic
                           ? <span className="errorMsg">Couldn&apos;t find game in location</span>
@@ -783,11 +783,11 @@ class SettingsWindow extends React.Component {
                             className="select-install-dir-button"
                             onClick={() => changeWowInstallDir('wow_retail_ptr')}
                           >
-                            {wowInstalls.wow_retail_ptr}
+                            {wowInstalls.wow_retail_ptr || 'Not Installed'}
                           </Button>
                         </p>
                         <ReactTooltip id="ptr-dir-location">
-                          <span>{wowInstalls.wow_retail_ptr}</span>
+                          <span>{wowInstalls.wow_retail_ptr || 'Not Installed'}</span>
                         </ReactTooltip>
                         {wowInstallsErr && wowInstallsErr.wow_retail_ptr
                           ? <span className="errorMsg">Couldn&apos;t find game in location</span>
@@ -859,12 +859,12 @@ class SettingsWindow extends React.Component {
                             className="select-install-dir-button"
                             onClick={() => changeWowInstallDir('wow_classic_ptr')}
                           >
-                            {wowInstalls.wow_classic_ptr}
+                            {wowInstalls.wow_classic_ptr || 'Not Installed'}
                           </Button>
                         </p>
 
                         <ReactTooltip id="classic-ptr-dir-location">
-                          <span>{wowInstalls.wow_classic_ptr}</span>
+                          <span>{wowInstalls.wow_classic_ptr || 'Not Installed'}</span>
                         </ReactTooltip>
                         {wowInstallsErr && wowInstallsErr.wow_classic_ptr
                           ? <span className="errorMsg">Couldn&apos;t find game in location</span>
@@ -936,11 +936,11 @@ class SettingsWindow extends React.Component {
                             className="select-install-dir-button"
                             onClick={() => changeWowInstallDir('wow_reta_beta')}
                           >
-                            {wowInstalls.wow_retail_beta}
+                            {wowInstalls.wow_retail_beta || 'Not Installed'}
                           </Button>
                         </p>
                         <ReactTooltip id="beta-dir-location">
-                          <span>{wowInstalls.wow_retail_beta}</span>
+                          <span>{wowInstalls.wow_retail_beta || 'Not Installed'}</span>
                         </ReactTooltip>
                         {wowInstallsErr && wowInstallsErr.wow_retail_beta
                           ? <span className="errorMsg">Couldn&apos;t find game in location</span>
