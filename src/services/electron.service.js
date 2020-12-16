@@ -217,6 +217,11 @@ function runAutoUpdater(window, inStartup) {
         if (window) {
           window.webContents.send('startup-state', 'update-none');
         }
+        const tempPath = path.join(app.getPath('temp'), 'Singularity-Update');
+        if (fs.existsSync(tempPath)) {
+          return fs.rmdir(tempPath, { recursive: true })
+            .then(() => resolve());
+        }
         return resolve();
       })
       .catch((err) => {
