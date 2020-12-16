@@ -13,6 +13,18 @@ import {
   setAppData,
   setGameData,
 } from './storage.service';
+import {
+  enableSentry,
+  disableSentry,
+} from './sentry.service';
+
+function toggleSentry(enabled) {
+  if (enabled) {
+    enableSentry();
+  } else {
+    disableSentry();
+  }
+}
 
 function getLatestTerms() {
   log.info('Checking for latest ToS');
@@ -416,6 +428,21 @@ function setAppConfig() {
       unknownAddonDirs: [],
     };
     setGameSettings('1', wowS);
+    const userConfig = getAppData('userConfigurable');
+    userConfig.telemetry = false;
+    setAppData('userConfigurable', userConfig);
+
+    const privSettings = getAppData('privacy');
+    const tosSettings = getAppData('tos');
+    const terms = {
+      version: 1,
+      accepted: privSettings.accepted && tosSettings.accepted,
+    };
+    delete privSettings.text;
+    delete tosSettings.text;
+    setAppData('privacy', privSettings);
+    setAppData('tos', tosSettings);
+    setAppData('terms', terms);
   }
 
   // Set new version
@@ -431,4 +458,5 @@ export {
   getLatestTerms,
   getLatestPrivacy,
   setAppConfig,
+  toggleSentry,
 };

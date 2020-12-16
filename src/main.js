@@ -26,12 +26,20 @@ import {
   updateSyncProfiles,
 } from './services/file.service';
 import { initStorage, getAppData, setAppData } from './services/storage.service';
+import {
+  initSentry,
+  enableSentry,
+} from './services/sentry.service';
 
 // import ipc handlers
 require('./main-process');
 
 log.transports.file.level = 'info';
 log.transports.file.maxSize = 1024 * 1000;
+
+// Init sentry but disable telemetry until the user opts in
+
+initSentry();
 
 let mainWindow;
 let splash;
@@ -196,16 +204,13 @@ app.on('ready', () => {
 
   initStorage();
   setAppConfig();
-
-  // Start the auto-updater if the app isn't in development mode
-  // if (app.isPackaged) {
-  //  startAutoUpdater();
-  // } else {
-  //  startupUpdateCheck = false;
-  // }
-
-  // Create the main window
-  // createWindow();
+  const {
+    telemetry,
+    beta
+  } = getAppData('userConfigurable');
+  if (telemetry || beta) {
+    enableSentry();
+  }
 
   // Start the auth refresh and addon check procedures
   if (process.platform === 'win32') {

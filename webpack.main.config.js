@@ -1,6 +1,29 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const SentryWebpackPlugin = require("@sentry/webpack-plugin");
 const assets = ['icons','gifs','images']; // asset directories
+
+const plugins = assets.map(asset => {
+  return new CopyWebpackPlugin({
+      patterns: [
+          {
+              from: path.resolve(__dirname, 'assets', asset),
+              to: path.resolve(__dirname, '.webpack/main/assets', asset)
+          },
+      ],
+  });
+});
+
+if (process.env.SENTRY_AUTH_TOKEN) {
+  plugins.push(
+    new SentryWebpackPlugin({
+
+      // webpack specific configuration
+      include: ".",
+      ignore: ["node_modules", "webpack.config.js"],
+    })
+  )
+}
 
 module.exports = {
   /**
@@ -12,14 +35,5 @@ module.exports = {
   module: {
     rules: require('./webpack.rules'),
     },
-    plugins: assets.map(asset => {
-        return new CopyWebpackPlugin({
-            patterns: [
-                {
-                    from: path.resolve(__dirname, 'assets', asset),
-                    to: path.resolve(__dirname, '.webpack/main/assets', asset)
-                },
-            ],
-        });
-    })
+    plugins: plugins
 };
