@@ -5,7 +5,7 @@ import os from 'os';
 import jwt from 'jsonwebtoken';
 import log from 'electron-log';
 
-import getMainBrowserWindow from './electron.service';
+import { getMainBrowserWindow } from './electron.service';
 
 import {
   getAppData,

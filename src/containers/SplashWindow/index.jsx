@@ -16,22 +16,55 @@ class SplashWindow extends React.Component {
     super(props);
 
     this.state = {
-      appState:'starting'
+      state: 'starting',
+      progress: '0%',
     };
+    this.startupStateListener = this.startupStateListener.bind(this);
+    this.getAppMessage = this.getAppMessage.bind(this);
+  }
+
+  componentDidMount() {
+    ipcRenderer.on('startup-state', this.startupStateListener);
+  }
+
+  componentWillUnmount() {
+    ipcRenderer.removeListener('startup-state', this.startupStateListener);
+  }
+
+  getAppMessage() {
+    const { state, progress } = this.state;
+    if (state === 'starting') {
+      return 'Starting Singularity';
+    } if (state === 'updating-app') {
+      return 'Updating Singularity';
+    } if (state === 'update-checking') {
+      return 'Checking For Updates';
+    } if (state === 'update-downloading') {
+      return `Downloading Update ${progress}`;
+    } if (state === 'update-installing') {
+      return 'Installing Update';
+    } if (state === 'update-pending') {
+      return 'Installing Update';
+    }
+    return 'Hang Tight...';
+  }
+
+  startupStateListener(event, state, progress) {
+    this.setState({
+      state,
+      progress,
+    });
   }
 
   render() {
-    const {
-      appState
-    } = this.state;
     return (
       <Container className="Splash-Container">
         <Row>
           <Col xs={12} className="splash-window">
-            <img src="../img/gifs/loading.gif" />
+            <img alt="Loading" src="../img/gifs/loading.gif" />
           </Col>
           <Col xs={12} className="splash-message">
-            Loading App
+            {this.getAppMessage()}
           </Col>
         </Row>
       </Container>

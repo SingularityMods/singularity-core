@@ -8,7 +8,7 @@ import ncp from 'ncp';
 
 import AppConfig from '../../config/app.config';
 
-import getMainBrowserWindow from '../../services/electron.service';
+import { getMainBrowserWindow } from '../../services/electron.service';
 import {
   findInstalledGame,
   setAddonUpdateInterval,

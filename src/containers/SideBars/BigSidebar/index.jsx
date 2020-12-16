@@ -44,7 +44,7 @@ function BigSidebar(props) {
 }
 
 BigSidebar.propTypes = {
-  games: PropTypes.object,
+  games: PropTypes.array,
   onClick: PropTypes.func.isRequired,
   onToggle: PropTypes.func.isRequired,
 };

@@ -12,7 +12,7 @@ import axios from 'axios';
 
 import log from 'electron-log';
 import AppConfig from '../config/app.config';
-import getMainBrowserWindow from './electron.service';
+import { getMainBrowserWindow } from './electron.service';
 
 import {
   isAuthenticated,
