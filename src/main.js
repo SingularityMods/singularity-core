@@ -204,8 +204,11 @@ app.on('ready', () => {
 
   initStorage();
   setAppConfig();
-  const sentryEnabled = getAppData('userConfigurable').telemetry;
-  if (sentryEnabled) {
+  const {
+    telemetry,
+    beta
+  } = getAppData('userConfigurable');
+  if (telemetry || beta) {
     enableSentry();
   }
 

@@ -8,6 +8,10 @@ import ncp from 'ncp';
 
 import AppConfig from '../../config/app.config';
 
+import {
+  enableSentry,
+  disableSentry,
+} from '../../services/sentry.service';
 import { getMainBrowserWindow } from '../../services/electron.service';
 import {
   findInstalledGame,
@@ -35,6 +39,11 @@ ipcMain.on('set-app-settings', (event, appSettings) => {
       });
   }
   if (app.isPackaged && prevSettings.beta !== appSettings.beta) {
+    if (appSettings.beta) {
+      enableSentry();
+    } else if (!appSettings.telemetry) {
+      disableSentry();
+    }
     if (process.platform === 'win32') {
       let feedURL = `${AppConfig.PACKAGE_URL}/Win/`;
       if (appSettings.beta) {

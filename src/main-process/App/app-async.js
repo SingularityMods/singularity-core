@@ -19,6 +19,7 @@ ipcMain.on('accept-terms', (_event, termType) => {
 });
 
 ipcMain.on('telemetry-response', (event, accepted) => {
+  const userConf = getAppData('userConfigurable');
   if (accepted) {
     log.info('Telemetry Enabled');
     enableSentry();
@@ -28,24 +29,31 @@ ipcMain.on('telemetry-response', (event, accepted) => {
     }
   } else {
     log.info('Telemetry Disabled');
-    disableSentry();
+    if (!userConf.beta) {
+      disableSentry();
+    }
     const win = getMainBrowserWindow();
     if (win) {
       win.webContents.send('telemetry-toggle', accepted);
     }
   }
   setAppData('telemetry-prompted', true);
-  const userConf = getAppData('userConfigurable');
   userConf.telemetry = accepted;
   setAppData('userConfigurable', userConf);
 });
 
 ipcMain.handle('get-terms', async () => getAppData('terms'));
 
-ipcMain.handle('get-telemetry-status', async () => ({
-  prompted: getAppData('telemetry-prompted'),
-  enabled: getAppData('userConfigurable').telemetry,
-}));
+ipcMain.handle('get-telemetry-status', async () => {
+  const {
+    telemetry,
+    beta
+  } = getAppData('userConfigurable');
+  return {
+    prompted: getAppData('telemetry-prompted'),
+    enabled: telemetry || beta,
+  }
+})
 
 ipcMain.on('open-log-directory', () => {
   log.info('Opening log directory');
