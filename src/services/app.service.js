@@ -228,194 +228,194 @@ function setAppConfig() {
 
   if (version < app.getVersion()) {
     const gameS = {
-      "eso": {
-        "name": "Elder Scrolls Online",
-        "nickName": "ESO",
-        "shortName": "eso",
-        "installed": false,
-        "sync": false,
-        "defaults": {
-          "trackBranch": 1,
-          "autoUpdate": false
+      eso: {
+        name: 'Elder Scrolls Online',
+        nickName: 'ESO',
+        shortName: 'eso',
+        installed: false,
+        sync: false,
+        defaults: {
+          trackBranch: 1,
+          autoUpdate: false,
         },
-        "installPath": "",
-        "addonPath": "",
-        "settingsPath": "",
-        "installedAddons": [],
-        "unknownAddonDirs": []
-      }
+        installPath: '',
+        addonPath: '',
+        settingsPath: '',
+        installedAddons: [],
+        unknownAddonDirs: [],
+      },
     };
     setGameSettings('2', gameS);
     const gameD = {
-      "name": "Elder Scrolls Online",
-      "bannerPath": "../img/banners/eso-banner.png",
-      "iconPath": "../img/icons/eso-icon.png",
-      "tilePath": "../img/tiles/eso-tile.png",
-      "manifestFile" : ".txt",
-      "likelyInstallPaths":{
-        "win":[
-          "C:/Program Files (x86)/Steam/steamapps/common/Zenimax Online/",
-          "C:/Program Files (x86)/Zenimax Online/"
+      name: 'Elder Scrolls Online',
+      bannerPath: '../img/banners/eso-banner.png',
+      iconPath: '../img/icons/eso-icon.png',
+      tilePath: '../img/tiles/eso-tile.png',
+      manifestFile: '.txt',
+      likelyInstallPaths: {
+        win: [
+          'C:/Program Files (x86)/Steam/steamapps/common/Zenimax Online/',
+          'C:/Program Files (x86)/Zenimax Online/',
         ],
-        "mac":[
-          "%USERDATA%/Steam/steamapps/common/Zenimax Online/",
-          "/Applications/Zenimax Online/",
-          "/Applications/Games/ESO/"],
-        "linux":[
-          "C:/Program Files (x86)/Steam/steamapps/common/Zenimax Online/",
-          "C:/Program Files (x86)/Zenimax Online/"
-        ]
+        mac: [
+          '%USERDATA%/Steam/steamapps/common/Zenimax Online/',
+          '/Applications/Zenimax Online/',
+          '/Applications/Games/ESO/'],
+        linux: [
+          'C:/Program Files (x86)/Steam/steamapps/common/Zenimax Online/',
+          'C:/Program Files (x86)/Zenimax Online/',
+        ],
       },
-      "addonDir": "Elder Scrolls Online/live/AddoOns/",
-      "settingsDir": "Elder Scrolls Online/live/AddOns/",
-      "addonDirLocation":{
-        "win":"%DOCUMENTS%",
-        "mac":"%DOCUMENTS%",
-        "linux":"%DOCUMENTS%"
+      addonDir: 'Elder Scrolls Online/live/AddoOns/',
+      settingsDir: 'Elder Scrolls Online/live/AddOns/',
+      addonDirLocation: {
+        win: '%DOCUMENTS%',
+        mac: '%DOCUMENTS%',
+        linux: '%DOCUMENTS%',
       },
-      "settingsDirLocation":{
-        "win":"%DOCUMENTS%",
-        "mac":"%DOCUMENTS%",
-        "linux":"%DOCUMENTS%"
+      settingsDirLocation: {
+        win: '%DOCUMENTS%',
+        mac: '%DOCUMENTS%',
+        linux: '%DOCUMENTS%',
       },
-      "gameVersions": {
-        "eso": {
-          "name": "Elder Scrolls Online",
-          "nickName": "ESO",
-          "shortName": "eso",
-          "addonVersion": "eso",
-          "flavorString": "eso",
-          "gameDir": {
-            "win": [
-              "The Elder Scrolls Online/game/client/eso.exe",
-              "The Elder Scrolls Online/game/client/eso64.exe"
+      gameVersions: {
+        eso: {
+          name: 'Elder Scrolls Online',
+          nickName: 'ESO',
+          shortName: 'eso',
+          addonVersion: 'eso',
+          flavorString: 'eso',
+          gameDir: {
+            win: [
+              'The Elder Scrolls Online/game/client/eso.exe',
+              'The Elder Scrolls Online/game/client/eso64.exe',
             ],
-            "mac": ["The Elder Scrolls Online/game_mac/pubplayerclient/eso.app"],
-            "linux": [
-              "The Elder Scrolls Online/game/client/eso.exe",
-              "The Elder Scrolls Online/game/client/eso64.exe"
-            ]
-          }
-        }
+            mac: ['The Elder Scrolls Online/game_mac/pubplayerclient/eso.app'],
+            linux: [
+              'The Elder Scrolls Online/game/client/eso.exe',
+              'The Elder Scrolls Online/game/client/eso64.exe',
+            ],
+          },
+        },
       },
-      "categories":[]
+      categories: [],
     };
     setGameData('2', gameD);
 
-    const wowD = getGameData('1')
+    const wowD = getGameData('1');
     wowD.manifestFile = '.toc';
     wowD.likelyInstallPaths = {
-      "win":[
-        "C:/Program Files (x86)/",
-        "C:/Users/Public/Games/",
-        "C:/"
+      win: [
+        'C:/Program Files (x86)/',
+        'C:/Users/Public/Games/',
+        'C:/',
       ],
-      "mac":["/Applications/"],
-      "linux":["C:/Program Files (x86)/"]
+      mac: ['/Applications/'],
+      linux: ['C:/Program Files (x86)/'],
     };
-    wowD.addonDir = "Interface/Addons/";
-    wowD.settingsDir = "WTF/";
+    wowD.addonDir = 'Interface/Addons/';
+    wowD.settingsDir = 'WTF/';
     wowD.addonDirLocation = {
-      "win":"%GAMEDIR%",
-      "mac":"%GAMEDIR%",
-      "linux":"%GAMEDIR%"
+      win: '%GAMEDIR%',
+      mac: '%GAMEDIR%',
+      linux: '%GAMEDIR%',
     };
     wowD.settingsDirLocation = {
-      "win":"%GAMEDIR%",
-      "mac":"%GAMEDIR%",
-      "linux":"%GAMEDIR%"
+      win: '%GAMEDIR%',
+      mac: '%GAMEDIR%',
+      linux: '%GAMEDIR%',
     };
     wowD.gameVersions.wow_retail.gameDir = {
-      "win": [
-        "World of Warcraft/_retail_/Wow.exe"
+      win: [
+        'World of Warcraft/_retail_/Wow.exe',
       ],
-      "mac": ["World of Warcraft/_retail_/World of Warcraft.app"],
-      "linux": [
-        "World of Warcraft/_retail_/Wow.exe"
-      ]
+      mac: ['World of Warcraft/_retail_/World of Warcraft.app'],
+      linux: [
+        'World of Warcraft/_retail_/Wow.exe',
+      ],
     };
     wowD.gameVersions.wow_classic.gameDir = {
-      "win": [
-        "World of Warcraft/_classic_/WowClassic.exe"
+      win: [
+        'World of Warcraft/_classic_/WowClassic.exe',
       ],
-      "mac": ["World of Warcraft/_classic_/World of Warcraft Classic.app"],
-      "linux": [
-        "World of Warcraft/_classic_/WowClassic.exe"
-      ]
+      mac: ['World of Warcraft/_classic_/World of Warcraft Classic.app'],
+      linux: [
+        'World of Warcraft/_classic_/WowClassic.exe',
+      ],
     };
     wowD.gameVersions.wow_retail_ptr.gameDir = {
-      "win": [
-        "World of Warcraft/_ptr_/WowT.exe"
+      win: [
+        'World of Warcraft/_ptr_/WowT.exe',
       ],
-      "mac": ["World of Warcraft/_ptr_/World of Warcraft Test.app"],
-      "linux": [
-        "World of Warcraft/_ptr_/WowT.exe"
-      ]
+      mac: ['World of Warcraft/_ptr_/World of Warcraft Test.app'],
+      linux: [
+        'World of Warcraft/_ptr_/WowT.exe',
+      ],
     };
     wowD.gameVersions.wow_classic_ptr.gamedir = {
-      "win": [
-        "World of Warcraft/_classic_ptr_/WowClassicT.exe"
+      win: [
+        'World of Warcraft/_classic_ptr_/WowClassicT.exe',
       ],
-      "mac": ["World of Warcraft/_classic_ptr_/World of Warcraft Classic Test.app"],
-      "linux": [
-        "World of Warcraft/_classic_ptr_/WowClassicT.exe"
-      ]
-    }
-    wowD.gameVersions.wow_retail_beta.gameDir = {
-      "win": [
-        "World of Warcraft/_beta_/WowB.exe"
+      mac: ['World of Warcraft/_classic_ptr_/World of Warcraft Classic Test.app'],
+      linux: [
+        'World of Warcraft/_classic_ptr_/WowClassicT.exe',
       ],
-      "mac": ["World of Warcraft/_beta_/World of Warcraft Beta.app"],
-      "linux": [
-        "World of Warcraft/_beta_/WowB.exe"
-      ]
-    }
-    wowD.gameVersions.wow_classic_beta = {
-      "name": "World of Warcraft Classic Beta",
-      "nickName": "Classic Beta",
-      "shortName": "wow-classic-beta",
-      "addonVersion": "wow_classic",
-      "executable": "WowClassicB.exe",
-      "macExecutable": "World of Warcraft Classic Beta.app",
-      "gameDir": {
-        "win": [
-          "World of Warcraft/_classic_beta_/WowClassicB.exe"
-        ],
-        "mac": ["World of Warcraft/_classic_beta_/World of Warcraft Classic Beta.app"],
-        "linux": [
-          "World of Warcraft/_classic_beta_/WowClassicB.exe"
-        ]
-      }
     };
-    setGameData('1',wowD)
+    wowD.gameVersions.wow_retail_beta.gameDir = {
+      win: [
+        'World of Warcraft/_beta_/WowB.exe',
+      ],
+      mac: ['World of Warcraft/_beta_/World of Warcraft Beta.app'],
+      linux: [
+        'World of Warcraft/_beta_/WowB.exe',
+      ],
+    };
+    wowD.gameVersions.wow_classic_beta = {
+      name: 'World of Warcraft Classic Beta',
+      nickName: 'Classic Beta',
+      shortName: 'wow-classic-beta',
+      addonVersion: 'wow_classic',
+      executable: 'WowClassicB.exe',
+      macExecutable: 'World of Warcraft Classic Beta.app',
+      gameDir: {
+        win: [
+          'World of Warcraft/_classic_beta_/WowClassicB.exe',
+        ],
+        mac: ['World of Warcraft/_classic_beta_/World of Warcraft Classic Beta.app'],
+        linux: [
+          'World of Warcraft/_classic_beta_/WowClassicB.exe',
+        ],
+      },
+    };
+    setGameData('1', wowD);
 
     const wowS = getGameSettings('1');
-    wowS.wow_retail.addonPath = path.join(wowS.wow_retail.installPath,'Interface','Addons')
-    wowS.wow_retail.settingsPath = path.join(wowS.wow_retail.installPath,'WTF')
-    wowS.wow_classic.addonPath = path.join(wowS.wow_classic.installPath,'Interface','Addons')
-    wowS.wow_classic.settingsPath = path.join(wowS.wow_classic.installPath,'WTF')
-    wowS.wow_retail_ptr.addonPath = path.join(wowS.wow_retail_ptr.installPath,'Interface','Addons')
-    wowS.wow_retail_ptr.settingsPath = path.join(wowS.wow_retail_ptr.installPath,'WTF')
-    wowS.wow_classic_ptr.addonPath = path.join(wowS.wow_classic_ptr.installPath,'Interface','Addons')
-    wowS.wow_classic_ptr.settingsPath = path.join(wowS.wow_classic_ptr.installPath,'WTF')
-    wowS.wow_retail_beta.addonPath = path.join(wowS.wow_retail_beta.installPath,'Interface','Addons')
-    wowS.wow_retail_beta.settingsPath = path.join(wowS.wow_retail_beta.installPath,'WTF')
+    wowS.wow_retail.addonPath = path.join(wowS.wow_retail.installPath, 'Interface', 'Addons');
+    wowS.wow_retail.settingsPath = path.join(wowS.wow_retail.installPath, 'WTF');
+    wowS.wow_classic.addonPath = path.join(wowS.wow_classic.installPath, 'Interface', 'Addons');
+    wowS.wow_classic.settingsPath = path.join(wowS.wow_classic.installPath, 'WTF');
+    wowS.wow_retail_ptr.addonPath = path.join(wowS.wow_retail_ptr.installPath, 'Interface', 'Addons');
+    wowS.wow_retail_ptr.settingsPath = path.join(wowS.wow_retail_ptr.installPath, 'WTF');
+    wowS.wow_classic_ptr.addonPath = path.join(wowS.wow_classic_ptr.installPath, 'Interface', 'Addons');
+    wowS.wow_classic_ptr.settingsPath = path.join(wowS.wow_classic_ptr.installPath, 'WTF');
+    wowS.wow_retail_beta.addonPath = path.join(wowS.wow_retail_beta.installPath, 'Interface', 'Addons');
+    wowS.wow_retail_beta.settingsPath = path.join(wowS.wow_retail_beta.installPath, 'WTF');
     wowS.wow_classic_beta = {
-      "name": "World of Warcraft Classic Beta",
-      "nickName": "Classic Beta",
-      "shortName": "wow-classic-beta",
-      "installed": false,
-      "defaults": {
-        "trackBranch": 1,
-        "autoUpdate": false
+      name: 'World of Warcraft Classic Beta',
+      nickName: 'Classic Beta',
+      shortName: 'wow-classic-beta',
+      installed: false,
+      defaults: {
+        trackBranch: 1,
+        autoUpdate: false,
       },
-      "installPath": "",
-      "addonPath": "",
-      "settingsPath": "",
-      "installedAddons": [],
-      "unknownAddonDirs": []
-    }
-    setGameSettings('1',wowS);
+      installPath: '',
+      addonPath: '',
+      settingsPath: '',
+      installedAddons: [],
+      unknownAddonDirs: [],
+    };
+    setGameSettings('1', wowS);
   }
 
   // Set new version

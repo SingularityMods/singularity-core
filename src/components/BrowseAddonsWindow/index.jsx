@@ -39,6 +39,7 @@ class BrowseAddonsWindow extends React.Component {
     this.installAddon = this.installAddon.bind(this);
     this.refreshSearch = this.refreshSearch.bind(this);
     this.loadMoreAddons = this.loadMoreAddons.bind(this);
+    this.timeoutAddon = this.timeoutAddon.bind(this);
     this.addonInstalledListener = this.addonInstalledListener.bind(this);
     this.addonSearchListener = this.addonSearchListener.bind(this);
     this.additionalAddonsListener = this.additionalAddonsListener.bind(this);

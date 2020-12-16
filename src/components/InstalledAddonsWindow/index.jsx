@@ -20,23 +20,6 @@ import AddonContextMenu from '../../containers/Menus/AddonContextMenu';
 
 const { ipcRenderer } = require('electron');
 
-function timeoutAddon(addon) {
-  const {
-    currentlyUpdating,
-    erroredUpdates,
-  } = this.state;
-  if (currentlyUpdating.includes(addon.addonId)) {
-    const newErroredUpdates = erroredUpdates.slice();
-    erroredUpdates.splice(0, 0, addon.addonId);
-    const newCurrentlyUpdating = currentlyUpdating.filter((obj) => obj !== addon.addonId);
-
-    this.setState({
-      erroredUpdates: newErroredUpdates,
-      currentlyUpdating: newCurrentlyUpdating,
-    });
-  }
-}
-
 function sortAddons(a, b) {
   if (a.updateAvailable && !a.ignureUpdate && b.updateAvailable && !b.ignoreUpdate) {
     if (a.addonName > b.addonName) return 1;
@@ -86,6 +69,7 @@ class InstalledAddonsWindow extends React.Component {
       profile: null,
     };
 
+    this.timeoutAddon = this.timeoutAddon.bind(this);
     this.autoUpdateCompleteListener = this.autoUpdateCompleteListener.bind(this);
     this.authEventListener = this.authEventListener.bind(this);
     this.addonsFoundListener = this.addonsFoundListener.bind(this);
@@ -233,6 +217,23 @@ class InstalledAddonsWindow extends React.Component {
     }
   }
 
+  timeoutAddon(addon) {
+    const {
+      currentlyUpdating,
+      erroredUpdates,
+    } = this.state;
+    if (currentlyUpdating.includes(addon.addonId)) {
+      const newErroredUpdates = erroredUpdates.slice();
+      erroredUpdates.splice(0, 0, addon.addonId);
+      const newCurrentlyUpdating = currentlyUpdating.filter((obj) => obj !== addon.addonId);
+
+      this.setState({
+        erroredUpdates: newErroredUpdates,
+        currentlyUpdating: newCurrentlyUpdating,
+      });
+    }
+  }
+
   updateAddon(addon) {
     const {
       currentlyUpdating,
@@ -252,7 +253,7 @@ class InstalledAddonsWindow extends React.Component {
       pendingUpdates: newPendingUpdates,
     });
     setTimeout(() => {
-      timeoutAddon(addon);
+      this.timeoutAddon(addon);
     }, 30000);
   }
 
@@ -317,7 +318,7 @@ class InstalledAddonsWindow extends React.Component {
       pendingUpdates: newPendingUpdates,
     });
     setTimeout(() => {
-      timeoutAddon(addon);
+      this.timeoutAddon(addon);
     }, 30000);
   }
 
@@ -342,7 +343,7 @@ class InstalledAddonsWindow extends React.Component {
       pendingUpdates: newPendingUpdates,
     });
     setTimeout(() => {
-      timeoutAddon(addon);
+      this.timeoutAddon(addon);
     }, 30000);
   }
 
