@@ -479,7 +479,7 @@ class SettingsWindow extends React.Component {
                       <Col xs={8} md={9} className="settings-item-config">
                         {appSettings
                           ? (
-                            <p data-tip data-for="telemetry-toggle">
+                            <div data-tip data-for="telemetry-toggle">
                               <Switch
                                 onChange={this.toggleTelemetry}
                                 checked={appSettings.telemetry}
@@ -489,7 +489,7 @@ class SettingsWindow extends React.Component {
                                 width={40}
                                 activeBoxShadow="0 0 2px 3px #ED8323"
                               />
-                            </p>
+                            </div>
                           )
                           : ''}
                       </Col>

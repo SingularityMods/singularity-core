@@ -10,12 +10,9 @@ import {
   Tray,
 } from 'electron';
 
-import * as Sentry from '@sentry/electron';
-
 import path from 'path';
 import log from 'electron-log';
 
-import AppConfig from './config/app.config';
 import { setAppConfig } from './services/app.service';
 import {
   checkForSquirrels,
@@ -29,6 +26,10 @@ import {
   updateSyncProfiles,
 } from './services/file.service';
 import { initStorage, getAppData, setAppData } from './services/storage.service';
+import {
+  initSentry,
+  enableSentry,
+} from './services/sentry.service';
 
 // import ipc handlers
 require('./main-process');
@@ -37,13 +38,8 @@ log.transports.file.level = 'info';
 log.transports.file.maxSize = 1024 * 1000;
 
 // Init sentry but disable telemetry until the user opts in
-Sentry.init({
-  dsn: AppConfig.SENTRY_DSN,
-  environment: AppConfig.SENTRY_ENV,
-  release: "singularity-core@" + process.env.npm_package_version,
-  autoSessionTracking: true
-});
-//Sentry.getCurrentHub().getClient().getOptions().enabled = false;
+
+initSentry();
 
 let mainWindow;
 let splash;
@@ -210,8 +206,7 @@ app.on('ready', () => {
   setAppConfig();
   const sentryEnabled = getAppData('userConfigurable').telemetry;
   if (sentryEnabled) {
-    console.log('sentry');
-    //Sentry.getCurrentHub().getClient().getOptions().enabled = true;
+    enableSentry();
   }
 
   // Start the auth refresh and addon check procedures

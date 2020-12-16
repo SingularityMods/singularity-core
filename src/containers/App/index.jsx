@@ -10,7 +10,11 @@ import './App.css';
 import { hot } from 'react-hot-loader';
 import { Container, Row } from 'react-bootstrap';
 import * as React from 'react';
-import * as Sentry from '@sentry/electron';
+
+import {
+  enableSentry,
+  disableSentry,
+} from '../../renderer-services/sentry';
 
 import Header from '../Header';
 
@@ -94,11 +98,11 @@ class App extends React.Component {
     ipcRenderer.invoke('get-telemetry-status')
       .then((telemetry) => {
         if (telemetry.enabled) {
-          Sentry.getCurrentHub().getClient().getOptions().enabled = true; 
+          enableSentry();
         }
         this.setState({
           telemetryPrompted: telemetry.prompted,
-          telemetryEnabled: telemetry.enabled
+          telemetryEnabled: telemetry.enabled,
         });
       });
     ipcRenderer.invoke('get-games')
@@ -139,13 +143,13 @@ class App extends React.Component {
     const { telemetryEnabled } = this.state;
     if (telemetryEnabled !== enabled) {
       if (enabled) {
-        Sentry.getCurrentHub().getClient().getOptions().enabled = true; 
+        enableSentry();
       } else {
-        Sentry.getCurrentHub().getClient().getOptions().enabled = false; 
+        disableSentry();
       }
       this.setState({
-        telemetryEnabled: enabled
-      })
+        telemetryEnabled: enabled,
+      });
     }
   }
 

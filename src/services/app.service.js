@@ -3,7 +3,6 @@ import axios from 'axios';
 import path from 'path';
 import { vf as uuidv4 } from 'uuid';
 import log from 'electron-log';
-import * as Sentry from '@sentry/electron';
 
 import AppConfig from '../config/app.config';
 import {
@@ -14,10 +13,16 @@ import {
   setAppData,
   setGameData,
 } from './storage.service';
+import {
+  enableSentry,
+  disableSentry,
+} from './sentry.service';
 
 function toggleSentry(enabled) {
-  if (enabled && AppConfig.SENTRY_DSN) {
-    Sentry.init({ dsn: AppConfig.SENTRY_DSN });
+  if (enabled) {
+    enableSentry();
+  } else {
+    disableSentry();
   }
 }
 

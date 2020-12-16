@@ -2,9 +2,13 @@ import { app, ipcMain, shell } from 'electron';
 import os from 'os';
 import path from 'path';
 import log from 'electron-log';
-import * as Sentry from '@sentry/electron';
 
 import { getAppData, setAppData } from '../../services/storage.service';
+import {
+  enableSentry,
+  disableSentry,
+} from '../../services/sentry.service';
+import { getMainBrowserWindow } from '../../services/electron.service';
 
 ipcMain.on('accept-terms', (_event, termType) => {
   log.info(`Accepted ${termType}`);
@@ -16,11 +20,19 @@ ipcMain.on('accept-terms', (_event, termType) => {
 
 ipcMain.on('telemetry-response', (event, accepted) => {
   if (accepted) {
-    Sentry.getCurrentHub().getClient().getOptions().enabled = true;
     log.info('Telemetry Enabled');
+    enableSentry();
+    const win = getMainBrowserWindow();
+    if (win) {
+      win.webContents.send('telemetry-toggle', accepted);
+    }
   } else {
-    Sentry.getCurrentHub().getClient().getOptions().enabled = false;
     log.info('Telemetry Disabled');
+    disableSentry();
+    const win = getMainBrowserWindow();
+    if (win) {
+      win.webContents.send('telemetry-toggle', accepted);
+    }
   }
   setAppData('telemetry-prompted', true);
   const userConf = getAppData('userConfigurable');
@@ -30,12 +42,10 @@ ipcMain.on('telemetry-response', (event, accepted) => {
 
 ipcMain.handle('get-terms', async () => getAppData('terms'));
 
-ipcMain.handle('get-telemetry-status', async() => {
-  return {
-    prompted: getAppData('telemetry-prompted'),
-    enabled: getAppData('userConfigurable').telemetry
-  }
-})
+ipcMain.handle('get-telemetry-status', async () => ({
+  prompted: getAppData('telemetry-prompted'),
+  enabled: getAppData('userConfigurable').telemetry,
+}));
 
 ipcMain.on('open-log-directory', () => {
   log.info('Opening log directory');
