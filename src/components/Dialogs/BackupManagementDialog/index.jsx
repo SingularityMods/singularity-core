@@ -248,6 +248,8 @@ class BackupManagementDialog extends React.Component {
           return 'Retail Beta';
         case 'wow_classic_beta':
           return 'Classic Beta';
+        case 'eso':
+          return 'Elder Scrolls Online';
         default:
           return '';
       }
@@ -359,7 +361,7 @@ class BackupManagementDialog extends React.Component {
       text: 'Details',
       dummyField: true,
       formatter: (_cellContent, row) => (
-        <div role="button" tabIndex="0" className="backup-addon-details-column" onClick={() => this.loadBackupDetails(row)} onKeyPress={() => this.deleteBackup(row)}>
+        <div role="button" tabIndex="0" className="backup-addon-details-column details-button" onClick={() => this.loadBackupDetails(row)} onKeyPress={() => this.deleteBackup(row)}>
           Details
         </div>
       ),
@@ -370,7 +372,7 @@ class BackupManagementDialog extends React.Component {
       text: 'Delete',
       dummyField: true,
       formatter: (_cellContent, row) => (
-        <div role="button" tabIndex="0" className="backup-addon-details-column delete-backup" onClick={() => this.deleteBackup(row)} onKeyPress={() => this.deleteBackup(row)}>
+        <div role="button" tabIndex="0" className="backup-addon-details-column delete-button" onClick={() => this.deleteBackup(row)} onKeyPress={() => this.deleteBackup(row)}>
           <i className="fas fa-times" />
         </div>
       ),
@@ -472,13 +474,18 @@ class BackupManagementDialog extends React.Component {
 
 BackupManagementDialog.propTypes = {
   backupPending: PropTypes.bool.isRequired,
-  backupState: PropTypes.string.isRequired,
-  latestCloudBackup: PropTypes.object.isRequired,
+  backupState: PropTypes.string,
+  latestCloudBackup: PropTypes.object,
   onExit: PropTypes.func.isRequired,
   onOpenBackup: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   opts: PropTypes.object.isRequired,
   restorePending: PropTypes.bool.isRequired,
 };
+
+BackupManagementDialog.defaultProps = {
+  backupState: null,
+  latestCloudBackup: null
+}
 
 export default BackupManagementDialog;

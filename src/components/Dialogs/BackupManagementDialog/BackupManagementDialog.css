@@ -241,6 +241,12 @@ margin-left: 0px;
     cursor: pointer;
 }
 
+.backup-addon-details-column.delete-button:focus,
+.backup-addon-details-column.details-button:focus
+ {
+  outline: none;
+}
+
 .delete-backup {
     font-size: 0.8rem;
     height: 5px;

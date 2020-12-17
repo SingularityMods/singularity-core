@@ -192,7 +192,11 @@ ipcMain.on('get-cloud-backups', async (event, gameId, gameVersion) => {
 ipcMain.on('get-local-backups', (event, gameId, gameVersion) => {
   getBackupDataAsync(gameId.toString())
     .then((backupData) => {
-      event.sender.send('local-backups-found', true, gameId, gameVersion, backupData[gameVersion].backups, null);
+      if (backupData) {
+        event.sender.send('local-backups-found', true, gameId, gameVersion, backupData[gameVersion].backups, null);
+      } else {
+        event.sender.send('local-backups-found', true, gameId, gameVersion, [], null);
+      }
     })
     .catch((err) => {
       log.error('Error retrieving local backups');

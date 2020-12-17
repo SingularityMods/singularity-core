@@ -151,7 +151,7 @@ ipcMain.on('find-addons-async', async (event, gameId, gameVersion) => {
     event.sender.send('sync-status', gameId, gameVersion, 'sync-started', null, null);
   }
   const hashMap = await fingerprintAllAsync(gameId, gameS[gameVersion].addonPath);
-  log.info(`Fingerprinted ${Object.keys(hashMap).length}directories for ${gameVersion}`);
+  log.info(`Fingerprinted ${Object.keys(hashMap).length} directories for ${gameVersion}`);
   identifyAddons(gameId.toString(), gameVersion, hashMap)
     .then(() => {
       if (gameS[gameVersion].sync && isAuthenticated()) {
@@ -261,6 +261,7 @@ ipcMain.on('install-addon', async (event, gameId, gameVersionFlavor, addon, bran
       const installedAddon = {
         addonName: addon.addonName,
         addonId: addon.addonId,
+        avatar: addon.avatar,
         primaryCategory: addon.primaryCategory,
         author: addon.author,
         fileName: installedFile.fileName,

@@ -340,10 +340,10 @@ class AddonSyncToggle extends React.Component {
 
         </ReactTooltip>
         <div className={!profile || !profile.emailVerified ? 'addon-sync-toggle-label disabled' : 'addon-sync-toggle-label'}>Sync</div>
-        {configuring
+        {profile && (configuring
           || syncing
           || backupPending
-          || restorePending
+          || restorePending)
           ? (
             <div className="sync-status-icon status-loading">
               <div data-tip data-for="syncStatusIcon" data-tip-disable={!status}>
@@ -358,7 +358,7 @@ class AddonSyncToggle extends React.Component {
           )
           : ''}
 
-        {error
+        {profile && error
           ? (
             <div className="sync-status-icon">
               <div data-tip data-for="syncStatusIcon">
@@ -370,7 +370,7 @@ class AddonSyncToggle extends React.Component {
             </div>
           )
           : ''}
-        {syncComplete
+        {profile && syncComplete
           ? (
             <div className="sync-status-icon">
               <div data-tip data-for="syncStatusIcon">

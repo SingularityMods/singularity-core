@@ -55,6 +55,7 @@ class GameWindowMenu extends React.Component {
   render() {
     const {
       activeTab,
+      gameId,
       installedVersions,
     } = this.props;
     const {
@@ -74,7 +75,8 @@ class GameWindowMenu extends React.Component {
             </Tabs>
           </Col>
           <Col xs={{ span: 4, offset: 2 }} className="game-settings">
-            <DropdownButton
+            {gameId ===1 
+              ?             <DropdownButton
               id="game-version-select-dropdown"
               title={selectedGameVersionNickName}
               onSelect={this.toggleGameVersion}
@@ -87,10 +89,12 @@ class GameWindowMenu extends React.Component {
                   {version.nickName}
                 </Dropdown.Item>
               ))}
-              {(installedVersions && installedVersions.length < 5)
+              {((gameId === 1 && installedVersions && installedVersions.length < 5) 
+                || (gameId ===2 && installedVersions && installedVersions.length < 1))
                 ? <Dropdown.Divider />
                 : ''}
-              {(installedVersions && installedVersions.length < 5)
+              {((gameId === 1 && installedVersions && installedVersions.length < 5) 
+                || (gameId ===2 && installedVersions && installedVersions.length < 1))
                 ? (
                   <Dropdown.Item
                     key="find"
@@ -101,7 +105,8 @@ class GameWindowMenu extends React.Component {
                 )
                 : ''}
             </DropdownButton>
-
+              :''
+            }
           </Col>
         </Row>
       </div>
@@ -111,6 +116,7 @@ class GameWindowMenu extends React.Component {
 
 GameWindowMenu.propTypes = {
   activeTab: PropTypes.string.isRequired,
+  gameId: PropTypes.number.isRequired,
   installedVersions: PropTypes.array,
   selectedGameVersion: PropTypes.string.isRequired,
   toggleActiveTab: PropTypes.func.isRequired,

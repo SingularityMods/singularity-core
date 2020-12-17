@@ -127,7 +127,7 @@ class BackupRestoreDialog extends React.Component {
       });
     } else {
       this.setState({
-        restoreError: error,
+        restoreError: error.message,
       });
     }
   }
@@ -180,6 +180,8 @@ class BackupRestoreDialog extends React.Component {
           return 'Retail Beta';
         case 'wow_classic_beta':
           return 'Classic Beta';
+        case 'eso':
+          return 'Elder Scrolls Online';
         default:
           return '';
       }

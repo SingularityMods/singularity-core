@@ -562,11 +562,11 @@ class InstalledAddonsWindow extends React.Component {
         if (row.avatar) {
           avatarUrl = row.avatar
         } else if (gameId == 1) {
-          avatarUrl = '../../img/icons/wow-icon.png'
+          avatarUrl = '../img/icons/wow-icon.png'
         } else if (gameId == 2) {
-          avatarUrl = '../../img/icons/eso-icon.png'
+          avatarUrl = '../img/icons/eso-icon.png'
         } else {
-          avatarUrl = '../../img/app_icon.png'
+          avatarUrl = '../img/app_icon.png'
         }
         return (
         <div className="installed-addon-title-column">

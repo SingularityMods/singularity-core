@@ -949,7 +949,7 @@
         ]
       },
       "addonDir": "Elder Scrolls Online/live/AddoOns/",
-      "settingsDir": "Elder Scrolls Online/live/AddOns/",
+      "settingsDir": "Elder Scrolls Online/live/SavedVariables/",
       "addonDirLocation":{
         "win":"%DOCUMENTS%",
         "mac":"%DOCUMENTS%",

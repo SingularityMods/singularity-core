@@ -309,11 +309,11 @@ class AddonDetailsWindow extends React.Component {
       if (addon.avatar) {
         avatarUrl = addon.avatar
       } else if (gameId == 1) {
-        avatarUrl = '../../img/icons/wow-icon.png'
+        avatarUrl = '../img/icons/wow-icon.png'
       } else if (gameId == 2) {
-        avatarUrl = '../../img/icons/eso-icon.png'
+        avatarUrl = '../img/icons/eso-icon.png'
       } else {
-        avatarUrl = '../../img/app_icon.png'
+        avatarUrl = '../img/app_icon.png'
       }
       if (addon.categories) {
         categoryNames = Array.prototype.map.call(addon.categories, (c) => c.name).toString();
@@ -364,16 +364,7 @@ class AddonDetailsWindow extends React.Component {
                 </Row>
                 <Row className="addon-info-row">
                   <Col xs="3" className="addon-icon">
-                    {addon && addon.screenshots && addon.screenshots.length > 0
-                      ? <img src={avatarUrl} className="addon-details-icon" alt="Addont icon" />
-                      : ''}
-                    {addon
-                      && (!addon.screenshots || !addon.screenshots.length > 0)
-                      && addon.primaryCategory ? (
-                        <img src={addon.primaryCategory.iconUrl} className="addon-details-icon" alt="Addont icon" />
-                      ) : (
-                        ''
-                      )}
+                    <img src={avatarUrl} className="addon-details-icon" alt="Addont icon" />
                   </Col>
                   <Col xs="9" lg="8" className="addon-info">
                     <Row>
