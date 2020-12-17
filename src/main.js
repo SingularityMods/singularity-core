@@ -192,7 +192,7 @@ function createWindow() {
           window.close();
         }
       });
-  }, 1000 * 60 * 2);
+  }, 1000 * 60 * 60);
 }
 
 // Listener that is called once the app window is loaded
