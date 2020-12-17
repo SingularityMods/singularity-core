@@ -27,8 +27,11 @@
 
 .context-menu-item{
     cursor: pointer;
+}
 
-    
+.context-menu-item a {
+  color: var(--text-color);
+  text-decoration: none;
 }
 
 .context-menu-header-img {
