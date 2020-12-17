@@ -12,7 +12,7 @@ import {
   enableSentry,
   disableSentry,
 } from '../../services/sentry.service';
-import { getMainBrowserWindow } from '../../services/electron.service';
+import { getMainBrowserWindow, runAutoUpdater } from '../../services/electron.service';
 import {
   findInstalledGame,
   setAddonUpdateInterval,
@@ -44,20 +44,8 @@ ipcMain.on('set-app-settings', (event, appSettings) => {
     } else if (!appSettings.telemetry) {
       disableSentry();
     }
-    if (process.platform === 'win32') {
-      let feedURL = `${AppConfig.PACKAGE_URL}/Win/`;
-      if (appSettings.beta) {
-        feedURL = `${AppConfig.PACKAGE_URL}/Win/Beta/`;
-      }
-      autoUpdater.setFeedURL(feedURL);
-    } else if (process.platform === 'darwin') {
-      let feedURL = `${AppConfig.PACKAGE_URL}/Mac/darwin-releases.json`;
-      if (appSettings.beta) {
-        feedURL = `${AppConfig.PACKAGE_URL}/Mac/darwin-releases-beta.json`;
-      }
-      autoUpdater.setFeedURL({ url: feedURL, serverType: 'json' });
-    }
-    autoUpdater.checkForUpdates();
+    const win = getMainBrowserWindow()
+    runAutoUpdater(win, false)
   }
   if (prevSettings.addonUpdateInterval !== appSettings.addonUpdateInterval) {
     setAddonUpdateInterval();
