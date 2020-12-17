@@ -16,6 +16,7 @@ class AddonContextMenu extends React.Component {
       fileName: '',
       installState: '',
       addonId: '',
+      addonUrl: '',
       modules: [],
       trackBranch: 1,
       autoUpdate: false,
@@ -80,7 +81,7 @@ class AddonContextMenu extends React.Component {
   handleClick(event) {
     const { visible } = this.state;
     if (visible) {
-      event.preventDefault();
+      //event.preventDefault();
     }
     this.setState({ visible: false, x: 0, y: 0 });
   }
@@ -111,8 +112,7 @@ class AddonContextMenu extends React.Component {
       const trackBranch = installedAddon.trackBranch || 1;
       const autoUpdate = installedAddon.autoUpdate || false;
       const ignoreUpdate = installedAddon.ignoreUpdate || false;
-      const { addonId } = installedAddon;
-      const { modules } = installedAddon;
+      const { addonId, addonUrl, modules } = installedAddon;
       const fileName = tableCells.item(2).innerText;
       const installState = tableCells.item(1).firstChild.innerText;
 
@@ -138,6 +138,7 @@ class AddonContextMenu extends React.Component {
         fileName,
         installState,
         addonId,
+        addonUrl,
         modules,
         trackBranch,
         autoUpdate,
@@ -159,6 +160,7 @@ class AddonContextMenu extends React.Component {
         fileName: '',
         installState: '',
         addonId: '',
+        addonUrl: '',
         modules: [],
         trackBranch: 1,
         autoUpdate: false,
@@ -290,6 +292,7 @@ class AddonContextMenu extends React.Component {
   render() {
     const {
       addonId,
+      addonUrl,
       autoUpdate,
       fileName,
       hoverBranchMenu,
@@ -483,6 +486,14 @@ class AddonContextMenu extends React.Component {
                 : (
                   <Row className="context-menu-body">
                     <Col xs={12}>
+                    <Row className="context-menu-item">
+                        <Col xs={12} className="context-addon-webpage">
+                          <a href={addonUrl} target="_blank" rel="noreferrer">
+                          <div><i className="fas fa-external-link-alt context-menu-item-icon" /></div>
+                          <div className="context-menu-item-lable">Addon Webpage</div>
+                          </a>
+                        </Col>
+                      </Row>
                       <Row className="context-menu-item">
                         {getInstallOption()}
                       </Row>
