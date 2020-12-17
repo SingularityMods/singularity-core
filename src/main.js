@@ -198,19 +198,7 @@ function createWindow() {
 // Listener that is called once the app window is loaded
 app.on('ready', () => {
   log.info('Singularity App Ready');
-  // Create splash window
-  createSplashWindow();
-  // Initialize Storage
 
-  initStorage();
-  setAppConfig();
-  const {
-    telemetry,
-    beta,
-  } = getAppData('userConfigurable');
-  if (telemetry || beta) {
-    enableSentry();
-  }
 
   // Start the auth refresh and addon check procedures
   if (process.platform === 'win32') {
@@ -220,12 +208,22 @@ app.on('ready', () => {
             || cmd === '--squirrel-uninstall'
             || cmd === '--squirrel-obsolete') {
       log.info('Singularity is being updated or installed, skipping pausing app launch');
-      if (splash) {
-        splash.webContents.send('startup-state', 'updating-app');
-      }
 
       // createWindow();
     } else {
+        // Create splash window
+      createSplashWindow();
+      // Initialize Storage
+
+      initStorage();
+      setAppConfig();
+      const {
+        telemetry,
+        beta,
+      } = getAppData('userConfigurable');
+      if (telemetry || beta) {
+        enableSentry();
+      }
       runAutoUpdater(splash, true)
         .then(() => {
           createWindow();
@@ -266,6 +264,19 @@ app.on('ready', () => {
         });
     }
   } else {
+    // Create splash window
+    createSplashWindow();
+    // Initialize Storage
+
+    initStorage();
+    setAppConfig();
+    const {
+      telemetry,
+      beta,
+    } = getAppData('userConfigurable');
+    if (telemetry || beta) {
+      enableSentry();
+    }
     runAutoUpdater(splash, true)
       .then(() => {
         createWindow();

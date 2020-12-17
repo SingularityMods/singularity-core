@@ -331,7 +331,7 @@ function findAndUpdateAddons() {
     installedGames.forEach((gameId) => {
       const gameS = getGameSettings(gameId.toString());
       Object.entries(gameS).forEach(([gameVersion]) => {
-        promises.push(_findAddonsForGameVersion(gameId, gameVersion));
+        promises.push(_findAddonsForGameVersion(gameId, gameVersion, gameS[gameVersion].sync));
       });
     });
     Promise.allSettled(promises)
@@ -340,7 +340,7 @@ function findAndUpdateAddons() {
         results.forEach((result) => {
           if (result.status === 'fulfilled') {
             result.value.toUpdate.forEach((addon) => {
-              if (addon.gameS[addon.gameVersion].sync) {
+              if (addon.sync) {
                 needsSyncProfileUpdate.add({
                   gameId: addon.gameId,
                   gameVersion: addon.gameVersion,
@@ -1140,6 +1140,16 @@ function syncFromProfile(profile) {
         syncedAddonsToInstall.push(profileMatch);
       }
     });
+    addons.forEach((addon) => {
+      const match = installedAddons.find((a) => a.addonId === addon.addonId);
+      if (!match) {
+        const toAdd = addon;
+        log.info(`Addon ${addon.addonName} needs to be installed from profile, add to list`);
+        toAdd.gameVersion = gameVersion;
+        toAdd.gameId = gameId;
+        syncedAddonsToInstall.push(toAdd);
+      }
+    })
     if (win) {
       win.webContents.send('sync-status', gameId, gameVersion, 'handling-addons', null, null);
     }
@@ -1173,27 +1183,24 @@ function syncFromProfile(profile) {
   });
 }
 
-function uninstallAddon(gameId, addonDir, addon) {
+function uninstallAddon(addonDir, addon) {
   return new Promise((resolve, reject) => {
-    if (gameId === 1) {
-      // World of Warcraft
-
-      if (!fs.existsSync(addonDir)) {
-        reject(new Error('Addon Directory Does Not Exist'));
-      }
-
-      const promises = [];
-      addon.modules.forEach((m) => {
-        promises.push(_uninstallDir(addonDir, m.folderName));
-      });
-      Promise.allSettled(promises)
-        .then(() => {
-          resolve('success');
-        })
-        .catch((e) => {
-          log.error(e);
-        });
+    if (!fs.existsSync(addonDir)) {
+      reject(new Error('Addon Directory Does Not Exist'));
     }
+
+    const promises = [];
+    addon.modules.forEach((m) => {
+      promises.push(_uninstallDir(addonDir, m.folderName));
+    });
+    Promise.allSettled(promises)
+      .then(() => {
+        resolve('success');
+      })
+      .catch((e) => {
+        log.error(e);
+      });
+    
   });
 }
 
@@ -1394,7 +1401,7 @@ function _checkForGameVersion(gameObj) {
   });
 }
 
-function _findAddonsForGameVersion(gameId, gameVersion) {
+function _findAddonsForGameVersion(gameId, gameVersion, sync) {
   return new Promise((resolve, reject) => {
     log.info(`Finding addons for ${gameVersion}`);
     const gameS = getGameSettings(gameId.toString());
@@ -1417,7 +1424,7 @@ function _findAddonsForGameVersion(gameId, gameVersion) {
                 ));
                 if (latestFile.fileDate > addon.installedFile.fileDate) {
                   toUpdate.push({
-                    gameId, gameVersion, addon, latestFile,
+                    gameId, gameVersion, sync, addon, latestFile,
                   });
                 }
               }

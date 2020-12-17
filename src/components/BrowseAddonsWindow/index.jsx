@@ -358,14 +358,16 @@ class BrowseAddonsWindow extends React.Component {
         return (
         <div className="browse-addon-title-column">
           <img className="addon-table-img" alt="Addon icon" src={avatarUrl} />
-          <div
-            className="addon-name"
-            role="button"
-            tabIndex="0"
-            onClick={() => onSelectAddon(row.addonId)}
-            onKeyPress={() => onSelectAddon(row.addonId)}
-          >
-            {cellContent}
+          <div className="addon-name-section">
+            <div
+              className="addon-name"
+              role="button"
+              tabIndex="0"
+              onClick={() => onSelectAddon(row.addonId)}
+              onKeyPress={() => onSelectAddon(row.addonId)}
+            >
+              {cellContent}
+            </div>
           </div>
         </div>
       )},

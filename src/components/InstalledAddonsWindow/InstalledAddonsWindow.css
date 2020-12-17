@@ -170,10 +170,13 @@ margin-left: 0px;
   outline:none;
 }
 
-.addon-name {
+.addon-name-section {
   display: flex;
   align-items: center;
   height: 40px;
+}
+
+.addon-name {
   color: var(--singularity-orange);
 }
 .addon-name:hover {

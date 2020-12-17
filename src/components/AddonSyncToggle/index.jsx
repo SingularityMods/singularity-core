@@ -137,14 +137,32 @@ class AddonSyncToggle extends React.Component {
       gameVersion,
     } = this.props;
     ipcRenderer.send('toggle-addon-sync', gameId, gameVersion, true);
-    ipcRenderer.send('trigger-sync', gameId, gameVersion);
+    //ipcRenderer.send('trigger-sync', gameId, gameVersion);
     this.setState({
       confirmDialogOpened: false,
       enabled: true,
       configuring: false,
       status: 'Syncing',
-      syncing: true,
-    });
+      syncing: true
+    })
+    ipcRenderer.invoke('sync-from-profile', gameId, gameVersion)
+      .then((lastSync) => {
+        this.setState({
+          syncing: false,
+          error: null,
+          status: `Last sync: ${lastSync}`,
+          syncComplete: true,
+        });
+        ipcRenderer.send('find-addons-async', gameId, gameVersion);
+      })
+      .catch(error => {
+        this.setState({
+          syncing: false,
+          error: error.message,
+          status: null,
+          syncComplete: true,
+        });
+      })
   }
 
   onConfirmOverwrite() {

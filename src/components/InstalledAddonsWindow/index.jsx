@@ -571,7 +571,7 @@ class InstalledAddonsWindow extends React.Component {
         return (
         <div className="installed-addon-title-column">
           <img className="addon-table-img" alt="Addon icon" src={avatarUrl} />
-          <span role="button" tabIndex="0" className="addon-name" onClick={() => onSelectAddon(row.addonId)} onKeyPress={() => onSelectAddon(row.addonId)}>{cellContent}</span>
+          <div className="addon-name-section"><span role="button" tabIndex="0" className="addon-name" onClick={() => onSelectAddon(row.addonId)} onKeyPress={() => onSelectAddon(row.addonId)}>{cellContent}</span></div>
         </div>
       )},
       sortFunc: (a, b, order, dataField, rowA, rowB) => {

@@ -399,7 +399,7 @@ ipcMain.on('uninstall-addon', async (event, gameId, gameVersion, addonId) => {
   let { installedAddons } = gameS[gameVersion];
   const addon = installedAddons.find((a) => a.addonId === addonId);
   if (addon) {
-    uninstallAddon(gameId, gameS[gameVersion].addonPath, addon)
+    uninstallAddon(gameS[gameVersion].addonPath, addon)
       .then(() => {
         installedAddons = installedAddons.filter((obj) => obj.addonId !== addonId);
         gameS[gameVersion].installedAddons = installedAddons;
@@ -421,6 +421,7 @@ ipcMain.on('uninstall-addon', async (event, gameId, gameVersion, addonId) => {
         log.error(err);
       });
   } else {
+    log.error("Tried uninstalling addon that Singularity didn't know was installed")
     event.sender.send('addon-uninstall-failed', addonId);
   }
 });
