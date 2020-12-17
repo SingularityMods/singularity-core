@@ -229,12 +229,18 @@ ipcMain.on('install-addon', async (event, gameId, gameVersionFlavor, addon, bran
   const gameS = getGameSettings(gameId.toString());
   const { gameVersions } = getGameData(gameId.toString());
   const addonVersionFlavor = gameVersions[gameVersionFlavor].addonVersion;
-  let installedFile = {};
+  let installedFile;
   addon.latestFiles.forEach((file) => {
     if (file.gameVersionFlavor === addonVersionFlavor && file.releaseType === branch) {
       installedFile = file;
     }
   });
+
+  if (!installedFile) {
+    const possibleFiles = addon.latestFiles
+      .filter((f) => f.gameVersionFlavor === addonVersionFlavor);
+    installedFile = possibleFiles.reduce((a, b) => ((a.releaseType < b.releaseType) ? a : b));
+  }
   installAddon(gameId, gameS[gameVersionFlavor].addonPath, installedFile)
     .then(() => {
       const trackBranch = addon.trackBranch || 1;

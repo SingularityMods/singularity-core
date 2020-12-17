@@ -78,11 +78,7 @@ class AddonContextMenu extends React.Component {
     }
   }
 
-  handleClick(event) {
-    const { visible } = this.state;
-    if (visible) {
-      //event.preventDefault();
-    }
+  handleClick() {
     this.setState({ visible: false, x: 0, y: 0 });
   }
 
@@ -486,11 +482,11 @@ class AddonContextMenu extends React.Component {
                 : (
                   <Row className="context-menu-body">
                     <Col xs={12}>
-                    <Row className="context-menu-item">
+                      <Row className="context-menu-item">
                         <Col xs={12} className="context-addon-webpage">
                           <a href={addonUrl} target="_blank" rel="noreferrer">
-                          <div><i className="fas fa-external-link-alt context-menu-item-icon" /></div>
-                          <div className="context-menu-item-lable">Addon Webpage</div>
+                            <div><i className="fas fa-external-link-alt context-menu-item-icon" /></div>
+                            <div className="context-menu-item-lable">Addon Webpage</div>
                           </a>
                         </Col>
                       </Row>

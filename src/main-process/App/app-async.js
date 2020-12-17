@@ -47,13 +47,13 @@ ipcMain.handle('get-terms', async () => getAppData('terms'));
 ipcMain.handle('get-telemetry-status', async () => {
   const {
     telemetry,
-    beta
+    beta,
   } = getAppData('userConfigurable');
   return {
     prompted: getAppData('telemetry-prompted'),
     enabled: telemetry || beta,
-  }
-})
+  };
+});
 
 ipcMain.on('open-log-directory', () => {
   log.info('Opening log directory');
