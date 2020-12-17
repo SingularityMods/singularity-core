@@ -297,13 +297,24 @@ class AddonDetailsWindow extends React.Component {
     } = this.state;
     const {
       addonId,
+      gameId,
       gameVersion,
       handleGoBack,
     } = this.props;
     let categoryNames;
     let authors;
     let downloadCount = '';
+    let avatarUrl = ''
     if (addon) {
+      if (addon.avatar) {
+        avatarUrl = addon.avatar
+      } else if (gameId == 1) {
+        avatarUrl = '../../img/icons/wow-icon.png'
+      } else if (gameId == 2) {
+        avatarUrl = '../../img/icons/eso-icon.png'
+      } else {
+        avatarUrl = '../../img/app_icon.png'
+      }
       if (addon.categories) {
         categoryNames = Array.prototype.map.call(addon.categories, (c) => c.name).toString();
       }
@@ -354,7 +365,7 @@ class AddonDetailsWindow extends React.Component {
                 <Row className="addon-info-row">
                   <Col xs="3" className="addon-icon">
                     {addon && addon.screenshots && addon.screenshots.length > 0
-                      ? <img src={addon.screenshots[0].url} className="addon-details-icon" alt="Addont icon" />
+                      ? <img src={avatarUrl} className="addon-details-icon" alt="Addont icon" />
                       : ''}
                     {addon
                       && (!addon.screenshots || !addon.screenshots.length > 0)

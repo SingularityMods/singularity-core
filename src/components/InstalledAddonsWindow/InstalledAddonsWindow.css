@@ -3,6 +3,14 @@
     padding-right: 0;
 }
 
+.installed-addon-title-column .addon-table-img {
+  height: 50px;
+  width: 50px;
+  margin-right: 5px;
+  float:left;
+  overflow:hidden;
+}
+
 .context-class {
     color: red;
 }
@@ -162,8 +170,22 @@ margin-left: 0px;
   outline:none;
 }
 
-.browse-addon-name:focus {
-  outline: none;
+.addon-name {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  color: var(--singularity-orange);
+}
+.addon-name:hover {
+  color: var(--singularity-orange);
+  text-decoration-color: var(--singularity-orange);
+}
+.addon-name:focus{
+outline: none;
+}
+
+.addon-table tr.selected-addon-row .addon-name {
+  color: white;
 }
 
 .addon-search-field.filter-field {

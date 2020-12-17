@@ -331,6 +331,7 @@ class BrowseAddonsWindow extends React.Component {
     const {
       gameVersion,
       onSelectAddon,
+      gameId
     } = this.props;
     const selectedCat = categories.filter((category) => (
       parseInt(category.categoryId, 10) === parseInt(selectedCategory, 10)));
@@ -341,11 +342,24 @@ class BrowseAddonsWindow extends React.Component {
     const browseAddonsColumns = [{
       dataField: 'addonName',
       text: 'Addon',
-      formatter: (cellContent, row) => (
+      formatExtraData: gameId,
+      formatter: (cellContent, row, rowIndex, gameId) => {
+        let avatarUrl;
+        if (row.avatar) {
+          avatarUrl = row.avatar
+        } else if (gameId == 1) {
+          avatarUrl = '../../img/icons/wow-icon.png'
+        } else if (gameId == 2) {
+          avatarUrl = '../../img/icons/eso-icon.png'
+        } else {
+          avatarUrl = '../../img/app_icon.png'
+        }
+        
+        return (
         <div className="browse-addon-title-column">
-          <img className="browse-addon-table-img" alt="Addon icon" src={row.primaryCategory.iconUrl} />
+          <img className="addon-table-img" alt="Addon icon" src={avatarUrl} />
           <div
-            className="browse-addon-name"
+            className="addon-name"
             role="button"
             tabIndex="0"
             onClick={() => onSelectAddon(row.addonId)}
@@ -354,7 +368,7 @@ class BrowseAddonsWindow extends React.Component {
             {cellContent}
           </div>
         </div>
-      ),
+      )},
     }, {
       dataField: 'addonId',
       text: 'Action',

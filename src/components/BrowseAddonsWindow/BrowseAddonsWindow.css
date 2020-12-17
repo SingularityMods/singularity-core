@@ -80,12 +80,6 @@
         box-shadow: 0px 0px 4px 1px var(--secondary-color);
     }
 
-.browse-addon-table-img {
-    height: 30px;
-    margin-right: 5px;
-    float:left;
-}
-
 .browse-addon-table td {
     font-size: 0.6rem;
 }
@@ -97,14 +91,22 @@
     width: 100%;
 }
 
-.browse-addon-name {
+.browse-addon-title-column .addon-table-img {
+  height: 50px;
+  width: 50px;
+  margin-right: 5px;
+  float:left;
+  overflow:hidden;
+}
+
+.browse-addon-title-column .addon-name {
     color: var(--singularity-orange);
 }
-.browse-addon-name:hover {
+.browse-addon-title-column .addon-name:hover {
     color: var(--singularity-orange);
     text-decoration-color: var(--singularity-orange);
 }
-.browse-addon-name:focus{
+.browse-addon-title-column .addon-name:focus{
   outline: none;
 }
 

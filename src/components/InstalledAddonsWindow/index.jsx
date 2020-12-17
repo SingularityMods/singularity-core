@@ -556,14 +556,24 @@ class InstalledAddonsWindow extends React.Component {
       dataField: 'addonName',
       text: 'Addon',
       sort: true,
-      formatter: (cellContent, row) => (
-        <div className="browse-addon-title-column">
-          {row.primaryCategory
-            ? <img className="browse-addon-table-img" alt="Addon icon" src={row.primaryCategory.iconUrl} />
-            : ''}
-          <span role="button" tabIndex="0" className="browse-addon-name" onClick={() => onSelectAddon(row.addonId)} onKeyPress={() => onSelectAddon(row.addonId)}>{cellContent}</span>
+      formatExtraData: gameId,
+      formatter: (cellContent, row, rowIndex, gameId) => {
+        let avatarUrl;
+        if (row.avatar) {
+          avatarUrl = row.avatar
+        } else if (gameId == 1) {
+          avatarUrl = '../../img/icons/wow-icon.png'
+        } else if (gameId == 2) {
+          avatarUrl = '../../img/icons/eso-icon.png'
+        } else {
+          avatarUrl = '../../img/app_icon.png'
+        }
+        return (
+        <div className="installed-addon-title-column">
+          <img className="addon-table-img" alt="Addon icon" src={avatarUrl} />
+          <span role="button" tabIndex="0" className="addon-name" onClick={() => onSelectAddon(row.addonId)} onKeyPress={() => onSelectAddon(row.addonId)}>{cellContent}</span>
         </div>
-      ),
+      )},
       sortFunc: (a, b, order, dataField, rowA, rowB) => {
         if (rowA.updateAvailable && rowB.updateAvailable) {
           if (order === 'asc') {
