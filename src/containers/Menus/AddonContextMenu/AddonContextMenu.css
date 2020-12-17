@@ -84,12 +84,12 @@
 }
 
 .context-menu-item-lable {
-    float: left;
-    margin-left: 10px;
+    margin-left: 25px;
+    margin-right:10px;
+    overflow:hidden;
 }
 .context-menu-item-arrow{
-    margin-top: 5px;
-    margin-left: 10px;
+    margin-top:-16px;
     float:right;
 }
 
@@ -120,6 +120,7 @@
 
 .context-menu-branch-menu.directory-menu {
     right: -202px;
+    top:105px;
     width: 200px;
 }
 
@@ -153,6 +154,8 @@
 }
 
 .sub-menu-item .context-menu-item-lable {
+  margin-left: 35px;
+    max-width: 180px;
     margin-top: 5px;
     font-size: 0.8rem;
 }

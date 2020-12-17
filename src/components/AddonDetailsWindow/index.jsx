@@ -93,6 +93,22 @@ class AddonDetailsWindow extends React.Component {
     ipcRenderer.removeListener('addon-info-result', this.addonInfoListener);
     ipcRenderer.removeListener('addon-installed', this.addonInstalledListener);
     ipcRenderer.removeListener('addon-uninstalled', this.addonUninstalledListener);
+    if(this.installTimeout) {
+      clearTimeout(this.installTimeout);
+      this.installTimeout = 0;
+    }
+    if (this.installFileTimeout) {
+      clearTimeout(this.installFileTimeout)
+      this.installFileTimeout = 0;
+    }
+    if (this.updatetimeout) {
+      clearTimeout(this.updateTimeout);
+      this.updateTimeout = 0;
+    }
+    if (this.reinstallTimeout) {
+      clearTimeout(this.reinstallTimeout)
+      this.reinstallTimeout = 0;
+    }
   }
 
   getAddonStatus() {
@@ -147,7 +163,7 @@ class AddonDetailsWindow extends React.Component {
       currentlyInstallingFile: addonFileId,
     });
 
-    setTimeout(() => {
+    this.installFileTimeout = setTimeout(() => {
       const { currentlyUpdating } = this.state;
       if (currentlyUpdating) {
         this.setState({
@@ -170,7 +186,7 @@ class AddonDetailsWindow extends React.Component {
     this.setState({
       currentlyUpdating: true,
     });
-    setTimeout(() => {
+    this.reinstallTimeout =  setTimeout(() => {
       const { currentlyUpdating } = this.state;
       if (currentlyUpdating) {
         this.setState({
@@ -209,7 +225,7 @@ class AddonDetailsWindow extends React.Component {
     this.setState({
       currentlyUpdating: true,
     });
-    setTimeout(() => {
+    this.updateTimeout = setTimeout(() => {
       const { currentlyUpdating } = this.state;
       if (currentlyUpdating) {
         this.setState({
@@ -236,7 +252,7 @@ class AddonDetailsWindow extends React.Component {
       currentlyUpdating: true,
     });
 
-    setTimeout(() => {
+    this.installTimeout = setTimeout(() => {
       const { currentlyUpdating } = this.state;
       if (currentlyUpdating) {
         this.setState({

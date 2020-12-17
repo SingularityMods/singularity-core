@@ -2,7 +2,7 @@ import './AddonContextMenu.css';
 
 import { Container, Row, Col } from 'react-bootstrap';
 import * as React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { checkPropTypes } from 'prop-types';
 
 class AddonContextMenu extends React.Component {
   constructor(props) {
