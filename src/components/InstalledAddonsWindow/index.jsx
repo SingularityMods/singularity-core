@@ -81,6 +81,7 @@ class InstalledAddonsWindow extends React.Component {
     this.contextReinstallAddon = this.contextReinstallAddon.bind(this);
     this.contextUpdateAddon = this.contextUpdateAddon.bind(this);
     this.contextUninstallAddon = this.contextUninstallAddon.bind(this);
+    this.uninstallAddon = this.uninstallAddon.bind(this);
     this.updateAll = this.updateAll.bind(this);
     this.handleOnSelect = this.handleOnSelect.bind(this);
     this.openBackupDialog = this.openBackupDialog.bind(this);
@@ -280,16 +281,14 @@ class InstalledAddonsWindow extends React.Component {
 
   uninstallAddon() {
     const {
-      installedAddons,
       selectedAddon,
     } = this.state;
     const {
       gameId,
       gameVersion,
     } = this.props;
-    const newSelectedAddon = installedAddons.find((obj) => obj.addonId === selectedAddon);
-    if (newSelectedAddon) {
-      ipcRenderer.send('uninstall-addon', gameId, gameVersion, newSelectedAddon.addonId);
+    if (selectedAddon[0]) {
+      ipcRenderer.send('uninstall-addon', gameId, gameVersion, selectedAddon[0]);
       this.setState({
         selectedAddon: [],
       });

@@ -38,6 +38,7 @@
     margin-top:5px;
     margin-left: 5px;
     height:40px;
+    width: 40px;
     border-radius:50%;
     float: left;
 }
@@ -105,7 +106,7 @@
 .context-menu-branch-menu {
     position: absolute;
     right: -202px;
-    top: 15px;
+    top: 55px;
     border: none;
     border-radius: 5px 5px 0 0;
     background-color: var(--dialog-background-color);
@@ -122,11 +123,11 @@
     width: 200px;
 }
 
-    .context-menu-branch-menu.settings-menu {
-        right: -142px;
-        top: 20px;
-        width: 140px;
-    }
+  .context-menu-branch-menu.settings-menu {
+      right: -142px;
+      top: 55px;
+      width: 140px;
+  }
 
 .context-menu-branch-menu.directory-menu .context-menu-sub-header-title {
     width: 180px;

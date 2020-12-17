@@ -84,11 +84,21 @@ class AddonContextMenu extends React.Component {
 
   handleContextMenu(event) {
     const [
-      firstElem, secondElem, thirdElem, fourthElem, fifthElem,
+      firstElem, secondElem, thirdElem, fourthElem, fifthElem, 
     ] = event.path;
     event.preventDefault();
     if (event.path.some((e) => e.classList && e.classList.contains('installed-addons-row'))) {
       let row = secondElem;
+      if (row.tagName !== 'TR') {
+        if (thirdElem.tagName === 'TR') {
+          row = thirdElem;
+        } else if (fourthElem.tagName === 'TR') {
+          row = fourthElem;
+        } else if (fifthElem.tagName === 'TR') {
+          row = fifthElem;
+        }
+      }
+      /*
       if (row.tagName === 'TD') {
         row = thirdElem;
       } else if (row.tagName === 'DIV' || row.tagName === 'A') {
@@ -97,13 +107,13 @@ class AddonContextMenu extends React.Component {
         } else {
           row = fifthElem;
         }
-      }
+      }*/
       const tableCells = row.children;
 
       const { installedAddons } = this.props;
 
-      const imgSrc = tableCells.item(0).getElementsByClassName('browse-addon-table-img')[0].src;
-      const title = tableCells.item(0).getElementsByClassName('browse-addon-name')[0].innerText;
+      const imgSrc = tableCells.item(0).getElementsByClassName('addon-table-img')[0].src;
+      const title = tableCells.item(0).getElementsByClassName('addon-name')[0].innerText;
       const installedAddon = installedAddons.find((addon) => addon.addonName === title);
       const trackBranch = installedAddon.trackBranch || 1;
       const autoUpdate = installedAddon.autoUpdate || false;
