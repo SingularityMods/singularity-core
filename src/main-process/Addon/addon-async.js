@@ -344,6 +344,7 @@ ipcMain.on('install-addon-file', async (event, gameId, gameVersionFlavor, addon,
             const installedAddon = {
               addonName: addon.addonName,
               addonId: addon.addonId,
+              avatar: addon.avatar,
               primaryCategory: addon.primaryCategory,
               author: addon.author,
               fileName: installedFile.fileName,

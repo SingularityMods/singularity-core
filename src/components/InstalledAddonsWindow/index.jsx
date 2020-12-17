@@ -763,8 +763,21 @@ class InstalledAddonsWindow extends React.Component {
         (addon) => addon.addonName.toLowerCase().includes(filter.toLowerCase()),
       );
     }
+    
+    function addonUpdateAvailable(addon) {
+      const latest = addon.latestFiles
+        .filter((file) => (
+          file.releaseType <= addon.trackBranch && file.gameVersionFlavor === addonVersion
+        ))
+        .reduce((a, b) => (a.fileDate > b.fileDate ? a : b));
+      if (latest && latest.fileDate > addon.installedFile.fileDate) {
+        return true
+      }
+      return false
+    }
 
-    const updateAvailable = installedAddons.some((e) => e.updateAvailable === true);
+    const updateAvailable = installedAddons.some((e) => addonUpdateAvailable(e) === true);
+    console.log(selectedAddon);
 
     return (
       <div className="InstalledAddonsWindow">
@@ -778,11 +791,11 @@ class InstalledAddonsWindow extends React.Component {
                     <GameMenuButton handleClick={this.updateAll} type="Update All" disabled={!updateAvailable} />
                     <GameMenuButton
                       handleClick={() => this.updateAddon(installedAddons.find((a) => (
-                        a.addonId === selectedAddon && a.updateAvailable
+                        a.addonId === selectedAddon[0]
                       )))}
                       type="Update"
                       disabled={!selectedAddon || !installedAddons.find((a) => (
-                        a.addonId === selectedAddon && a.updateAvailable
+                        a.addonId === selectedAddon[0] && addonUpdateAvailable(a)
                       ))}
                     />
                     <GameMenuButton
