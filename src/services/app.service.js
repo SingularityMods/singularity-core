@@ -278,8 +278,8 @@ function setAppConfig() {
           'C:/Program Files (x86)/Zenimax Online/',
         ],
       },
-      addonDir: 'Elder Scrolls Online/live/AddoOns/',
-      settingsDir: 'Elder Scrolls Online/live/AddOns/',
+      addonDir: 'Elder Scrolls Online/live/AddOns/',
+      settingsDir: 'Elder Scrolls Online/live/SavedVariables/',
       addonDirLocation: {
         win: '%DOCUMENTS%',
         mac: '%DOCUMENTS%',
