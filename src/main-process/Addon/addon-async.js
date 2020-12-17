@@ -246,6 +246,7 @@ ipcMain.on('install-addon', async (event, gameId, gameVersionFlavor, addon, bran
       const trackBranch = addon.trackBranch || 1;
       const autoUpdate = addon.autoUpdate || false;
       const ignoreUpdate = addon.ignoreUpdate || false;
+      installedFile.fileId = installedFile._id
 
       let updateAvailable = false;
       let updateFile = addon.latestFiles.find((f) => (
@@ -340,7 +341,7 @@ ipcMain.on('install-addon-file', async (event, gameId, gameVersionFlavor, addon,
                 updateFile = latestFile;
               }
             }
-
+            installedFile.fileId = installedFile._id;
             const installedAddon = {
               addonName: addon.addonName,
               addonId: addon.addonId,
@@ -439,6 +440,7 @@ ipcMain.on('update-addon', async (event, gameId, gameVersion, addon) => {
     const latestFile = possibleFiles.reduce((a, b) => (a.fileDate > b.fileDate ? a : b));
     updateAddon(gameId, gameS[gameVersion].addonPath, addon, latestFile)
       .then(() => {
+        latestFile.fileId = latestFile._id
         const installedAddon = addon;
         installedAddon.updateAvailable = false;
         installedAddon.updateFile = {};

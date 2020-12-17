@@ -64,6 +64,45 @@ export default class HomePage extends React.Component {
               <div>
                 <h3 className="release-notes-title">Release Notes</h3>
                 <h5>
+                  1.2.0
+                  <span className="release-note-date">2020-12-28</span>
+                </h5>
+                <h5 className="release-note-section-header">New Features:</h5>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Singularity now supports Elder Scrolls Online with addons pulled from ESOUI.
+                  If you would like to see additional addon sources added, please hop on to our
+                  Discord server and make a suggestion.
+                </p>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Singularity's app installation, update, and startup processes have been
+                   revamped to provide additional information as they progresses. 
+                </p>
+                <p className="release-note-bullet">
+                  {' '}
+                  - You now have the option of opting-in to sharing app telemetry with
+                  Singularity&apos;s developers. This anonymized data will help us identifying
+                  and fix bugs more quickly. Please consider opting-in under the app settings
+                  menu.
+                </p>
+                <p className="release-note-bullet">
+                  {' '}
+                  - You can now browse to an addon&apos;s website directly from the right-click
+                  contest menu while viewing your installed addons.
+                </p>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Singularity now displays the first available screenshot for addons as the
+                  addon&apos;s avatar instead of the addon&apos;s primary category avatar.
+                </p>
+                <h5 className="release-note-section-header">Bug Fixes:</h5>
+                <p className="release-note-bullet"> - Fixed an issue that could cause the addon
+                 sync feature to not correctly install newly-synced addons on other machines.</p>
+                <p className="release-note-bullet"> - Fixed an issue that could cause addon
+                 installation to fail for addons that only have alpha or beta releases.</p>
+                <hr />
+                <h5>
                   1.1.0
                   <span className="release-note-date">2020-12-2</span>
                 </h5>

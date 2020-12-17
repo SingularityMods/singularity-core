@@ -84,10 +84,9 @@ function createSplashWindow() {
     width: 400,
     height: 300,
     frame: false,
-    alwaysOnTop: true,
     webPreferences: {
       nodeIntegration: true,
-      devTools: true,
+      devTools: false,
       preload: SPLASH_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
   });

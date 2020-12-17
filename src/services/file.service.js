@@ -1133,7 +1133,7 @@ function syncFromProfile(profile) {
         addonToRemove.gameVersion = gameVersion;
         log.info(`Addon ${addonToRemove.addonName} not in sync profile, add to remove list`);
         syncedAddonsToRemove.push(addonToRemove);
-      } else if (addon.installedFile.fileId !== profileMatch.fileId) {
+      } else if (addon.installedFile.fileId !== profileMatch.fileId && addon.installedFile._id !== profileMatch.fileId) {
         log.info(`Addon ${addon.addonName} needs to be updated from profile, add to list`);
         profileMatch.gameVersion = gameVersion;
         profileMatch.gameId = gameId;
@@ -1516,7 +1516,7 @@ function _isSyncEnabled() {
   });
 }
 
-function _readAddonDir(manifestFile, p, d) {
+function _readAddonDir(manifestFileExt, p, d) {
   return new Promise((resolve, reject) => {
     let tocFile;
     const addonFileHashes = [];
@@ -1529,12 +1529,15 @@ function _readAddonDir(manifestFile, p, d) {
     fs.promises.readdir(addonDir)
       .then((addonFiles) => {
         for (let i = 0; i < addonFiles.length; i += 1) {
-          const filename = path.join(addonDir, addonFiles[i]);
+          const fileName = addonFiles[i]
+          const filePath = path.join(addonDir, fileName);
 
-          if (filename.indexOf(manifestFile) >= 0) {
-            tocFile = filename;
-            addonFileHashes.push(hasha.fromFileSync(tocFile, { algorithm: 'md5' }));
-            break;
+          if (filePath.indexOf(manifestFileExt) >= 0) {
+            if (addonDir.includes(fileName.slice(0,-4))) {
+              tocFile = filePath;
+              addonFileHashes.push(hasha.fromFileSync(tocFile, { algorithm: 'md5' }));
+              break;
+            }
           }
         }
         return fs.readFileSync(tocFile).toString('utf-8').split('\n');

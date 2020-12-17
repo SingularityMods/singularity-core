@@ -534,13 +534,13 @@ class InstalledAddonsWindow extends React.Component {
       <div className="no-data-label no-addons">
         <p>It looks like you don&apos;t have any addons installed yet!</p>
         <p>
-          Try hitting
+          Try hitting{' '}
           <span role="button" tabIndex="0" className="no-addons-link" onClick={this.findAddons} onKeyPress={this.findAddons}>Refresh</span>
           {' '}
-          or
+          or{' '}
           <span role="button" tabIndex="0" className="no-addons-link" onClick={() => toggleActiveTab('browse')} onKeyPress={() => toggleActiveTab('browse')}>Browse</span>
           {' '}
-          for new ones. You can also restore a
+          for new ones. You can also restore a{' '}
           <span role="button" tabIndex="0" className="no-addons-link" onClick={this.openBackupDialog} onKeyPress={this.openBackupDialog}>Backup</span>
           {' '}
           if you have one or use your sync profile from another
@@ -777,7 +777,6 @@ class InstalledAddonsWindow extends React.Component {
     }
 
     const updateAvailable = installedAddons.some((e) => addonUpdateAvailable(e) === true);
-    console.log(selectedAddon);
 
     return (
       <div className="InstalledAddonsWindow">

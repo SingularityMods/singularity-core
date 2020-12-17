@@ -137,7 +137,6 @@ class AddonSyncToggle extends React.Component {
       gameVersion,
     } = this.props;
     ipcRenderer.send('toggle-addon-sync', gameId, gameVersion, true);
-    //ipcRenderer.send('trigger-sync', gameId, gameVersion);
     this.setState({
       confirmDialogOpened: false,
       enabled: true,
@@ -202,6 +201,7 @@ class AddonSyncToggle extends React.Component {
       switch (status) {
         case 'sync-started':
           this.setState({
+            syncComplete: false,
             syncing: true,
             status: 'Starting addon sync',
           });
