@@ -206,7 +206,7 @@ app.on('ready', () => {
   setAppConfig();
   const {
     telemetry,
-    beta
+    beta,
   } = getAppData('userConfigurable');
   if (telemetry || beta) {
     enableSentry();

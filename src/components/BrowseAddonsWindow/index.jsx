@@ -420,18 +420,20 @@ class BrowseAddonsWindow extends React.Component {
     }, {
       dataField: 'latestFiles',
       text: 'Latest',
-      formatExtraData: gameVersion,
+      formatExtraData: addonVersion,
       formatter: (cellContent, row, rowIndex, gameV) => {
-        for (let i = 0; i < cellContent.length; i += 1) {
-          if (cellContent[i].gameVersionFlavor === gameV && cellContent[i].releaseType === 1) {
-            const fileDate = new Date(Date.parse(cellContent[i].fileDate));
-            const [month, date, year] = fileDate.toLocaleDateString().split('/');
-            return (
-              `${year}-${month}-${date}`
-            );
-          }
+        let latest = cellContent.find((f) => f.gameVersionFlavor === gameV && f.releaseType === 1);
+        if (!latest) {
+          latest = cellContent.find((f) => f.gameVersionFlavor === gameV && f.releaseType === 2);
         }
-        return '';
+        if (!latest) {
+          latest = cellContent.find((f) => f.gameVersionFlavor === gameV && f.releaseType === 3);
+        }
+        const fileDate = new Date(Date.parse(latest.fileDate));
+        const [month, date, year] = fileDate.toLocaleDateString().split('/');
+        return (
+          `${year}-${month}-${date}`
+        );
       },
     }, {
       dataField: 'categories',
@@ -450,16 +452,17 @@ class BrowseAddonsWindow extends React.Component {
       text: 'Game Version',
       formatExtraData: addonVersion,
       formatter: (cellContent, row, rowIndex, addonV) => {
-        for (let i = 0; i < row.latestFiles.length; i += 1) {
-          if (row.latestFiles[i].gameVersionFlavor === addonV
-              && row.latestFiles[i].releaseType === 1
-          ) {
-            return (
-              row.latestFiles[i].gameVersion[0]
-            );
-          }
+        let latest = row.latestFiles
+          .find((f) => f.gameVersionFlavor === addonV && f.releaseType === 1);
+        if (!latest) {
+          latest = row.latestFiles
+            .find((f) => f.gameVersionFlavor === addonV && f.releaseType === 2);
         }
-        return '';
+        if (!latest) {
+          latest = row.latestFiles
+            .find((f) => f.gameVersionFlavor === addonV && f.releaseType === 3);
+        }
+        return latest.gameVersion[0];
       },
     }, {
       dataField: 'author',

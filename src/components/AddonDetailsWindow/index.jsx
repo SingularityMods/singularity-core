@@ -50,6 +50,7 @@ class AddonDetailsWindow extends React.Component {
     this.rejectUninstall = this.rejectUninstall.bind(this);
     this.installAddonFile = this.installAddonFile.bind(this);
     this.toggleDetailSection = this.toggleDetailSection.bind(this);
+    this.getAddonStatus = this.getAddonStatus.bind(this);
   }
 
   componentDidMount() {
@@ -94,41 +95,34 @@ class AddonDetailsWindow extends React.Component {
     ipcRenderer.removeListener('addon-uninstalled', this.addonUninstalledListener);
   }
 
-  addonInfoListener(event, addon) {
-    const desc = addon.description;
-    addon.description = desc.replace(/<a href/g, "<a target='_blank' href");
-    this.setState({
-      addon,
-      isLoading: false,
-    });
-  }
-
-  addonInstalledListener(event, installedAddon) {
-    const { updateAvailable } = installedAddon;
-    this.setState({
-      installed: true,
-      installedAddon,
-      currentlyUpdating: false,
-      currentlyInstallingFile: '',
-      updateAvailable,
-      updateError: false,
-    });
-  }
-
-  addonUninstalledListener(event, installedAddonId) {
+  getAddonStatus() {
     const {
-      addonId,
-    } = this.props;
-    if (installedAddonId === addonId) {
-      this.setState({
-        installed: false,
-        installedAddon: {},
-        currentlyUpdating: false,
-        currentlyInstallingFile: '',
-        updateAvailable: false,
-        updateError: false,
-      });
+      addon,
+      currentlyUpdating,
+      updateError,
+      installed,
+      installedAddon,
+      updateAvailable,
+    } = this.state;
+    if (!addon || !addon.addonName) {
+      return '';
     }
+    if (currentlyUpdating) {
+      return <UpdateAddonButton handleClick={() => {}} clickData={addon} disabled type="Updating..." />;
+    }
+    if (updateError) {
+      return <UpdateAddonButton handleClick={() => {}} clickData={addon} disabled type="ERROR..." />;
+    }
+    if (installed) {
+      if (installedAddon.unknownUpdate) {
+        return <UpdateAddonButton handleClick={this.reinstallAddon} type="Reinstall" />;
+      }
+      if (updateAvailable) {
+        return <UpdateAddonButton handleClick={this.updateAddon} clickData={addon} type="Update" />;
+      }
+      return <UpdateAddonButton handleClick={() => {}} clickData={addon} disabled type="Installed" />;
+    }
+    return <UpdateAddonButton handleClick={this.installAddon} clickData={addon} type="Install" />;
   }
 
   toggleDetailSection(selectedNum) {
@@ -253,19 +247,53 @@ class AddonDetailsWindow extends React.Component {
     }, 30000);
   }
 
+  addonInfoListener(event, addon) {
+    const desc = addon.description;
+    addon.description = desc.replace(/<a href/g, "<a target='_blank' href");
+    this.setState({
+      addon,
+      isLoading: false,
+    });
+  }
+
+  addonInstalledListener(event, installedAddon) {
+    const { updateAvailable } = installedAddon;
+    this.setState({
+      installed: true,
+      installedAddon,
+      currentlyUpdating: false,
+      currentlyInstallingFile: '',
+      updateAvailable,
+      updateError: false,
+    });
+  }
+
+  addonUninstalledListener(event, installedAddonId) {
+    const {
+      addonId,
+    } = this.props;
+    if (installedAddonId === addonId) {
+      this.setState({
+        installed: false,
+        installedAddon: {},
+        currentlyUpdating: false,
+        currentlyInstallingFile: '',
+        updateAvailable: false,
+        updateError: false,
+      });
+    }
+  }
+
   render() {
     const {
       activeTab,
       addon,
       confirmDelete,
       currentlyInstallingFile,
-      currentlyUpdating,
       isLoading,
       installed,
       installedAddon,
       installedFile,
-      updateAvailable,
-      updateError,
     } = this.state;
     const {
       addonId,
@@ -300,27 +328,6 @@ class AddonDetailsWindow extends React.Component {
           downloadCount = addon.totalDownloadCount.toString();
         }
       }
-    }
-    function getAddonStatus() {
-      if (!addon || !addon.name) {
-        return '';
-      }
-      if (currentlyUpdating) {
-        return <UpdateAddonButton handleClick={() => {}} clickData={addon} disabled type="Updating..." />;
-      }
-      if (updateError) {
-        return <UpdateAddonButton handleClick={() => {}} clickData={addon} disabled type="ERROR..." />;
-      }
-      if (installed) {
-        if (installedAddon.unknownUpdate) {
-          return <UpdateAddonButton handleClick={this.reinstallAddon} type="Reinstall" />;
-        }
-        if (updateAvailable) {
-          return <UpdateAddonButton handleClick={this.updateAddon} clickData={addon} type="Update" />;
-        }
-        return <UpdateAddonButton handleClick={() => {}} clickData={addon} disabled type="Installed" />;
-      }
-      return <UpdateAddonButton handleClick={this.installAddon} clickData={addon} type="Install" />;
     }
 
     return (
@@ -380,7 +387,7 @@ class AddonDetailsWindow extends React.Component {
                     </Row>
                     <Row>
                       <Col xs="12" className="addon-info-install-btn">
-                        {getAddonStatus()}
+                        {this.getAddonStatus()}
                         {installed
                           ? <UpdateAddonButton className="uninstall-button" handleClick={this.uninstallAddon} clickData={addonId} type="Uninstall" />
                           : ''}
