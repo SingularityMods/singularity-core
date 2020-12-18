@@ -1,12 +1,12 @@
 import { ipcMain } from 'electron';
-import { getGameData, getGameSettings } from '../../services/storage.service';
+import { getCategories, getGameData, getGameSettings } from '../../services/storage.service';
 
 ipcMain.on('get-game-data', (event, gameId) => {
   event.returnValue = getGameData(gameId.toString());
 });
 
 ipcMain.on('get-game-addon-categories', (event, gameId) => {
-  const { categories } = getGameData(gameId.toString());
+  const categories = getCategories(gameId.toString());
   event.returnValue = categories.sort((a, b) => ((a.name > b.name) ? 1 : -1));
 });
 

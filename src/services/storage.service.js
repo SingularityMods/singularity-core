@@ -7,12 +7,14 @@ import gameSettingsDefaults from './storage-service-defaults/gameSettings.json';
 import appDataDefaults from './storage-service-defaults/appData.json';
 import backupDataDefaults from './storage-service-defaults/backupData.json';
 import syncProfileDefault from './storage-service-defaults/syncProfile.json';
+import categoryDefaults from './storage-service-defaults/categories.json';
 
 const userDataPath = (app).getPath('userData');
 
 let gameSettings = null;
 let appData = null;
 let gameData = null;
+let categories = null;
 
 function initStorage() {
   log.info('Initializing data storage');
@@ -37,6 +39,13 @@ function initStorage() {
     log.info('Using default game data');
     gameData = gameDataDefaults;
   }
+  try {
+    const filePath = path.join(userDataPath, 'category-data.json');
+    categories = JSON.parse(fs.readFileSync(filePath));
+  } catch (error) {
+    log.info('Using default game data');
+    categories = categoryDefaults;
+  }
   /*
     try {
         let filePath = path.join(userDataPath, 'backup-data.json');
@@ -57,6 +66,10 @@ function getAppData(key) {
 
 function getGameData(key) {
   return gameData[key];
+}
+
+function getCategories(key) {
+  return categories[key];
 }
 
 function getLocalAddonSyncProfile(gameId, gameVersion) {
@@ -274,6 +287,7 @@ export {
   getAppData,
   getGameData,
   getBackupData,
+  getCategories,
   setGameSettings,
   setAppData,
   setGameData,

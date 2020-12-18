@@ -263,12 +263,15 @@ app.on('ready', () => {
         });
     }
   } else {
+      log.info('2');
     // Create splash window
     createSplashWindow();
     // Initialize Storage
-
+    console.log('1');
     initStorage();
+    console.log('here')
     setAppConfig();
+    console.log('there');
     const {
       telemetry,
       beta,

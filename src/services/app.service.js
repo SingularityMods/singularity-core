@@ -238,7 +238,7 @@ function setAppConfig() {
     setAppData('userConfigurable', userConfig);
   }
 
-  if (version < app.getVersion()) {
+  if (version < '1.2.0') {
     const gameS = {
       eso: {
         name: 'Elder Scrolls Online',
