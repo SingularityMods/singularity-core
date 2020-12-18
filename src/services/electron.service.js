@@ -115,7 +115,9 @@ function downloadLatestAppVersion(window, version) {
         manifestName = 'darwin-releases.json';
       }
       updateFeedPath = `${AppConfig.PACKAGE_URL}/Mac/${manifestName}`;
-      feedUrl = { url: `file://${tempPath}/${manifestName}`, serverType: 'json' };
+      const json = {url: `file://${tempPath}/${fileName}`}
+      feedUrl = path.join(tempPath, 'feed.json')
+      fs.writeFileSync(feedUrl, JSON.stringify(json))
     }
     if (fs.existsSync(path.join(tempPath, fileName))) {
       fs.unlinkSync(path.join(tempPath, fileName));
@@ -141,7 +143,7 @@ function downloadLatestAppVersion(window, version) {
         return resolve(feedUrl);
       })
       .catch((err) => {
-        log.error('Error downloading update');
+        log.error("Error downloading update, maybe it doesn't exist?");
         log.error(err);
         return reject(new Error('Error downloading update'));
       });
@@ -167,7 +169,13 @@ function runAutoUpdater(window, inStartup) {
     }
     return getLatestAppVersion()
       .then((latestVersion) => {
-        if (app.getVersion() < latestVersion) {
+        let betaVersion;
+        const currentVersion = app.getVersion();
+        if (currentVersion.includes('beta')) {
+          const index = currentVersion.indexOf('-beta');
+          betaVersion = currentVersion.substring(0,index)
+        }
+        if (currentVersion < latestVersion || (betaVersion && betaVersion === latestVersion) ) {
           // Update Available
           log.info(`New Singularity version available: ${latestVersion}`);
           return downloadLatestAppVersion(window, latestVersion)
