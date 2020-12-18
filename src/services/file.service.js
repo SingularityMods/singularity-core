@@ -1352,16 +1352,16 @@ function _checkForGameVersion(gameObj) {
   }
   let checkPath = selectedPath;
   if (selectedPath.includes('%USERDATA%')) {
-    checkPath = path.join(app.getPath('userData'),selectedPath.substring(11))
+    checkPath = path.join(app.getPath('userData'),'../',selectedPath.substring(11))
   }
   return new Promise((resolve, reject) => {
     const possibleLocations = [];
     gameDir[platform].forEach((directory) => {
-      possibleLocations.push(path.join(selectedPath, directory));
-      possibleLocations.push(path.join(selectedPath, '../', directory));
-      possibleLocations.push(path.join(selectedPath, '../../', directory));
-      possibleLocations.push(path.join(selectedPath, '../../../', directory));
-      possibleLocations.push(path.join(selectedPath, '../../../../', directory));
+      possibleLocations.push(path.join(checkPath, directory));
+      possibleLocations.push(path.join(checkPath, '../', directory));
+      possibleLocations.push(path.join(checkPath, '../../', directory));
+      possibleLocations.push(path.join(checkPath, '../../../', directory));
+      possibleLocations.push(path.join(checkPath, '../../../../', directory));
     });
     let installDir = null;
     const promises = [];
