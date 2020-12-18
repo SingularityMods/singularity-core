@@ -118,10 +118,12 @@ function downloadLatestAppVersion(window, version) {
       } else {
         manifestName = 'darwin-releases.json';
       }
+
+      
       updateFeedPath = `${AppConfig.PACKAGE_URL}/Mac/${manifestName}`;
-      const json = {url: `file://${tempPath}/${fileName}`}
-      feedUrl = path.join(tempPath, 'feed.json')
-      fs.writeFileSync(feedUrl, JSON.stringify(json))
+      const json = {"url": `file://${tempPath}/${fileName}`};
+      feedUrl = `file://${tempPath}/feed.json`
+      fs.writeFileSync(tempPath+'/feed.json', JSON.stringify(json))
     }
     if (fs.existsSync(path.join(tempPath, fileName))) {
       fs.unlinkSync(path.join(tempPath, fileName));
