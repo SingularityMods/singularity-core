@@ -93,12 +93,12 @@ class AddonDetailsWindow extends React.Component {
     ipcRenderer.removeListener('addon-info-result', this.addonInfoListener);
     ipcRenderer.removeListener('addon-installed', this.addonInstalledListener);
     ipcRenderer.removeListener('addon-uninstalled', this.addonUninstalledListener);
-    if(this.installTimeout) {
+    if (this.installTimeout) {
       clearTimeout(this.installTimeout);
       this.installTimeout = 0;
     }
     if (this.installFileTimeout) {
-      clearTimeout(this.installFileTimeout)
+      clearTimeout(this.installFileTimeout);
       this.installFileTimeout = 0;
     }
     if (this.updatetimeout) {
@@ -106,7 +106,7 @@ class AddonDetailsWindow extends React.Component {
       this.updateTimeout = 0;
     }
     if (this.reinstallTimeout) {
-      clearTimeout(this.reinstallTimeout)
+      clearTimeout(this.reinstallTimeout);
       this.reinstallTimeout = 0;
     }
   }
@@ -186,7 +186,7 @@ class AddonDetailsWindow extends React.Component {
     this.setState({
       currentlyUpdating: true,
     });
-    this.reinstallTimeout =  setTimeout(() => {
+    this.reinstallTimeout = setTimeout(() => {
       const { currentlyUpdating } = this.state;
       if (currentlyUpdating) {
         this.setState({
@@ -320,16 +320,16 @@ class AddonDetailsWindow extends React.Component {
     let categoryNames;
     let authors;
     let downloadCount = '';
-    let avatarUrl = ''
+    let avatarUrl = '';
     if (addon) {
       if (addon.avatar) {
-        avatarUrl = addon.avatar
-      } else if (gameId == 1) {
-        avatarUrl = '../img/icons/wow-icon.png'
-      } else if (gameId == 2) {
-        avatarUrl = '../img/icons/eso-icon.png'
+        avatarUrl = addon.avatar;
+      } else if (gameId === 1) {
+        avatarUrl = '../img/icons/wow-icon.png';
+      } else if (gameId === 2) {
+        avatarUrl = '../img/icons/eso-icon.png';
       } else {
-        avatarUrl = '../img/app_icon.png'
+        avatarUrl = '../img/app_icon.png';
       }
       if (addon.categories) {
         categoryNames = Array.prototype.map.call(addon.categories, (c) => c.name).toString();

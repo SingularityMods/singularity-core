@@ -534,13 +534,16 @@ class InstalledAddonsWindow extends React.Component {
       <div className="no-data-label no-addons">
         <p>It looks like you don&apos;t have any addons installed yet!</p>
         <p>
-          Try hitting{' '}
+          Try hitting
+          {' '}
           <span role="button" tabIndex="0" className="no-addons-link" onClick={this.findAddons} onKeyPress={this.findAddons}>Refresh</span>
           {' '}
-          or{' '}
+          or
+          {' '}
           <span role="button" tabIndex="0" className="no-addons-link" onClick={() => toggleActiveTab('browse')} onKeyPress={() => toggleActiveTab('browse')}>Browse</span>
           {' '}
-          for new ones. You can also restore a{' '}
+          for new ones. You can also restore a
+          {' '}
           <span role="button" tabIndex="0" className="no-addons-link" onClick={this.openBackupDialog} onKeyPress={this.openBackupDialog}>Backup</span>
           {' '}
           if you have one or use your sync profile from another
@@ -556,23 +559,24 @@ class InstalledAddonsWindow extends React.Component {
       text: 'Addon',
       sort: true,
       formatExtraData: gameId,
-      formatter: (cellContent, row, rowIndex, gameId) => {
+      formatter: (cellContent, row, rowIndex, formatExtraData) => {
         let avatarUrl;
         if (row.avatar) {
-          avatarUrl = row.avatar
-        } else if (gameId == 1) {
-          avatarUrl = '../img/icons/wow-icon.png'
-        } else if (gameId == 2) {
-          avatarUrl = '../img/icons/eso-icon.png'
+          avatarUrl = row.avatar;
+        } else if (formatExtraData === 1) {
+          avatarUrl = '../img/icons/wow-icon.png';
+        } else if (formatExtraData === 2) {
+          avatarUrl = '../img/icons/eso-icon.png';
         } else {
-          avatarUrl = '../img/app_icon.png'
+          avatarUrl = '../img/app_icon.png';
         }
         return (
-        <div className="installed-addon-title-column">
-          <img className="addon-table-img" alt="Addon icon" src={avatarUrl} />
-          <div className="addon-name-section"><span role="button" tabIndex="0" className="addon-name" onClick={() => onSelectAddon(row.addonId)} onKeyPress={() => onSelectAddon(row.addonId)}>{cellContent}</span></div>
-        </div>
-      )},
+          <div className="installed-addon-title-column">
+            <img className="addon-table-img" alt="Addon icon" src={avatarUrl} />
+            <div className="addon-name-section"><span role="button" tabIndex="0" className="addon-name" onClick={() => onSelectAddon(row.addonId)} onKeyPress={() => onSelectAddon(row.addonId)}>{cellContent}</span></div>
+          </div>
+        );
+      },
       sortFunc: (a, b, order, dataField, rowA, rowB) => {
         if (rowA.updateAvailable && rowB.updateAvailable) {
           if (order === 'asc') {
@@ -763,7 +767,7 @@ class InstalledAddonsWindow extends React.Component {
         (addon) => addon.addonName.toLowerCase().includes(filter.toLowerCase()),
       );
     }
-    
+
     function addonUpdateAvailable(addon) {
       const latest = addon.latestFiles
         .filter((file) => (
@@ -771,9 +775,9 @@ class InstalledAddonsWindow extends React.Component {
         ))
         .reduce((a, b) => (a.fileDate > b.fileDate ? a : b));
       if (latest && latest.fileDate > addon.installedFile.fileDate) {
-        return true
+        return true;
       }
-      return false
+      return false;
     }
 
     const updateAvailable = installedAddons.some((e) => addonUpdateAvailable(e) === true);

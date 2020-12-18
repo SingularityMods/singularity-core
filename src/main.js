@@ -198,7 +198,6 @@ function createWindow() {
 app.on('ready', () => {
   log.info('Singularity App Ready');
 
-
   // Start the auth refresh and addon check procedures
   if (process.platform === 'win32') {
     const cmd = process.argv[1];
@@ -210,7 +209,7 @@ app.on('ready', () => {
 
       // createWindow();
     } else {
-        // Create splash window
+      // Create splash window
       createSplashWindow();
       // Initialize Storage
 
@@ -263,15 +262,12 @@ app.on('ready', () => {
         });
     }
   } else {
-      log.info('2');
+    log.info('2');
     // Create splash window
     createSplashWindow();
     // Initialize Storage
-    console.log('1');
     initStorage();
-    console.log('here')
     setAppConfig();
-    console.log('there');
     const {
       telemetry,
       beta,

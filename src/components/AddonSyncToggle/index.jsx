@@ -142,8 +142,8 @@ class AddonSyncToggle extends React.Component {
       enabled: true,
       configuring: false,
       status: 'Syncing',
-      syncing: true
-    })
+      syncing: true,
+    });
     ipcRenderer.invoke('sync-from-profile', gameId, gameVersion)
       .then((lastSync) => {
         this.setState({
@@ -154,14 +154,14 @@ class AddonSyncToggle extends React.Component {
         });
         ipcRenderer.send('find-addons-async', gameId, gameVersion);
       })
-      .catch(error => {
+      .catch((error) => {
         this.setState({
           syncing: false,
           error: error.message,
           status: null,
           syncComplete: true,
         });
-      })
+      });
   }
 
   onConfirmOverwrite() {

@@ -2,7 +2,7 @@ import './AddonContextMenu.css';
 
 import { Container, Row, Col } from 'react-bootstrap';
 import * as React from 'react';
-import PropTypes, { checkPropTypes } from 'prop-types';
+import PropTypes from 'prop-types';
 
 class AddonContextMenu extends React.Component {
   constructor(props) {
@@ -83,8 +83,8 @@ class AddonContextMenu extends React.Component {
   }
 
   handleContextMenu(event) {
-    const [
-      firstElem, secondElem, thirdElem, fourthElem, fifthElem, 
+    const [,
+      secondElem, thirdElem, fourthElem, fifthElem,
     ] = event.path;
     event.preventDefault();
     if (event.path.some((e) => e.classList && e.classList.contains('installed-addons-row'))) {
@@ -107,7 +107,7 @@ class AddonContextMenu extends React.Component {
         } else {
           row = fifthElem;
         }
-      }*/
+      } */
       const tableCells = row.children;
 
       const { installedAddons } = this.props;

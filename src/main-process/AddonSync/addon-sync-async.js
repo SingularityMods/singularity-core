@@ -84,44 +84,40 @@ ipcMain.on('toggle-addon-sync', (event, gameId, gameVersion, toggle) => {
   setGameSettings(gameId.toString(), gameS);
 });
 
-ipcMain.handle('sync-from-profile', async (event, gameId, gameVersion) => {
-  return new Promise((resolve,reject) => {
-    if (isAuthenticated()) {
-      log.info('Fetching addon sync profile');
-      const axiosConfig = {
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-          'User-Agent': `Singularity-${app.getVersion()}`,
-          'x-auth': getAccessToken(),
-        },
-      };
-      axios.get(`${AppConfig.API_URL}/user/sync/get?gameId=${gameId}&gameVersion=${gameVersion}`, axiosConfig)
-        .then((res) => {
-          if (res.status === 200 && res.data.success) {
-            log.info('Addon sync profile found');
-            return syncFromProfile(res.data.profile);
-          } if (res.status === 200) {
-            log.info('No addon sync profile found');
-            return createAndSaveSyncProfile({ gameId, gameVersion });
-          }
-          return Promise.reject(new Error('Error searching for sync profile'));
-        })
-        .then(() => {
-          log.info('Sync process complete');
-          return resolve(new Date());
-        })
-        .catch((err) => {
-          log.error('Error handling addon sync');
-          log.error(err);
-          if (err instanceof String) {
-            return reject(new Error(err));
-          } else {
-            return reject(new Error('Error handling addon sync'));
-          }
-        });
-    } else {
-      log.info('User is not authenticated, nothing to sync');
-      return reject(new Error('User not authenticated'));
-    }
-  })
-})
+ipcMain.handle('sync-from-profile', async (event, gameId, gameVersion) => new Promise((resolve, reject) => {
+  if (isAuthenticated()) {
+    log.info('Fetching addon sync profile');
+    const axiosConfig = {
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'User-Agent': `Singularity-${app.getVersion()}`,
+        'x-auth': getAccessToken(),
+      },
+    };
+    return axios.get(`${AppConfig.API_URL}/user/sync/get?gameId=${gameId}&gameVersion=${gameVersion}`, axiosConfig)
+      .then((res) => {
+        if (res.status === 200 && res.data.success) {
+          log.info('Addon sync profile found');
+          return syncFromProfile(res.data.profile);
+        } if (res.status === 200) {
+          log.info('No addon sync profile found');
+          return createAndSaveSyncProfile({ gameId, gameVersion });
+        }
+        return Promise.reject(new Error('Error searching for sync profile'));
+      })
+      .then(() => {
+        log.info('Sync process complete');
+        return resolve(new Date());
+      })
+      .catch((err) => {
+        log.error('Error handling addon sync');
+        log.error(err);
+        if (err instanceof String) {
+          return reject(new Error(err));
+        }
+        return reject(new Error('Error handling addon sync'));
+      });
+  }
+  log.info('User is not authenticated, nothing to sync');
+  return reject(new Error('User not authenticated'));
+}));

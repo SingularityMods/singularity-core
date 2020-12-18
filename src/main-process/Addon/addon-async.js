@@ -246,7 +246,7 @@ ipcMain.on('install-addon', async (event, gameId, gameVersionFlavor, addon, bran
       const trackBranch = addon.trackBranch || 1;
       const autoUpdate = addon.autoUpdate || false;
       const ignoreUpdate = addon.ignoreUpdate || false;
-      installedFile.fileId = installedFile._id
+      installedFile.fileId = installedFile._id;
 
       let updateAvailable = false;
       let updateFile = addon.latestFiles.find((f) => (
@@ -423,7 +423,7 @@ ipcMain.on('uninstall-addon', async (event, gameId, gameVersion, addonId) => {
         log.error(err);
       });
   } else {
-    log.error("Tried uninstalling addon that Singularity didn't know was installed")
+    log.error("Tried uninstalling addon that Singularity didn't know was installed");
     event.sender.send('addon-uninstall-failed', addonId);
   }
 });
@@ -440,7 +440,7 @@ ipcMain.on('update-addon', async (event, gameId, gameVersion, addon) => {
     const latestFile = possibleFiles.reduce((a, b) => (a.fileDate > b.fileDate ? a : b));
     updateAddon(gameId, gameS[gameVersion].addonPath, addon, latestFile)
       .then(() => {
-        latestFile.fileId = latestFile._id
+        latestFile.fileId = latestFile._id;
         const installedAddon = addon;
         installedAddon.updateAvailable = false;
         installedAddon.updateFile = {};

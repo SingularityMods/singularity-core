@@ -96,9 +96,9 @@ function downloadLatestAppVersion(window, version) {
     const tempPath = path.join(app.getPath('temp'), 'Singularity-Update');
     if (!fs.existsSync(tempPath)) fs.mkdirSync(tempPath);
     if (process.platform === 'win32') {
-      let downloadVersion = version
+      let downloadVersion = version;
       if (version.includes('beta')) {
-        downloadVersion = version.replace(/\.([^\.]*)$/, '$1')
+        downloadVersion = version.replace(/\.([^.]*)$/, '$1');
       }
       fileName = `Singularity-${downloadVersion}-full.nupkg`;
       manifestName = 'RELEASES';
@@ -119,11 +119,10 @@ function downloadLatestAppVersion(window, version) {
         manifestName = 'darwin-releases.json';
       }
 
-      
       updateFeedPath = `${AppConfig.PACKAGE_URL}/Mac/${manifestName}`;
-      const json = {"url": `file://${tempPath}/${fileName}`};
-      feedUrl = `file://${tempPath}/feed.json`
-      fs.writeFileSync(tempPath+'/feed.json', JSON.stringify(json))
+      const json = { url: `file://${tempPath}/${fileName}` };
+      feedUrl = `file://${tempPath}/feed.json`;
+      fs.writeFileSync(`${tempPath}/feed.json`, JSON.stringify(json));
     }
     if (fs.existsSync(path.join(tempPath, fileName))) {
       fs.unlinkSync(path.join(tempPath, fileName));
@@ -178,9 +177,9 @@ function runAutoUpdater(window, inStartup) {
         const currentVersion = app.getVersion();
         if (currentVersion.includes('beta')) {
           const index = currentVersion.indexOf('-beta');
-          betaVersion = currentVersion.substring(0,index)
+          betaVersion = currentVersion.substring(0, index);
         }
-        if (currentVersion < latestVersion || (betaVersion && betaVersion === latestVersion) ) {
+        if (currentVersion < latestVersion || (betaVersion && betaVersion === latestVersion)) {
           // Update Available
           log.info(`New Singularity version available: ${latestVersion}`);
           return downloadLatestAppVersion(window, latestVersion)
@@ -208,14 +207,13 @@ function runAutoUpdater(window, inStartup) {
                 if (inStartup) {
                   log.info('Restarting Singularity to install update');
                   window.close();
-                  autoUpdater.quitAndInstall();
-                } else {
-                  setAppData('updatePending', true);
-                  if (window) {
-                    window.webContents.send('update-pending');
-                  }
-                  return resolve();
+                  return autoUpdater.quitAndInstall();
                 }
+                setAppData('updatePending', true);
+                if (window) {
+                  window.webContents.send('update-pending');
+                }
+                return resolve();
               });
 
               try {
@@ -236,13 +234,12 @@ function runAutoUpdater(window, inStartup) {
         if (fs.existsSync(tempPath)) {
           return fsPromises.rmdir(tempPath, { recursive: true })
             .then(() => resolve())
-            .catch(error => {
+            .catch((error) => {
               log.error(error);
               return resolve();
-            })
-        } else {
-          return resolve();
+            });
         }
+        return resolve();
       })
       .catch((err) => {
         log.error(err);

@@ -46,7 +46,7 @@ class SplashWindow extends React.Component {
     } if (state === 'update-pending') {
       return 'Installing Update';
     } if (state === 'error') {
-      return 'Error...'
+      return 'Error...';
     }
     return 'Hang Tight...';
   }

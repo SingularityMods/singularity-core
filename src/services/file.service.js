@@ -1133,7 +1133,10 @@ function syncFromProfile(profile) {
         addonToRemove.gameVersion = gameVersion;
         log.info(`Addon ${addonToRemove.addonName} not in sync profile, add to remove list`);
         syncedAddonsToRemove.push(addonToRemove);
-      } else if (addon.installedFile.fileId !== profileMatch.fileId && addon.installedFile._id !== profileMatch.fileId) {
+      } else if (
+        addon.installedFile.fileId !== profileMatch.fileId
+          && addon.installedFile._id !== profileMatch.fileId
+      ) {
         log.info(`Addon ${addon.addonName} needs to be updated from profile, add to list`);
         profileMatch.gameVersion = gameVersion;
         profileMatch.gameId = gameId;
@@ -1149,7 +1152,7 @@ function syncFromProfile(profile) {
         toAdd.gameId = gameId;
         syncedAddonsToInstall.push(toAdd);
       }
-    })
+    });
     if (win) {
       win.webContents.send('sync-status', gameId, gameVersion, 'handling-addons', null, null);
     }
@@ -1200,7 +1203,6 @@ function uninstallAddon(addonDir, addon) {
       .catch((e) => {
         log.error(e);
       });
-    
   });
 }
 
@@ -1352,7 +1354,7 @@ function _checkForGameVersion(gameObj) {
   }
   let checkPath = selectedPath;
   if (selectedPath.includes('%USERDATA%')) {
-    checkPath = path.join(app.getPath('userData'),'../',selectedPath.substring(11))
+    checkPath = path.join(app.getPath('userData'), '../', selectedPath.substring(11));
   }
   return new Promise((resolve, reject) => {
     const possibleLocations = [];
@@ -1533,11 +1535,11 @@ function _readAddonDir(manifestFileExt, p, d) {
     fs.promises.readdir(addonDir)
       .then((addonFiles) => {
         for (let i = 0; i < addonFiles.length; i += 1) {
-          const fileName = addonFiles[i]
+          const fileName = addonFiles[i];
           const filePath = path.join(addonDir, fileName);
 
           if (filePath.indexOf(manifestFileExt) >= 0) {
-            if (addonDir.includes(fileName.slice(0,-4))) {
+            if (addonDir.includes(fileName.slice(0, -4))) {
               tocFile = filePath;
               addonFileHashes.push(hasha.fromFileSync(tocFile, { algorithm: 'md5' }));
               break;
@@ -1553,7 +1555,7 @@ function _readAddonDir(manifestFileExt, p, d) {
             if (process.platform === 'darwin') {
               lineContents = lineContents.replace(/\\/g, '/');
             }
-            let potentialFile = path.join(addonDir, lineContents.trim())
+            const potentialFile = path.join(addonDir, lineContents.trim());
             if (fs.existsSync(potentialFile)) {
               try {
                 addonFileHashes.push(hasha.fromFileSync(potentialFile, { algorithm: 'md5' }));

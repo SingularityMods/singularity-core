@@ -485,7 +485,7 @@ BackupManagementDialog.propTypes = {
 
 BackupManagementDialog.defaultProps = {
   backupState: null,
-  latestCloudBackup: null
-}
+  latestCloudBackup: null,
+};
 
 export default BackupManagementDialog;

@@ -76,8 +76,8 @@ export default class HomePage extends React.Component {
                 </p>
                 <p className="release-note-bullet">
                   {' '}
-                  - Singularity's app installation, update, and startup processes have been
-                   revamped to provide additional information as they progresses. 
+                  - Singularity&apos;s app installation, update, and startup processes have been
+                  revamped to provide additional information as they progresses.
                 </p>
                 <p className="release-note-bullet">
                   {' '}
@@ -97,10 +97,16 @@ export default class HomePage extends React.Component {
                   addon&apos;s avatar instead of the addon&apos;s primary category avatar.
                 </p>
                 <h5 className="release-note-section-header">Bug Fixes:</h5>
-                <p className="release-note-bullet"> - Fixed an issue that could cause the addon
-                 sync feature to not correctly install newly-synced addons on other machines.</p>
-                <p className="release-note-bullet"> - Fixed an issue that could cause addon
-                 installation to fail for addons that only have alpha or beta releases.</p>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Fixed an issue that could cause the addon
+                  sync feature to not correctly install newly-synced addons on other machines.
+                </p>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Fixed an issue that could cause addon
+                  installation to fail for addons that only have alpha or beta releases.
+                </p>
                 <hr />
                 <h5>
                   1.1.0

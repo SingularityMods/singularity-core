@@ -1,12 +1,10 @@
 import {
-  app, ipcMain, autoUpdater, dialog,
+  app, ipcMain, dialog,
 } from 'electron';
 import fs from 'fs';
 import log from 'electron-log';
 import path from 'path';
 import ncp from 'ncp';
-
-import AppConfig from '../../config/app.config';
 
 import {
   enableSentry,
@@ -44,8 +42,8 @@ ipcMain.on('set-app-settings', (event, appSettings) => {
     } else if (!appSettings.telemetry) {
       disableSentry();
     }
-    const win = getMainBrowserWindow()
-    runAutoUpdater(win, false)
+    const win = getMainBrowserWindow();
+    runAutoUpdater(win, false);
   }
   if (prevSettings.addonUpdateInterval !== appSettings.addonUpdateInterval) {
     setAddonUpdateInterval();
