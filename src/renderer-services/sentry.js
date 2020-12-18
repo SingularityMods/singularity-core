@@ -13,7 +13,7 @@ function initSentry() {
     appName: 'singularity-core',
     autoSessionTracking: true,
     integrations: [new TracingIntegrations.BrowserTracing()],
-    tracesSampleRate: 1,
+    tracesSampleRate: 0.2,
     beforeSend: _beforeSend,
   });
 }
