@@ -96,7 +96,11 @@ function downloadLatestAppVersion(window, version) {
     const tempPath = path.join(app.getPath('temp'), 'Singularity-Update');
     if (!fs.existsSync(tempPath)) fs.mkdirSync(tempPath);
     if (process.platform === 'win32') {
-      fileName = `Singularity-${version}-full.nupkg`;
+      let downloadVersion = version
+      if (version.includes('beta')) {
+        downloadVersion = version.replace(/\.([^\.]*)$/, '$1')
+      }
+      fileName = `Singularity-${downloadVersion}-full.nupkg`;
       manifestName = 'RELEASES';
       if (beta) {
         updateFilePath = `${AppConfig.PACKAGE_URL}/Win/Beta/${fileName}`;
@@ -132,7 +136,6 @@ function downloadLatestAppVersion(window, version) {
     const feedOpts = {
       directory: tempPath,
     };
-    log.info(updateFilePath);
     download(appWindow, updateFilePath, fileOpts)
       .then(() => {
         log.info('Update downloaded');
@@ -182,7 +185,7 @@ function runAutoUpdater(window, inStartup) {
             .then((feedUrl) => {
               autoUpdater.setFeedURL(feedUrl);
 
-              autoUpdater.on('error', (event, error) => {
+              autoUpdater.on('error', (error) => {
                 log.error(error);
                 return resolve();
               });
@@ -202,12 +205,14 @@ function runAutoUpdater(window, inStartup) {
               autoUpdater.on('update-downloaded', () => {
                 if (inStartup) {
                   log.info('Restarting Singularity to install update');
+                  window.close();
                   autoUpdater.quitAndInstall();
                 } else {
                   setAppData('updatePending', true);
                   if (window) {
                     window.webContents.send('update-pending');
                   }
+                  return resolve();
                 }
               });
 
