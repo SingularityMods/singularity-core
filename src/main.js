@@ -18,7 +18,7 @@ import {
   checkForSquirrels,
   runAutoUpdater,
 } from './services/electron.service';
-import { refreshTokens } from './services/auth.service';
+import { isAuthenticated, refreshTokens } from './services/auth.service';
 import {
   findAndUpdateAddons,
   handleSync,
@@ -100,6 +100,9 @@ function createSplashWindow() {
 function showMainWindow() {
   if (mainWindowReady) {
     log.info('Hide splash and show main window');
+    if (isAuthenticated()) {
+      mainWindow.webContents.send('auth-event', 'refresh', true, null);
+    }
     splash.close();
     mainWindow.show();
   } else {
