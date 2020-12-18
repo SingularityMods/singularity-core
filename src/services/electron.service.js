@@ -106,8 +106,8 @@ function downloadLatestAppVersion(window, version) {
         updateFilePath = `${AppConfig.PACKAGE_URL}/Win/Beta/${fileName}`;
         updateFeedPath = `${AppConfig.PACKAGE_URL}/Win/Beta/${manifestName}`;
       } else {
-        updateFilePath = `${AppConfig.PACKAGE_URL}/Win/Alpha/${fileName}`;
-        updateFeedPath = `${AppConfig.PACKAGE_URL}/Win/Alpha/${manifestName}`;
+        updateFilePath = `${AppConfig.PACKAGE_URL}/Win/${fileName}`;
+        updateFeedPath = `${AppConfig.PACKAGE_URL}/Win/${manifestName}`;
       }
       feedUrl = { url: tempPath };
     } else if (process.platform === 'darwin') {
