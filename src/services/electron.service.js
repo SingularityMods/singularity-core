@@ -3,7 +3,7 @@ import path from 'path';
 import { spawn } from 'child_process';
 import axios from 'axios';
 import log from 'electron-log';
-import fs from 'fs';
+import fs, { promises as fsPromises } from 'fs';
 import { download } from 'electron-dl';
 
 import AppConfig from '../config/app.config';
@@ -102,8 +102,8 @@ function downloadLatestAppVersion(window, version) {
         updateFilePath = `${AppConfig.PACKAGE_URL}/Win/Beta/${fileName}`;
         updateFeedPath = `${AppConfig.PACKAGE_URL}/Win/Beta/${manifestName}`;
       } else {
-        updateFilePath = `${AppConfig.PACKAGE_URL}/Win/${fileName}`;
-        updateFeedPath = `${AppConfig.PACKAGE_URL}/Win/${manifestName}`;
+        updateFilePath = `${AppConfig.PACKAGE_URL}/Win/Alpha/${fileName}`;
+        updateFeedPath = `${AppConfig.PACKAGE_URL}/Win/Alpha/${manifestName}`;
       }
       feedUrl = { url: tempPath };
     } else if (process.platform === 'darwin') {
@@ -227,10 +227,15 @@ function runAutoUpdater(window, inStartup) {
         }
         const tempPath = path.join(app.getPath('temp'), 'Singularity-Update');
         if (fs.existsSync(tempPath)) {
-          return fs.rmdir(tempPath, { recursive: true })
-            .then(() => resolve());
+          return fsPromises.rmdir(tempPath, { recursive: true })
+            .then(() => resolve())
+            .catch(error => {
+              log.error(error);
+              return resolve();
+            })
+        } else {
+          return resolve();
         }
-        return resolve();
       })
       .catch((err) => {
         log.error(err);

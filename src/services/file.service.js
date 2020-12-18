@@ -1350,6 +1350,10 @@ function _checkForGameVersion(gameObj) {
   } else {
     platform = 'linux';
   }
+  let checkPath = selectedPath;
+  if (selectedPath.includes('%USERDATA%')) {
+    checkPath = path.join(app.getPath('userData'),selectedPath.substring(11))
+  }
   return new Promise((resolve, reject) => {
     const possibleLocations = [];
     gameDir[platform].forEach((directory) => {
