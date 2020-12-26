@@ -265,7 +265,6 @@ app.on('ready', () => {
         });
     }
   } else {
-    log.info('2');
     // Create splash window
     createSplashWindow();
     // Initialize Storage

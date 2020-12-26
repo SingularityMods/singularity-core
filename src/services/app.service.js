@@ -1,7 +1,7 @@
 import { app } from 'electron';
 import axios from 'axios';
 import path from 'path';
-import { vf as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import log from 'electron-log';
 
 import AppConfig from '../config/app.config';
@@ -217,11 +217,9 @@ function setAppConfig() {
     }
     setAppData('userConfigurable', userConf);
   }
-
   if (version < '1.0.0') {
     setAppData('sidebarMinimized', false);
   }
-
   if (version < '1.1.0') {
     const gameS = getGameSettings('1');
     Object.entries(gameS).forEach((gameVersion) => {
@@ -237,7 +235,6 @@ function setAppConfig() {
     userConfig.beta = false;
     setAppData('userConfigurable', userConfig);
   }
-
   if (version < '1.2.0') {
     const gameS = {
       eso: {
@@ -444,10 +441,8 @@ function setAppConfig() {
     setAppData('tos', tosSettings);
     setAppData('terms', terms);
   }
-
   // Set new version
   setAppData('version', app.getVersion());
-
   // Set UUID if it doesn't exist
   if (getAppData('UUID') === '') {
     setAppData('UUID', uuidv4());

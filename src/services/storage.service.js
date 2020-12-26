@@ -43,7 +43,7 @@ function initStorage() {
     const filePath = path.join(userDataPath, 'category-data.json');
     categories = JSON.parse(fs.readFileSync(filePath));
   } catch (error) {
-    log.info('Using default game data');
+    log.info('Using default Category data');
     categories = categoryDefaults;
   }
   /*
