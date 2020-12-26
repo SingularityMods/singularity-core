@@ -769,11 +769,13 @@ class InstalledAddonsWindow extends React.Component {
     }
 
     function addonUpdateAvailable(addon) {
-      const latest = addon.latestFiles
-        .filter((file) => (
-          file.releaseType <= addon.trackBranch && file.gameVersionFlavor === addonVersion
-        ))
-        .reduce((a, b) => (a.fileDate > b.fileDate ? a : b));
+      const possibleFiles = addon.latestFiles.filter((file) => (
+        file.releaseType <= addon.trackBranch && file.gameVersionFlavor === addonVersion
+      ));
+      let latest;
+      if (possibleFiles && possibleFiles.length > 0) {
+        latest = possibleFiles.reduce((a, b) => (a.fileDate > b.fileDate ? a : b));
+      }
       if (latest && latest.fileDate > addon.installedFile.fileDate) {
         return true;
       }
