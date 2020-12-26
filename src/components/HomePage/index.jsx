@@ -107,6 +107,15 @@ export default class HomePage extends React.Component {
                   - Fixed an issue that could cause addon
                   installation to fail for addons that only have alpha or beta releases.
                 </p>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Fixed an issue that could cause users to become deauthenticated.
+                </p>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Fixed an issue that could cause the app to display a blank white page when
+                  browsing installed addons.
+                </p>
                 <hr />
                 <h5>
                   1.1.0
