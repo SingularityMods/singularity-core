@@ -260,7 +260,7 @@ class BackupRestoreDialog extends React.Component {
                   </Row>
                   <Row>
                     <Col xs={12} className="restore-backup-detail game-version">
-                      <span className="restore-backup-detail-label">Game Version:</span>
+                      <span className="restore-backup-detail-label">Game Version: </span>
                       {getGameVersionName(backup.gameVersion)}
                     </Col>
                   </Row>
