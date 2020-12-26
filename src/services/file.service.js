@@ -881,7 +881,7 @@ function installAddon(gameId, addonDir, addon) {
     }
     const tempDir = path.join(app.getPath('temp'), '/singularity');
     const win = getMainBrowserWindow();
-    download(win, addon.downloadUrl, { directory: tempDir })
+    download(win, addon.downloadUrl, { directory: tempDir, saveAs: false, })
       .then((dItem) => {
         const savePath = dItem.getSavePath();
         extract(savePath, { dir: addonDir })
@@ -1016,7 +1016,7 @@ function restoreGranularBackup(backup, includeSettings) {
             win.webContents.send('restore-status', 'Downloading Settings Backup');
           }
           log.info('Downloading settings from the cloud');
-          return download(win, settings, { directory: tempDir })
+          return download(win, settings, { directory: tempDir, saveAs: false, })
             .then((dItem) => {
               log.info('Settings file downloaded');
               const savePath = dItem.getSavePath();
@@ -1221,7 +1221,7 @@ function updateAddon(gameId, addonDir, addon, latestFile) {
 
     const win = getMainBrowserWindow();
 
-    download(win, latestFile.downloadUrl, { directory: tempDir })
+    download(win, latestFile.downloadUrl, { directory: tempDir, saveAs: false, })
       .then((dItem) => {
         const savePath = dItem.getSavePath();
         extract(savePath, { dir: addonDir })
@@ -1465,7 +1465,7 @@ function _installAddonFromSync(addon) {
     }
     const tempDir = path.join(app.getPath('temp'), '/singularity');
 
-    download(win, addon.downloadUrl, { directory: tempDir })
+    download(win, addon.downloadUrl, { directory: tempDir, saveAs: false, })
       .then((dItem) => {
         const savePath = dItem.getSavePath();
         extract(savePath, { dir: addonPath })
@@ -1593,7 +1593,7 @@ function _restoreAddonFile(gameId, gameVersion, addon) {
     }
     const tempDir = path.join(app.getPath('temp'), '/singularity');
 
-    download(win, addon.downloadUrl, { directory: tempDir })
+    download(win, addon.downloadUrl, { directory: tempDir, saveAs: false, })
       .then((dItem) => {
         const savePath = dItem.getSavePath();
         extract(savePath, { dir: addonPath })
