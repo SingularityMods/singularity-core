@@ -133,9 +133,11 @@ function downloadLatestAppVersion(window, version) {
     const fileOpts = {
       onProgress: _relayProgress,
       directory: tempPath,
+      saveAs: false,
     };
     const feedOpts = {
       directory: tempPath,
+      saveAs: false,
     };
     download(appWindow, updateFilePath, fileOpts)
       .then(() => {
