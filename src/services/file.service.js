@@ -1060,6 +1060,7 @@ function setAddonUpdateInterval() {
   const appD = getAppData('userConfigurable');
   let checkInterval = 1000 * 60 * 60;
   if (appD.addonUpdateInterval) {
+    console.log(appD.addonUpdateInterval);
     switch (appD.addonUpdateInterval) {
       case '15m':
         checkInterval = 1000 * 60 * 15;
@@ -1074,7 +1075,7 @@ function setAddonUpdateInterval() {
         checkInterval = 1000 * 60 * 60 * 3;
         break;
       case 'never':
-        checkInterval = 1000 * 60 * 60 * 24 * 365;
+        checkInterval = null;
         break;
       default:
         checkInterval = 1000 * 60 * 60;
@@ -1088,25 +1089,27 @@ function setAddonUpdateInterval() {
   if (updateInterval) {
     clearInterval(updateInterval);
   }
-  updateInterval = setInterval(() => {
-    // checkAddons();
-    log.info('Starting addon auto refresh and update');
-    findAndUpdateAddons()
-      .then((profiles) => {
-        updateSyncProfiles([...profiles])
-          .then(() => {
-            log.info('All sync profiles updated');
-          })
-          .catch((syncError) => {
-            log.error('Error updating sync profiles');
-            log.error(syncError);
-          });
-      })
-      .catch((updateError) => {
-        log.error('Error while auto-udpating addons');
-        log.error(updateError);
-      });
-  }, checkInterval);
+  if (checkInterval) {
+    updateInterval = setInterval(() => {
+      // checkAddons();
+      log.info('Starting addon auto refresh and update');
+      findAndUpdateAddons()
+        .then((profiles) => {
+          updateSyncProfiles([...profiles])
+            .then(() => {
+              log.info('All sync profiles updated');
+            })
+            .catch((syncError) => {
+              log.error('Error updating sync profiles');
+              log.error(syncError);
+            });
+        })
+        .catch((updateError) => {
+          log.error('Error while auto-udpating addons');
+          log.error(updateError);
+        });
+    }, checkInterval);
+  }
 }
 
 function syncFromProfile(profile) {
