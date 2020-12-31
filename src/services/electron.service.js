@@ -7,6 +7,7 @@ import fs, { promises as fsPromises } from 'fs';
 import { download } from 'electron-dl';
 
 import AppConfig from '../config/app.config';
+
 import {
   getAppData,
   setAppData,

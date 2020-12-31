@@ -93,10 +93,10 @@ class AddonVersionTable extends React.Component {
           return (
             <span className="label label-danger">Updating...</span>
           );
-        } if (extraData.installedAddon
-                            && extraData.installedAddon.fileName === row.fileName
-                            && extraData.installedAddon.gameVersion === row.gameVersion[0]
-                            && extraData.installedAddon.fileDate === row.fileDate) {
+        } if (extraData.installedAddon && extraData.installedAddon.installedFile
+              && extraData.installedAddon.installedFile.fileName === row.fileName
+              && extraData.installedAddon.installedFile.gameVersion === row.gameVersion[0]
+              && extraData.installedAddon.installedFile.fileDate === row.fileDate) {
           return (
             <UpdateAddonButton handleClick={() => { }} disabled type="Installed" />
           );

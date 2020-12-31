@@ -19,6 +19,7 @@
     --settings-item-background-color: white;
     --context-menu-divider: #535353;
     --success-green: #00cc00;
+    --alert-dialog-border: #b30000;
 }
 
 [data-theme^="dark"],
@@ -42,4 +43,5 @@
     --settings-item-background-color: #271550;
     --context-menu-divider: #535353;
     --success-green: #00cc00;
+    --alert-dialog-border: #b30000;
 }

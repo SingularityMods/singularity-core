@@ -15,15 +15,11 @@
     height: 50px;
     min-width: 200px;
 }
-/*
-.AddonContextMenu .row {
-    display: block;
-}*/
 
-    .context-menu-header div.col-12,
-    .context-menu-body div.col-12{
-        padding: 0;
-    }
+.context-menu-header div.col-12,
+.context-menu-body div.col-12{
+    padding: 0;
+}
 
 .context-menu-item{
     cursor: pointer;
@@ -105,7 +101,9 @@
 
 .context-menu-branch-menu {
     position: absolute;
-    right: -202px;
+    /*right: -202px;*/
+    right: -142px;
+    width: 140px;
     top: 55px;
     border: none;
     border-radius: 5px 5px 0 0;
@@ -116,6 +114,10 @@
     max-width: fit-content;
     color: var(--text-color);
     padding: 0;
+}
+
+.context-menu-branch-menu .context-menu-header{
+  min-width: 140px;
 }
 
 .context-menu-branch-menu.directory-menu {
@@ -129,6 +131,15 @@
       top: 55px;
       width: 140px;
   }
+
+  .context-menu-sub-header-title {
+    font-size: 0.8rem;
+    margin-top: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    text-align: center;
+}
+
 
 .context-menu-branch-menu.directory-menu .context-menu-sub-header-title {
     width: 180px;
@@ -145,13 +156,6 @@
     border-bottom: 1px solid var(--context-menu-divider);
 }
 
-.context-menu-sub-header-title {
-    font-size: 0.8rem;
-    margin-top: 5px;
-    margin-left: 10px;
-    margin-right: 10px;
-    text-align: center;
-}
 
 .sub-menu-item .context-menu-item-lable {
   margin-left: 35px;

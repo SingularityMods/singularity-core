@@ -95,6 +95,7 @@ class GameWindow extends React.Component {
         installedVersions,
         selectedGameVersion,
         gameId,
+        selectedAddon: '',
       });
     }
   }

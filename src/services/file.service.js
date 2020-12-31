@@ -1,4 +1,4 @@
-import { app, net } from 'electron';
+import { app } from 'electron';
 import { download } from 'electron-dl';
 import extract from 'extract-zip';
 import { ncp } from 'ncp';
@@ -11,7 +11,6 @@ import PromisePool from 'es6-promise-pool';
 import axios from 'axios';
 
 import log from 'electron-log';
-import AppConfig from '../config/app.config';
 import { getMainBrowserWindow } from './electron.service';
 
 import {
@@ -20,18 +19,30 @@ import {
 
 } from './auth.service';
 import {
+  getAddonInfo,
+  getAddonDownloadUrl,
+  getAddonsFromFingerprints,
+} from './singularity.service';
+import {
+  addDependencies,
+  removeDependencies,
   getGameSettings,
   getAppData,
   getGameData,
   getInstalledGames,
   setGameSettings,
+  handleFingerprintResponse,
   setAppData,
   deleteBackupInfo,
   getLocalAddonSyncProfile,
+  updateDependencyInfo,
+  updateInstalledAddonInfo,
+  removeInstalledAddonInfo,
+  getInstallDepsSetting,
+  getUninstallDepsSetting,
 } from './storage.service';
 
 let syncing = false;
-let error = null;
 
 const snycProfilesToProcess = [];
 const syncProfilesToCreate = [];
@@ -44,148 +55,10 @@ let cloudAddonsToRestore = [];
 const syncedAddonsToInstall = [];
 const syncedAddonsToRemove = [];
 
+const dependenciesToInstall = [];
+const dependenciesToRemove = [];
+
 let updateInterval;
-
-function backupAddons(gameId, gameVersion, addonDir, backupDir) {
-  return new Promise((resolve, reject) => {
-    if (gameId === 1) {
-      // World of Warcraft
-
-      if (!fs.existsSync(addonDir)) {
-        reject(new Error("Addon directory duesn't exist"));
-      }
-      const destinationPath = path.join(backupDir, 'backup', gameId.toString(), gameVersion);
-
-      if (!fs.existsSync(destinationPath)) {
-        try {
-          fs.mkdirSync(destinationPath, { recursive: true });
-        } catch (err) {
-          reject(new Error('Unable to create backup directory'));
-        }
-      }
-
-      const dstFile = path.join(destinationPath, 'addons.zip');
-
-      if (fs.existsSync(dstFile)) {
-        fs.unlink(dstFile, (err) => {
-          if (err) {
-            log.error(err);
-            reject(err);
-          }
-          const output = fs.createWriteStream(dstFile);
-          const archive = archiver('zip', {
-            zlib: { level: 9 },
-          });
-          output.on('close', () => {
-            log.info('Addon Backup Complete');
-            resolve({});
-          });
-
-          archive.on('warning', (archiveWarn) => {
-            if (archiveWarn.code === 'ENOENT') {
-              log.error(archiveWarn);
-            } else {
-              // throw error
-              log.error(archiveWarn);
-              reject(archiveWarn);
-            }
-          });
-
-          archive.on('error', (archiveErr) => {
-            log.error(archiveErr);
-            reject(archiveErr);
-          });
-
-          archive.pipe(output);
-          log.info('Addon Backup Started');
-          archive.directory(addonDir, false);
-          archive.finalize();
-        });
-      } else {
-        const output = fs.createWriteStream(dstFile);
-        const archive = archiver('zip', {
-          zlib: { level: 9 },
-        });
-        output.on('close', () => {
-          log.info('Addon Backup Complete');
-          resolve({});
-        });
-
-        archive.on('warning', (err) => {
-          if (err.code === 'ENOENT') {
-            log.error(err);
-          } else {
-            // throw error
-            log.error(err);
-            reject(err);
-          }
-        });
-
-        archive.on('error', (err) => {
-          log.error(err);
-          reject(new Error('Error compressing backup'));
-        });
-
-        archive.pipe(output);
-        log.info('Addon Backup Started');
-        archive.directory(addonDir, false);
-        archive.finalize();
-      }
-    } else {
-      reject(new Error('Unknown game ID'));
-    }
-  });
-}
-
-function backupAddonSettings(gameId, gameVersion, settingsDir, backupDir) {
-  return new Promise((resolve, reject) => {
-    if (gameId === 1) {
-      // World of Warcraft
-
-      if (!fs.existsSync(settingsDir)) {
-        reject(new Error("Settings directory doesn't exist"));
-      }
-      const destinationPath = path.join(backupDir, 'backup', gameId.toString(), gameVersion);
-
-      if (!fs.existsSync(destinationPath)) {
-        try {
-          fs.mkdirSync(destinationPath, { recursive: true });
-        } catch (err) {
-          reject(new Error('Unable to create backup directory'));
-        }
-      }
-      const output = fs.createWriteStream(`${destinationPath}/settings.zip`);
-      const archive = archiver('zip', {
-        zlib: { level: 9 },
-      });
-      output.on('close', () => {
-        resolve({});
-      });
-
-      archive.on('warning', (err) => {
-        if (err.code === 'ENOENT') {
-          log.error(err);
-        } else {
-          // throw error
-          log.error(err);
-          reject(err);
-        }
-      });
-
-      archive.on('error', (err) => {
-        log.error(err);
-        reject(err);
-      });
-
-      archive.pipe(output);
-
-      archive.directory(settingsDir, false);
-      archive.finalize();
-    } else {
-      reject(new Error('Unknown game ID'));
-    }
-  });
-}
 
 function createAndSaveSyncProfile(obj) {
   return new Promise((resolve, reject) => {
@@ -514,16 +387,11 @@ async function getLocalSyncProfile(gameId, gameVersion) {
   return getLocalAddonSyncProfile(gameId, gameVersion);
 }
 
-function getSyncError() {
-  return error;
-}
-
 async function getSyncProfilesFromCloud(enabled = []) {
   return new Promise((resolve, reject) => {
     if (isAuthenticated()) {
       log.info('Fetching cloud sync profiles');
       syncing = true;
-      error = null;
       const axiosConfig = {
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
@@ -550,13 +418,11 @@ async function getSyncProfilesFromCloud(enabled = []) {
           log.error('Error fetching addon sync profiles');
           log.error(err);
           syncing = false;
-          error = 'Error fetching sync profile from cloud';
           reject(new Error('Error fetching addon sync profiles from the cloud'));
         });
     } else {
       log.info('User is not authenticated, skipping addon sync profile search');
       syncing = false;
-      error = "Not authenticated, can't retrieve profile";
       resolve('User is not authenticated, skipping addon sync profile search');
     }
   });
@@ -590,7 +456,6 @@ function handleSync() {
       })
       .then(() => {
         syncing = false;
-        error = null;
         resolve();
       })
       .catch((err) => {
@@ -607,270 +472,26 @@ function handleSync() {
 // and fingerprints and attempt to identify the installed addons via the api
 function identifyAddons(gameId, gameVersion, hashMap) {
   return new Promise((resolve, reject) => {
-    const gameS = getGameSettings(gameId.toString());
-    const { gameVersions } = getGameData(gameId.toString());
-    const { addonVersion } = gameVersions[gameVersion];
-    const win = getMainBrowserWindow();
     const hashes = [];
     Object.entries(hashMap).forEach(([, hash]) => {
       hashes.push(hash);
     });
     log.info(`Submitting addon identification request for ${gameVersion}`);
-    const postData = JSON.stringify({ fingerprints: hashes });
-    const request = net.request({
-      method: 'POST',
-      url: `${AppConfig.API_URL}/addons/fingerprint`,
-    });
-    request.setHeader('x-app-uuid', getAppData('UUID'));
-    request.setHeader('x-app-platform', process.platform);
-    let body = '';
-    request.on('error', (requestErr) => {
-      log.error(`Error while identifying addons for ${gameVersion}`);
-      log.error(requestErr);
-      if (win) {
-        win.webContents.send('no-addons-found', gameVersion);
-      }
-      reject(new Error(`Error identifying addons for ${gameVersion}`));
-    });
-    request.on('response', (response) => {
-      if (response.statusCode === 404) {
-        log.info(`Received 404 response when identifying addons for for ${gameVersion}`);
-        const currentlyInstalledAddons = gameS[gameVersion].installedAddons;
-        const identifiedAddons = [];
-        const unknownDirs = [];
-        const identifiedDirs = [];
-        Object.entries(hashMap).forEach(([dir]) => {
-          if (!identifiedDirs.includes(dir)) {
-            unknownDirs.push(dir);
-          }
-        });
-
-        if (unknownDirs.length > 0) {
-          currentlyInstalledAddons.forEach((addon) => {
-            const addonDirs = [];
-            addon.modules.forEach((module) => {
-              addonDirs.push(module.folderName);
-            });
-            if (addonDirs.every((v) => unknownDirs.includes(v))) {
-              const identifiedAddon = addon;
-              identifiedAddon.unknownUpdate = true;
-              if (!identifiedAddons.some((e) => e.addonId === identifiedAddon.addonId)) {
-                log.info(`Unknown update installed for addon ${identifiedAddon.addonName}`);
-                identifiedAddons.push(identifiedAddon);
-              }
-            } else if (addonDirs.some((v) => unknownDirs.includes(v))) {
-              const identifiedAddon = addon;
-              identifiedAddon.brokenInstallation = true;
-              if (!identifiedAddons.some((e) => e.addonId === identifiedAddon.addonId)) {
-                log.info(`Potentially broken installation for addon ${identifiedAddon.addonName}`);
-                identifiedAddons.push(identifiedAddon);
-              }
-            }
-          });
-        }
-
-        gameS[gameVersion].installedAddons = identifiedAddons;
-        gameS[gameVersion].unknownAddonDirs = unknownDirs;
-        setGameSettings(gameId.toString(), gameS);
-        if (win) {
-          win.webContents.send('no-addons-found', gameVersion);
-        }
-        resolve({ gameId, gameVersion, addons: identifiedAddons });
-      } else {
-        response.on('data', (chunk) => {
-          body += chunk.toString();
-        });
-        response.on('end', () => {
-          if (body) {
-            log.info(`Received data in response when identifying addons for for ${gameVersion}`);
-            const addons = JSON.parse(body);
-            const currentlyInstalledAddons = gameS[gameVersion].installedAddons;
-
-            const identifiedAddons = [];
-            const unknownDirs = [];
-            const identifiedDirs = [];
-
-            if (addons && addons.length > 0) {
-              log.info(`At least one addon identified for ${gameVersion}`);
-              addons.forEach((addon) => {
-                const identifiedAddon = addon;
-                const installedVersion = currentlyInstalledAddons.find((a) => (
-                  a.addonId === identifiedAddon.addonId
-                ));
-                if (installedVersion) {
-                  identifiedAddon.trackBranch = installedVersion.trackBranch
-                    || gameS[gameVersion].defaults.trackBranch;
-                  identifiedAddon.autoUpdate = installedVersion.autoUpdate
-                    || gameS[gameVersion].defaults.autoUpdate;
-                  identifiedAddon.ignoreUpdate = installedVersion.ignoreUpdate || false;
-                } else {
-                  identifiedAddon.trackBranch = gameS[gameVersion].defaults.trackBranch;
-                  identifiedAddon.autoUpdate = gameS[gameVersion].defaults.autoUpdate;
-                  identifiedAddon.ignoreUpdate = false;
-                }
-
-                identifiedAddon.updateAvailable = false;
-                identifiedAddon.updateFile = {};
-
-                identifiedAddon.unknownUpdate = false;
-                identifiedAddon.brokenInstallation = false;
-                const possibleFiles = identifiedAddon.latestFiles.filter((file) => (
-                  file.releaseType <= identifiedAddon.trackBranch
-                  && file.gameVersionFlavor === addonVersion
-                ));
-                if (possibleFiles && possibleFiles.length > 0) {
-                  const latestFile = possibleFiles.reduce((a, b) => (
-                    a.fileDate > b.fileDate ? a : b
-                  ));
-                  if (latestFile.fileDate > identifiedAddon.installedFile.fileDate) {
-                    identifiedAddon.updateAvailable = true;
-                    identifiedAddon.updateFile = latestFile;
-                  }
-                }
-
-                identifiedAddons.push(identifiedAddon);
-                if (identifiedAddon.modules && identifiedAddon.modules.length > 0) {
-                  identifiedAddon.modules.forEach((module) => {
-                    identifiedDirs.push(module.folderName);
-                  });
-                }
-              });
-              Object.entries(hashMap).forEach(([dir]) => {
-                if (!identifiedDirs.includes(dir)) {
-                  unknownDirs.push(dir);
-                }
-              });
-
-              if (unknownDirs.length > 0) {
-                currentlyInstalledAddons.forEach((addon) => {
-                  const addonDirs = [];
-                  addon.modules.forEach((module) => {
-                    addonDirs.push(module.folderName);
-                  });
-                  if (addonDirs.every((v) => unknownDirs.includes(v))) {
-                    const identifiedAddon = addon;
-                    identifiedAddon.unknownUpdate = true;
-                    if (!identifiedAddons.some((e) => e.addonId === identifiedAddon.addonId)) {
-                      log.info(`Unknown update installed for addon ${identifiedAddon.addonName}`);
-                      identifiedAddons.push(identifiedAddon);
-                    }
-                  } else if (addonDirs.some((v) => unknownDirs.includes(v))) {
-                    const identifiedAddon = addon;
-                    identifiedAddon.brokenInstallation = true;
-                    if (!identifiedAddons.some((e) => e.addonId === identifiedAddon.addonId)) {
-                      log.info(`Potentially broken installation for addon ${identifiedAddon.addonName}`);
-                      identifiedAddons.push(identifiedAddon);
-                    }
-                  }
-                });
-              }
-
-              gameS[gameVersion].installedAddons = identifiedAddons;
-              gameS[gameVersion].unknownAddonDirs = unknownDirs;
-              setGameSettings(gameId.toString(), gameS);
-              log.info(`${gameVersion} - ${identifiedAddons.length} addons installed & ${unknownDirs.length} directories unknown`);
-              if (win) {
-                win.webContents.send('addons-found', identifiedAddons, gameVersion);
-              }
-              resolve({ gameId, gameVersion, addons: identifiedAddons });
-            } else {
-              log.info(`No addon identified for ${gameVersion}`);
-              Object.entries(hashMap).forEach(([dir]) => {
-                if (!identifiedDirs.includes(dir)) {
-                  unknownDirs.push(dir);
-                }
-              });
-
-              if (unknownDirs.length > 0) {
-                currentlyInstalledAddons.forEach((addon) => {
-                  const addonDirs = [];
-                  addon.modules.forEach((module) => {
-                    addonDirs.push(module.folderName);
-                  });
-                  if (addonDirs.every((v) => unknownDirs.includes(v))) {
-                    const identifiedAddon = addon;
-                    identifiedAddon.unknownUpdate = true;
-                    if (!identifiedAddons.some((e) => e.addonId === identifiedAddon.addonId)) {
-                      log.info(`Unknown update installed for addon ${identifiedAddon.addonName}`);
-                      identifiedAddons.push(identifiedAddon);
-                    }
-                  } else if (addonDirs.some((v) => unknownDirs.includes(v))) {
-                    const identifiedAddon = addon;
-                    identifiedAddon.brokenInstallation = true;
-                    if (!identifiedAddons.some((e) => e.addonId === identifiedAddon.addonId)) {
-                      log.info(`Potentially broken installation for addon ${identifiedAddon.addonName}`);
-                      identifiedAddons.push(identifiedAddon);
-                    }
-                  }
-                });
-              }
-
-              gameS[gameVersion].installedAddons = identifiedAddons;
-              gameS[gameVersion].unknownAddonDirs = unknownDirs;
-              setGameSettings(gameId.toString(), gameS);
-              log.info(`${gameVersion} - ${identifiedAddons.length} addons installed & ${unknownDirs.length} directories unknown`);
-              if (win) {
-                win.webContents.send('no-addons-found', gameVersion);
-              }
-              resolve({ gameId, gameVersion, addons: identifiedAddons });
-            }
-          } else {
-            log.info(`Received no data in response when identifying addons for for ${gameVersion}`);
-            const currentlyInstalledAddons = gameS[gameVersion].installedAddons;
-            const identifiedAddons = [];
-            const unknownDirs = [];
-            const identifiedDirs = [];
-
-            Object.entries(hashMap).forEach(([dir]) => {
-              if (!identifiedDirs.includes(dir)) {
-                unknownDirs.push(dir);
-              }
-            });
-
-            if (unknownDirs.length > 0) {
-              currentlyInstalledAddons.forEach((addon) => {
-                const addonDirs = [];
-                addon.modules.forEach((module) => {
-                  addonDirs.push(module.folderName);
-                });
-                if (addonDirs.every((v) => unknownDirs.includes(v))) {
-                  const identifiedAddon = addon;
-                  identifiedAddon.unknownUpdate = true;
-                  if (!identifiedAddons.some((e) => e.addonId === identifiedAddon.addonId)) {
-                    log.info(`Unkown update installed for addon ${identifiedAddon.addonName}`);
-                    identifiedAddons.push(identifiedAddon);
-                  }
-                } else if (addonDirs.some((v) => unknownDirs.includes(v))) {
-                  const identifiedAddon = addon;
-                  identifiedAddon.brokenInstallation = true;
-                  if (!identifiedAddons.some((e) => e.addonId === identifiedAddon.addonId)) {
-                    log.info(`Potentially broken installation for addon ${identifiedAddon.addonName}`);
-                    identifiedAddons.push(identifiedAddon);
-                  }
-                }
-              });
-            }
-
-            gameS[gameVersion].installedAddons = identifiedAddons;
-            gameS[gameVersion].unknownAddonDirs = unknownDirs;
-            setGameSettings(gameId.toString(), gameS);
-            log.info(`${gameVersion} - ${identifiedAddons.length} addons installed & ${unknownDirs.length} directories unknown`);
-            if (win) {
-              win.webContents.send('no-addons-found', gameVersion);
-            }
-            resolve({ gameId, gameVersion, addons: identifiedAddons });
-          }
-        });
-      }
-    });
-    request.write(postData);
-    request.end();
+    getAddonsFromFingerprints(hashes)
+      .then((addons) => {
+        const win = getMainBrowserWindow();
+        return handleFingerprintResponse(gameId, gameVersion, addons, hashMap, win);
+      })
+      .then((result) => resolve(result))
+      .catch((error) => {
+        log.error(error.message);
+        return reject(error);
+      });
   });
 }
 
-function installAddon(gameId, addonDir, addon) {
+function installAddon(addonDir, downloadUrl) {
   return new Promise((resolve, reject) => {
-  // World of Warcraft
     if (!fs.existsSync(addonDir)) {
       try {
         fs.mkdirSync(addonDir, { recursive: true });
@@ -881,7 +502,7 @@ function installAddon(gameId, addonDir, addon) {
     }
     const tempDir = path.join(app.getPath('temp'), '/singularity');
     const win = getMainBrowserWindow();
-    download(win, addon.downloadUrl, { directory: tempDir, saveAs: false })
+    download(win, downloadUrl, { directory: tempDir, saveAs: false })
       .then((dItem) => {
         const savePath = dItem.getSavePath();
         extract(savePath, { dir: addonDir })
@@ -892,10 +513,10 @@ function installAddon(gameId, addonDir, addon) {
                   log.error(err);
                   reject(err);
                 }
-                resolve('success');
+                resolve();
               });
             } else {
-              resolve('success');
+              resolve();
             }
           })
           .catch((err) => {
@@ -910,60 +531,69 @@ function installAddon(gameId, addonDir, addon) {
   });
 }
 
+function handleUninstallDependencies(gameId, gameVersion, addon) {
+  return new Promise((resolve, reject) => {
+    if (!addon.installedFile.dependencies
+      || addon.installedFile.dependencies.length === 0
+    ) {
+      log.info('No dependencies');
+      return resolve(addon);
+    }
+    const toRemove = removeDependencies(gameId, gameVersion, addon);
+    if (toRemove.length === 0) {
+      log.info('No dependencies in need of removal');
+      return resolve(addon);
+    }
+    if (gameId !== 2) {
+      return resolve(addon);
+    }
+    if (!getUninstallDepsSetting(gameId, gameVersion)) {
+      log.info('Dependency management disabled');
+      return resolve(addon);
+    }
+    toRemove.forEach((dep) => {
+      dependenciesToRemove.push(dep);
+    });
+    const pool = new PromisePool(() => _UninstallDependencyProducer(gameId, gameVersion), 1);
+    return pool.start()
+      .then(() => resolve(addon))
+      .catch((error) => reject(error));
+  });
+}
+
+function handleInstallDependencies(gameId, gameVersion, installedAddon) {
+  return new Promise((resolve, reject) => {
+    if (!installedAddon.installedFile.dependencies
+      || installedAddon.installedFile.dependencies.length === 0
+    ) {
+      log.info('No dependencies');
+      return resolve(installedAddon);
+    }
+    const newDeps = addDependencies(gameId, gameVersion, installedAddon);
+    if (newDeps.length === 0) {
+      log.info('No new dependencies');
+      return resolve(installedAddon);
+    }
+    if (gameId !== 2) {
+      return resolve(installedAddon);
+    }
+    if (!getInstallDepsSetting(gameId, gameVersion)) {
+      log.info('Dependency management disabled');
+      return resolve(installedAddon);
+    }
+    log.info(`Installing dependencies for ${installedAddon.addonName}`);
+    newDeps.forEach((dep) => {
+      dependenciesToInstall.push(dep);
+    });
+    const pool = new PromisePool(() => _installDependencyProducer(gameId, gameVersion), 1);
+    return pool.start()
+      .then(() => resolve(installedAddon))
+      .catch((error) => reject(error));
+  });
+}
+
 function isSearchingForProfiles() {
   return syncing;
-}
-
-function restoreAddons(gameId, gameVersion, addonDir, backupDir) {
-  return new Promise((resolve, reject) => {
-    if (gameId === 1) {
-      // World of Warcraft
-
-      if (!fs.existsSync(addonDir)) {
-        reject(new Error("Addon directory doesn't exist"));
-      }
-      const backupPath = path.join(backupDir, 'backup', gameId.toString(), gameVersion, 'addons.zip');
-
-      if (!fs.existsSync(backupPath)) {
-        reject(new Error("Addon backup directory doesn't exist"));
-      }
-
-      extract(backupPath, { dir: addonDir })
-        .then(() => {
-          resolve({});
-        }).catch((err) => {
-          reject(err);
-        });
-    } else {
-      reject(new Error('Unknown game ID'));
-    }
-  });
-}
-
-function restoreAddonSettings(gameId, gameVersion, settingsDir, backupDir) {
-  return new Promise((resolve, reject) => {
-    if (gameId === 1) {
-      // World of Warcraft
-
-      if (!fs.existsSync(settingsDir)) {
-        reject(new Error("Settings directory doesn't exist"));
-      }
-      const backupPath = path.join(backupDir, 'backup', gameId.toString(), gameVersion, 'settings.zip');
-
-      if (!fs.existsSync(backupPath)) {
-        reject(new Error("Settings backup doesn't exist"));
-      }
-
-      extract(backupPath, { dir: settingsDir })
-        .then(() => {
-          resolve({});
-        }).catch((err) => {
-          reject(err);
-        });
-    } else {
-      reject(new Error('Unknown game ID'));
-    }
-  });
 }
 
 function restoreGranularBackup(backup, includeSettings) {
@@ -1060,7 +690,6 @@ function setAddonUpdateInterval() {
   const appD = getAppData('userConfigurable');
   let checkInterval = 1000 * 60 * 60;
   if (appD.addonUpdateInterval) {
-    console.log(appD.addonUpdateInterval);
     switch (appD.addonUpdateInterval) {
       case '15m':
         checkInterval = 1000 * 60 * 15;
@@ -1196,7 +825,7 @@ function uninstallAddon(addonDir, addon) {
     }
 
     const promises = [];
-    addon.modules.forEach((m) => {
+    addon.installedFile.modules.forEach((m) => {
       promises.push(_uninstallDir(addonDir, m.folderName));
     });
     Promise.allSettled(promises)
@@ -1205,50 +834,6 @@ function uninstallAddon(addonDir, addon) {
       })
       .catch((e) => {
         log.error(e);
-      });
-  });
-}
-
-function updateAddon(gameId, addonDir, addon, latestFile) {
-  return new Promise((resolve, reject) => {
-    // World of Warcraft
-
-    if (!fs.existsSync(addonDir)) {
-      try {
-        fs.mkdirSync(addonDir, { recursive: true });
-      } catch (err) {
-        reject(new Error('Addon Directory Does Not Exist'));
-      }
-    }
-    const tempDir = path.join(app.getPath('temp'), '/singularity');
-
-    const win = getMainBrowserWindow();
-
-    download(win, latestFile.downloadUrl, { directory: tempDir, saveAs: false })
-      .then((dItem) => {
-        const savePath = dItem.getSavePath();
-        extract(savePath, { dir: addonDir })
-          .then(() => {
-            if (fs.existsSync(savePath)) {
-              fs.unlink(savePath, (err) => {
-                if (err) {
-                  log.error(err);
-                  reject(err);
-                }
-                resolve('success');
-              });
-            } else {
-              resolve('success');
-            }
-          })
-          .catch((err) => {
-            log.error(err);
-            reject(new Error('Error extracting addon update'));
-          });
-      })
-      .catch((err) => {
-        log.error(err);
-        reject(new Error('Error downloading adddon update'));
       });
   });
 }
@@ -1275,7 +860,6 @@ function updateSyncProfiles(profiles) {
         })
         .catch((err) => {
           syncing = false;
-          error = 'Error in automatic sync';
           if (win) {
             profiles.forEach((profile) => {
               win.webContents.send('sync-status', profile.gameId, profile.gameVersion, 'error', null, 'Error in sync after auto-updating');
@@ -1300,28 +884,37 @@ function _autoUpdateAddon(updateObj) {
     const { addonPath } = gameS[gameVersion];
 
     log.info(`Updating addon ${addon.addonName}`);
-    updateAddon(gameId, addonPath, updateObj.addon, latestFile)
-      .then(() => {
-        addon.fileName = latestFile.fileName;
-        addon.fileDate = latestFile.fileDate;
-        addon.releaseType = latestFile.releaseType;
-        addon.modules = latestFile.modules;
-        addon.installedFile = latestFile;
-        addon.updateAvailable = false;
-        addon.updateFile = {};
-        addon.brokenInstallation = false;
-
-        const installedAddons = gameS[gameVersion].installedAddons.filter((obj) => (
-          obj.addonId !== addon.addonId
-        ));
-        installedAddons.push(addon);
-        gameS[gameVersion].installedAddons = installedAddons;
-
-        setGameSettings(gameId.toString(), gameS);
-        resolve();
+    getAddonDownloadUrl(addon.addonId, latestFile.fileId)
+      .then((fileInfo) => installAddon(addonPath, fileInfo.downloadUrl)
+        .then(() => fileInfo)
+        .catch((err) => {
+          log.error(err.message);
+          return Promise.reject(err);
+        }))
+      .then((fileInfo) => updateInstalledAddonInfo(
+        gameId, gameVersion, addon, fileInfo.fileDetails,
+      ))
+      .then((installedAddon) => handleInstallDependencies(gameId, gameVersion, installedAddon))
+      .then((installedAddon) => {
+        if (gameS[gameVersion].sync && isAuthenticated()) {
+          log.info('Game version is configured to sync, updating profile');
+          return createAndSaveSyncProfile({ gameId, gameVersion })
+            .then(() => {
+              log.info('Sync profile updated');
+              return resolve(installedAddon);
+            })
+            .catch((err) => {
+              log.error('Error saving sync profile');
+              log.error(err);
+              return resolve(installedAddon);
+            });
+        }
+        log.info(`Succesfully installed ${installedAddon.addonName}`);
+        return resolve(installedAddon);
       })
-      .catch((err) => {
-        reject(err);
+      .catch((error) => {
+        log.error(error.message);
+        return reject(error);
       });
   });
 }
@@ -1450,50 +1043,118 @@ function _findAddonsForGameVersion(gameId, gameVersion, sync) {
 
 function _installAddonFromSync(addon) {
   return new Promise((resolve, reject) => {
-    const { addonName, gameId, gameVersion } = addon;
+    const {
+      addonId, addonName, fileId, gameId, gameVersion,
+    } = addon;
     log.info(`Installing addon from sync profile: ${addonName}`);
     const win = getMainBrowserWindow();
     if (win) {
       win.webContents.send('sync-status', gameId, gameVersion, `Syncing: ${addonName}`);
     }
-    const gameS = getGameSettings(gameId.toString());
-    const { addonPath } = gameS[gameVersion];
-
-    if (!fs.existsSync(addonPath)) {
-      try {
-        fs.mkdirSync(addonPath, { recursive: true });
-      } catch (err) {
-        reject(new Error('Addon Directory Does Not Exist'));
-      }
-    }
-    const tempDir = path.join(app.getPath('temp'), '/singularity');
-
-    download(win, addon.downloadUrl, { directory: tempDir, saveAs: false })
-      .then((dItem) => {
-        const savePath = dItem.getSavePath();
-        extract(savePath, { dir: addonPath })
-          .then(() => {
-            if (fs.existsSync(savePath)) {
-              fs.unlink(savePath, (err) => {
-                if (err) {
-                  log.error(err);
-                  reject(err);
-                }
-                resolve('success');
-              });
-            } else {
-              resolve('success');
-            }
-          })
-          .catch((err) => {
-            log.error(err);
-            reject(new Error('Error extracting addon from addon sync'));
-          });
-      })
-      .catch((err) => {
-        log.error(err);
-        reject(new Error('Error downloading adddon from addon sync'));
+    const addonDir = getAddonDir(gameId, gameVersion);
+    return getAddonInfo(addonId)
+      .then((addonInfo) => getAddonDownloadUrl(addonId, fileId)
+        .then((fileInfo) => installAddon(addonDir, fileInfo.downloadUrl)
+          .then(() => fileInfo)
+          .catch((err) => Promise.reject(err)))
+        .then((fileInfo) => updateInstalledAddonInfo(
+          gameId, gameVersion, addonInfo, fileInfo.fileDetails,
+        ))
+        .then(() => resolve())
+        .catch((installErr) => Promise.reject(installErr)))
+      .catch((error) => {
+        log.error(error.message);
+        return reject(error);
       });
+  });
+}
+
+function _installDependency(gameId, gameVersion, dependency) {
+  log.info(`Installing dependency ${dependency.name}`);
+  return new Promise((resolve, reject) => {
+    const addonDir = getAddonDir(gameId, gameVersion);
+    return getAddonInfo(dependency.addonId)
+      .then((addonInfo) => getAddonDownloadUrl(dependency.addonId, null)
+        .then((fileInfo) => installAddon(addonDir, fileInfo.downloadUrl)
+          .then(() => fileInfo)
+          .catch((err) => {
+            log.error(err.message);
+            return reject(err);
+          }))
+        .then((fileInfo) => {
+          let author = '';
+          if (addonInfo.author) {
+            author = addonInfo.author;
+          } else if (addonInfo.authors) {
+            const [firstAuthor] = addonInfo.authors;
+            author = firstAuthor;
+          } else if (addonInfo.curseAuthors) {
+            const [firstAuthor] = addonInfo.curseAuthors;
+            author = firstAuthor.name;
+          } else if (addonInfo.tukuiAuthor) {
+            author = addonInfo.tukuiAuthor;
+          } else if (addonInfo.wowIntAuthor) {
+            author = addonInfo.wowIntAuthor;
+          } else if (addonInfo.mmouiAuthor) {
+            author = addonInfo.mmouiAuthor;
+          }
+          const addon = {
+            addonName: addonInfo.addonName,
+            addonId: addonInfo.addonId,
+            avatar: addonInfo.avatar,
+            author,
+            primaryCategory: addonInfo.primaryCategory,
+            latestFiles: addonInfo.latestFiles,
+          };
+          return updateInstalledAddonInfo(gameId, gameVersion, addon, fileInfo.fileDetails);
+        })
+        .then((installedAddon) => updateDependencyInfo(
+          gameId,
+          gameVersion,
+          dependency.name,
+          installedAddon,
+        ))
+        .then((installedAddon) => {
+          if (!installedAddon.installedFile.dependencies
+            || installedAddon.installedFile.dependencies.length === 0
+          ) {
+            return resolve(installedAddon);
+          }
+          const newDeps = addDependencies(gameId, gameVersion, installedAddon);
+          if (newDeps.length === 0) {
+            return resolve(installedAddon);
+          }
+          newDeps.forEach((dep) => {
+            dependenciesToInstall.push(dep);
+          });
+          return resolve(installedAddon);
+        })
+        .catch((error) => reject(error)));
+  });
+}
+
+function _uninstallDependency(gameId, gameVersion, dependency) {
+  log.info(`Uninstalling dependency ${dependency.name}`);
+  return new Promise((resolve, reject) => {
+    const gameS = getGameSettings(gameId.toString());
+    const { addonPath, installedAddons } = gameS[gameVersion];
+    const addon = installedAddons.find((obj) => obj.addonId === dependency.addonId);
+    if (!addon) {
+      return resolve();
+    }
+    return uninstallAddon(addonPath, addon)
+      .then(() => removeInstalledAddonInfo(gameId, gameVersion, addon.addonId))
+      .then(() => {
+        const toRemove = removeDependencies(gameId, gameVersion, addon);
+        if (toRemove.length === 0) {
+          return resolve(addon);
+        }
+        toRemove.forEach((dep) => {
+          dependenciesToRemove.push(dep);
+        });
+        return resolve(addon);
+      })
+      .catch((error) => reject(error));
   });
 }
 
@@ -1579,48 +1240,30 @@ function _readAddonDir(manifestFileExt, p, d) {
 
 function _restoreAddonFile(gameId, gameVersion, addon) {
   return new Promise((resolve, reject) => {
-    log.info(`Restoring addon backup for ${addon.addonName}`);
+    const {
+      addonId,
+      addonName,
+      fileId,
+    } = addon;
+    log.info(`Restoring addon backup for ${addonName}`);
     const win = getMainBrowserWindow();
     if (win) {
-      win.webContents.send('restore-status', `Restoring: ${addon.addonName}`);
+      win.webContents.send('restore-status', `Restoring: ${addonName}`);
     }
-    const gameS = getGameSettings(gameId.toString());
-    const { addonPath } = gameS[gameVersion];
-
-    if (!fs.existsSync(addonPath)) {
-      try {
-        fs.mkdirSync(addonPath, { recursive: true });
-      } catch (err) {
-        reject(new Error('Addon Directory Does Not Exist'));
-      }
-    }
-    const tempDir = path.join(app.getPath('temp'), '/singularity');
-
-    download(win, addon.downloadUrl, { directory: tempDir, saveAs: false })
-      .then((dItem) => {
-        const savePath = dItem.getSavePath();
-        extract(savePath, { dir: addonPath })
-          .then(() => {
-            if (fs.existsSync(savePath)) {
-              fs.unlink(savePath, (err) => {
-                if (err) {
-                  log.error(err);
-                  reject(err);
-                }
-                resolve('success');
-              });
-            } else {
-              resolve('success');
-            }
-          })
-          .catch((err) => {
-            log.error(err);
-            reject(new Error('Error extracting addon backup'));
-          });
-      })
-      .catch((err) => {
-        log.error(err);
-        reject(new Error('Error extracting addon backup'));
+    const addonDir = getAddonDir(gameId, gameVersion);
+    return getAddonInfo(addonId)
+      .then((addonInfo) => getAddonDownloadUrl(addonId, fileId)
+        .then((fileInfo) => installAddon(addonDir, fileInfo.downloadUrl)
+          .then(() => fileInfo)
+          .catch((err) => Promise.reject(err)))
+        .then((fileInfo) => updateInstalledAddonInfo(
+          gameId, gameVersion, addonInfo, fileInfo.fileDetails,
+        ))
+        .then(() => resolve())
+        .catch((installErr) => Promise.reject(installErr)))
+      .catch((error) => {
+        log.error(error.message);
+        return reject(error);
       });
   });
 }
@@ -1636,7 +1279,7 @@ function _uninstallAddonFromSync(gameId, gameVersion, addon) {
     }
 
     const promises = [];
-    addon.modules.forEach((m) => {
+    addon.installedFile.modules.forEach((m) => {
       promises.push(_uninstallDir(addonPath, m.folderName));
     });
     Promise.allSettled(promises)
@@ -1711,6 +1354,20 @@ function _uninstallAddonFromSyncProducer(gameId, gameVersion) {
   return null;
 }
 
+function _installDependencyProducer(gameId, gameVersion) {
+  if (dependenciesToInstall.length > 0) {
+    return _installDependency(gameId, gameVersion, dependenciesToInstall.pop());
+  }
+  return null;
+}
+
+function _UninstallDependencyProducer(gameId, gameVersion) {
+  if (dependenciesToRemove.length > 0) {
+    return _uninstallDependency(gameId, gameVersion, dependenciesToRemove.pop());
+  }
+  return null;
+}
+
 setInterval(() => {
   if (!syncing) {
     handleSync()
@@ -1727,8 +1384,6 @@ setInterval(() => {
 
 export {
   autoFindGame,
-  backupAddons,
-  backupAddonSettings,
   createAndSaveSyncProfile,
   createGranularBackupObj,
   createSyncProfileObj,
@@ -1738,19 +1393,17 @@ export {
   fingerprintAllAsync,
   getAddonDir,
   getLocalSyncProfile,
-  getSyncError,
   getSyncProfilesFromCloud,
+  handleInstallDependencies,
+  handleUninstallDependencies,
   handleSync,
   identifyAddons,
   installAddon,
   isSearchingForProfiles,
-  restoreAddons,
-  restoreAddonSettings,
   restoreGranularBackup,
   setAddonUpdateInterval,
   syncFromProfile,
   uninstallAddon,
-  updateAddon,
   updateESOAddonPath,
   updateSyncProfiles,
 };

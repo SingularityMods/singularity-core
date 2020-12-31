@@ -17,6 +17,17 @@ import LoadingSpinner from '../LoadingSpinner';
 
 const { ipcRenderer } = require('electron');
 
+function getLatestFile(addon, addonVersion) {
+  let possibleFiles = addon.latestFiles.filter((file) => (
+    file.gameVersionFlavor === addonVersion && file.releaseType <= addon.trackBranch
+  ));
+  if (!possibleFiles || possibleFiles.length === 0) {
+    possibleFiles = addon.latestFiles.filter((file) => file.gameVersionFlavor === addonVersion);
+    return possibleFiles.reduce((a, b) => ((a.releaseType < b.releaseType) ? a : b));
+  }
+  return possibleFiles.reduce((a, b) => (a.fileDate > b.fileDate ? a : b));
+}
+
 class AddonDetailsWindow extends React.Component {
   constructor(props) {
     super(props);
@@ -29,6 +40,7 @@ class AddonDetailsWindow extends React.Component {
       gameVersion,
       installed: false,
       updateAvailable: false,
+      addonVersion: '',
       installedFile: '',
       installedAddon: {},
       addon: {},
@@ -40,8 +52,6 @@ class AddonDetailsWindow extends React.Component {
       confirmDelete: false,
     };
     this.addonInfoListener = this.addonInfoListener.bind(this);
-    this.addonInstalledListener = this.addonInstalledListener.bind(this);
-    this.addonUninstalledListener = this.addonUninstalledListener.bind(this);
     this.installAddon = this.installAddon.bind(this);
     this.reinstallAddon = this.reinstallAddon.bind(this);
     this.updateAddon = this.updateAddon.bind(this);
@@ -61,9 +71,8 @@ class AddonDetailsWindow extends React.Component {
     } = this.props;
     ipcRenderer.send('get-addon-info', addonId);
     ipcRenderer.on('addon-info-result', this.addonInfoListener);
-    ipcRenderer.on('addon-installed', this.addonInstalledListener);
-    ipcRenderer.on('addon-uninstalled', this.addonUninstalledListener);
     const gameSettings = ipcRenderer.sendSync('get-game-settings', gameId);
+    const addonVersion = ipcRenderer.sendSync('get-game-addon-version', gameId, gameVersion);
     const { installedAddons } = gameSettings[gameVersion];
     let installed = false;
     let updateAvailable = false;
@@ -81,6 +90,7 @@ class AddonDetailsWindow extends React.Component {
       }
     });
     this.setState({
+      addonVersion,
       installed,
       updateAvailable,
       installedFile,
@@ -91,8 +101,6 @@ class AddonDetailsWindow extends React.Component {
 
   componentWillUnmount() {
     ipcRenderer.removeListener('addon-info-result', this.addonInfoListener);
-    ipcRenderer.removeListener('addon-installed', this.addonInstalledListener);
-    ipcRenderer.removeListener('addon-uninstalled', this.addonUninstalledListener);
     if (this.installTimeout) {
       clearTimeout(this.installTimeout);
       this.installTimeout = 0;
@@ -151,28 +159,30 @@ class AddonDetailsWindow extends React.Component {
     const {
       gameId,
       gameVersion,
-      installedAddon,
     } = this.state;
-    if (installedAddon.addonId === addon.addonId) {
-      ipcRenderer.send('install-addon-file', gameId, gameVersion, installedAddon, addonFileId);
-    } else {
-      ipcRenderer.send('install-addon-file', gameId, gameVersion, addon, addonFileId);
-    }
     this.setState({
       currentlyUpdating: true,
       currentlyInstallingFile: addonFileId,
     });
-
-    this.installFileTimeout = setTimeout(() => {
-      const { currentlyUpdating } = this.state;
-      if (currentlyUpdating) {
+    ipcRenderer.invoke('install-addon', gameId, gameVersion, addon, addonFileId)
+      .then((installedAddon) => {
+        const { updateAvailable } = installedAddon;
         this.setState({
-          updateError: true,
+          installed: true,
+          installedAddon,
           currentlyUpdating: false,
           currentlyInstallingFile: '',
+          updateAvailable,
+          updateError: false,
         });
-      }
-    }, 30000);
+      })
+      .catch(() => {
+        this.setState({
+          currentlyUpdating: false,
+          currentlyInstallingFile: '',
+          updateError: true,
+        });
+      });
   }
 
   reinstallAddon() {
@@ -182,19 +192,28 @@ class AddonDetailsWindow extends React.Component {
       installedAddon,
     } = this.state;
     const installedFile = installedAddon.installedFile._id || installedAddon.installedFile.fileId;
-    ipcRenderer.send('install-addon-file', gameId, gameVersion, installedAddon, installedFile);
     this.setState({
       currentlyUpdating: true,
     });
-    this.reinstallTimeout = setTimeout(() => {
-      const { currentlyUpdating } = this.state;
-      if (currentlyUpdating) {
+    ipcRenderer.invoke('install-addon', gameId, gameVersion, installedAddon, installedFile.fileId)
+      .then((newlyInstalledAddon) => {
+        const { updateAvailable } = newlyInstalledAddon;
         this.setState({
-          updateError: true,
+          installed: true,
+          installedAddon: newlyInstalledAddon,
           currentlyUpdating: false,
+          currentlyInstallingFile: '',
+          updateAvailable,
+          updateError: false,
         });
-      }
-    }, 30000);
+      })
+      .catch(() => {
+        this.setState({
+          currentlyUpdating: false,
+          currentlyInstallingFile: '',
+          updateError: true,
+        });
+      });
   }
 
   uninstallAddon() {
@@ -208,7 +227,24 @@ class AddonDetailsWindow extends React.Component {
     } = this.state;
     const { addonId } = this.props;
     this.setState({ confirmDelete: false });
-    ipcRenderer.send('uninstall-addon', gameId, gameVersion, addonId);
+    ipcRenderer.invoke('uninstall-addon', gameId, gameVersion, addonId)
+      .then(() => {
+        this.setState({
+          installed: false,
+          installedAddon: {},
+          currentlyUpdating: false,
+          currentlyInstallingFile: '',
+          updateAvailable: false,
+          updateError: false,
+        });
+      })
+      .catch(() => {
+        this.setState({
+          currentlyUpdating: false,
+          currentlyInstallingFile: '',
+          updateError: true,
+        });
+      });
   }
 
   rejectUninstall() {
@@ -217,50 +253,63 @@ class AddonDetailsWindow extends React.Component {
 
   updateAddon() {
     const {
+      addonVersion,
       gameId,
       gameVersion,
       installedAddon,
     } = this.state;
-    ipcRenderer.send('update-addon', gameId, gameVersion, installedAddon);
+    const latestFile = getLatestFile(installedAddon, addonVersion);
     this.setState({
       currentlyUpdating: true,
     });
-    this.updateTimeout = setTimeout(() => {
-      const { currentlyUpdating } = this.state;
-      if (currentlyUpdating) {
+    ipcRenderer.invoke('install-addon', gameId, gameVersion, installedAddon, latestFile.fileId)
+      .then((newlyInstalledAddon) => {
+        const { updateAvailable } = newlyInstalledAddon;
         this.setState({
-          updateError: true,
+          installed: true,
+          installedAddon: newlyInstalledAddon,
           currentlyUpdating: false,
+          currentlyInstallingFile: '',
+          updateAvailable,
+          updateError: false,
         });
-      }
-    }, 30000);
+      })
+      .catch(() => {
+        this.setState({
+          currentlyUpdating: false,
+          currentlyInstallingFile: '',
+          updateError: true,
+        });
+      });
   }
 
   installAddon(addon) {
-    const branch = 1;
     const {
       gameId,
       gameVersion,
-      installedAddon,
     } = this.state;
-    if (installedAddon.addonId === addon.addonId) {
-      ipcRenderer.send('install-addon', gameId, gameVersion, installedAddon, branch);
-    } else {
-      ipcRenderer.send('install-addon', gameId, gameVersion, addon, branch);
-    }
     this.setState({
       currentlyUpdating: true,
     });
-
-    this.installTimeout = setTimeout(() => {
-      const { currentlyUpdating } = this.state;
-      if (currentlyUpdating) {
+    ipcRenderer.invoke('install-addon', gameId, gameVersion, addon, null)
+      .then((installedAddon) => {
+        const { updateAvailable } = installedAddon;
         this.setState({
-          updateError: true,
+          installed: true,
+          installedAddon,
           currentlyUpdating: false,
+          currentlyInstallingFile: '',
+          updateAvailable,
+          updateError: false,
         });
-      }
-    }, 30000);
+      })
+      .catch(() => {
+        this.setState({
+          currentlyUpdating: false,
+          currentlyInstallingFile: '',
+          updateError: true,
+        });
+      });
   }
 
   addonInfoListener(event, addon) {
@@ -270,34 +319,6 @@ class AddonDetailsWindow extends React.Component {
       addon,
       isLoading: false,
     });
-  }
-
-  addonInstalledListener(event, installedAddon) {
-    const { updateAvailable } = installedAddon;
-    this.setState({
-      installed: true,
-      installedAddon,
-      currentlyUpdating: false,
-      currentlyInstallingFile: '',
-      updateAvailable,
-      updateError: false,
-    });
-  }
-
-  addonUninstalledListener(event, installedAddonId) {
-    const {
-      addonId,
-    } = this.props;
-    if (installedAddonId === addonId) {
-      this.setState({
-        installed: false,
-        installedAddon: {},
-        currentlyUpdating: false,
-        currentlyInstallingFile: '',
-        updateAvailable: false,
-        updateError: false,
-      });
-    }
   }
 
   render() {
@@ -338,9 +359,11 @@ class AddonDetailsWindow extends React.Component {
       if (addon.authors) {
         authors = addon.authors;
       } else if (addon.curseAuthors) {
-        authors = `Curse: ${Array.prototype.map.call(addon.curseAuthors, (a) => a.name).toString()}`;
+        authors = Array.prototype.map.call(addon.curseAuthors, (a) => a.name).toString();
       } else if (addon.tukuiAuthor) {
-        authors = `Tukui: ${addon.tukuiAuthor}`;
+        authors = addon.tukuiAuthor;
+      } else if (addon.mmouiAuthor) {
+        authors = addon.mmouiAuthor;
       }
       if (addon.totalDownloadCount) {
         if (addon.totalDownloadCount > 1000000) {

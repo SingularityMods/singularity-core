@@ -1,5 +1,5 @@
 import {
-  app, ipcMain, net, shell,
+  app, ipcMain, shell,
 } from 'electron';
 import axios from 'axios';
 import log from 'electron-log';
@@ -9,53 +9,44 @@ import AppConfig from '../../config/app.config';
 
 import { getAccessToken, isAuthenticated } from '../../services/auth.service';
 import {
-  getAppData,
+  getAddonDir,
   getGameData,
   getGameSettings,
   setGameSettings,
+  updateInstalledAddonInfo,
+  removeInstalledAddonInfo,
 } from '../../services/storage.service';
 import {
   createAndSaveSyncProfile,
   fingerprintAllAsync,
+  handleInstallDependencies,
+  handleUninstallDependencies,
   identifyAddons,
   installAddon,
   syncFromProfile,
   uninstallAddon,
-  updateAddon,
 } from '../../services/file.service';
+import {
+  getAddonDownloadUrl,
+  getAddonInfo,
+  searchForAddons,
+} from '../../services/singularity.service';
 
-ipcMain.on('addon-search', (event, gameId, gameVersion, searchFilter, categoryId, page, pageSize) => {
-  const { gameVersions } = getGameData(gameId.toString());
-  const { addonVersion } = gameVersions[gameVersion];
-  const index = page * pageSize;
-  const catId = categoryId || 0;
-
-  const request = net.request(`${AppConfig.API_URL}/addons/search?gameId=${gameId}&gameVersionFlavor=${addonVersion}&filter=${searchFilter}&category=${catId}&index=${index}`);
-  request.setHeader('x-app-uuid', getAppData('UUID'));
-  let body = '';
-  request.on('error', (error) => {
-    event.sender.send('addon-search-error');
-    log.error(error);
-  });
-  request.on('response', (response) => {
-    response.on('data', (chunk) => {
-      body += chunk.toString();
-    });
-
-    response.on('end', () => {
-      if (body) {
-        const addons = JSON.parse(body);
-        if (page === 0) {
-          event.sender.send('addon-search-result', addons);
-        } else {
-          event.sender.send('additional-addon-search-result', addons);
-        }
-      } else {
-        event.sender.send('addon-search-no-result');
+ipcMain.on('addon-search', async (event, gameId, gameVersion, searchFilter, categoryId, page, pageSize) => {
+  searchForAddons(gameId, gameVersion, searchFilter, categoryId, page, pageSize)
+    .then((addons) => {
+      if (!addons) {
+        return event.sender.send('addon-search-no-result');
       }
+      if (page === 0) {
+        return event.sender.send('addon-search-result', addons);
+      }
+      return event.sender.send('additional-addon-search-result', addons);
+    })
+    .catch((error) => {
+      event.sender.send('addon-search-error');
+      log.error(error.message);
     });
-  });
-  request.end();
 });
 
 ipcMain.on('change-addon-auto-update', (event, gameId, gameVersion, addonId, toggle) => {
@@ -144,6 +135,23 @@ ipcMain.on('change-addon-ignore-update', (event, gameId, gameVersion, addonId, t
   event.sender.send('addon-settings-updated', addonId, addon);
 });
 
+ipcMain.handle('get-addons-dependent-on', async (event, gameId, gameVersion, addonId) => new Promise((resolve) => {
+  const gameS = getGameSettings(gameId.toString());
+  const { dependencies } = gameS[gameVersion];
+  let dependencyFor;
+  Object.entries(dependencies).forEach(([dependency]) => {
+    if (dependencies[dependency].addonId === addonId) {
+      dependencyFor = dependencies[dependency].dependencyFor;
+    }
+  });
+  return resolve(dependencyFor);
+}));
+
+ipcMain.handle('get-installed-addons', async (event, gameId, gameVersion) => new Promise((resolve) => {
+  const gameS = getGameSettings(gameId.toString());
+  return resolve(gameS[gameVersion].installedAddons);
+}));
+
 ipcMain.on('find-addons-async', async (event, gameId, gameVersion) => {
   log.info('Called: find-addons');
   const gameS = getGameSettings(gameId.toString());
@@ -202,273 +210,83 @@ ipcMain.on('find-addons-async', async (event, gameId, gameVersion) => {
     });
 });
 
-ipcMain.on('get-addon-info', (event, addonId) => {
-  const request = net.request(`${AppConfig.API_URL}/addon/${addonId}`);
-  request.setHeader('x-app-uuid', getAppData('UUID'));
-  let body = '';
-  request.on('error', (error) => {
-    log.error(error);
-  });
-  request.on('response', (response) => {
-    response.on('data', (chunk) => {
-      if (chunk) {
-        body += chunk.toString();
-      }
+ipcMain.on('get-addon-info', async (event, addonId) => {
+  getAddonInfo(addonId)
+    .then((result) => {
+      event.sender.send('addon-info-result', result);
+    })
+    .catch((error) => {
+      log.error(error.message);
     });
-    response.on('end', () => {
-      if (body) {
-        const addon = JSON.parse(body);
-        event.sender.send('addon-info-result', addon);
-      }
-    });
-  });
-  request.end();
 });
 
-ipcMain.on('install-addon', async (event, gameId, gameVersionFlavor, addon, branch) => {
-  const gameS = getGameSettings(gameId.toString());
-  const { gameVersions } = getGameData(gameId.toString());
-  const addonVersionFlavor = gameVersions[gameVersionFlavor].addonVersion;
-  let installedFile;
-  addon.latestFiles.forEach((file) => {
-    if (file.gameVersionFlavor === addonVersionFlavor && file.releaseType === branch) {
-      installedFile = file;
-    }
-  });
-
-  if (!installedFile) {
-    const possibleFiles = addon.latestFiles
-      .filter((f) => f.gameVersionFlavor === addonVersionFlavor);
-    installedFile = possibleFiles.reduce((a, b) => ((a.releaseType < b.releaseType) ? a : b));
-  }
-  installAddon(gameId, gameS[gameVersionFlavor].addonPath, installedFile)
-    .then(() => {
-      const trackBranch = addon.trackBranch || 1;
-      const autoUpdate = addon.autoUpdate || false;
-      const ignoreUpdate = addon.ignoreUpdate || false;
-      installedFile.fileId = installedFile._id;
-
-      let updateAvailable = false;
-      let updateFile = addon.latestFiles.find((f) => (
-        f.gameVersion === addonVersionFlavor
-        && f.releaseType <= trackBranch
-        && f.fileDate > installedFile.fileDate
-      ));
-      if (updateFile) {
-        updateAvailable = true;
-      } else {
-        updateFile = {};
-      }
-      const installedAddon = {
-        addonName: addon.addonName,
-        addonId: addon.addonId,
-        avatar: addon.avatar,
-        primaryCategory: addon.primaryCategory,
-        author: addon.author,
-        fileName: installedFile.fileName,
-        fileDate: installedFile.fileDate,
-        releaseType: installedFile.releaseType,
-        gameVersion: installedFile.gameVersion[0],
-        modules: installedFile.modules,
-        latestFiles: addon.latestFiles,
-        installedFile,
-        updateAvailable,
-        updateFile,
-        brokenInstallation: false,
-        unknownUpdate: false,
-        trackBranch,
-        autoUpdate,
-        ignoreUpdate,
-
-      };
-      const installedAddons = gameS[gameVersionFlavor].installedAddons
-        .filter((obj) => obj.addonId !== installedAddon.addonId);
-      installedAddons.push(installedAddon);
-      gameS[gameVersionFlavor].installedAddons = installedAddons;
-      setGameSettings(gameId.toString(), gameS);
-      event.sender.send('addon-installed', installedAddon);
-      if (gameS[gameVersionFlavor].sync && isAuthenticated()) {
+ipcMain.handle('install-addon', async (
+  event, gameId, gameVersion, addon, fileId,
+) => new Promise((resolve, reject) => {
+  log.info(`Installing addon ${addon.addonName}`);
+  const addonDir = getAddonDir(gameId, gameVersion);
+  return getAddonDownloadUrl(addon.addonId, fileId)
+    .then((fileInfo) => installAddon(addonDir, fileInfo.downloadUrl)
+      .then(() => fileInfo)
+      .catch((err) => {
+        log.error(err.message);
+        return Promise.reject(err);
+      }))
+    .then((fileInfo) => updateInstalledAddonInfo(gameId, gameVersion, addon, fileInfo.fileDetails))
+    .then((installedAddon) => handleInstallDependencies(gameId, gameVersion, installedAddon))
+    .then((installedAddon) => {
+      const gameS = getGameSettings(gameId.toString());
+      if (gameS[gameVersion].sync && isAuthenticated()) {
         log.info('Game version is configured to sync, updating profile');
-        createAndSaveSyncProfile({ gameId, gameVersion: gameVersionFlavor })
+        return createAndSaveSyncProfile({ gameId, gameVersion })
           .then(() => {
             log.info('Sync profile updated');
+            return resolve(installedAddon);
           })
           .catch((err) => {
             log.error('Error saving sync profile');
             log.error(err);
+            return resolve(installedAddon);
           });
       }
+      log.info(`Succesfully installed ${installedAddon.addonName}`);
+      return resolve(installedAddon);
     })
-    .catch((err) => {
-      log.error(err);
+    .catch((error) => {
+      log.error(error.message);
+      return reject(error);
     });
-});
+}));
 
-ipcMain.on('install-addon-file', async (event, gameId, gameVersionFlavor, addon, fileId) => {
-  const request = net.request(`${AppConfig.API_URL}/file/${fileId}`);
-  request.setHeader('x-app-uuid', getAppData('UUID'));
-  let body = '';
-  request.on('error', (error) => {
-    log.error(error);
-  });
-  request.on('response', (response) => {
-    response.on('data', (chunk) => {
-      body += chunk.toString();
-    });
-
-    response.on('end', () => {
-      if (body) {
-        const f = JSON.parse(body);
-        const gameS = getGameSettings(gameId.toString());
-        const { gameVersions } = getGameData(gameId.toString());
-        const { addonVersion } = gameVersions[gameVersionFlavor];
-        const installedFile = f;
-        installAddon(gameId, gameS[gameVersionFlavor].addonPath, installedFile)
-          .then(() => {
-            let updateAvailable = false;
-            let updateFile = {};
-            const trackBranch = addon.trackBranch || 1;
-            const autoUpdate = addon.autoUpdate || false;
-            const ignoreUpdate = addon.ignoreUpdate || false;
-
-            const possibleFiles = addon.latestFiles.filter((file) => (
-              file.releaseType <= trackBranch && file.gameVersionFlavor === addonVersion
-            ));
-            if (possibleFiles && possibleFiles.length > 0) {
-              const latestFile = possibleFiles.reduce((a, b) => (a.fileDate > b.fileDate ? a : b));
-              if (installedFile.fileDate < latestFile.fileDate) {
-                updateAvailable = true;
-                updateFile = latestFile;
-              }
-            }
-            installedFile.fileId = installedFile._id;
-            const installedAddon = {
-              addonName: addon.addonName,
-              addonId: addon.addonId,
-              avatar: addon.avatar,
-              primaryCategory: addon.primaryCategory,
-              author: addon.author,
-              fileName: installedFile.fileName,
-              fileDate: installedFile.fileDate,
-              releaseType: installedFile.releaseType,
-              gameVersion: installedFile.gameVersion[0],
-              modules: installedFile.modules,
-              latestFiles: addon.latestFiles,
-              installedFile,
-              updateAvailable,
-              updateFile,
-              brokenInstallation: false,
-              unknownUpdate: false,
-              trackBranch,
-              autoUpdate,
-              ignoreUpdate,
-            };
-            const installedAddons = gameS[gameVersionFlavor].installedAddons
-              .filter((obj) => obj.addonId !== installedAddon.addonId);
-            installedAddons.push(installedAddon);
-            gameS[gameVersionFlavor].installedAddons = installedAddons;
-            setGameSettings(gameId.toString(), gameS);
-            event.sender.send('addon-installed', installedAddon);
-            if (gameS[gameVersionFlavor].sync && isAuthenticated()) {
-              log.info('Game version is configured to sync, updating profile');
-              createAndSaveSyncProfile({ gameId, gameVersion: gameVersionFlavor })
-                .then(() => {
-                  log.info('Sync profile updated');
-                })
-                .catch((err) => {
-                  log.error('Error saving sync profile');
-                  log.error(err);
-                });
-            }
-          })
-          .catch((err) => {
-            log.error(err);
-          });
-      }
-    });
-  });
-  request.end();
-});
+ipcMain.handle('uninstall-addon', async (event, gameId, gameVersion, addonId) => new Promise((resolve, reject) => {
+  const gameS = getGameSettings(gameId.toString());
+  const { installedAddons } = gameS[gameVersion];
+  const addon = installedAddons.find((a) => a.addonId === addonId);
+  log.info(`Uninstalling addon ${addon.addonName}`);
+  if (addon) {
+    return uninstallAddon(gameS[gameVersion].addonPath, addon)
+      .then(() => removeInstalledAddonInfo(gameId, gameVersion, addonId))
+      .then(() => handleUninstallDependencies(gameId, gameVersion, addon))
+      .then(() => {
+        event.sender.send('addon-uninstalled', addonId);
+        if (gameS[gameVersion].sync && isAuthenticated()) {
+          log.info('Game version is configured to sync, updating profile');
+          return createAndSaveSyncProfile({ gameId, gameVersion });
+        }
+        return resolve(addonId);
+      })
+      .then(() => resolve(addonId))
+      .catch((err) => {
+        log.error(err);
+        return reject(err);
+      });
+  }
+  log.error("Tried uninstalling addon that Singularity didn't know was installed");
+  return reject(new Error('Unable to find addon'));
+}));
 
 ipcMain.on('open-addon-directory', (event, gameId, gameVersion, directory) => {
   const gameS = getGameSettings(gameId.toString());
   const addonDir = path.join(gameS[gameVersion].addonPath, directory);
   shell.openPath(addonDir);
-});
-
-ipcMain.on('uninstall-addon', async (event, gameId, gameVersion, addonId) => {
-  const gameS = getGameSettings(gameId.toString());
-  let { installedAddons } = gameS[gameVersion];
-  const addon = installedAddons.find((a) => a.addonId === addonId);
-  if (addon) {
-    uninstallAddon(gameS[gameVersion].addonPath, addon)
-      .then(() => {
-        installedAddons = installedAddons.filter((obj) => obj.addonId !== addonId);
-        gameS[gameVersion].installedAddons = installedAddons;
-        setGameSettings(gameId.toString(), gameS);
-        event.sender.send('addon-uninstalled', addonId);
-        if (gameS[gameVersion].sync && isAuthenticated()) {
-          log.info('Game version is configured to sync, updating profile');
-          createAndSaveSyncProfile({ gameId, gameVersion })
-            .then(() => {
-              log.info('Sync profile updated');
-            })
-            .catch((err) => {
-              log.error('Error saving sync profile');
-              log.error(err);
-            });
-        }
-      }).catch((err) => {
-        event.sender.send('addon-uninstall-failed', addonId);
-        log.error(err);
-      });
-  } else {
-    log.error("Tried uninstalling addon that Singularity didn't know was installed");
-    event.sender.send('addon-uninstall-failed', addonId);
-  }
-});
-
-ipcMain.on('update-addon', async (event, gameId, gameVersion, addon) => {
-  log.info(`Updating addon: ${addon.addonName}`);
-  const gameS = getGameSettings(gameId.toString());
-  const { gameVersions } = getGameData(gameId.toString());
-  const { addonVersion } = gameVersions[gameVersion];
-  const possibleFiles = addon.latestFiles.filter((file) => (
-    file.releaseType <= addon.trackBranch && file.gameVersionFlavor === addonVersion
-  ));
-  if (possibleFiles && possibleFiles.length > 0) {
-    const latestFile = possibleFiles.reduce((a, b) => (a.fileDate > b.fileDate ? a : b));
-    updateAddon(gameId, gameS[gameVersion].addonPath, addon, latestFile)
-      .then(() => {
-        latestFile.fileId = latestFile._id;
-        const installedAddon = addon;
-        installedAddon.updateAvailable = false;
-        installedAddon.updateFile = {};
-        installedAddon.fileName = latestFile.fileName;
-        installedAddon.fileDate = latestFile.fileDate;
-        installedAddon.releaseType = latestFile.releaseType;
-        installedAddon.installedFile = latestFile;
-        installedAddon.modules = latestFile.modules;
-        gameS[gameVersion].installedAddons.forEach((a) => {
-          if (a.addonId === installedAddon.addonId) {
-            gameS[gameVersion].installedAddons[a] = installedAddon;
-          }
-        });
-        setGameSettings(gameId.toString(), gameS);
-        event.sender.send('addon-installed', installedAddon);
-        if (gameS[gameVersion].sync && isAuthenticated()) {
-          log.info('Game version is configured to sync, updating profile');
-          createAndSaveSyncProfile({ gameId, gameVersion })
-            .then(() => {
-              log.info('Sync profile updated');
-            })
-            .catch((err) => {
-              log.error('Error saving sync profile');
-              log.error(err);
-            });
-        }
-      });
-  } else {
-    log.info('No updates found');
-  }
 });
