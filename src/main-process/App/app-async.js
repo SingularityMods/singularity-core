@@ -10,6 +10,8 @@ import {
 } from '../../services/sentry.service';
 import { getMainBrowserWindow } from '../../services/electron.service';
 
+ipcMain.handle('get-app-version', () => app.getVersion());
+
 ipcMain.on('accept-terms', (_event, termType) => {
   log.info(`Accepted ${termType}`);
   const terms = getAppData(termType);
