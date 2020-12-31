@@ -1,3 +1,4 @@
+import { app } from 'electron';
 import * as Sentry from '@sentry/electron';
 import AppConfig from '../config/app.config';
 
@@ -7,7 +8,7 @@ function initSentry() {
   Sentry.init({
     dsn: AppConfig.SENTRY_DSN,
     environment: AppConfig.SENTRY_ENV,
-    release: `singularity-core@${process.env.npm_package_version}`,
+    release: `singularity-core@${app.getVersion()}`,
     autoSessionTracking: true,
     beforeSend: _beforeSend,
   });
