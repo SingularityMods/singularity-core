@@ -76,6 +76,12 @@ export default class HomePage extends React.Component {
                 </p>
                 <p className="release-note-bullet">
                   {' '}
+                  - You can now configure Singularity to automatically install required
+                  dependencies and remove unused dependencies for Elder Scrolls Online addons under
+                  the settings menu. Both options are enabled by default.
+                </p>
+                <p className="release-note-bullet">
+                  {' '}
                   - Singularity&apos;s app installation, update, and startup processes have been
                   revamped to provide additional information as they progresses.
                 </p>

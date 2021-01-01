@@ -2,6 +2,16 @@
 	"currentRelease": "1.2.0-beta.3",
 	"releases": [
     {
+			"version": "1.2.0-beta.4",
+			"updateTo": {
+				"version": "1.2.0-beta.4",
+				"pub_date": "2021-01-01T00:00:00",
+				"notes": "Addon dependency management.",
+				"name": "1.2.0-beta.4",
+				"url": "https://storage.singularitycdn.com/App/Releases/Mac/Singularity-darwin-x64-1.2.0-beta.4.zip"
+			}
+		},
+    {
 			"version": "1.2.0-beta.3",
 			"updateTo": {
 				"version": "1.2.0-beta.3",

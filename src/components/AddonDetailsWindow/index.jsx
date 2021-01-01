@@ -12,8 +12,6 @@ import GameMenuButton from '../Buttons/GameMenuButton';
 import UpdateAddonButton from '../Buttons/UpdateAddonButton';
 import ConfirmDeleteDialog from '../Dialogs/ConfirmDeleteDialog';
 
-import ConfirmationDialog from '../Dialogs/ConfirmationDialog';
-
 import LoadingSpinner from '../LoadingSpinner';
 
 const { ipcRenderer } = require('electron');
@@ -221,13 +219,13 @@ class AddonDetailsWindow extends React.Component {
 
   uninstallAddon() {
     const {
-      installedAddon
+      installedAddon,
     } = this.state;
     const {
       gameId,
       gameVersion,
     } = this.props;
-      ipcRenderer.invoke('get-addons-dependent-on', gameId, gameVersion, installedAddon.addonId)
+    ipcRenderer.invoke('get-addons-dependent-on', gameId, gameVersion, installedAddon.addonId)
       .then((dependencyFor) => {
         if (dependencyFor) {
           const depList = [];
@@ -245,7 +243,7 @@ class AddonDetailsWindow extends React.Component {
             confirmDelete: true,
             uninstallMessage: `Are you sure you want to uninstall ${installedAddon.addonName}?`,
             uninstallDepsFor: '',
-           });
+          });
         }
       });
   }
@@ -256,11 +254,11 @@ class AddonDetailsWindow extends React.Component {
       gameVersion,
     } = this.state;
     const { addonId } = this.props;
-    this.setState({ 
+    this.setState({
       confirmDelete: false,
       uninstallMessage: '',
       uninstallDepsFor: '',
-     });
+    });
     ipcRenderer.invoke('uninstall-addon', gameId, gameVersion, addonId)
       .then(() => {
         this.setState({
@@ -282,10 +280,10 @@ class AddonDetailsWindow extends React.Component {
   }
 
   rejectUninstall() {
-    this.setState({ 
+    this.setState({
       confirmDelete: false,
       uninstallMessage: '',
-      uninstallDepsFor: '', 
+      uninstallDepsFor: '',
     });
   }
 
