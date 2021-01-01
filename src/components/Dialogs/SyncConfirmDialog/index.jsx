@@ -4,6 +4,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 
 import { Row, Col } from 'react-bootstrap';
+import { CSSTransition } from 'react-transition-group';
 
 import UpdateAddonButton from '../../Buttons/UpdateAddonButton';
 
@@ -15,6 +16,12 @@ function SyncConfirmDialog(props) {
     use,
   } = props;
   return (
+    <CSSTransition
+    in
+    appear
+    timeout={500}
+    classNames="transition"
+  >
     <div className="SyncConfirmDialog">
       <div className="up-notch" />
       <div className="sync-confirmation-dialog-content">
@@ -58,6 +65,7 @@ function SyncConfirmDialog(props) {
       </div>
 
     </div>
+    </CSSTransition>
   );
 }
 

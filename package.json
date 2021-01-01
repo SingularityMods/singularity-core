@@ -7,7 +7,7 @@
     "url": "git://github.com/singularitymods/singularity-core.git"
   },
   "description": "Singularity is the single app for your addon management.",
-  "version": "1.2.0-beta.3",
+  "version": "1.2.0-beta.4",
   "main": ".webpack/main",
   "scripts": {
     "start": "cross-env BUILD_ENV=dev electron-forge start",
@@ -98,6 +98,7 @@
     "react-hot-loader": "^4.12.21",
     "react-switch": "^5.0.1",
     "react-tooltip": "^4.2.10",
+    "react-transition-group": "^4.4.1",
     "simplebar": "^5.3.0",
     "simplebar-react": "^2.2.1",
     "stream-buffers": "^3.0.2",

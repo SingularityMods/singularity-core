@@ -1,0 +1,107 @@
+
+
+.ConfirmDeleteDialog {
+  z-index:49;
+  position: absolute;
+  top: 50px;
+  left: 50%;
+    transform: translate(-50%, 0);
+  max-width: 700px;
+  border: 1px solid #ED8323;
+  color: var(--text-color);
+  border-radius: 5px;
+  background-color: var(--dialog-background-color);
+  padding: 0 5px;
+  border: 2px solid var(--alert-dialog-border);
+  box-shadow: 0px 0px 5px 0px var(--alert-dialog-border);
+}
+
+.ConfirmDeleteDialog .left-notch {
+  display:none;
+  position: absolute;
+  left:-40px;
+  width: 0; 
+  height: 0; 
+  border-left: 40px solid transparent;
+  border-top: 40px solid var(--alert-dialog-border);
+  box-shadow: 0px 0px 5px 0px var(--alert-dialog-border);
+}
+.ConfirmDeleteDialog .right-notch {
+  display:none;
+  position: absolute;
+  right: 0;
+  width: 0; 
+  height: 0; 
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-bottom: 15px solid #ED8323;
+}
+
+/*
+.confirm-delete-dialog-content {
+    position: absolute;
+    top: 0;
+    height: 175px;
+    width: 300px;
+    border: 1px solid #ED8323;
+    border-radius: 5px;
+    background-color: var(--dialog-background-color);
+    padding: 0 5px;
+    box-shadow: 0px 0px 5px 0px var(--primary-color);
+}*/
+
+.confirm-delete-dialog-title {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.confirm-delete-dialog-message {
+  text-align: center;
+  white-space: pre-line;
+  font-size: 0.8rem;
+}
+
+.confirm-delete-dialog-message .bold {
+  font-weight: bold;
+}
+
+    .confirm-delete-dialog-title h2 {
+        font-weight: bold;
+    }
+
+    .confirm-delete-dialog-options {
+      width: fit-content;
+      flex: unset;
+      margin: 0 auto 10px;
+    }
+
+.confirm-delete-dialog-button {
+    margin-top: 25px;
+    margin-left: 20px;
+    margin-right: 20px;
+    border: none;
+}
+
+    .confirm-delete-dialog-button.UpdateAddonButton.disabled,
+    .confirm-delete-dialog-button.UpdateAddonButton.disabled:hover {
+        cursor: not-allowed;
+        color: #E6E8E6;
+        background-color: #ED8323aa;
+        border: none;
+    }
+
+.option-tooltip {
+    margin-top: 6px;
+    margin-left: 7px;
+    font-size: 0.8rem;
+}
+
+
+.ConfirmDeleteDialog.transition-enter, .ConfirmDeleteDialog.transition-appear {
+  opacity: 0;
+}
+
+.ConfirmDeleteDialog.transition-enter-active, .ConfirmDeleteDialog.transition-appear-active {
+  opacity: 1;
+  transition: opacity 300ms;
+}

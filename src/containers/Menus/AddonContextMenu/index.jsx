@@ -118,7 +118,8 @@ class AddonContextMenu extends React.Component {
       const trackBranch = installedAddon.trackBranch || 1;
       const autoUpdate = installedAddon.autoUpdate || false;
       const ignoreUpdate = installedAddon.ignoreUpdate || false;
-      const { addonId, addonUrl, modules } = installedAddon;
+      const { addonId, addonUrl } = installedAddon;
+      const { modules } = installedAddon.installedFile;
       const fileName = tableCells.item(2).innerText;
       const installState = tableCells.item(1).firstChild.innerText;
 

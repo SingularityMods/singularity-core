@@ -16,6 +16,17 @@ import LoadingSpinner from '../LoadingSpinner';
 
 const { ipcRenderer } = require('electron');
 
+function getLatestFile(addon, addonVersion) {
+  let possibleFiles = addon.latestFiles.filter((file) => (
+    file.gameVersionFlavor === addonVersion && file.releaseType <= addon.trackBranch
+  ));
+  if (!possibleFiles || possibleFiles.length === 0) {
+    possibleFiles = addon.latestFiles.filter((file) => file.gameVersionFlavor === addonVersion);
+    return possibleFiles.reduce((a, b) => ((a.releaseType < b.releaseType) ? a : b));
+  }
+  return possibleFiles.reduce((a, b) => (a.fileDate > b.fileDate ? a : b));
+}
+
 class BrowseAddonsWindow extends React.Component {
   constructor(props) {
     super(props);
@@ -218,23 +229,51 @@ class BrowseAddonsWindow extends React.Component {
 
   installAddon(addon) {
     const {
+      addonVersion,
       currentlyUpdating,
     } = this.state;
     const {
       gameId,
       gameVersion,
     } = this.props;
-    const branch = 1;
-    ipcRenderer.send('install-addon', gameId, gameVersion, addon, branch);
     const newCurrentlyUpdating = currentlyUpdating.slice();
-    currentlyUpdating.splice(0, 0, addon.addonId);
+    newCurrentlyUpdating.splice(0, 0, addon.addonId);
+    const latestFile = getLatestFile(addon, addonVersion);
     this.setState({
       currentlyUpdating: newCurrentlyUpdating,
     });
+    ipcRenderer.invoke('install-addon', gameId, gameVersion, addon, latestFile.fileId)
+      .then((installedAddon) => {
+        const {
+          erroredUpdates,
+          installedAddons,
+        } = this.state;
+        const currentlyInstalledAddons = installedAddons.map((a) => {
+          if (a.addonId !== installedAddon.addonId) {
+            return a;
+          }
+          return installedAddon;
+        });
+        if (!currentlyInstalledAddons.includes(installedAddon)) {
+          currentlyInstalledAddons.splice(0, 0, installedAddon);
+        }
 
-    setTimeout(() => {
-      this.timeoutAddon(addon);
-    }, 30000);
+        const evenNewerCurrentlyUpdating = newCurrentlyUpdating
+          .filter((obj) => obj !== installedAddon.addonId);
+        const newErroredUpdates = erroredUpdates.filter((obj) => obj !== installedAddon.addonId);
+        this.setState({
+          installedAddons: currentlyInstalledAddons,
+          currentlyUpdating: evenNewerCurrentlyUpdating,
+          erroredUpdates: newErroredUpdates,
+        });
+      })
+      .catch(() => {
+        const { erroredUpdates } = this.state;
+        erroredUpdates.push(addon.addonId);
+        this.setState({
+          erroredUpdates,
+        });
+      });
   }
 
   refreshSearch() {
@@ -395,7 +434,7 @@ class BrowseAddonsWindow extends React.Component {
         for (let i = 0; i < extraData.installedAddons.length; i += 1) {
           if (extraData.installedAddons[i].addonId === cellContent.toString()) {
             installed = true;
-            installedFileDate = Date.parse(extraData.installedAddons[i].fileDate);
+            installedFileDate = Date.parse(extraData.installedAddons[i].installedFile.fileDate);
           }
         }
         if (!installed) {

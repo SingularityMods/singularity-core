@@ -32,6 +32,7 @@ class SettingsWindow extends React.Component {
     this.toggleDefaultESOAddonTrack = this.toggleDefaultESOAddonTrack.bind(this);
     this.toggleDefaultWowAddonTrack = this.toggleDefaultWowAddonTrack.bind(this);
     this.toggleDefaultAutoUpdate = this.toggleDefaultAutoUpdate.bind(this);
+    this.toggleDepsManagement = this.toggleDepsManagement.bind(this);
     this.toggleTelemetry = this.toggleTelemetry.bind(this);
     this.installDirChangeAcceptedListener = this.installDirChangeAcceptedListener.bind(this);
     this.installDirChangeRejectedListener = this.installDirChangeRejectedListener.bind(this);
@@ -190,6 +191,27 @@ class SettingsWindow extends React.Component {
     const { gameDefaults } = this.state;
     gameDefaults[event.target.attributes.gameversion.value].trackBranch = parseInt(branch, 10);
     ipcRenderer.send('set-game-defaults', 1, event.target.attributes.gameversion.value, gameDefaults[event.target.attributes.gameversion.value]);
+    this.setState({
+      gameDefaults,
+    });
+  }
+
+  toggleDepsManagement(checked, event, id) {
+    const { gameDefaults } = this.state;
+    switch (id) {
+      case 'eso_install_deps':
+        gameDefaults.eso.installDeps = checked;
+        ipcRenderer.send('set-game-defaults', 2, 'eso', gameDefaults.eso);
+        break;
+      case 'eso_uninstall_deps':
+        gameDefaults.eso.uninstallDeps = checked;
+        ipcRenderer.send('set-game-defaults', 2, 'eso', gameDefaults.eso);
+        break;
+      default:
+        gameDefaults.wow_retail.installDeps = checked;
+        ipcRenderer.send('set-game-defaults', 1, 'wow_retail', gameDefaults.wow_retail);
+        break;
+    }
     this.setState({
       gameDefaults,
     });
@@ -597,6 +619,48 @@ class SettingsWindow extends React.Component {
                               checked={gameDefaults.eso.autoUpdate}
                               gameversion="eso"
                               id="eso_auto_update"
+                              onColor="#ED8323"
+                              height={20}
+                              width={40}
+                              activeBoxShadow="0 0 2px 3px #ED8323"
+                            />
+                          )
+                          : ''}
+                      </Col>
+                    </Row>
+                    <Row className="settings-item">
+                      <Col xs={4} md={3} className="settings-item-name">
+                        <div>Install Dependencies</div>
+                      </Col>
+                      <Col xs={8} md={9} className="settings-item-config">
+                        {appSettings
+                          ? (
+                            <Switch
+                              onChange={this.toggleDepsManagement}
+                              checked={gameDefaults.eso.installDeps}
+                              gameversion="eso"
+                              id="eso_install_deps"
+                              onColor="#ED8323"
+                              height={20}
+                              width={40}
+                              activeBoxShadow="0 0 2px 3px #ED8323"
+                            />
+                          )
+                          : ''}
+                      </Col>
+                    </Row>
+                    <Row className="settings-item">
+                      <Col xs={4} md={3} className="settings-item-name">
+                        <div>Uninstall Unused Dependencies</div>
+                      </Col>
+                      <Col xs={8} md={9} className="settings-item-config">
+                        {appSettings
+                          ? (
+                            <Switch
+                              onChange={this.toggleDepsManagement}
+                              checked={gameDefaults.eso.uninstallDeps}
+                              gameversion="eso"
+                              id="eso_uninstall_deps"
                               onColor="#ED8323"
                               height={20}
                               width={40}

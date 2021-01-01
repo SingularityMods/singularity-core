@@ -222,7 +222,7 @@ function setAppConfig() {
   }
   if (version < '1.1.0') {
     const gameS = getGameSettings('1');
-    Object.entries(gameS).forEach((gameVersion) => {
+    Object.keys(gameS).forEach((gameVersion) => {
       gameS[gameVersion].sync = false;
       gameS[gameVersion].defaults = {
         trackBranch: 1,
@@ -949,6 +949,22 @@ function setAppConfig() {
     setAppData('privacy', privSettings);
     setAppData('tos', tosSettings);
     setAppData('terms', terms);
+  }
+  if (version < '1.2.0-beta.4') {
+    const wowS = getGameSettings('1');
+    Object.keys(wowS).forEach((gameVersion) => {
+      wowS[gameVersion].dependencies = {};
+      wowS[gameVersion].defaults.installDeps = true;
+      wowS[gameVersion].defaults.uninstallDeps = true;
+    });
+    setGameSettings('1', wowS);
+    const esoS = getGameSettings('2');
+    Object.keys(esoS).forEach((gameVersion) => {
+      esoS[gameVersion].dependencies = {};
+      esoS[gameVersion].defaults.installDeps = true;
+      esoS[gameVersion].defaults.uninstallDeps = true;
+    });
+    setGameSettings('2', esoS);
   }
   // Set new version
   setAppData('version', app.getVersion());
