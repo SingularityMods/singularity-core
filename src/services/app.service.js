@@ -950,7 +950,7 @@ function setAppConfig() {
     setAppData('tos', tosSettings);
     setAppData('terms', terms);
   }
-  if (version < '1.3.0') {
+  if (version < '1.2.0-beta.4') {
     const wowS = getGameSettings('1');
     Object.keys(wowS).forEach((gameVersion) => {
       wowS[gameVersion].dependencies = {};
@@ -964,7 +964,7 @@ function setAppConfig() {
       esoS[gameVersion].defaults.installDeps = true;
       esoS[gameVersion].defaults.uninstallDeps = true;
     });
-    setGameSettings('1', esoS);
+    setGameSettings('2', esoS);
   }
   // Set new version
   setAppData('version', app.getVersion());

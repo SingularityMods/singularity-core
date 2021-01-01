@@ -913,16 +913,19 @@ class InstalledAddonsWindow extends React.Component {
                     </Button>
                   </Col>
                 </Row>
-                {confirmDelete
-                  ? (
-                    <ConfirmDeleteDialog
-                      message={uninstallMessage}
-                      boldMessage={uninstallDepsFor}
-                      accept={this.confirmUninstall}
-                      reject={this.rejectUninstall}
-                    />
-                  )
-                  : ''}
+                <div>
+                  {confirmDelete
+                    ? (
+                      <ConfirmDeleteDialog
+                        message={uninstallMessage}
+                        boldMessage={uninstallDepsFor}
+                        accept={this.confirmUninstall}
+                        reject={this.rejectUninstall}
+                      />
+                    )
+                    : ''}
+                </div>
+
                 {isRefreshing
                   ? <LoadingSpinner />
                   : (

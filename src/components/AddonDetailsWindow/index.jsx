@@ -10,6 +10,7 @@ import AddonScreenshotsTab from '../AddonScreenshotsTab';
 import AddonVersionTable from '../AddonVersionTable';
 import GameMenuButton from '../Buttons/GameMenuButton';
 import UpdateAddonButton from '../Buttons/UpdateAddonButton';
+import ConfirmDeleteDialog from '../Dialogs/ConfirmDeleteDialog';
 
 import ConfirmationDialog from '../Dialogs/ConfirmationDialog';
 
@@ -50,6 +51,8 @@ class AddonDetailsWindow extends React.Component {
       currentlyInstallingFile: '',
       isLoading: false,
       confirmDelete: false,
+      uninstallMessage: '',
+      uninstallDepsFor: '',
     };
     this.addonInfoListener = this.addonInfoListener.bind(this);
     this.installAddon = this.installAddon.bind(this);
@@ -217,7 +220,34 @@ class AddonDetailsWindow extends React.Component {
   }
 
   uninstallAddon() {
-    this.setState({ confirmDelete: true });
+    const {
+      installedAddon
+    } = this.state;
+    const {
+      gameId,
+      gameVersion,
+    } = this.props;
+      ipcRenderer.invoke('get-addons-dependent-on', gameId, gameVersion, installedAddon.addonId)
+      .then((dependencyFor) => {
+        if (dependencyFor) {
+          const depList = [];
+          dependencyFor.forEach((dep) => {
+            depList.push(dep.addonName);
+          });
+          const message = `Are you sure you want to uninstall ${installedAddon.addonName}? This is a dependency for the following addons:`;
+          this.setState({
+            uninstallMessage: message,
+            uninstallDepsFor: depList.join(', '),
+            confirmDelete: 'dependency',
+          });
+        } else {
+          this.setState({
+            confirmDelete: true,
+            uninstallMessage: `Are you sure you want to uninstall ${installedAddon.addonName}?`,
+            uninstallDepsFor: '',
+           });
+        }
+      });
   }
 
   confirmUninstall() {
@@ -226,7 +256,11 @@ class AddonDetailsWindow extends React.Component {
       gameVersion,
     } = this.state;
     const { addonId } = this.props;
-    this.setState({ confirmDelete: false });
+    this.setState({ 
+      confirmDelete: false,
+      uninstallMessage: '',
+      uninstallDepsFor: '',
+     });
     ipcRenderer.invoke('uninstall-addon', gameId, gameVersion, addonId)
       .then(() => {
         this.setState({
@@ -248,7 +282,11 @@ class AddonDetailsWindow extends React.Component {
   }
 
   rejectUninstall() {
-    this.setState({ confirmDelete: false });
+    this.setState({ 
+      confirmDelete: false,
+      uninstallMessage: '',
+      uninstallDepsFor: '', 
+    });
   }
 
   updateAddon() {
@@ -326,6 +364,8 @@ class AddonDetailsWindow extends React.Component {
       activeTab,
       addon,
       confirmDelete,
+      uninstallMessage,
+      uninstallDepsFor,
       currentlyInstallingFile,
       isLoading,
       installed,
@@ -384,19 +424,18 @@ class AddonDetailsWindow extends React.Component {
       <div className="GameDetailsWindow">
         {isLoading
           ? <LoadingSpinner />
-          : ''}
-        {confirmDelete && !isLoading
-          ? (
-            <ConfirmationDialog
-              message={`Are you sure you want to uninstall ${addon.addonName}?`}
-              accept={this.confirmUninstall}
-              reject={this.rejectUninstall}
-            />
-          )
-          : ''}
-        {!confirmDelete && !isLoading
-          ? (
+          : (
             <div>
+              {confirmDelete
+                ? (
+                  <ConfirmDeleteDialog
+                    message={uninstallMessage}
+                    boldMessage={uninstallDepsFor}
+                    accept={this.confirmUninstall}
+                    reject={this.rejectUninstall}
+                  />
+                )
+                : ''}
               <SimpleBar scrollbarMaxSize={50} className="addon-details-window">
                 <Row className="addon-details-top-menu">
                   <Col xs="3"><GameMenuButton handleClick={handleGoBack} type="Back" /></Col>
@@ -476,8 +515,7 @@ class AddonDetailsWindow extends React.Component {
                 </Row>
               </SimpleBar>
             </div>
-          )
-          : ''}
+          )}
       </div>
     );
   }
