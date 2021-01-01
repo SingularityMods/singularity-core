@@ -184,3 +184,16 @@
     color: var(--singularity-orange);
     background-color: var(--table-background-color);
 }
+
+.BrowseAddonsWindow .search-filter-clear{
+  color: var(--text-color);
+  position: absolute;
+  right: 22px;
+  top: 7px;
+  z-index: 50;
+  cursor: pointer;
+}
+
+.BrowseAddonsWindow .search-filter-clear:focus {
+  outline: none;
+}

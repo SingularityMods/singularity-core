@@ -24,6 +24,7 @@ class GameWindow extends React.Component {
       installedVersions: [],
       selectedAddon: '',
       selectedGameVersion: '',
+      filter: '',
     };
 
     this.installationFinderListener = this.installationFinderListener.bind(this);
@@ -134,15 +135,17 @@ class GameWindow extends React.Component {
     });
   }
 
-  selectAddon(addonId) {
+  selectAddon(addonId, currentFilter) {
     this.setState({
       selectedAddon: addonId,
+      filter: currentFilter,
     });
   }
 
   toggleActiveTab(activeTab) {
     this.setState({
       selectedAddon: '',
+      filter: '',
       activeTab,
     });
   }
@@ -154,6 +157,7 @@ class GameWindow extends React.Component {
     } else {
       this.setState({
         selectedAddon: '',
+        filter: '',
         selectedGameVersion: gameVersion,
       });
     }
@@ -164,6 +168,7 @@ class GameWindow extends React.Component {
       activeTab,
       appUUID,
       bannerPath,
+      filter,
       gameId,
       installedVersions,
       selectedAddon,
@@ -213,6 +218,7 @@ class GameWindow extends React.Component {
                         appUUID={appUUID}
                         darkMode={darkMode}
                         gameId={gameId}
+                        filter={filter}
                         gameVersion={selectedGameVersion}
                         backupPending={backupPending}
                         restorePending={restorePending}
@@ -228,6 +234,7 @@ class GameWindow extends React.Component {
                         darkMode={darkMode}
                         gameId={gameId}
                         gameVersion={selectedGameVersion}
+                        filter={filter}
                         onSelectAddon={this.selectAddon}
                       />
                     )}

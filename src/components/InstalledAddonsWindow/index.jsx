@@ -60,6 +60,7 @@ class InstalledAddonsWindow extends React.Component {
     super(props);
     const {
       appUUID,
+      filter,
       backupPending,
       restorePending,
     } = this.props;
@@ -70,7 +71,7 @@ class InstalledAddonsWindow extends React.Component {
       addonVersion: '',
       installedAddons: [],
       selectedAddon: [],
-      filter: '',
+      filter,
       currentlyUpdating: [],
       erroredUpdates: [],
       pendingUpdates: [],
@@ -82,6 +83,8 @@ class InstalledAddonsWindow extends React.Component {
       uninstallMessage: '',
       uninstallDepsFor: '',
     };
+    this.handleSelectAddon = this.handleSelectAddon.bind(this);
+    this.clearSearchFilter = this.clearSearchFilter.bind(this);
     this.handleAddonInstallComplete = this.handleAddonInstallComplete.bind(this);
     this.handleAddonInstallFailed = this.handleAddonInstallFailed.bind(this);
     this.autoUpdateCompleteListener = this.autoUpdateCompleteListener.bind(this);
@@ -135,7 +138,6 @@ class InstalledAddonsWindow extends React.Component {
       addonVersion,
       installedAddons,
       isRefreshing: false,
-      filter: '',
       profile,
     });
   }
@@ -143,6 +145,7 @@ class InstalledAddonsWindow extends React.Component {
   componentDidUpdate(prevProps) {
     const {
       backupPending,
+      filter,
       gameId,
       gameVersion,
       lastRestoreComplete,
@@ -189,7 +192,7 @@ class InstalledAddonsWindow extends React.Component {
         addonVersion,
         installedAddons,
         isRefreshing: false,
-        filter: '',
+        filter,
         pendingUninstall: '',
         confirmDelete: null,
         uninstallMessage: '',
@@ -204,6 +207,12 @@ class InstalledAddonsWindow extends React.Component {
     ipcRenderer.removeListener('addons-found', this.addonsFoundListener);
     ipcRenderer.removeListener('no-addons-found', this.addonsNotFoundListener);
     ipcRenderer.removeListener('addon-settings-updated', this.addonSettingsUpdatedListener);
+  }
+
+  handleSelectAddon(addonId) {
+    const { onSelectAddon } = this.props;
+    const { filter } = this.state;
+    onSelectAddon(addonId, filter);
   }
 
   handleOnSelect(row, isSelect) {
@@ -255,6 +264,12 @@ class InstalledAddonsWindow extends React.Component {
           this.updateAddon(nextUpdate);
         }
       });
+  }
+
+  clearSearchFilter() {
+    this.setState({
+      filter: '',
+    });
   }
 
   updateAddon(addon) {
@@ -665,7 +680,7 @@ class InstalledAddonsWindow extends React.Component {
         return (
           <div className="installed-addon-title-column">
             <img className="addon-table-img" alt="Addon icon" src={avatarUrl} />
-            <div className="addon-name-section"><span role="button" tabIndex="0" className="addon-name" onClick={() => onSelectAddon(row.addonId)} onKeyPress={() => onSelectAddon(row.addonId)}>{cellContent}</span></div>
+            <div className="addon-name-section"><span role="button" tabIndex="0" className="addon-name" onClick={() => this.handleSelectAddon(row.addonId)} onKeyPress={() => onSelectAddon(row.addonId)}>{cellContent}</span></div>
           </div>
         );
       },
@@ -892,14 +907,26 @@ class InstalledAddonsWindow extends React.Component {
                     />
                   </Col>
                   <Col xs={4} sm={3} xl={3} className="filter-col">
+                    {filter && filter !== ''
+                      ? (
+                        <div
+                          className="search-filter-clear"
+                          role="button"
+                          tabIndex="0"
+                          onClick={this.clearSearchFilter}
+                          onKeyPress={this.clearSearchFilter}
+                        >
+                          <i className="fas fa-times-circle" />
+                        </div>
+                      )
+                      : ''}
                     <Form.Group>
                       <Form.Control
-                        key={gameVersion}
                         type="text"
                         name="searchFilter"
                         className="addon-search-field filter-field"
                         placeholder="Filter"
-                        defaultValue={filter}
+                        value={filter}
                         onChange={this.changeFilter}
                       />
                     </Form.Group>
@@ -975,11 +1002,16 @@ InstalledAddonsWindow.propTypes = {
   darkMode: PropTypes.bool.isRequired,
   gameId: PropTypes.number.isRequired,
   gameVersion: PropTypes.string.isRequired,
+  filter: PropTypes.string,
   lastRestoreComplete: PropTypes.object.isRequired,
   onSelectAddon: PropTypes.func.isRequired,
   openBackupManagementDialog: PropTypes.func.isRequired,
   restorePending: PropTypes.bool.isRequired,
   toggleActiveTab: PropTypes.func.isRequired,
+};
+
+InstalledAddonsWindow.defaultProps = {
+  filter: '',
 };
 
 export default InstalledAddonsWindow;

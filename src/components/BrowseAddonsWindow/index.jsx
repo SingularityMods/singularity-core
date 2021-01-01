@@ -30,6 +30,9 @@ function getLatestFile(addon, addonVersion) {
 class BrowseAddonsWindow extends React.Component {
   constructor(props) {
     super(props);
+    const {
+      filter,
+    } = this.props;
     this.state = {
       addonVersion: '',
       installedAddons: [],
@@ -39,7 +42,7 @@ class BrowseAddonsWindow extends React.Component {
       pageSize: 50,
       currentlyUpdating: [],
       erroredUpdates: [],
-      searchFilter: '',
+      searchFilter: filter,
       typingTimeout: 0,
       selectedCategory: '',
       noAddonsFound: false,
@@ -51,12 +54,14 @@ class BrowseAddonsWindow extends React.Component {
     this.refreshSearch = this.refreshSearch.bind(this);
     this.loadMoreAddons = this.loadMoreAddons.bind(this);
     this.timeoutAddon = this.timeoutAddon.bind(this);
+    this.handleSelectAddon = this.handleSelectAddon.bind(this);
     this.addonInstalledListener = this.addonInstalledListener.bind(this);
     this.addonSearchListener = this.addonSearchListener.bind(this);
     this.additionalAddonsListener = this.additionalAddonsListener.bind(this);
     this.addonSearchErrorListener = this.addonSearchErrorListener.bind(this);
     this.addonSearchNoResultListener = this.addonSearchNoResultListener.bind(this);
     this.changeFilter = this.changeFilter.bind(this);
+    this.clearSearchFilter = this.clearSearchFilter.bind(this);
     this.toggleCategory = this.toggleCategory.bind(this);
   }
 
@@ -125,6 +130,12 @@ class BrowseAddonsWindow extends React.Component {
     ipcRenderer.removeListener('additional-addon-search-result', this.additionalAddonsListener);
     ipcRenderer.removeListener('additional-addon-search-result', this.additionalAddonsListener);
     ipcRenderer.removeListener('addon-search-error', this.addonSearchErrorListener);
+  }
+
+  handleSelectAddon(addonId) {
+    const { onSelectAddon } = this.props;
+    const { searchFilter } = this.state;
+    onSelectAddon(addonId, searchFilter);
   }
 
   addonInstalledListener(_event, installedAddon) {
@@ -335,6 +346,12 @@ class BrowseAddonsWindow extends React.Component {
     });
   }
 
+  clearSearchFilter() {
+    this.setState({
+      searchFilter: '',
+    }, () => { this.refreshSearch(); });
+  }
+
   changeFilter(event) {
     const self = this;
     const {
@@ -369,7 +386,6 @@ class BrowseAddonsWindow extends React.Component {
     } = this.state;
     const {
       gameVersion,
-      onSelectAddon,
       gameId,
     } = this.props;
     const selectedCat = categories.filter((category) => (
@@ -402,8 +418,8 @@ class BrowseAddonsWindow extends React.Component {
                 className="addon-name"
                 role="button"
                 tabIndex="0"
-                onClick={() => onSelectAddon(row.addonId)}
-                onKeyPress={() => onSelectAddon(row.addonId)}
+                onClick={() => this.handleSelectAddon(row.addonId)}
+                onKeyPress={() => this.handleSelectAddon(row.addonId)}
               >
                 {cellContent}
               </div>
@@ -550,13 +566,26 @@ class BrowseAddonsWindow extends React.Component {
 
               </Col>
               <Col xs={5}>
+                {searchFilter && searchFilter !== ''
+                  ? (
+                    <div
+                      className="search-filter-clear"
+                      role="button"
+                      tabIndex="0"
+                      onClick={this.clearSearchFilter}
+                      onKeyPress={this.clearSearchFilter}
+                    >
+                      <i className="fas fa-times-circle" />
+                    </div>
+                  )
+                  : ''}
                 <Form.Group>
                   <Form.Control
                     type="text"
                     name="searchFilter"
                     className="addon-search-field"
                     placeholder="Search"
-                    defaultValue={searchFilter}
+                    value={searchFilter}
                     onChange={this.changeFilter}
                   />
                 </Form.Group>
@@ -609,7 +638,12 @@ class BrowseAddonsWindow extends React.Component {
 BrowseAddonsWindow.propTypes = {
   gameId: PropTypes.number.isRequired,
   gameVersion: PropTypes.string.isRequired,
+  filter: PropTypes.string,
   onSelectAddon: PropTypes.func.isRequired,
+};
+
+BrowseAddonsWindow.defaultProps = {
+  filter: '',
 };
 
 export default BrowseAddonsWindow;
