@@ -95,6 +95,7 @@ class GameWindow extends React.Component {
         bannerPath: gameData.bannerPath,
         installedVersions,
         selectedGameVersion,
+        filter: '',
         gameId,
         selectedAddon: '',
       });

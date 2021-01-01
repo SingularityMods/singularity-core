@@ -103,20 +103,21 @@ class BrowseAddonsWindow extends React.Component {
     const {
       page,
       pageSize,
-      searchFilter,
     } = this.state;
     const {
+      filter,
       gameId,
       gameVersion,
     } = this.props;
     if (gameVersion !== prevProps.gameVersion) {
-      ipcRenderer.send('addon-search', gameId, gameVersion, searchFilter, 0, page, pageSize);
+      ipcRenderer.send('addon-search', gameId, gameVersion, filter, 0, page, pageSize);
       const gameSettings = ipcRenderer.sendSync('get-game-settings', gameId);
       const addonVersion = ipcRenderer.sendSync('get-game-addon-version', gameId, gameVersion);
       this.setState({
         installedAddons: gameSettings[gameVersion].installedAddons,
         addonList: [],
         selectedCategory: '',
+        searchFilter: filter,
         page: 0,
         searching: true,
         addonVersion,
