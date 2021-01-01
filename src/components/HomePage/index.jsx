@@ -87,6 +87,10 @@ export default class HomePage extends React.Component {
                 </p>
                 <p className="release-note-bullet">
                   {' '}
+                  - Singularity now remembers your search filter as you browse individual addons.
+                </p>
+                <p className="release-note-bullet">
+                  {' '}
                   - You now have the option of opting-in to sharing app telemetry with
                   Singularity&apos;s developers. This anonymized data will help us identifying
                   and fix bugs more quickly. Please consider opting-in under the app settings
