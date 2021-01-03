@@ -5,7 +5,8 @@
   position: absolute;
   top: 50px;
   left: 50%;
-    transform: translate(-50%, 0);
+  min-width: 400px;
+  transform: translate(-50%, 0);
   max-width: 700px;
   border: 1px solid #ED8323;
   color: var(--text-color);
