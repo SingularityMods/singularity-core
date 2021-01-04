@@ -616,7 +616,7 @@ class AuthDialog extends React.Component {
                             onChange={this.handleChangeUsername}
                             onKeyPress={(event) => {
                               if (event.key === 'Enter') {
-                                this.onSubmit(event);
+                                this.onSubmitSignup(event);
                               }
                             }}
                           />
@@ -643,7 +643,7 @@ class AuthDialog extends React.Component {
                             onChange={this.handleChangePassword}
                             onKeyPress={(event) => {
                               if (event.key === 'Enter') {
-                                this.onSubmit(event);
+                                this.onSubmitSignup(event);
                               }
                             }}
                           />
@@ -674,7 +674,7 @@ class AuthDialog extends React.Component {
                             onChange={this.handleChangeConfirmPassword}
                             onKeyPress={(event) => {
                               if (event.key === 'Enter') {
-                                this.onSubmit(event);
+                                this.onSubmitSignup(event);
                               }
                             }}
                           />
@@ -700,7 +700,7 @@ class AuthDialog extends React.Component {
                             onChange={this.handleChangeEmail}
                             onKeyPress={(event) => {
                               if (event.key === 'Enter') {
-                                this.onSubmit(event);
+                                this.onSubmitSignup(event);
                               }
                             }}
                           />
