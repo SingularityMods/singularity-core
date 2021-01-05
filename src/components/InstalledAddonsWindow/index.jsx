@@ -837,7 +837,7 @@ class InstalledAddonsWindow extends React.Component {
         if (latestFile) {
           return <span className="label">{latestFile.fileName}</span>;
         }
-        return <span className="label">Unknown</span>
+        return <span className="label">Unknown</span>;
       },
     }, {
       dataField: 'gameVersion',

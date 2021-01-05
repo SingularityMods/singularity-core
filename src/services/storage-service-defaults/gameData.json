@@ -5,6 +5,7 @@
       "iconPath": "../img/icons/wow-icon.png",
       "tilePath": "../img/tiles/wow-tile.png",
       "manifestFile" : ".toc",
+      "fingerprintDepth": 1,
       "likelyInstallPaths":{
         "win":[
           "C:/Program Files (x86)/",
@@ -934,6 +935,7 @@
       "iconPath": "../img/icons/eso-icon.png",
       "tilePath": "../img/tiles/eso-tile.png",
       "manifestFile" : ".txt",
+      "fingerprintDepth": 3,
       "likelyInstallPaths":{
         "win":[
           "C:/Program Files (x86)/Steam/steamapps/common/Zenimax Online/",

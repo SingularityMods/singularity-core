@@ -966,6 +966,14 @@ function setAppConfig() {
     });
     setGameSettings('2', esoS);
   }
+  if (version < '1.2.0-beta.7') {
+    const wowD = getGameData('1');
+    wowD.fingerprintDepth = 1;
+    setGameData('1', wowD);
+    const esoD = getGameData('2');
+    esoD.fingerprintDepth = 3;
+    setGameData('2', esoD);
+  }
   // Set new version
   setAppData('version', app.getVersion());
   // Set UUID if it doesn't exist

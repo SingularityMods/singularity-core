@@ -340,19 +340,148 @@ function findInstalledGame(gameId, selectedPath) {
   });
 }
 
-function fingerprintAllAsync(gameId, addonDir) {
+function _getAddonSubDirectories(gameAddonPath, currentDepth, maxDepth, parentDir, currentDir) {
+  return new Promise((resolve, reject) => {
+    fs.promises.readdir(path.join(gameAddonPath, parentDir, currentDir), { withFileTypes: true })
+      .then((entries) => entries.filter((d) => d.isDirectory())
+        .map((e) => path.join(currentDir, e.name)))
+      .then((entries) => {
+        let subDirectories = [];
+        entries.forEach((entry) => {
+          subDirectories.push(path.join(parentDir, entry));
+        });
+        if (currentDepth < maxDepth) {
+          const promises = [];
+          entries.forEach((entry) => {
+            promises.push(_getAddonSubDirectories(
+              gameAddonPath,
+              currentDepth + 1,
+              maxDepth,
+              parentDir,
+              entry,
+            ));
+          });
+          return Promise.allSettled(promises)
+            .then((results) => {
+              results.forEach((result) => {
+                if (result.status === 'fulfilled') {
+                  subDirectories = subDirectories.concat(result.value.directories);
+                }
+              });
+              return resolve({
+                addonDir: parentDir,
+                directories: subDirectories,
+              });
+            })
+            .catch((recursionError) => reject(recursionError));
+        }
+        return resolve({
+          addonDir: parentDir,
+          directories: subDirectories,
+        });
+      });
+  });
+}
+
+function _getDirectoriesToFingerprint(gameAddonPath, maxDepth) {
+  return new Promise((resolve, reject) => {
+    fs.promises.readdir(gameAddonPath, { withFileTypes: true })
+      .then((entries) => entries.filter((d) => d.isDirectory())
+        .map((e) => e.name))
+      .then((entries) => {
+        const directories = [];
+        entries.forEach((entry) => {
+          directories.push({
+            addonDir: entry,
+            directories: [
+              entry,
+            ],
+          });
+        });
+        if (maxDepth === 1) {
+          // Scanning through root directory
+          /*
+          [
+            {
+              addonDir: exampleAddon,
+              directories: [
+                exampleAddon,
+                exampleAddon/modules/dep1,
+                exampleAddon/modules/dep2,
+                exampleAddon/libs/lib1,
+                exampleAddon/libs/lib2
+              ]
+            }
+          ]
+          */
+
+          return resolve(directories);
+        }
+        const promises = [];
+        entries.forEach((entry) => {
+          promises.push(_getAddonSubDirectories(gameAddonPath, 1, maxDepth, entry, ''));
+        });
+        return Promise.allSettled(promises)
+          .then((results) => {
+            results.forEach((result) => {
+              if (result.status === 'fulfilled') {
+                const index = directories
+                  .findIndex((obj) => obj.addonDir === result.value.addonDir);
+                directories[index].directories = directories[index].directories
+                  .concat(result.value.directories);
+              }
+            });
+            return resolve(directories);
+          })
+          .catch((error) => reject(error));
+      })
+      .catch((error) => reject(error));
+  });
+}
+
+async function fingerprintAllAsync(gameId, addonDir, fingerprintDepth) {
   return new Promise((resolve, reject) => {
     if (!fs.existsSync(addonDir)) {
       log.info('Addon directory does not exists');
-      resolve({});
-    } else {
+      return resolve({});
+    }
+    return _getDirectoriesToFingerprint(addonDir, fingerprintDepth)
+      .then((addonFolders) => {
+        console.log(addonFolders);
+        const promises = [];
+        const { manifestFile } = getGameData(gameId.toString());
+        addonFolders.forEach((dir) => {
+          dir.directories.forEach(d => {
+            promises.push(_fingerprintAddonDir(manifestFile, addonDir, d));
+          })
+        });
+        Promise.allSettled(promises)
+          .then((results) => {
+            const addonHashMap = {};
+            results.forEach((result) => {
+              if (result.status === 'fulfilled') {
+                addonHashMap[result.value.d] = result.value.hash;
+              }
+            });
+            resolve(addonHashMap);
+          })
+          .catch((e) => {
+            log.error(e);
+            reject(e);
+          });
+      })
+      .catch((err) => {
+        log.error(err);
+        reject(err);
+      });
+    /*
       fs.promises.readdir(addonDir, { withFileTypes: true })
         .then((files) => files.filter((dirent) => dirent.isDirectory())
           .map((dirent) => dirent.name)).then((addonDirs) => {
           const promises = [];
           const { manifestFile } = getGameData(gameId.toString());
           addonDirs.forEach((dir) => {
-            promises.push(_readAddonDir(manifestFile, addonDir, dir));
+            promises.push(_fingerprintAddonDir(manifestFile, addonDir, dir));
           });
           Promise.allSettled(promises)
             .then((results) => {
@@ -373,7 +502,7 @@ function fingerprintAllAsync(gameId, addonDir) {
           log.error(err);
           reject(err);
         });
-    }
+      */
   });
 }
 
@@ -1007,9 +1136,9 @@ function _findAddonsForGameVersion(gameId, gameVersion, sync) {
   return new Promise((resolve, reject) => {
     log.info(`Finding addons for ${gameVersion}`);
     const gameS = getGameSettings(gameId.toString());
-    const { gameVersions } = getGameData(gameId.toString());
+    const { fingerprintDepth, gameVersions } = getGameData(gameId.toString());
     const { addonVersion } = gameVersions[gameVersion];
-    fingerprintAllAsync(gameId, gameS[gameVersion].addonPath)
+    fingerprintAllAsync(gameId, gameS[gameVersion].addonPath, fingerprintDepth)
       .then((hashMap) => identifyAddons(gameId.toString(), gameVersion, hashMap))
       .then((result) => {
         log.info('Checking for addons that are configured to auto update');
@@ -1186,24 +1315,24 @@ function _isSyncEnabled() {
   });
 }
 
-function _readAddonDir(manifestFileExt, p, d) {
+function _fingerprintAddonDir(manifestFileExt, p, d) {
   return new Promise((resolve, reject) => {
     let tocFile;
     const addonFileHashes = [];
-    let addonDir = '';
+    let addonPath = '';
     try {
-      addonDir = path.join(p, d);
+      addonPath = path.join(p, d);
     } catch (err) {
       reject(err);
     }
-    fs.promises.readdir(addonDir)
+    fs.promises.readdir(addonPath)
       .then((addonFiles) => {
         for (let i = 0; i < addonFiles.length; i += 1) {
           const fileName = addonFiles[i];
-          const filePath = path.join(addonDir, fileName);
+          const filePath = path.join(addonPath, fileName);
 
           if (filePath.indexOf(manifestFileExt) >= 0) {
-            if (addonDir.includes(fileName.slice(0, -4))) {
+            if (addonPath.includes(fileName.slice(0, -4))) {
               tocFile = filePath;
               addonFileHashes.push(hasha.fromFileSync(tocFile, { algorithm: 'md5' }));
               break;
@@ -1219,7 +1348,7 @@ function _readAddonDir(manifestFileExt, p, d) {
             if (process.platform === 'darwin') {
               lineContents = lineContents.replace(/\\/g, '/');
             }
-            const potentialFile = path.join(addonDir, lineContents.trim());
+            const potentialFile = path.join(addonPath, lineContents.trim());
             if (fs.existsSync(potentialFile)) {
               try {
                 addonFileHashes.push(hasha.fromFileSync(potentialFile, { algorithm: 'md5' }));

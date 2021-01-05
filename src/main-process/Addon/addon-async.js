@@ -155,58 +155,65 @@ ipcMain.handle('get-installed-addons', async (event, gameId, gameVersion) => new
 ipcMain.on('find-addons-async', async (event, gameId, gameVersion) => {
   log.info('Called: find-addons');
   const gameS = getGameSettings(gameId.toString());
+  const gameD = getGameData(gameId.toString());
   if (gameS[gameVersion].sync) {
     event.sender.send('sync-status', gameId, gameVersion, 'sync-started', null, null);
   }
-  const hashMap = await fingerprintAllAsync(gameId, gameS[gameVersion].addonPath);
-  log.info(`Fingerprinted ${Object.keys(hashMap).length} directories for ${gameVersion}`);
-  identifyAddons(gameId.toString(), gameVersion, hashMap)
-    .then(() => {
-      if (gameS[gameVersion].sync && isAuthenticated()) {
-        log.info('Sync enabled for game version');
-        log.info('Fetching addon sync profile');
-        const axiosConfig = {
-          headers: {
-            'Content-Type': 'application/json;charset=UTF-8',
-            'User-Agent': `Singularity-${app.getVersion()}`,
-            'x-auth': getAccessToken(),
-          },
-        };
-        event.sender.send('sync-status', gameId, gameVersion, 'checking-cloud', null, null);
-        return axios.get(`${AppConfig.API_URL}/user/sync/get?gameId=${gameId}&gameVersion=${gameVersion}`, axiosConfig)
-          .then((res) => {
-            if (res.status === 200 && res.data.success) {
-              log.info('Addon sync profile found');
-              return syncFromProfile(res.data.profile);
-            } if (res.status === 200) {
-              log.info('No addon sync profile found');
-              return createAndSaveSyncProfile({ gameId, gameVersion });
-            }
-            return Promise.reject(new Error('Error searching for sync profile'));
-          })
-          .then(() => {
-            log.info('Sync process complete');
-            event.sender.send('sync-status', gameId, gameVersion, 'sync-complete', new Date(), null);
-          })
-          .catch((err) => {
-            log.error('Error handling addon sync');
-            log.error(err);
-            if (err instanceof String) {
-              event.sender.send('sync-status', gameId, gameVersion, 'error', null, err);
-            } else {
-              event.sender.send('sync-status', gameId, gameVersion, 'error', null, 'Error handling addon sync');
-            }
-          });
-      }
-      if (!isAuthenticated()) {
-        log.info('User is not authenticated, nothing to sync');
-        event.sender.send('sync-status', gameId, gameVersion, 'error', null, 'User not authenticated');
-      }
-      return Promise.resolve();
+  fingerprintAllAsync(gameId, gameS[gameVersion].addonPath, gameD.fingerprintDepth)
+    .then((hashMap) => {
+      log.info(`Fingerprinted ${Object.keys(hashMap).length} directories for ${gameVersion}`);
+      identifyAddons(gameId.toString(), gameVersion, hashMap)
+        .then(() => {
+          if (gameS[gameVersion].sync && isAuthenticated()) {
+            log.info('Sync enabled for game version');
+            log.info('Fetching addon sync profile');
+            const axiosConfig = {
+              headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                'User-Agent': `Singularity-${app.getVersion()}`,
+                'x-auth': getAccessToken(),
+              },
+            };
+            event.sender.send('sync-status', gameId, gameVersion, 'checking-cloud', null, null);
+            return axios.get(`${AppConfig.API_URL}/user/sync/get?gameId=${gameId}&gameVersion=${gameVersion}`, axiosConfig)
+              .then((res) => {
+                if (res.status === 200 && res.data.success) {
+                  log.info('Addon sync profile found');
+                  return syncFromProfile(res.data.profile);
+                } if (res.status === 200) {
+                  log.info('No addon sync profile found');
+                  return createAndSaveSyncProfile({ gameId, gameVersion });
+                }
+                return Promise.reject(new Error('Error searching for sync profile'));
+              })
+              .then(() => {
+                log.info('Sync process complete');
+                event.sender.send('sync-status', gameId, gameVersion, 'sync-complete', new Date(), null);
+              })
+              .catch((err) => {
+                log.error('Error handling addon sync');
+                log.error(err);
+                if (err instanceof String) {
+                  event.sender.send('sync-status', gameId, gameVersion, 'error', null, err);
+                } else {
+                  event.sender.send('sync-status', gameId, gameVersion, 'error', null, 'Error handling addon sync');
+                }
+              });
+          }
+          if (!isAuthenticated()) {
+            log.info('User is not authenticated, nothing to sync');
+            event.sender.send('sync-status', gameId, gameVersion, 'error', null, 'User not authenticated');
+          }
+          return Promise.resolve();
+        })
+        .catch((err) => {
+          log.error(`Error attempting to identify addons for ${gameVersion} in find-addons`);
+          log.error(err);
+        });
     })
-    .catch((err) => {
+    .catch((fingerprintErr) => {
       log.error(`Error attempting to identify addons for ${gameVersion} in find-addons`);
-      log.error(err);
+      log.error(fingerprintErr);
     });
 });
 
