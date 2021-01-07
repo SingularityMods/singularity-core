@@ -18,8 +18,7 @@ function getAddonsFromFingerprints(directories) {
         'x-app-platform': process.platform,
       },
     };
-    const postData = { directories: directories };
-    console.log(postData);
+    const postData = { directories };
     return axios.post(`${AppConfig.API_URL}/addons/identify`, postData, axiosConfig)
       .then((res) => {
         if (res.status !== 200) {

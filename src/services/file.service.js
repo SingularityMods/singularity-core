@@ -298,7 +298,7 @@ function updateESOAddonPath(selectedPath) {
     const gameS = getGameSettings('2');
     const gameD = getGameData('2');
     gameS.eso.addonPath = selectedPath;
-    gameS.eso.settingsPath = path.join(gameS.eso.addonPath, '../../../', gameD.settingsDir);
+    gameS.eso.settingsPath = path.join(gameS.eso.addonPath, '..', path.sep, '..', path.sep, '..', path.sep, gameD.settingsDir);
     setGameSettings('2', gameS);
     return resolve();
   });
@@ -399,22 +399,6 @@ function _getDirectoriesToFingerprint(gameAddonPath, maxDepth) {
           });
         });
         if (maxDepth === 1) {
-          // Scanning through root directory
-          /*
-          [
-            {
-              addonDir: exampleAddon,
-              directories: [
-                exampleAddon,
-                exampleAddon/modules/dep1,
-                exampleAddon/modules/dep2,
-                exampleAddon/libs/lib1,
-                exampleAddon/libs/lib2
-              ]
-            }
-          ]
-          */
-
           return resolve(directories);
         }
         const promises = [];
@@ -450,16 +434,17 @@ async function fingerprintAllAsync(gameId, addonDir, fingerprintDepth) {
         const promises = [];
         const { manifestFile } = getGameData(gameId.toString());
         addonFolders.forEach((dir) => {
-          dir.directories.forEach(d => {
+          dir.directories.forEach((d) => {
             promises.push(_fingerprintAddonDir(manifestFile, addonDir, d));
-          })
+          });
         });
         Promise.allSettled(promises)
           .then((results) => {
             const addonHashMap = {};
             results.forEach((result) => {
               if (result.status === 'fulfilled') {
-                addonHashMap[result.value.d] = result.value.hash;
+                addonHashMap[result.value.d.split(path.sep)
+                  .join(path.posix.sep)] = result.value.hash;
               }
             });
             resolve(addonHashMap);
@@ -473,35 +458,6 @@ async function fingerprintAllAsync(gameId, addonDir, fingerprintDepth) {
         log.error(err);
         reject(err);
       });
-    /*
-      fs.promises.readdir(addonDir, { withFileTypes: true })
-        .then((files) => files.filter((dirent) => dirent.isDirectory())
-          .map((dirent) => dirent.name)).then((addonDirs) => {
-          const promises = [];
-          const { manifestFile } = getGameData(gameId.toString());
-          addonDirs.forEach((dir) => {
-            promises.push(_fingerprintAddonDir(manifestFile, addonDir, dir));
-          });
-          Promise.allSettled(promises)
-            .then((results) => {
-              const addonHashMap = {};
-              results.forEach((result) => {
-                if (result.status === 'fulfilled') {
-                  addonHashMap[result.value.d] = result.value.hash;
-                }
-              });
-              resolve(addonHashMap);
-            })
-            .catch((e) => {
-              log.error(e);
-              reject(e);
-            });
-        })
-        .catch((err) => {
-          log.error(err);
-          reject(err);
-        });
-      */
   });
 }
 
@@ -600,12 +556,11 @@ function handleSync() {
 // and fingerprints and attempt to identify the installed addons via the api
 function identifyAddons(gameId, gameVersion, hashMap) {
   return new Promise((resolve, reject) => {
-    let directories = [];
-    console.log(hashMap);
-    Object.entries(hashMap).forEach(([folder,hash]) => {
+    const directories = [];
+    Object.entries(hashMap).forEach(([folder, hash]) => {
       directories.push({
-        'folderName': folder,
-        'fingerprint': hash
+        folderName: folder,
+        fingerprint: hash,
       });
     });
     log.info(`Submitting addon identification request for ${gameVersion}`);
@@ -957,8 +912,10 @@ function uninstallAddon(addonDir, addon) {
     }
 
     const promises = [];
-    addon.installedFile.modules.forEach((m) => {
-      promises.push(_uninstallDir(addonDir, m.folderName));
+    addon.installedFile.directories.forEach((m) => {
+      if ((m.folderName.split(path.sep).length - 1) === 0) {
+        promises.push(_uninstallDir(addonDir, m.folderName));
+      }
     });
     Promise.allSettled(promises)
       .then(() => {
@@ -1411,8 +1368,10 @@ function _uninstallAddonFromSync(gameId, gameVersion, addon) {
     }
 
     const promises = [];
-    addon.installedFile.modules.forEach((m) => {
-      promises.push(_uninstallDir(addonPath, m.folderName));
+    addon.installedFile.directories.forEach((m) => {
+      if ((m.folderName.split(path.sep).length - 1) === 0) {
+        promises.push(_uninstallDir(addonPath, m.folderName));
+      }
     });
     Promise.allSettled(promises)
       .then(() => {

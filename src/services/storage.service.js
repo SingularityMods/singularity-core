@@ -346,9 +346,9 @@ function handleFingerprintResponse(gameId, gameVersion, addons, hashMap, win) {
 
         identifiedAddons.push(identifiedAddon);
         addDependencies(gameId, gameVersion, identifiedAddon);
-        if (identifiedAddon.installedFile.modules
-            && identifiedAddon.installedFile.modules.length > 0) {
-          identifiedAddon.installedFile.modules.forEach((module) => {
+        if (identifiedAddon.installedFile.directories
+            && identifiedAddon.installedFile.directories.length > 0) {
+          identifiedAddon.installedFile.directories.forEach((module) => {
             identifiedDirs.push(module.folderName);
           });
         }
@@ -356,8 +356,7 @@ function handleFingerprintResponse(gameId, gameVersion, addons, hashMap, win) {
     } else {
       log.info(`No addon identified for ${gameVersion}`);
     }
-
-    Object.entries(hashMap).forEach(([dir]) => {
+    Object.keys(hashMap).forEach((dir) => {
       if (!identifiedDirs.includes(dir)) {
         unknownDirs.push(dir);
       }
@@ -366,9 +365,11 @@ function handleFingerprintResponse(gameId, gameVersion, addons, hashMap, win) {
     if (unknownDirs.length > 0) {
       installedAddons.forEach((addon) => {
         const addonDirs = [];
-        addon.installedFile.modules.forEach((module) => {
-          addonDirs.push(module.folderName);
-        });
+        if (addon.installedFile.directories) {
+          addon.installedFile.directories.forEach((module) => {
+            addonDirs.push(module.folderName);
+          });
+        }
         if (addonDirs.every((v) => unknownDirs.includes(v))) {
           const identifiedAddon = addon;
           identifiedAddon.unknownUpdate = true;
