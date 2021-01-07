@@ -447,7 +447,6 @@ async function fingerprintAllAsync(gameId, addonDir, fingerprintDepth) {
     }
     return _getDirectoriesToFingerprint(addonDir, fingerprintDepth)
       .then((addonFolders) => {
-        console.log(addonFolders);
         const promises = [];
         const { manifestFile } = getGameData(gameId.toString());
         addonFolders.forEach((dir) => {
@@ -601,12 +600,16 @@ function handleSync() {
 // and fingerprints and attempt to identify the installed addons via the api
 function identifyAddons(gameId, gameVersion, hashMap) {
   return new Promise((resolve, reject) => {
-    const hashes = [];
-    Object.entries(hashMap).forEach(([, hash]) => {
-      hashes.push(hash);
+    let directories = [];
+    console.log(hashMap);
+    Object.entries(hashMap).forEach(([folder,hash]) => {
+      directories.push({
+        'folderName': folder,
+        'fingerprint': hash
+      });
     });
     log.info(`Submitting addon identification request for ${gameVersion}`);
-    getAddonsFromFingerprints(hashes)
+    getAddonsFromFingerprints(directories)
       .then((addons) => {
         const win = getMainBrowserWindow();
         return handleFingerprintResponse(gameId, gameVersion, addons, hashMap, win);
