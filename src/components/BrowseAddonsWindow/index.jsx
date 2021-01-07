@@ -53,7 +53,6 @@ class BrowseAddonsWindow extends React.Component {
     this.installAddon = this.installAddon.bind(this);
     this.refreshSearch = this.refreshSearch.bind(this);
     this.loadMoreAddons = this.loadMoreAddons.bind(this);
-    this.timeoutAddon = this.timeoutAddon.bind(this);
     this.handleSelectAddon = this.handleSelectAddon.bind(this);
     this.addonInstalledListener = this.addonInstalledListener.bind(this);
     this.addonSearchListener = this.addonSearchListener.bind(this);
@@ -218,23 +217,6 @@ class BrowseAddonsWindow extends React.Component {
         page: newPage,
         additionalAddons: false,
         searching: false,
-      });
-    }
-  }
-
-  timeoutAddon(addon) {
-    const {
-      currentlyUpdating,
-      erroredUpdates,
-    } = this.state;
-    if (currentlyUpdating.includes(addon.addonId)) {
-      const newErroredUpdates = erroredUpdates.slice();
-      erroredUpdates.splice(0, 0, addon.addonId);
-      const newCurrentlyUpdating = currentlyUpdating.filter((obj) => obj !== addon.addonId);
-
-      this.setState({
-        erroredUpdates: newErroredUpdates,
-        currentlyUpdating: newCurrentlyUpdating,
       });
     }
   }
