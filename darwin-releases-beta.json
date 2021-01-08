@@ -1,6 +1,16 @@
 {
-	"currentRelease": "1.2.0-beta.6",
+	"currentRelease": "1.2.0-beta.7",
 	"releases": [
+		{
+			"version": "1.2.0-beta.7",
+			"updateTo": {
+				"version": "1.2.0-beta.7",
+				"pub_date": "2021-01-08T00:00:00",
+				"notes": "Overhauled fingerprint engine",
+				"name": "1.2.0-beta.7",
+				"url": "https://storage.singularitycdn.com/App/Releases/Mac/Singularity-darwin-x64-1.2.0-beta.7.zip"
+			}
+		},
     {
 			"version": "1.2.0-beta.6",
 			"updateTo": {

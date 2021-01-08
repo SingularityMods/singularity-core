@@ -65,7 +65,7 @@ export default class HomePage extends React.Component {
                 <h3 className="release-notes-title">Release Notes</h3>
                 <h5>
                   1.2.0
-                  <span className="release-note-date">2020-12-28</span>
+                  <span className="release-note-date">2021-01-10</span>
                 </h5>
                 <h5 className="release-note-section-header">New Features:</h5>
                 <p className="release-note-bullet">
@@ -79,6 +79,11 @@ export default class HomePage extends React.Component {
                   - You can now configure Singularity to automatically install required
                   dependencies and remove unused dependencies for Elder Scrolls Online addons under
                   the settings menu. Both options are enabled by default.
+                </p>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Singularity's fingerprint engine has been overhauled to better identify minor
+                  differences in addon versions.
                 </p>
                 <p className="release-note-bullet">
                   {' '}
