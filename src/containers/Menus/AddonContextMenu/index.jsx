@@ -3,6 +3,7 @@ import './AddonContextMenu.css';
 import { Container, Row, Col } from 'react-bootstrap';
 import * as React from 'react';
 import PropTypes from 'prop-types';
+import path from 'path';
 
 class AddonContextMenu extends React.Component {
   constructor(props) {
@@ -17,7 +18,7 @@ class AddonContextMenu extends React.Component {
       installState: '',
       addonId: '',
       addonUrl: '',
-      modules: [],
+      directories: [],
       trackBranch: 1,
       autoUpdate: false,
       ignoreUpdate: false,
@@ -119,9 +120,15 @@ class AddonContextMenu extends React.Component {
       const autoUpdate = installedAddon.autoUpdate || false;
       const ignoreUpdate = installedAddon.ignoreUpdate || false;
       const { addonId, addonUrl } = installedAddon;
-      const { modules } = installedAddon.installedFile;
+      const { directories } = installedAddon.installedFile;
       const fileName = tableCells.item(2).innerText;
       const installState = tableCells.item(1).firstChild.innerText;
+      const rootDirectories = [];
+      directories.forEach((m) => {
+        if ((m.folderName.split(path.posix.sep).length - 1) === 0) {
+          rootDirectories.push(m.folderName);
+        }
+      });
 
       let clickX = event.pageX - 230;
       let clickY = event.layerY;
@@ -146,7 +153,7 @@ class AddonContextMenu extends React.Component {
         installState,
         addonId,
         addonUrl,
-        modules,
+        directories: rootDirectories,
         trackBranch,
         autoUpdate,
         ignoreUpdate,
@@ -168,7 +175,7 @@ class AddonContextMenu extends React.Component {
         installState: '',
         addonId: '',
         addonUrl: '',
-        modules: [],
+        directories: [],
         trackBranch: 1,
         autoUpdate: false,
         ignoreUpdate: false,
@@ -244,19 +251,19 @@ class AddonContextMenu extends React.Component {
 
   getDirectoryOptions() {
     const {
-      modules,
+      directories,
     } = this.state;
     const {
       handleOpenDir,
     } = this.props;
-    if (modules && modules.length === 1) {
+    if (directories && directories.length === 1) {
       return (
-        <Col xs={12} onClick={() => handleOpenDir(modules[0].folderName)}>
+        <Col xs={12} onClick={() => handleOpenDir(directories[0])}>
           <div><i className="fas fa-folder context-menu-item-icon" /></div>
           <div className="context-menu-item-lable">Browse Folder</div>
         </Col>
       );
-    } if (modules && modules.length > 1) {
+    } if (directories && directories.length > 1) {
       return (
         <Col
           xs={12}
@@ -311,7 +318,7 @@ class AddonContextMenu extends React.Component {
       ignoreUpdate,
       imgSrc,
       installState,
-      modules,
+      directories,
       title,
       trackBranch,
       visible,
@@ -382,10 +389,10 @@ class AddonContextMenu extends React.Component {
                         </Col>
                       </Row>
                       <Row className="context-menu-body">
-                        {modules && modules.map((module) => (
-                          <Col xs={12} key={module.folderName} className="context-menu-item sub-menu-item" onClick={() => handleOpenDir(module.folderName)}>
+                        {directories && directories.map((f) => (
+                          <Col xs={12} key={f} className="context-menu-item sub-menu-item" onClick={() => handleOpenDir(f)}>
                             <i className="fas fa-folder context-menu-item-icon" />
-                            <div className="context-menu-item-lable">{module.folderName}</div>
+                            <div className="context-menu-item-lable">{f}</div>
                           </Col>
                         ))}
                       </Row>
