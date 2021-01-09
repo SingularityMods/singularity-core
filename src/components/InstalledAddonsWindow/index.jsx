@@ -841,7 +841,7 @@ class InstalledAddonsWindow extends React.Component {
       },
     }, {
       dataField: 'gameVersion',
-      text: 'Game Version',
+      text: 'Patch',
       sort: true,
       headerStyle: () => ({ minWidth: '115px' }),
       formatter: (cellContent, row) => row.installedFile.gameVersion,

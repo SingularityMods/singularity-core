@@ -42,8 +42,8 @@ class BrowseAddonsWindow extends React.Component {
       categories: [],
       page: 0,
       pageSize: 50,
-      sort: sort,
-      sortOrder: sortOrder,
+      sort,
+      sortOrder,
       currentlyUpdating: [],
       erroredUpdates: [],
       searchFilter: filter,
@@ -131,8 +131,8 @@ class BrowseAddonsWindow extends React.Component {
         page: 0,
         searching: true,
         addonVersion,
-        sort: sort,
-        sortOrder: sortOrder,
+        sort,
+        sortOrder,
       });
       ipcRenderer.invoke('search-for-addons', gameId, gameVersion, filter, 0, page, pageSize, 1, 1)
         .then((addons) => {
@@ -311,9 +311,9 @@ class BrowseAddonsWindow extends React.Component {
     } = this.props;
     this.setState({
       loadingMore: true,
-      page: page+1,
+      page: page + 1,
     });
-    ipcRenderer.invoke('search-for-addons', gameId, gameVersion, searchFilter, selectedCategory, page+1, pageSize, sort, sortOrder)
+    ipcRenderer.invoke('search-for-addons', gameId, gameVersion, searchFilter, selectedCategory, page + 1, pageSize, sort, sortOrder)
       .then((addons) => {
         this.handleAddonSearchResult(addons);
       })
@@ -397,7 +397,7 @@ class BrowseAddonsWindow extends React.Component {
     } = this.props;
     let newSort = 1;
     let newSortOrder = 1;
-    switch(field) {
+    switch (field) {
       case 'totalDownloadCount':
         newSort = 1;
         if (sort == newSort && sortOrder === 1) {
@@ -439,14 +439,14 @@ class BrowseAddonsWindow extends React.Component {
         }
         break;
     }
-    
+
     this.setState({
       sort: newSort,
       sortOrder: newSortOrder,
       page: 0,
       addonList: [],
       searching: true,
-    })
+    });
     ipcRenderer.invoke('search-for-addons', gameId, gameVersion, searchFilter, selectedCategory, 0, pageSize, newSort, newSortOrder)
       .then((addons) => {
         this.handleAddonSearchResult(addons);
@@ -482,14 +482,12 @@ class BrowseAddonsWindow extends React.Component {
       gameId,
     } = this.props;
 
-
     const noTableData = () => {
       if (searching) {
         return (<div className="loading"><LoadingSpinner /></div>);
       }
-      return (<div className="no-data-label">No Addons Matching Your Filters</div>)
-    }
-
+      return (<div className="no-data-label">No Addons Matching Your Filters</div>);
+    };
 
     const selectedCat = categories.filter((category) => (
       parseInt(category.categoryId, 10) === parseInt(selectedCategory, 10)));
@@ -598,7 +596,7 @@ class BrowseAddonsWindow extends React.Component {
       },
     }, {
       dataField: 'latestFiles',
-      text: 'Latest',
+      text: 'Updated',
       formatExtraData: addonVersion,
       sort: true,
       onSort: this.handleSort,
@@ -630,7 +628,7 @@ class BrowseAddonsWindow extends React.Component {
     }, {
       dataField: 'gameVersion',
       isDummyField: true,
-      text: 'Game Version',
+      text: 'Patch',
       formatExtraData: addonVersion,
       formatter: (cellContent, row, rowIndex, addonV) => {
         let latest = row.latestFiles
@@ -700,35 +698,35 @@ class BrowseAddonsWindow extends React.Component {
                 </Form.Group>
               </Col>
             </Row>
-                <SimpleBar scrollbarMaxSize={50} className={process.platform === 'darwin' ? 'addon-table-scrollbar mac' : 'addon-table-scrollbar'}>
-                  <Row className="addon-table">
-                    <Col xs={12}>
-                      {addonList ? (
-                        <BootstrapTable
-                          keyField="addonId"
-                          className="browse-addon-table"
-                          headerClasses="browse-addons-header"
-                          data={addonList}
-                          columns={browseAddonsColumns}
-                          noDataIndication={noTableData}
-                          sort={ { dataField: 'price', order: sortOrder === 1 ? 'asc' : 'desc', sortFunc:() => {} } }
-                        />
-                      ) : (
-                        ''
-                      )}
-                    </Col>
-                  </Row>
-                  {loadingMore
-                    ? <LoadingSpinner />
+            <SimpleBar scrollbarMaxSize={50} className={process.platform === 'darwin' ? 'addon-table-scrollbar mac' : 'addon-table-scrollbar'}>
+              <Row className="addon-table">
+                <Col xs={12}>
+                  {addonList ? (
+                    <BootstrapTable
+                      keyField="addonId"
+                      className="browse-addon-table"
+                      headerClasses="browse-addons-header"
+                      data={addonList}
+                      columns={browseAddonsColumns}
+                      noDataIndication={noTableData}
+                      sort={{ dataField: 'price', order: sortOrder === 1 ? 'asc' : 'desc', sortFunc: () => {} }}
+                    />
+                  ) : (
+                    ''
+                  )}
+                </Col>
+              </Row>
+              {loadingMore
+                ? <LoadingSpinner />
+                : ''}
+              <Row>
+                <Col xs={12}>
+                  {additionalAddons
+                    ? <div className="load-more" role="button" tabIndex="0" onClick={this.loadMoreAddons} onKeyPress={this.loadMoreAddons}>load more</div>
                     : ''}
-                  <Row>
-                    <Col xs={12}>
-                      {additionalAddons
-                        ? <div className="load-more" role="button" tabIndex="0" onClick={this.loadMoreAddons} onKeyPress={this.loadMoreAddons}>load more</div>
-                        : ''}
-                    </Col>
-                  </Row>
-                </SimpleBar>
+                </Col>
+              </Row>
+            </SimpleBar>
           </Col>
         </Row>
       </div>

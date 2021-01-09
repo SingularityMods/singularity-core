@@ -144,8 +144,8 @@ class GameWindow extends React.Component {
     this.setState({
       selectedAddon: addonId,
       filter: currentFilter,
-      sort: sort,
-      sortOrder: sortOrder
+      sort,
+      sortOrder,
     });
   }
 
