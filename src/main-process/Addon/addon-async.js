@@ -32,22 +32,14 @@ import {
   searchForAddons,
 } from '../../services/singularity.service';
 
-ipcMain.on('addon-search', async (event, gameId, gameVersion, searchFilter, categoryId, page, pageSize) => {
-  searchForAddons(gameId, gameVersion, searchFilter, categoryId, page, pageSize)
-    .then((addons) => {
-      if (!addons) {
-        return event.sender.send('addon-search-no-result');
-      }
-      if (page === 0) {
-        return event.sender.send('addon-search-result', addons);
-      }
-      return event.sender.send('additional-addon-search-result', addons);
-    })
+ipcMain.handle('search-for-addons', async (event, gameId, gameVersion, searchFilter, categoryId, page, pageSize, sort, sortOrder) => new Promise((resolve, reject) => {
+  searchForAddons(gameId, gameVersion, searchFilter, categoryId, page, pageSize, sort, sortOrder)
+    .then((addons) => resolve(addons))
     .catch((error) => {
-      event.sender.send('addon-search-error');
       log.error(error.message);
+      return reject(new Error('Error searching for addons'));
     });
-});
+}));
 
 ipcMain.on('change-addon-auto-update', (event, gameId, gameVersion, addonId, toggle) => {
   log.info(`Changing auto update settings for: ${addonId} to: ${toggle}`);

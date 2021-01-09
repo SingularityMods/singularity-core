@@ -75,7 +75,7 @@ function getAddonInfo(addonId) {
   });
 }
 
-function searchForAddons(gameId, gameVersion, searchFilter, categoryId, page, pageSize) {
+function searchForAddons(gameId, gameVersion, searchFilter, categoryId, page, pageSize, sort, sortOrder) {
   return new Promise((resolve, reject) => {
     const addonVersion = getAddonVersion(gameId, gameVersion);
     const index = page * pageSize;
@@ -87,7 +87,7 @@ function searchForAddons(gameId, gameVersion, searchFilter, categoryId, page, pa
         'x-app-uuid': getAppData('UUID'),
       },
     };
-    const requestUrl = `${AppConfig.API_URL}/addons/search?gameId=${gameId}&gameVersionFlavor=${addonVersion}&filter=${searchFilter}&category=${catId}&index=${index}`;
+    const requestUrl = `${AppConfig.API_URL}/addons/search?gameId=${gameId}&gameVersionFlavor=${addonVersion}&filter=${searchFilter}&category=${catId}&index=${index}&sort=${sort}&sortOrder=${sortOrder}`;
     return axios.get(requestUrl, axiosConfig)
       .then((res) => {
         if (res.status !== 200) {

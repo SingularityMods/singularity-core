@@ -32,6 +32,8 @@ class BrowseAddonsWindow extends React.Component {
     super(props);
     const {
       filter,
+      sort,
+      sortOrder,
     } = this.props;
     this.state = {
       addonVersion: '',
@@ -40,6 +42,8 @@ class BrowseAddonsWindow extends React.Component {
       categories: [],
       page: 0,
       pageSize: 50,
+      sort: sort,
+      sortOrder: sortOrder,
       currentlyUpdating: [],
       erroredUpdates: [],
       searchFilter: filter,
@@ -50,18 +54,16 @@ class BrowseAddonsWindow extends React.Component {
       searching: true,
       loadingMore: false,
     };
+    this.handleAddonSearchResult = this.handleAddonSearchResult.bind(this);
     this.installAddon = this.installAddon.bind(this);
     this.refreshSearch = this.refreshSearch.bind(this);
     this.loadMoreAddons = this.loadMoreAddons.bind(this);
     this.handleSelectAddon = this.handleSelectAddon.bind(this);
     this.addonInstalledListener = this.addonInstalledListener.bind(this);
-    this.addonSearchListener = this.addonSearchListener.bind(this);
-    this.additionalAddonsListener = this.additionalAddonsListener.bind(this);
-    this.addonSearchErrorListener = this.addonSearchErrorListener.bind(this);
-    this.addonSearchNoResultListener = this.addonSearchNoResultListener.bind(this);
     this.changeFilter = this.changeFilter.bind(this);
     this.clearSearchFilter = this.clearSearchFilter.bind(this);
     this.toggleCategory = this.toggleCategory.bind(this);
+    this.handleSort = this.handleSort.bind(this);
   }
 
   componentDidMount() {
@@ -70,17 +72,14 @@ class BrowseAddonsWindow extends React.Component {
       pageSize,
       searchFilter,
       selectedCategory,
+      sort,
+      sortOrder,
     } = this.state;
     const {
       gameId,
       gameVersion,
     } = this.props;
-    ipcRenderer.send('addon-search', gameId, gameVersion, searchFilter, selectedCategory, page, pageSize);
     ipcRenderer.on('addon-installed', this.addonInstalledListener);
-    ipcRenderer.on('addon-search-result', this.addonSearchListener);
-    ipcRenderer.on('additional-addon-search-result', this.additionalAddonsListener);
-    ipcRenderer.on('addon-search-error', this.addonSearchErrorListener);
-    ipcRenderer.on('addon-search-no-result', this.addonSearchNoResultListener);
     const gameSettings = ipcRenderer.sendSync('get-game-settings', gameId);
     const categories = ipcRenderer.sendSync('get-game-addon-categories', gameId);
     const addonVersion = ipcRenderer.sendSync('get-game-addon-version', gameId, gameVersion);
@@ -96,6 +95,17 @@ class BrowseAddonsWindow extends React.Component {
       searching: true,
       addonVersion,
     });
+    ipcRenderer.invoke('search-for-addons', gameId, gameVersion, searchFilter, selectedCategory, page, pageSize, sort, sortOrder)
+      .then((addons) => {
+        this.handleAddonSearchResult(addons);
+      })
+      .catch(() => {
+        this.setState({
+          searching: false,
+          loadingMore: false,
+          additionalAddons: false,
+        });
+      });
   }
 
   componentDidUpdate(prevProps) {
@@ -107,9 +117,10 @@ class BrowseAddonsWindow extends React.Component {
       filter,
       gameId,
       gameVersion,
+      sort,
+      sortOrder,
     } = this.props;
     if (gameVersion !== prevProps.gameVersion) {
-      ipcRenderer.send('addon-search', gameId, gameVersion, filter, 0, page, pageSize);
       const gameSettings = ipcRenderer.sendSync('get-game-settings', gameId);
       const addonVersion = ipcRenderer.sendSync('get-game-addon-version', gameId, gameVersion);
       this.setState({
@@ -120,22 +131,61 @@ class BrowseAddonsWindow extends React.Component {
         page: 0,
         searching: true,
         addonVersion,
+        sort: sort,
+        sortOrder: sortOrder,
       });
+      ipcRenderer.invoke('search-for-addons', gameId, gameVersion, filter, 0, page, pageSize, 1, 1)
+        .then((addons) => {
+          this.handleAddonSearchResult(addons);
+        })
+        .catch(() => {
+          this.setState({
+            searching: false,
+            loadingMore: false,
+            additionalAddons: false,
+          });
+        });
     }
   }
 
   componentWillUnmount() {
     ipcRenderer.removeListener('addon-installed', this.addonInstalledListener);
-    ipcRenderer.removeListener('addon-search-result', this.addonSearchListener);
-    ipcRenderer.removeListener('additional-addon-search-result', this.additionalAddonsListener);
-    ipcRenderer.removeListener('additional-addon-search-result', this.additionalAddonsListener);
-    ipcRenderer.removeListener('addon-search-error', this.addonSearchErrorListener);
+  }
+
+  handleAddonSearchResult(addons) {
+    const {
+      page,
+      addonList,
+    } = this.state;
+    if (!addons || addons.length === 0) {
+      return this.setState({
+        searching: false,
+        loadingMore: false,
+        additionalAddons: false,
+      });
+    }
+    if (page === 0) {
+      return this.setState({
+        addonList: addons,
+        noAddonsFound: false,
+        searching: false,
+        loadingMore: false,
+      });
+    }
+
+    return this.setState({
+      addonList: addonList.concat(addons),
+      page: page + 1,
+      noAddonsFound: false,
+      searching: false,
+      loadingMore: false,
+    });
   }
 
   handleSelectAddon(addonId) {
     const { onSelectAddon } = this.props;
-    const { searchFilter } = this.state;
-    onSelectAddon(addonId, searchFilter);
+    const { searchFilter, sort, sortOrder } = this.state;
+    onSelectAddon(addonId, searchFilter, sort, sortOrder);
   }
 
   addonInstalledListener(_event, installedAddon) {
@@ -161,64 +211,6 @@ class BrowseAddonsWindow extends React.Component {
       currentlyUpdating: newCurrentlyUpdating,
       erroredUpdates: newErroredUpdates,
     });
-  }
-
-  addonSearchListener(_event, addons) {
-    if (addons && addons.length > 0) {
-      this.setState({
-        addonList: addons,
-        noAddonsFound: false,
-        searching: false,
-        loadingMore: false,
-      });
-    } else {
-      this.setState({
-        addonList: addons,
-        noAddonsFound: true,
-        searching: false,
-        loadingMore: false,
-      });
-    }
-  }
-
-  addonSearchNoResultListener() {
-    this.setState({
-      searching: false,
-      loadingMore: false,
-      additionalAddons: false,
-    });
-  }
-
-  addonSearchErrorListener() {
-    this.setState({
-      searching: false,
-      loadingMore: false,
-      additionalAddons: false,
-    });
-  }
-
-  additionalAddonsListener(_event, addons) {
-    const {
-      addonList,
-      page,
-    } = this.state;
-    const a = addonList;
-    const newPage = page + 1;
-    if (addons && addons.length > 0) {
-      this.setState({
-        addonList: a.concat(addons),
-        page: newPage,
-        noAddonsFound: false,
-        searching: false,
-        loadingMore: false,
-      });
-    } else {
-      this.setState({
-        page: newPage,
-        additionalAddons: false,
-        searching: false,
-      });
-    }
   }
 
   installAddon(addon) {
@@ -288,9 +280,20 @@ class BrowseAddonsWindow extends React.Component {
       additionalAddons: true,
       currentlyUpdating: [],
       erroredUpdates: [],
-
+      sort: 1,
+      sortOrder: 1,
     });
-    ipcRenderer.send('addon-search', gameId, gameVersion, searchFilter, selectedCategory, page, pageSize);
+    ipcRenderer.invoke('search-for-addons', gameId, gameVersion, searchFilter, selectedCategory, page, pageSize, 1, 1)
+      .then((addons) => {
+        this.handleAddonSearchResult(addons);
+      })
+      .catch(() => {
+        this.setState({
+          searching: false,
+          loadingMore: false,
+          additionalAddons: false,
+        });
+      });
   }
 
   loadMoreAddons() {
@@ -299,15 +302,28 @@ class BrowseAddonsWindow extends React.Component {
       selectedCategory,
       page,
       pageSize,
+      sort,
+      sortOrder,
     } = this.state;
     const {
       gameId,
       gameVersion,
     } = this.props;
-    ipcRenderer.send('addon-search', gameId, gameVersion, searchFilter, selectedCategory, page + 1, pageSize);
     this.setState({
       loadingMore: true,
+      page: page+1,
     });
+    ipcRenderer.invoke('search-for-addons', gameId, gameVersion, searchFilter, selectedCategory, page+1, pageSize, sort, sortOrder)
+      .then((addons) => {
+        this.handleAddonSearchResult(addons);
+      })
+      .catch(() => {
+        this.setState({
+          searching: false,
+          loadingMore: false,
+          additionalAddons: false,
+        });
+      });
   }
 
   toggleCategory(category) {
@@ -320,18 +336,33 @@ class BrowseAddonsWindow extends React.Component {
       gameVersion,
     } = this.props;
     const searchCategory = category || 0;
-
-    ipcRenderer.send('addon-search', gameId, gameVersion, searchFilter, searchCategory, 0, pageSize);
     this.setState({
+      addonList: [],
       selectedCategory: category,
       page: 0,
       searching: true,
+      sort: 1,
+      sortOrder: 1,
     });
+    ipcRenderer.invoke('search-for-addons', gameId, gameVersion, searchFilter, searchCategory, 0, pageSize, 1, 1)
+      .then((addons) => {
+        this.handleAddonSearchResult(addons);
+      })
+      .catch(() => {
+        this.setState({
+          searching: false,
+          loadingMore: false,
+          additionalAddons: false,
+        });
+      });
   }
 
   clearSearchFilter() {
     this.setState({
       searchFilter: '',
+      sort: 0,
+      sortOrder: 0,
+      addonList: [],
     }, () => { this.refreshSearch(); });
   }
 
@@ -352,6 +383,83 @@ class BrowseAddonsWindow extends React.Component {
     });
   }
 
+  handleSort(field, order) {
+    const {
+      searchFilter,
+      selectedCategory,
+      pageSize,
+      sort,
+      sortOrder,
+    } = this.state;
+    const {
+      gameId,
+      gameVersion,
+    } = this.props;
+    let newSort = 1;
+    let newSortOrder = 1;
+    switch(field) {
+      case 'totalDownloadCount':
+        newSort = 1;
+        if (sort == newSort && sortOrder === 1) {
+          newSortOrder = 2;
+        } else {
+          newSortOrder = 1;
+        }
+        break;
+      case 'addonName':
+        newSort = 2;
+        if (sort == newSort && sortOrder === 1) {
+          newSortOrder = 2;
+        } else {
+          newSortOrder = 1;
+        }
+        break;
+      case 'latestFiles':
+        newSort = 3;
+        if (sort == newSort && sortOrder === 1) {
+          newSortOrder = 2;
+        } else {
+          newSortOrder = 1;
+        }
+        break;
+      case 'gameVersion':
+        newSort = 4;
+        if (sort == newSort && sortOrder === 1) {
+          newSortOrder = 2;
+        } else {
+          newSortOrder = 1;
+        }
+        break;
+      default:
+        newSort = 1;
+        if (sort == newSort && sortOrder === 1) {
+          newSortOrder = 2;
+        } else {
+          newSortOrder = 1;
+        }
+        break;
+    }
+    
+    this.setState({
+      sort: newSort,
+      sortOrder: newSortOrder,
+      page: 0,
+      addonList: [],
+      searching: true,
+    })
+    ipcRenderer.invoke('search-for-addons', gameId, gameVersion, searchFilter, selectedCategory, 0, pageSize, newSort, newSortOrder)
+      .then((addons) => {
+        this.handleAddonSearchResult(addons);
+      })
+      .catch(() => {
+        this.setState({
+          searching: false,
+          loadingMore: false,
+          additionalAddons: false,
+        });
+      });
+  }
+
   render() {
     const {
       additionalAddons,
@@ -366,11 +474,23 @@ class BrowseAddonsWindow extends React.Component {
       selectedCategory,
       searchFilter,
       searching,
+      sort,
+      sortOrder,
     } = this.state;
     const {
       gameVersion,
       gameId,
     } = this.props;
+
+
+    const noTableData = () => {
+      if (searching) {
+        return (<div className="loading"><LoadingSpinner /></div>);
+      }
+      return (<div className="no-data-label">No Addons Matching Your Filters</div>)
+    }
+
+
     const selectedCat = categories.filter((category) => (
       parseInt(category.categoryId, 10) === parseInt(selectedCategory, 10)));
     let selectedCategoryName = 'Category';
@@ -381,6 +501,8 @@ class BrowseAddonsWindow extends React.Component {
       dataField: 'addonName',
       text: 'Addon',
       formatExtraData: gameId,
+      sort: true,
+      onSort: this.handleSort,
       formatter: (cellContent, row, rowIndex, formatExtraData) => {
         let avatarUrl;
         if (row.avatar) {
@@ -460,6 +582,8 @@ class BrowseAddonsWindow extends React.Component {
     }, {
       dataField: 'totalDownloadCount',
       text: 'Downloads',
+      sort: true,
+      onSort: this.handleSort,
       formatter: (cellContent) => {
         if (cellContent > 1000000) {
           const downloadCount = cellContent.toString().slice(0, -5);
@@ -476,6 +600,8 @@ class BrowseAddonsWindow extends React.Component {
       dataField: 'latestFiles',
       text: 'Latest',
       formatExtraData: addonVersion,
+      sort: true,
+      onSort: this.handleSort,
       formatter: (cellContent, row, rowIndex, gameV) => {
         let latest = cellContent.find((f) => f.gameVersionFlavor === gameV && f.releaseType === 1);
         if (!latest) {
@@ -502,7 +628,7 @@ class BrowseAddonsWindow extends React.Component {
         return ('');
       },
     }, {
-      dataField: 'category',
+      dataField: 'gameVersion',
       isDummyField: true,
       text: 'Game Version',
       formatExtraData: addonVersion,
@@ -574,14 +700,6 @@ class BrowseAddonsWindow extends React.Component {
                 </Form.Group>
               </Col>
             </Row>
-            {searching
-              ? <div className="loading"><LoadingSpinner /></div>
-              : ''}
-            {!searching && noAddonsFound
-              ? <div className="search-error">Looks like we couldn&apos;t find any addons for that search...</div>
-              : ''}
-            {!searching && !noAddonsFound
-              ? (
                 <SimpleBar scrollbarMaxSize={50} className={process.platform === 'darwin' ? 'addon-table-scrollbar mac' : 'addon-table-scrollbar'}>
                   <Row className="addon-table">
                     <Col xs={12}>
@@ -592,6 +710,8 @@ class BrowseAddonsWindow extends React.Component {
                           headerClasses="browse-addons-header"
                           data={addonList}
                           columns={browseAddonsColumns}
+                          noDataIndication={noTableData}
+                          sort={ { dataField: 'price', order: sortOrder === 1 ? 'asc' : 'desc', sortFunc:() => {} } }
                         />
                       ) : (
                         ''
@@ -609,8 +729,6 @@ class BrowseAddonsWindow extends React.Component {
                     </Col>
                   </Row>
                 </SimpleBar>
-              )
-              : ''}
           </Col>
         </Row>
       </div>
@@ -622,6 +740,8 @@ BrowseAddonsWindow.propTypes = {
   gameId: PropTypes.number.isRequired,
   gameVersion: PropTypes.string.isRequired,
   filter: PropTypes.string,
+  sort: PropTypes.number.isRequired,
+  sortOrder: PropTypes.number.isRequired,
   onSelectAddon: PropTypes.func.isRequired,
 };
 

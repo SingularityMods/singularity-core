@@ -25,6 +25,8 @@ class GameWindow extends React.Component {
       selectedAddon: '',
       selectedGameVersion: '',
       filter: '',
+      sort: 1,
+      sortOrder: 1,
     };
 
     this.installationFinderListener = this.installationFinderListener.bind(this);
@@ -96,6 +98,8 @@ class GameWindow extends React.Component {
         installedVersions,
         selectedGameVersion,
         filter: '',
+        sort: 1,
+        sortOrder: 1,
         gameId,
         selectedAddon: '',
       });
@@ -136,10 +140,12 @@ class GameWindow extends React.Component {
     });
   }
 
-  selectAddon(addonId, currentFilter) {
+  selectAddon(addonId, currentFilter, sort, sortOrder) {
     this.setState({
       selectedAddon: addonId,
       filter: currentFilter,
+      sort: sort,
+      sortOrder: sortOrder
     });
   }
 
@@ -147,6 +153,8 @@ class GameWindow extends React.Component {
     this.setState({
       selectedAddon: '',
       filter: '',
+      sort: 1,
+      sortOrder: 1,
       activeTab,
     });
   }
@@ -159,6 +167,8 @@ class GameWindow extends React.Component {
       this.setState({
         selectedAddon: '',
         filter: '',
+        sort: 1,
+        sortOrder: 1,
         selectedGameVersion: gameVersion,
       });
     }
@@ -174,6 +184,8 @@ class GameWindow extends React.Component {
       installedVersions,
       selectedAddon,
       selectedGameVersion,
+      sort,
+      sortOrder,
     } = this.state;
     const {
       backupPending,
@@ -236,6 +248,8 @@ class GameWindow extends React.Component {
                         gameId={gameId}
                         gameVersion={selectedGameVersion}
                         filter={filter}
+                        sort={sort}
+                        sortOrder={sortOrder}
                         onSelectAddon={this.selectAddon}
                       />
                     )}
