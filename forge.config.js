@@ -8,18 +8,22 @@ module.exports = {
         prod: {
             asar: false,
             overwrite: true,
-            "ignore": [
+            ignore: [
               "/bin/",
               "/obj/",
               "/out/",
               "/.git/",
-              "/node_modules/",
+              "/node_modules",
+              "/.electron-symbols",
               "/package-lock.json",
               "/entitlements.plist",
               "forge.config.js",
               "/tslint.json",
               "/.editorconfig",
               "/.gitignore",
+              "/sentry-symbols.js",
+              "/sentry.properties",
+              "/SingularityWinDistribution.pfx",
               "/README.md"
             ],
             icon: path.join(__dirname, 'assets/icons/app_icon'),
@@ -40,11 +44,13 @@ module.exports = {
         beta: {
           asar: false,
           overwrite: true,
-          "ignore": [
+          ignore: [
             "/bin/",
             "/obj/",
             "/out/",
             "/.git/",
+            "/node_modules",
+            "/.electron-symbols",
             "/node_modules/",
             "/package-lock.json",
             "/entitlements.plist",
@@ -52,6 +58,9 @@ module.exports = {
             "/tslint.json",
             "/.editorconfig",
             "/.gitignore",
+            "/sentry-symbols.js",
+            "/sentry.properties",
+            "/SingularityWinDistribution.pfx",
             "/README.md"
           ],
           icon: path.join(__dirname, 'assets/icons/app_icon'),
@@ -72,11 +81,13 @@ module.exports = {
         oss: {
             asar: true,
             overwrite: true,
-            "ignore": [
+            ignore: [
               "/bin/",
               "/obj/",
               "/out/",
               "/.git/",
+              "/node_modules",
+              "/.electron-symbols",
               "/node_modules/",
               "/package-lock.json",
               "/entitlements.plist",
@@ -84,6 +95,9 @@ module.exports = {
               "/tslint.json",
               "/.editorconfig",
               "/.gitignore",
+              "/sentry-symbols.js",
+              "/sentry.properties",
+              "/SingularityWinDistribution.pfx",
               "/README.md"
             ],
             icon: path.join(__dirname, 'assets/icons/app_icon'),
@@ -214,12 +228,17 @@ module.exports = {
     ['@electron-forge/plugin-webpack', {
         mainConfig: path.resolve(__dirname, 'webpack.main.config.js'),
         renderer: {
-            config: path.resolve(__dirname, 'webpack.renderer.config.js'),
-            entryPoints: [{
-                html: path.resolve(__dirname, 'src/index.html'),
-                js: path.resolve(__dirname, 'src/renderer.js'),
-                name: 'main_window',
-            }]
+          config: path.resolve(__dirname, 'webpack.renderer.config.js'),
+          entryPoints: [{
+              html: path.resolve(__dirname, 'src/windows/Main/index.html'),
+              js: path.resolve(__dirname, 'src/windows/Main/renderer.jsx'),
+              name: 'main_window',
+          },
+          {
+            html: path.resolve(__dirname, 'src/windows/Splash/index.html'),
+            js: path.resolve(__dirname, 'src/windows/Splash/renderer.jsx'),
+            name: 'splash_window',
+        }]
         }
     }]
   ],

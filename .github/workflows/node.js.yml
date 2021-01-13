@@ -23,56 +23,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
+        release_name: ${{ github.ref }}
         draft: false
         prerelease: false
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
-
-  build_macos:
-    name: Build Singularity
-    needs: create_github_release
-    runs-on: macos-latest
-    steps:
-    - name: "Check out Git repository"
-      uses: actions/checkout@v2
-    - name: Install Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: 10
-    - run: npm ci
-    - run: npm run make
-    - name: Upload Mac Client
-      id: upload-mac-client
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ needs.create_github_release.outputs.upload_url }}
-        asset_path: ./out/oss/make/Singularity-Setup.dmg
-        asset_name: Singularity-Setup-${{ github.ref }}.dmg
-        asset_content_type: application/x-apple-diskimage
-
-  build_windows:
-    name: Build Singularity Windows
-    runs-on: windows-latest
-    needs: create_github_release
-    steps:
-    - name: "Check out Git repository"
-      uses: actions/checkout@v2
-    - name: Install Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: 10
-    - run: npm ci
-    - run: npm run make
-    - name: Upload Windows Client
-      id: upload-windows-client
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ needs.create_github_release.outputs.upload_url }}
-        asset_path: ./out/oss/make/squirrel.windows/x64/Singularity-Setup.exe
-        asset_name: Singularity-Setup-${{ github.ref }}.exe
-        asset_content_type: application/octet-stream

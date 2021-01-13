@@ -8,11 +8,16 @@
       "sync": false,
       "defaults": {
         "trackBranch": 1,
-        "autoUpdate": false
+        "autoUpdate": false,
+        "installDeps": true,
+        "uninstallDeps": true
       },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_retail_\\",
+      "addonPath": "",
+      "settingsPath": "",
       "installedAddons": [],
-      "unknownAddonDirs": []
+      "unknownAddonDirs": [],
+      "dependencies": {}
     },
     "wow_classic": {
       "name": "World of Warcraft Classic",
@@ -22,11 +27,16 @@
       "sync": false,
       "defaults": {
         "trackBranch": 1,
-        "autoUpdate": false
+        "autoUpdate": false,
+        "installDeps": true,
+        "uninstallDeps": true
       },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_classic_\\",
+      "addonPath": "",
+      "settingsPath": "",
       "installedAddons": [],
-      "unknownAddonDirs": []
+      "unknownAddonDirs": [],
+      "dependencies": {}
     },
     "wow_retail_ptr": {
       "name": "World of Warcraft PTR",
@@ -36,11 +46,16 @@
       "sync": false,
       "defaults": {
         "trackBranch": 1,
-        "autoUpdate": false
+        "autoUpdate": false,
+        "installDeps": true,
+        "uninstallDeps": true
       },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_ptr_\\",
+      "addonPath": "",
+      "settingsPath": "",
       "installedAddons": [],
-      "unknownAddonDirs": []
+      "unknownAddonDirs": [],
+      "dependencies": {}
     },
     "wow_classic_ptr": {
       "name": "World of Warcraft Classic PTR",
@@ -50,11 +65,16 @@
       "sync": false,
       "defaults": {
         "trackBranch": 1,
-        "autoUpdate": false
+        "autoUpdate": false,
+        "installDeps": true,
+        "uninstallDeps": true
       },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_classic_ptr_\\",
+      "addonPath": "",
+      "settingsPath": "",
       "installedAddons": [],
-      "unknownAddonDirs": []
+      "unknownAddonDirs": [],
+      "dependencies": {}
     },
     "wow_retail_beta": {
       "name": "World of Warcraft Beta",
@@ -63,11 +83,55 @@
       "installed": false,
       "defaults": {
         "trackBranch": 1,
-        "autoUpdate": false
+        "autoUpdate": false,
+        "installDeps": true,
+        "uninstallDeps": true
       },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_beta_\\",
+      "addonPath": "",
+      "settingsPath": "",
       "installedAddons": [],
-      "unknownAddonDirs": []
+      "unknownAddonDirs": [],
+      "dependencies": {}
+    },
+    "wow_classic_beta": {
+      "name": "World of Warcraft Classic Beta",
+      "nickName": "Classic Beta",
+      "shortName": "wow-classic-beta",
+      "installed": false,
+      "defaults": {
+        "trackBranch": 1,
+        "autoUpdate": false,
+        "installDeps": true,
+        "uninstallDeps": true
+      },
+      "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_classic_beta_\\",
+      "addonPath": "",
+      "settingsPath": "",
+      "installedAddons": [],
+      "unknownAddonDirs": [],
+      "dependencies": {}
+    }
+  },
+  "2": {
+    "eso": {
+      "name": "Elder Scrolls Online",
+      "nickName": "ESO",
+      "shortName": "eso",
+      "installed": false,
+      "sync": false,
+      "defaults": {
+        "trackBranch": 1,
+        "autoUpdate": false,
+        "installDeps": true,
+        "uninstallDeps": true
+      },
+      "installPath": "",
+      "addonPath": "",
+      "settingsPath": "",
+      "installedAddons": [],
+      "unknownAddonDirs": [],
+      "dependencies": {}
     }
   }
 }

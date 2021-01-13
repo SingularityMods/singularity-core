@@ -1,91 +1,136 @@
 {
     "1": {
       "name": "World of Warcraft",
-      "gameType": 1,
-  
       "bannerPath": "../img/banners/wow-banner.png",
       "iconPath": "../img/icons/wow-icon.png",
       "tilePath": "../img/tiles/wow-tile.png",
+      "manifestFile" : ".toc",
+      "fingerprintDepth": 1,
+      "likelyInstallPaths":{
+        "win":[
+          "C:/Program Files (x86)/",
+          "C:/Users/Public/Games/",
+          "C:/"
+        ],
+        "mac":["/Applications/"],
+        "linux":["C:/Program Files (x86)/"]
+      },
+      "addonDir": "Interface/Addons/",
+      "settingsDir": "WTF/",
+      "addonDirLocation":{
+        "win":"%GAMEDIR%",
+        "mac":"%GAMEDIR%",
+        "linux":"%GAMEDIR%"
+      },
+      "settingsDirLocation": {
+        "win":"%GAMEDIR%",
+        "mac":"%GAMEDIR%",
+        "linux":"%GAMEDIR%"
+      },
       "gameVersions": {
         "wow_retail": {
           "name": "World of Warcraft",
           "nickName": "Retail",
           "shortName": "wow-retail",
           "addonVersion": "wow_retail",
-          "flavorString": "wow",
-          "macFlavorString": "/_retail_",
-          "defaultWinInstallPath": "C:\\Program Files (x86)\\World of Warcraft\\_retail_\\",
-          "defaultMacInstallPath": "/Applications/World of Warcraft/_retail_/",
           "executable": "Wow.exe",
           "macExecutable": "World of Warcraft.app",
-          "addonDir": "Interface\\Addons\\",
-          "macAddonDir": "Interface/Addons/",
-          "settingsBackup": "",
-          "addonBackup": ""
+          "gameDir": {
+            "win": [
+              "World of Warcraft/_retail_/Wow.exe"
+            ],
+            "mac": ["World of Warcraft/_retail_/World of Warcraft.app"],
+            "linux": [
+              "World of Warcraft/_retail_/Wow.exe"
+            ]
+          }
         },
         "wow_classic": {
           "name": "World of Warcraft Classic",
           "nickName": "Classic",
           "shortName": "wow-classic",
           "addonVersion": "wow_classic",
-          "flavorString": "wow_classic",
-          "macFlavorString": "/_classic_",
-          "defaultWinInstallPath": "C:\\Program Files (x86)\\World of Warcraft\\_classic_\\",
-          "defaultMacInstallPath": "/Applications/World of Warcraft/_classic_/",
           "executable": "WowClassic.exe",
           "macExecutable": "World of Warcraft Classic.app",
-          "addonDir": "Interface\\Addons\\",
-          "macAddonDir": "Interface/Addons/",
-          "settingsBackup": "",
-          "addonBackup": ""
+          "gameDir": {
+            "win": [
+              "World of Warcraft/_classic_/WowClassic.exe"
+            ],
+            "mac": ["World of Warcraft/_classic_/World of Warcraft Classic.app"],
+            "linux": [
+              "World of Warcraft/_classic_/WowClassic.exe"
+            ]
+          }
         },
         "wow_retail_ptr": {
           "name": "World of Warcraft PTR",
           "nickName": "PTR",
           "shortName": "wow-retail-ptr",
           "addonVersion": "wow_retail",
-          "flavorString": "wowt",
-          "macFlavorString": "/_ptr_",
-          "defaultWinInstallPath": "C:\\Program Files (x86)\\World of Warcraft\\_ptr_\\",
-          "defaultMacInstallPath": "/Applications/World of Warcraft/_ptr_/",
           "executable": "WowT.exe",
           "macExecutable": "World of Warcraft Test.app",
-          "addonDir": "Interface\\Addons\\",
-          "macAddonDir": "Interface/Addons/",
-          "settingsBackup": "",
-          "addonBackup": ""
+          "gameDir": {
+            "win": [
+              "World of Warcraft/_ptr_/WowT.exe"
+            ],
+            "mac": ["World of Warcraft/_ptr_/World of Warcraft Test.app"],
+            "linux": [
+              "World of Warcraft/_ptr_/WowT.exe"
+            ]
+          }
         },
         "wow_classic_ptr": {
           "name": "World of Warcraft Classic PTR",
           "nickName": "Classic PTR",
           "shortName": "wow-classic-ptr",
           "addonVersion": "wow_classic",
-          "flavorString": "wow_classic_ptr",
-          "macFlavorString": "/_classic_ptr_",
-          "defaultWinInstallPath": "C:\\Program Files (x86)\\World of Warcraft\\_classic_ptr_\\",
-          "defaultMacInstallPath": "/Applications/World of Warcraft/_classic_ptr_/",
           "executable": "WowClassicT.exe",
           "macExecutable": "World of Warcraft Classic Test.app",
-          "addonDir": "Interface\\Addons\\",
-          "macAddonDir": "Interface/Addons/",
-          "settingsBackup": "",
-          "addonBackup": ""
+          "gameDir": {
+            "win": [
+              "World of Warcraft/_classic_ptr_/WowClassicT.exe"
+            ],
+            "mac": ["World of Warcraft/_classic_ptr_/World of Warcraft Classic Test.app"],
+            "linux": [
+              "World of Warcraft/_classic_ptr_/WowClassicT.exe"
+            ]
+          }
         },
         "wow_retail_beta": {
           "name": "World of Warcraft Beta",
           "nickName": "Beta",
           "shortName": "wow-retail-beta",
           "addonVersion": "wow_retail",
-          "flavorString": "wow_beta",
-          "macFlavorString": "/_beta_",
-          "defaultWinInstallPath": "C:\\Program Files (x86)\\World of Warcraft\\_beta_\\",
-          "defaultMacInstallPath": "/Applications/World of Warcraft/_beta_/",
           "executable": "WowB.exe",
           "macExecutable": "World of Warcraft Beta.app",
-          "addonDir": "Interface\\Addons\\",
-          "macAddonDir": "Interface/Addons/",
-          "settingsBackup": "",
-          "addonBackup": ""
+          "gameDir": {
+            "win": [
+              "World of Warcraft/_beta_/WowB.exe"
+            ],
+            "mac": ["World of Warcraft/_beta_/World of Warcraft Beta.app"],
+            "linux": [
+              "World of Warcraft/_beta_/WowB.exe"
+            ]
+          }
+        },
+        "wow_classic_beta": {
+          "name": "World of Warcraft Classic Beta",
+          "nickName": "Classic Beta",
+          "shortName": "wow-classic-beta",
+          "addonVersion": "wow_classic",
+          "flavorString": "wow_classic_beta",
+          "macFlavorString": "/_beta_",
+          "executable": "WowClassicB.exe",
+          "macExecutable": "World of Warcraft Classic Beta.app",
+          "gameDir": {
+            "win": [
+              "World of Warcraft/_classic_beta_/WowClassicB.exe"
+            ],
+            "mac": ["World of Warcraft/_classic_beta_/World of Warcraft Classic Beta.app"],
+            "linux": [
+              "World of Warcraft/_classic_beta_/WowClassicB.exe"
+            ]
+          }
         }
   
       },
@@ -882,6 +927,570 @@
           "iconUrl": "https://storage.singularitycdn.com/icons/categories/12505.jpg",
           "curseCategoryId": 99999
         }
+      ]
+    },
+    "2": {
+      "name": "Elder Scrolls Online",
+      "bannerPath": "../img/banners/eso-banner.png",
+      "iconPath": "../img/icons/eso-icon.png",
+      "tilePath": "../img/tiles/eso-tile.png",
+      "manifestFile" : ".txt",
+      "fingerprintDepth": 3,
+      "likelyInstallPaths":{
+        "win":[
+          "C:/Program Files (x86)/Steam/steamapps/common/Zenimax Online/",
+          "C:/Program Files (x86)/Zenimax Online/",
+          "C:/Games/"
+        ],
+        "mac":[
+          "%USERDATA%/Steam/steamapps/common/Zenimax Online/",
+          "/Applications/Zenimax Online/",
+          "/Applications/Games/ESO/"],
+        "linux":[
+          "C:/Program Files (x86)/Steam/steamapps/common/Zenimax Online/",
+          "C:/Program Files (x86)/Zenimax Online/"
+        ]
+      },
+      "addonDir": "Elder Scrolls Online/live/AddOns/",
+      "settingsDir": "Elder Scrolls Online/live/SavedVariables/",
+      "addonDirLocation":{
+        "win":"%DOCUMENTS%",
+        "mac":"%DOCUMENTS%",
+        "linux":"%DOCUMENTS%"
+      },
+      "settingsDirLocation":{
+        "win":"%DOCUMENTS%",
+        "mac":"%DOCUMENTS%",
+        "linux":"%DOCUMENTS%"
+      },
+      "gameVersions": {
+        "eso": {
+          "name": "Elder Scrolls Online",
+          "nickName": "ESO",
+          "shortName": "eso",
+          "addonVersion": "eso",
+          "flavorString": "eso",
+          "gameDir": {
+            "win": [
+              "The Elder Scrolls Online/game/client/eso.exe",
+              "The Elder Scrolls Online/game/client/eso64.exe"
+            ],
+            "mac": ["The Elder Scrolls Online/game_mac/pubplayerclient/eso.app"],
+            "linux": [
+              "The Elder Scrolls Online/game/client/eso.exe",
+              "The Elder Scrolls Online/game/client/eso64.exe"
+            ]
+          }
+        }
+      },
+      "categories":[
+        {
+          "_id" : "5fce8ff66ea8bed82227ea3f",
+          "categoryId" : 20017,
+          "curseCategoryId" : 354,
+          "mmouiCategoryId" : 96,
+          "name" : "PvP",
+          "slug" : "pvp",
+          "gameId" : 2,
+          "tukuiCategory" : null,
+          "parentCategoryId" : 20000,
+          "rootCategoryId" : 20000,
+          "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Pvp.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea44",
+                "categoryId" : 20021,
+                "curseCategoryId" : 360,
+                "mmouiCategoryId" : 21,
+                "name" : "Unit Frames",
+                "slug" : "unit-frames",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/UnitFrames.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea52",
+                "categoryId" : 22901,
+                "curseCategoryId" : 335,
+                "mmouiCategoryId" : 149,
+                "name" : "Damage Dealer",
+                "slug" : "damage-dealer",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 333,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/DamageDealer.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea50",
+                "categoryId" : 20804,
+                "curseCategoryId" : 329,
+                "mmouiCategoryId" : 56,
+                "name" : "Templar",
+                "slug" : "templar",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 327,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Templar.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea53",
+                "categoryId" : 22902,
+                "curseCategoryId" : 337,
+                "mmouiCategoryId" : 150,
+                "name" : "Healer",
+                "slug" : "healer",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 333,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Healer.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea54",
+                "categoryId" : 22903,
+                "curseCategoryId" : 338,
+                "mmouiCategoryId" : 151,
+                "name" : "Tank",
+                "slug" : "tank",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 333,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Tank.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea45",
+                "categoryId" : 20022,
+                "curseCategoryId" : 326,
+                "mmouiCategoryId" : 27,
+                "name" : "Miscellaneous",
+                "slug" : "miscellaneous",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Misc.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea47",
+                "categoryId" : 20024,
+                "curseCategoryId" : 352,
+                "mmouiCategoryId" : 53,
+                "name" : "Libraries",
+                "slug" : "libraries",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Libraries.png"
+        },
+        {
+                "_id" : "5fcf165d8007c82c77ffe8f9",
+                "categoryId" : 20030,
+                "curseCategoryId" : null,
+                "mmouiCategoryId" : 147,
+                "name" : "UI Media",
+                "slug" : "ui-media",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/ESO.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea35",
+                "categoryId" : 20007,
+                "curseCategoryId" : 345,
+                "mmouiCategoryId" : 55,
+                "name" : "Chat and Communication",
+                "slug" : "chat-and-communication",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Chat.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea32",
+                "categoryId" : 20004,
+                "curseCategoryId" : 350,
+                "mmouiCategoryId" : 22,
+                "name" : "Buffs and Debuffs",
+                "slug" : "buffs-and-debuffs",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Buffs.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea33",
+                "categoryId" : 20005,
+                "curseCategoryId" : null,
+                "mmouiCategoryId" : 112,
+                "name" : "Casting Bars and Cooldowns",
+                "slug" : "casting-bars-cooldowns",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/ESO.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea34",
+                "categoryId" : 20006,
+                "curseCategoryId" : 357,
+                "mmouiCategoryId" : 18,
+                "name" : "Character Advancement",
+                "slug" : "character-advancement",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Quest.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea36",
+                "categoryId" : 20008,
+                "curseCategoryId" : 327,
+                "mmouiCategoryId" : 0,
+                "name" : "Class Specific",
+                "slug" : "class-specific",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Class.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea48",
+                "categoryId" : 20025,
+                "curseCategoryId" : 349,
+                "mmouiCategoryId" : 0,
+                "name" : "Development Tools",
+                "slug" : "development-tools",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Development.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea42",
+                "categoryId" : 20019,
+                "curseCategoryId" : 339,
+                "mmouiCategoryId" : 40,
+                "name" : "Crafting",
+                "slug" : "crafting",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Crafting.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea51",
+                "categoryId" : 20805,
+                "curseCategoryId" : null,
+                "mmouiCategoryId" : 0,
+                "name" : "Warden",
+                "slug" : "warden",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 327,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Warden.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea4c",
+                "categoryId" : 20029,
+                "curseCategoryId" : 333,
+                "mmouiCategoryId" : 0,
+                "name" : "Role Specific",
+                "slug" : "role-specific",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Role.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea2f",
+                "categoryId" : 20001,
+                "curseCategoryId" : 332,
+                "mmouiCategoryId" : 19,
+                "name" : "Action Bars",
+                "slug" : "action-bars",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/ActionBars.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea43",
+                "categoryId" : 20020,
+                "curseCategoryId" : 356,
+                "mmouiCategoryId" : 98,
+                "name" : "Tooltip",
+                "slug" : "tooltip",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Tooltip.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea4d",
+                "categoryId" : 20801,
+                "curseCategoryId" : 328,
+                "mmouiCategoryId" : 57,
+                "name" : "Dragonknight",
+                "slug" : "dragonknight",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 327,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Dragonknight.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea4e",
+                "categoryId" : 20802,
+                "curseCategoryId" : 336,
+                "mmouiCategoryId" : 152,
+                "name" : "Nightblade",
+                "slug" : "nightblade",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 327,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Nightblade.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea41",
+                "categoryId" : 20018,
+                "curseCategoryId" : 355,
+                "mmouiCategoryId" : 114,
+                "name" : "Roleplaying",
+                "slug" : "roleplaying",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Roleplaying.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea30",
+                "categoryId" : 20002,
+                "curseCategoryId" : 347,
+                "mmouiCategoryId" : 94,
+                "name" : "Auction and Economy",
+                "slug" : "auction-and-economy",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Auction.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea37",
+                "categoryId" : 20009,
+                "curseCategoryId" : null,
+                "mmouiCategoryId" : 25,
+                "name" : "Combat",
+                "slug" : "combat",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/ESO.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea3c",
+                "categoryId" : 20014,
+                "curseCategoryId" : null,
+                "mmouiCategoryId" : 109,
+                "name" : "Info, Plug-in Bars",
+                "slug" : "info-plug-in",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/ESO.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea3e",
+                "categoryId" : 20016,
+                "curseCategoryId" : null,
+                "mmouiCategoryId" : 97,
+                "name" : "Mail",
+                "slug" : "mail",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/ESO.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea38",
+                "categoryId" : 20010,
+                "curseCategoryId" : null,
+                "mmouiCategoryId" : 26,
+                "name" : "Data",
+                "slug" : "data",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/ESO.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea31",
+                "categoryId" : 20003,
+                "curseCategoryId" : 348,
+                "mmouiCategoryId" : 20,
+                "name" : "Bags, Bank, and Inventory",
+                "slug" : "bags-bank-and-inventory",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Bags.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea4f",
+                "categoryId" : 20803,
+                "curseCategoryId" : 329,
+                "mmouiCategoryId" : 58,
+                "name" : "Sorcerer",
+                "slug" : "sorcerer",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 327,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Sorcerer.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea3b",
+                "categoryId" : 20013,
+                "curseCategoryId" : null,
+                "mmouiCategoryId" : 160,
+                "name" : "Homestead",
+                "slug" : "homestead",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/ESO.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea3a",
+                "categoryId" : 20012,
+                "curseCategoryId" : 351,
+                "mmouiCategoryId" : 95,
+                "name" : "Guild",
+                "slug" : "guild",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Guild.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea40",
+                "categoryId" : 20017,
+                "curseCategoryId" : 361,
+                "mmouiCategoryId" : 45,
+                "name" : "Boss Encounters",
+                "slug" : "boss-encounters",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Boss.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea46",
+                "categoryId" : 20023,
+                "curseCategoryId" : null,
+                "mmouiCategoryId" : 159,
+                "name" : "Utilities",
+                "slug" : "utilities",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/ESO.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea49",
+                "categoryId" : 20026,
+                "curseCategoryId" : null,
+                "mmouiCategoryId" : 88,
+                "name" : "ESO Tools and Utilities",
+                "slug" : "eso-tools",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Development.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea4a",
+                "categoryId" : 20027,
+                "curseCategoryId" : null,
+                "mmouiCategoryId" : 155,
+                "name" : "Beta AddOns",
+                "slug" : "beta-addons",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/ESO.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea4b",
+                "categoryId" : 20028,
+                "curseCategoryId" : null,
+                "mmouiCategoryId" : 33,
+                "name" : "Plugins",
+                "slug" : "plugins",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Development.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea39",
+                "categoryId" : 20011,
+                "curseCategoryId" : 346,
+                "mmouiCategoryId" : 17,
+                "name" : "Graphic UI",
+                "slug" : "ui",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Art.png"
+        },
+        {
+                "_id" : "5fce8ff66ea8bed82227ea3d",
+                "categoryId" : 20015,
+                "curseCategoryId" : 358,
+                "mmouiCategoryId" : 24,
+                "name" : "Map",
+                "slug" : "map",
+                "gameId" : 2,
+                "tukuiCategory" : null,
+                "parentCategoryId" : 20000,
+                "rootCategoryId" : 20000,
+                "iconUrl" : "https://storage.singularitycdn.com/icons/categories/eso/Map.png"
+        }  
       ]
     }
   }

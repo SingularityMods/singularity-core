@@ -8,6 +8,10 @@
     background-size: 220px 40px;
 }
 
+.GameTile:focus{
+  outline: none;
+}
+
 .game-icon {
     height: 40px;
     width: 40px;

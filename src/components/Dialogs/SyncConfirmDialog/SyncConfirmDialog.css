@@ -72,3 +72,13 @@
     color: var(--text-color);
     background-color: var(--dialog-background-color);
 }
+
+
+.SyncConfirmDialog.transition-enter, .SyncConfirmDialog.transition-appear {
+  opacity: 0;
+}
+
+.SyncConfirmDialog.transition-enter-active, .SyncConfirmDialog.transition-appear-active {
+  opacity: 1;
+  transition: opacity 500ms;
+}

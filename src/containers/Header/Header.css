@@ -14,7 +14,11 @@
 
 .frame-menu {
     float:right;
-    
+}
+
+.app-icon-button:focus {
+  border:none;
+  outline:none;
 }
 .app-icon {
     float:left;

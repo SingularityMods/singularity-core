@@ -3,12 +3,12 @@
     padding-right: 0;
 }
 
-.button-col {
-
-}
-
-.filter-col{ 
-
+.installed-addon-title-column .addon-table-img {
+  height: 50px;
+  width: 50px;
+  margin-right: 5px;
+  float:left;
+  overflow:hidden;
 }
 
 .context-class {
@@ -166,6 +166,31 @@ margin-left: 0px;
     cursor: pointer;
 }
 
+.no-addons-link:focus{
+  outline:none;
+}
+
+.addon-name-section {
+  display: flex;
+  align-items: center;
+  height: 40px;
+}
+
+.addon-name {
+  color: var(--singularity-orange);
+}
+.addon-name:hover {
+  color: var(--singularity-orange);
+  text-decoration-color: var(--singularity-orange);
+}
+.addon-name:focus{
+outline: none;
+}
+
+.addon-table tr.selected-addon-row .addon-name {
+  color: white;
+}
+
 .addon-search-field.filter-field {
     float: right;
 }
@@ -238,4 +263,17 @@ margin-left: 0px;
 .backup-date.cloud {
     float: left;
     clear: both;
+}
+
+.InstalledAddonsWindow .search-filter-clear{
+  color: var(--text-color);
+  position: absolute;
+  right: 22px;
+  top: 7px;
+  z-index: 50;
+  cursor: pointer;
+}
+
+.InstalledAddonsWindow .search-filter-clear:focus {
+  outline: none;
 }

@@ -15,26 +15,26 @@
     height: 50px;
     min-width: 200px;
 }
-/*
-.AddonContextMenu .row {
-    display: block;
-}*/
 
-    .context-menu-header div.col-12,
-    .context-menu-body div.col-12{
-        padding: 0;
-    }
+.context-menu-header div.col-12,
+.context-menu-body div.col-12{
+    padding: 0;
+}
 
 .context-menu-item{
     cursor: pointer;
+}
 
-    
+.context-menu-item a {
+  color: var(--text-color);
+  text-decoration: none;
 }
 
 .context-menu-header-img {
     margin-top:5px;
     margin-left: 5px;
     height:40px;
+    width: 40px;
     border-radius:50%;
     float: left;
 }
@@ -80,12 +80,12 @@
 }
 
 .context-menu-item-lable {
-    float: left;
-    margin-left: 10px;
+    margin-left: 25px;
+    margin-right:10px;
+    overflow:hidden;
 }
 .context-menu-item-arrow{
-    margin-top: 5px;
-    margin-left: 10px;
+    margin-top:-16px;
     float:right;
 }
 
@@ -101,8 +101,10 @@
 
 .context-menu-branch-menu {
     position: absolute;
-    right: -202px;
-    top: 15px;
+    /*right: -202px;*/
+    right: -142px;
+    width: 140px;
+    top: 55px;
     border: none;
     border-radius: 5px 5px 0 0;
     background-color: var(--dialog-background-color);
@@ -114,16 +116,30 @@
     padding: 0;
 }
 
+.context-menu-branch-menu .context-menu-header{
+  min-width: 140px;
+}
+
 .context-menu-branch-menu.directory-menu {
     right: -202px;
+    top:105px;
     width: 200px;
 }
 
-    .context-menu-branch-menu.settings-menu {
-        right: -142px;
-        top: 20px;
-        width: 140px;
-    }
+  .context-menu-branch-menu.settings-menu {
+      right: -142px;
+      top: 55px;
+      width: 140px;
+  }
+
+  .context-menu-sub-header-title {
+    font-size: 0.8rem;
+    margin-top: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    text-align: center;
+}
+
 
 .context-menu-branch-menu.directory-menu .context-menu-sub-header-title {
     width: 180px;
@@ -140,15 +156,10 @@
     border-bottom: 1px solid var(--context-menu-divider);
 }
 
-.context-menu-sub-header-title {
-    font-size: 0.8rem;
-    margin-top: 5px;
-    margin-left: 10px;
-    margin-right: 10px;
-    text-align: center;
-}
 
 .sub-menu-item .context-menu-item-lable {
+  margin-left: 35px;
+    max-width: 180px;
     margin-top: 5px;
     font-size: 0.8rem;
 }

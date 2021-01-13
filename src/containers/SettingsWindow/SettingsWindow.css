@@ -125,7 +125,12 @@
             box-shadow: 0px 0px 1px 1px var(--singularity-orange);
             outline: none;
         }
+
+.settings-item-config p{ 
+  float: left;
+}
 .SettingsWindow .errorMsg{ 
+    float:left;
     margin-left: 20px;
     font-size: 0.8rem;
     color: var(--text-color);
@@ -159,10 +164,11 @@
 }
 
 .select-install-dir-button {
-    max-width: 325px;
+    max-width: 350px;
     max-height: 30px;
     overflow: hidden;
     text-align: left;
+    word-break: break-all;
 }
 
 
