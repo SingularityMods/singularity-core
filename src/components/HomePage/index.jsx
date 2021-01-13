@@ -65,7 +65,7 @@ export default class HomePage extends React.Component {
                 <h3 className="release-notes-title">Release Notes</h3>
                 <h5>
                   1.2.0
-                  <span className="release-note-date">2021-01-10</span>
+                  <span className="release-note-date">2021-01-13</span>
                 </h5>
                 <h5 className="release-note-section-header">New Features:</h5>
                 <p className="release-note-bullet">

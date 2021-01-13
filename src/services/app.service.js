@@ -950,7 +950,7 @@ function setAppConfig() {
     setAppData('tos', tosSettings);
     setAppData('terms', terms);
   }
-  if (version < '1.2.0-beta.4') {
+  if (version < '1.2.0') {
     const wowS = getGameSettings('1');
     Object.keys(wowS).forEach((gameVersion) => {
       wowS[gameVersion].dependencies = {};
@@ -966,7 +966,7 @@ function setAppConfig() {
     });
     setGameSettings('2', esoS);
   }
-  if (version < '1.2.0-beta.7') {
+  if (version < '1.2.0') {
     const wowD = getGameData('1');
     wowD.fingerprintDepth = 1;
     setGameData('1', wowD);

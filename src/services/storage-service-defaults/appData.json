@@ -14,7 +14,7 @@
       "backupDir": "",
       "defaultWowVersion": "wow_retail",
       "closeToTray": false,
-      "beta": true,
+      "beta": false,
       "telemetry": false
     }
   }
