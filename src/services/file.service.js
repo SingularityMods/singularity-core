@@ -545,6 +545,7 @@ function handleSync() {
       .catch((err) => {
         syncing = false;
         if (err.message === 'Sync is not enabled on any games or game versions') {
+          log.info(err.message);
           resolve();
         }
         reject(err);
@@ -1252,19 +1253,19 @@ function _isSyncEnabled() {
     const gameS = getGameSettings('1');
     const esoS = getGameSettings('2');
     const enabled = [];
-    Object.entries(gameS).forEach(([gameVersion]) => {
+    Object.entries(gameS).forEach(([key, gameVersion]) => {
       if (gameVersion.sync) {
         enabled.push({
           gameId: 1,
-          gameVersion,
+          gameVersion: key,
         });
       }
     });
-    Object.entries(esoS).forEach(([gameVersion]) => {
+    Object.entries(esoS).forEach(([key, gameVersion]) => {
       if (gameVersion.sync) {
         enabled.push({
           gameId: 2,
-          gameVersion,
+          gameVersion: key,
         });
       }
     });
@@ -1471,7 +1472,7 @@ setInterval(() => {
   } else {
     log.info('Already searching for sync profile updates, skipping this run');
   }
-}, 1000 * 60 * 5);
+}, 1000 * 60 * 1);
 
 export {
   autoFindGame,

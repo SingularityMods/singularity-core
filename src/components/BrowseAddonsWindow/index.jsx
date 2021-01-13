@@ -49,7 +49,6 @@ class BrowseAddonsWindow extends React.Component {
       searchFilter: filter,
       typingTimeout: 0,
       selectedCategory: '',
-      noAddonsFound: false,
       additionalAddons: true,
       searching: true,
       loadingMore: false,
@@ -167,7 +166,6 @@ class BrowseAddonsWindow extends React.Component {
     if (page === 0) {
       return this.setState({
         addonList: addons,
-        noAddonsFound: false,
         searching: false,
         loadingMore: false,
       });
@@ -176,7 +174,6 @@ class BrowseAddonsWindow extends React.Component {
     return this.setState({
       addonList: addonList.concat(addons),
       page: page + 1,
-      noAddonsFound: false,
       searching: false,
       loadingMore: false,
     });
@@ -188,29 +185,81 @@ class BrowseAddonsWindow extends React.Component {
     onSelectAddon(addonId, searchFilter, sort, sortOrder);
   }
 
-  addonInstalledListener(_event, installedAddon) {
+  handleSort(field) {
     const {
-      currentlyUpdating,
-      erroredUpdates,
-      installedAddons,
+      searchFilter,
+      selectedCategory,
+      pageSize,
+      sort,
+      sortOrder,
     } = this.state;
-    const currentlyInstalledAddons = installedAddons.map((addon) => {
-      if (addon.addonId !== installedAddon.addonId) {
-        return addon;
-      }
-      return installedAddon;
-    });
-    if (!currentlyInstalledAddons.includes(installedAddon)) {
-      currentlyInstalledAddons.splice(0, 0, installedAddon);
+    const {
+      gameId,
+      gameVersion,
+    } = this.props;
+    let newSort = 1;
+    let newSortOrder = 1;
+    switch (field) {
+      case 'totalDownloadCount':
+        newSort = 1;
+        if (sort === newSort && sortOrder === 1) {
+          newSortOrder = 2;
+        } else {
+          newSortOrder = 1;
+        }
+        break;
+      case 'addonName':
+        newSort = 2;
+        if (sort === newSort && sortOrder === 1) {
+          newSortOrder = 2;
+        } else {
+          newSortOrder = 1;
+        }
+        break;
+      case 'latestFiles':
+        newSort = 3;
+        if (sort === newSort && sortOrder === 1) {
+          newSortOrder = 2;
+        } else {
+          newSortOrder = 1;
+        }
+        break;
+      case 'gameVersion':
+        newSort = 4;
+        if (sort === newSort && sortOrder === 1) {
+          newSortOrder = 2;
+        } else {
+          newSortOrder = 1;
+        }
+        break;
+      default:
+        newSort = 1;
+        if (sort === newSort && sortOrder === 1) {
+          newSortOrder = 2;
+        } else {
+          newSortOrder = 1;
+        }
+        break;
     }
 
-    const newCurrentlyUpdating = currentlyUpdating.filter((obj) => obj !== installedAddon.addonId);
-    const newErroredUpdates = erroredUpdates.filter((obj) => obj !== installedAddon.addonId);
     this.setState({
-      installedAddons: currentlyInstalledAddons,
-      currentlyUpdating: newCurrentlyUpdating,
-      erroredUpdates: newErroredUpdates,
+      sort: newSort,
+      sortOrder: newSortOrder,
+      page: 0,
+      addonList: [],
+      searching: true,
     });
+    ipcRenderer.invoke('search-for-addons', gameId, gameVersion, searchFilter, selectedCategory, 0, pageSize, newSort, newSortOrder)
+      .then((addons) => {
+        this.handleAddonSearchResult(addons);
+      })
+      .catch(() => {
+        this.setState({
+          searching: false,
+          loadingMore: false,
+          additionalAddons: false,
+        });
+      });
   }
 
   installAddon(addon) {
@@ -383,81 +432,29 @@ class BrowseAddonsWindow extends React.Component {
     });
   }
 
-  handleSort(field, order) {
+  addonInstalledListener(_event, installedAddon) {
     const {
-      searchFilter,
-      selectedCategory,
-      pageSize,
-      sort,
-      sortOrder,
+      currentlyUpdating,
+      erroredUpdates,
+      installedAddons,
     } = this.state;
-    const {
-      gameId,
-      gameVersion,
-    } = this.props;
-    let newSort = 1;
-    let newSortOrder = 1;
-    switch (field) {
-      case 'totalDownloadCount':
-        newSort = 1;
-        if (sort == newSort && sortOrder === 1) {
-          newSortOrder = 2;
-        } else {
-          newSortOrder = 1;
-        }
-        break;
-      case 'addonName':
-        newSort = 2;
-        if (sort == newSort && sortOrder === 1) {
-          newSortOrder = 2;
-        } else {
-          newSortOrder = 1;
-        }
-        break;
-      case 'latestFiles':
-        newSort = 3;
-        if (sort == newSort && sortOrder === 1) {
-          newSortOrder = 2;
-        } else {
-          newSortOrder = 1;
-        }
-        break;
-      case 'gameVersion':
-        newSort = 4;
-        if (sort == newSort && sortOrder === 1) {
-          newSortOrder = 2;
-        } else {
-          newSortOrder = 1;
-        }
-        break;
-      default:
-        newSort = 1;
-        if (sort == newSort && sortOrder === 1) {
-          newSortOrder = 2;
-        } else {
-          newSortOrder = 1;
-        }
-        break;
+    const currentlyInstalledAddons = installedAddons.map((addon) => {
+      if (addon.addonId !== installedAddon.addonId) {
+        return addon;
+      }
+      return installedAddon;
+    });
+    if (!currentlyInstalledAddons.includes(installedAddon)) {
+      currentlyInstalledAddons.splice(0, 0, installedAddon);
     }
 
+    const newCurrentlyUpdating = currentlyUpdating.filter((obj) => obj !== installedAddon.addonId);
+    const newErroredUpdates = erroredUpdates.filter((obj) => obj !== installedAddon.addonId);
     this.setState({
-      sort: newSort,
-      sortOrder: newSortOrder,
-      page: 0,
-      addonList: [],
-      searching: true,
+      installedAddons: currentlyInstalledAddons,
+      currentlyUpdating: newCurrentlyUpdating,
+      erroredUpdates: newErroredUpdates,
     });
-    ipcRenderer.invoke('search-for-addons', gameId, gameVersion, searchFilter, selectedCategory, 0, pageSize, newSort, newSortOrder)
-      .then((addons) => {
-        this.handleAddonSearchResult(addons);
-      })
-      .catch(() => {
-        this.setState({
-          searching: false,
-          loadingMore: false,
-          additionalAddons: false,
-        });
-      });
   }
 
   render() {
@@ -470,11 +467,9 @@ class BrowseAddonsWindow extends React.Component {
       erroredUpdates,
       installedAddons,
       loadingMore,
-      noAddonsFound,
       selectedCategory,
       searchFilter,
       searching,
-      sort,
       sortOrder,
     } = this.state;
     const {

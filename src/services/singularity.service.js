@@ -75,7 +75,9 @@ function getAddonInfo(addonId) {
   });
 }
 
-function searchForAddons(gameId, gameVersion, searchFilter, categoryId, page, pageSize, sort, sortOrder) {
+function searchForAddons(
+  gameId, gameVersion, searchFilter, categoryId, page, pageSize, sort, sortOrder,
+) {
   return new Promise((resolve, reject) => {
     const addonVersion = getAddonVersion(gameId, gameVersion);
     const index = page * pageSize;

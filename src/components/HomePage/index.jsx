@@ -82,12 +82,12 @@ export default class HomePage extends React.Component {
                 </p>
                 <p className="release-note-bullet">
                   {' '}
-                  - Singularity&apos;s fingerprint engine has been overhauled to better identify minor
-                  differences in addon versions.
+                  - Singularity&apos;s fingerprint engine has been overhauled to better identify
+                  minor differences in addon versions.
                 </p>
                 <p className="release-note-bullet">
                   {' '}
-                  - You can now sort by name and last update as well as the default download 
+                  - You can now sort by name and last update as well as the default download
                   count while browsing for new addons.
                 </p>
                 <p className="release-note-bullet">
