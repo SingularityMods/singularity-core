@@ -105,6 +105,8 @@ function showMainWindow() {
     }
     if (splash) {
       splash.destroy();
+    } else {
+      log.error('Unable to destroy splash window, should still exist');
     }
     mainWindow.show();
   } else {
