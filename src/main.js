@@ -139,16 +139,19 @@ function createWindow() {
   // Load the app entry point
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  // Set the user and OS theme in the browser window
-  const userTheme = getAppData('userConfigurable').darkMode ? 'dark' : 'light';
-  let osTheme = nativeTheme.shouldUseDarkColors ? 'dark' : 'light';
-  mainWindow.webContents.executeJavaScript(`localStorage.setItem('user_theme','${userTheme}')`);
-  mainWindow.webContents.executeJavaScript(`localStorage.setItem('os_theme','${osTheme}')`);
-  mainWindow.webContents.executeJavaScript('__setTheme()');
-
   mainWindow.once('ready-to-show', () => {
     log.info('Main window set');
     mainWindowReady = true;
+    // Set the user and OS theme in the browser window
+    const userTheme = getAppData('userConfigurable').darkMode ? 'dark' : 'light';
+    const osTheme = nativeTheme.shouldUseDarkColors ? 'dark' : 'light';
+    mainWindow.webContents.executeJavaScript(`localStorage.setItem('user_theme','${userTheme}')`)
+      .then(() => mainWindow.webContents.executeJavaScript(`localStorage.setItem('os_theme','${osTheme}')`))
+      .then(() => mainWindow.webContents.executeJavaScript('__setTheme()'))
+      .catch((error) => {
+        log.error('Error executing javascript in main window');
+        log.error(error.message);
+      });
   });
 
   // Set a listener for external link clicks and open them
@@ -160,10 +163,14 @@ function createWindow() {
 
   // Set a listener for updates to the user's OS theme and update the app.
   nativeTheme.on('updated', () => {
-    osTheme = nativeTheme.shouldUseDarkColors ? 'dark' : 'light';
+    const osTheme = nativeTheme.shouldUseDarkColors ? 'dark' : 'light';
     mainWindow.webContents.executeJavaScript(`localStorage.setItem('os_theme','${osTheme}')`)
       .then(() => {
         mainWindow.webContents.executeJavaScript('__setTheme()');
+      })
+      .catch((error) => {
+        log.error('Error executing javascript in main window');
+        log.error(error.message);
       });
   });
 
