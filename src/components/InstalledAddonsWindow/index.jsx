@@ -311,19 +311,21 @@ class InstalledAddonsWindow extends React.Component {
     } = this.state;
     const toUpdate = [];
     const pendingUpdates = [];
-    installedAddons.forEach((addon) => {
-      if (addon.updateAvailable) {
-        toUpdate.push(addon);
-        pendingUpdates.push(addon.addonId);
-      }
-    });
-    const nextUpdate = toUpdate.pop();
-    this.setState({
-      toUpdate,
-      pendingUpdates,
-    }, () => {
-      this.updateAddon(nextUpdate);
-    });
+    if (installedAddons) {
+      installedAddons.forEach((addon) => {
+        if (addon.updateAvailable) {
+          toUpdate.push(addon);
+          pendingUpdates.push(addon.addonId);
+        }
+      });
+      const nextUpdate = toUpdate.pop();
+      this.setState({
+        toUpdate,
+        pendingUpdates,
+      }, () => {
+        this.updateAddon(nextUpdate);
+      });
+    }
   }
 
   uninstallAddon() {
