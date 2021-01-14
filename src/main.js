@@ -103,7 +103,9 @@ function showMainWindow() {
     if (isAuthenticated()) {
       mainWindow.webContents.send('auth-event', 'refresh', true, null);
     }
-    splash.destroy();
+    if (splash) {
+      splash.destroy();
+    }
     mainWindow.show();
   } else {
     log.info('Waiting for main window to be ready');
