@@ -215,7 +215,7 @@ class InstalledAddonsWindow extends React.Component {
   handleSelectAddon(addonId) {
     const { onSelectAddon } = this.props;
     const { filter } = this.state;
-    onSelectAddon(addonId, filter);
+    onSelectAddon(addonId, filter, 1, 1);
   }
 
   handleOnSelect(row, isSelect) {
@@ -685,7 +685,7 @@ class InstalledAddonsWindow extends React.Component {
         return (
           <div className="installed-addon-title-column">
             <img className="addon-table-img" alt="Addon icon" src={avatarUrl} />
-            <div className="addon-name-section"><span role="button" tabIndex="0" className="addon-name" onClick={() => this.handleSelectAddon(row.addonId)} onKeyPress={() => onSelectAddon(row.addonId)}>{cellContent}</span></div>
+            <div className="addon-name-section"><span role="button" tabIndex="0" className="addon-name" onClick={() => this.handleSelectAddon(row.addonId)} onKeyPress={() => this.handleSelectAddon(row.addonId)}>{cellContent}</span></div>
           </div>
         );
       },
