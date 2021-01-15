@@ -11,6 +11,7 @@ class AppMenu extends React.Component {
     this.state = {
       maximized: false,
     };
+    this.handleMaxUnMax = this.handleMaxUnMax.bind(this);
   }
 
   componentDidMount() {
