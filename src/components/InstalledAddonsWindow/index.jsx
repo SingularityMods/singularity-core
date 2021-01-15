@@ -95,6 +95,7 @@ class InstalledAddonsWindow extends React.Component {
     this.addonsFoundListener = this.addonsFoundListener.bind(this);
     this.addonsNotFoundListener = this.addonsNotFoundListener.bind(this);
     this.addonSettingsUpdatedListener = this.addonSettingsUpdatedListener.bind(this);
+    this.syncCompleteListener = this.syncCompleteListener.bind(this);
     this.updateAddon = this.updateAddon.bind(this);
     this.contextReinstallAddon = this.contextReinstallAddon.bind(this);
     this.contextUpdateAddon = this.contextUpdateAddon.bind(this);
@@ -119,6 +120,7 @@ class InstalledAddonsWindow extends React.Component {
     ipcRenderer.on('addons-found', this.addonsFoundListener);
     ipcRenderer.on('no-addons-found', this.addonsNotFoundListener);
     ipcRenderer.on('addon-settings-updated', this.addonSettingsUpdatedListener);
+    ipcRenderer.on('sync-status', this.syncCompleteListener);
     const gameSettings = ipcRenderer.sendSync('get-game-settings', gameId);
     const addonVersion = ipcRenderer.sendSync('get-game-addon-version', gameId, gameVersion);
     const profile = ipcRenderer.sendSync('get-profile');
@@ -210,6 +212,7 @@ class InstalledAddonsWindow extends React.Component {
     ipcRenderer.removeListener('addons-found', this.addonsFoundListener);
     ipcRenderer.removeListener('no-addons-found', this.addonsNotFoundListener);
     ipcRenderer.removeListener('addon-settings-updated', this.addonSettingsUpdatedListener);
+    ipcRenderer.removeListener('sync-status', this.syncCompleteListener);
   }
 
   handleSelectAddon(addonId) {
@@ -540,6 +543,21 @@ class InstalledAddonsWindow extends React.Component {
     });
   }
 
+  syncCompleteListener(syncedGameId, syncedGameVersion, status) {
+    const {
+      gameId,
+      gameVersion,
+    } = this.props;
+    if (gameId === syncedGameId && gameVersion === syncedGameVersion && status === 'complete') {
+      const gameSettings = ipcRenderer.sendSync('get-game-settings', gameId);
+      const { installedAddons } = gameSettings[gameVersion];
+      installedAddons.sort(sortAddons);
+      this.setState({
+        installedAddons,
+      });
+    }
+  }
+
   autoUpdateCompleteListener() {
     const {
       gameId,
@@ -604,7 +622,6 @@ class InstalledAddonsWindow extends React.Component {
       darkMode,
       gameId,
       gameVersion,
-      onSelectAddon,
       toggleActiveTab,
     } = this.props;
     const {
