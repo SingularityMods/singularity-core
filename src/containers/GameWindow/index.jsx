@@ -15,14 +15,14 @@ const { ipcRenderer } = require('electron');
 class GameWindow extends React.Component {
   constructor(props) {
     super(props);
-    const { gameId } = this.props;
+    const { gameId, selectedAddonId } = this.props;
     this.state = {
       activeTab: 'installed',
       appUUID: '',
       bannerPath: '',
       gameId,
       installedVersions: [],
-      selectedAddon: '',
+      selectedAddon: selectedAddonId,
       selectedGameVersion: '',
       filter: '',
       sort: 1,
@@ -283,6 +283,7 @@ GameWindow.propTypes = {
   openBackupManagementDialog: PropTypes.func.isRequired,
   openBackupRestore: PropTypes.func.isRequired,
   restorePending: PropTypes.bool.isRequired,
+  selectedAddonId: PropTypes.string.isRequired,
 };
 
 export default GameWindow;

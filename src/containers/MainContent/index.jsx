@@ -20,6 +20,7 @@ function MainContent(props) {
     openSettings,
     restorePending,
     selected,
+    selectedAddonId,
     settingsOpened,
   } = props;
   return (
@@ -38,6 +39,7 @@ function MainContent(props) {
             restorePending={restorePending}
             latestCloudBackup={latestCloudBackup}
             lastRestoreComplete={lastRestoreComplete}
+            selectedAddonId={selectedAddonId}
           />
         )
         : <HomePage darkMode={darkMode} openSettings={openSettings} />}
@@ -57,6 +59,7 @@ MainContent.propTypes = {
   restorePending: PropTypes.bool.isRequired,
   selected: PropTypes.number,
   settingsOpened: PropTypes.bool.isRequired,
+  selectedAddonId: PropTypes.string.isRequired,
 };
 
 MainContent.defaultProps = {

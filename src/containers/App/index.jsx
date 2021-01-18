@@ -54,6 +54,7 @@ class App extends React.Component {
       latestCloudBackup: new Date(),
       lastRestoreComplete: new Date(),
       games: null,
+      selectedAddonId: '',
     };
 
     this.granularBackupCompleteListener = this.granularBackupCompleteListener.bind(this);
@@ -361,6 +362,7 @@ class App extends React.Component {
       settingsOpened,
       telemetryPrompted,
       termsAccepted,
+      selectedAddonId,
     } = this.state;
     return (
       <Container className="Main-Container Override">
@@ -468,6 +470,7 @@ class App extends React.Component {
               openBackupManagementDialog={this.openBackupManagementDialog}
               openBackupRestore={this.openBackupRestore}
               selected={selectedGame}
+              selectedAddonId={selectedAddonId}
               settingsOpened={settingsOpened}
               backupPending={backupPending}
               restorePending={restorePending}

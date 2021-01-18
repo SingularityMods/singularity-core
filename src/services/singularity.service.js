@@ -1,9 +1,11 @@
 import { app } from 'electron';
 import axios from 'axios';
+import queryString from 'query-string';
 
 // import { getAccessToken, isAuthenticated } from '../../services/auth.service';
 import AppConfig from '../config/app.config';
 import { getAppData, getAddonVersion } from './storage.service';
+import { getMainBrowserWindow } from './electron.service';
 
 function getAddonsFromFingerprints(directories) {
   return new Promise((resolve, reject) => {
@@ -101,9 +103,42 @@ function searchForAddons(
   });
 }
 
+function handleProtocolUrl(url) {
+  console.log(url);
+  const urlParts = url.split('?');
+  if (!urlParts || urlParts.length < 2) {
+    return null;
+  }
+  const query = queryString.parse(urlParts[1]);
+  let addonId;
+  let fileId;
+  let clusterId;
+  if ('addonId' in query) {
+    addonId = query.addonId;
+  }
+  if ('fileId' in query) {
+    fileId = query.fileId;
+  }
+  if ('clusterId' in query) {
+    clusterId = query.clusterId;
+  }
+  if (!addonId && !clusterId) {
+    return null;
+  }
+  const win = getMainBrowserWindow();
+  if (!win) {
+    return null;
+  }
+  if (addonId) {
+    return win.webContents.send('install-addon-from-protocol', addonId, fileId);
+  }
+  return win.webContents.send('install-cluster-from-protocol', clusterId);
+}
+
 export {
   getAddonInfo,
   getAddonDownloadUrl,
   getAddonsFromFingerprints,
+  handleProtocolUrl,
   searchForAddons,
 };
