@@ -414,10 +414,11 @@ function updateInstalledAddonInfo(gameId, gameVersion, addon, fileInfo) {
   const gameS = getGameSettings(gameId.toString());
   const { gameVersions } = getGameData(gameId.toString());
   const { addonVersion } = gameVersions[gameVersion];
+  const { defaults } = gameS[gameVersion];
   let updateAvailable = false;
   let updateFile = {};
-  const trackBranch = addon.trackBranch || 1;
-  const autoUpdate = addon.autoUpdate || false;
+  const trackBranch = addon.trackBranch || defaults.trackBranch;
+  const autoUpdate = addon.autoUpdate || defaults.autoUpdate;
   const ignoreUpdate = addon.ignoreUpdate || false;
   const possibleFiles = addon.latestFiles.filter((file) => (
     (file.releaseType <= trackBranch || file.releaseType <= fileInfo.releaseType)
