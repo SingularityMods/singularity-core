@@ -2,12 +2,22 @@
 "currentRelease": "1.2.2",
 	"releases": [
     {
+			"version": "1.2.3",
+			"updateTo": {
+				"version": "1.2.3",
+				"pub_date": "2021-01-17T00:00:00",
+				"notes": "Minor bug fixes",
+				"name": "1.2.3",
+				"url": "https://storage.singularitycdn.com/App/Releases/Mac/Singularity-darwin-x64-1.2.3.zip"
+			}
+		},
+    {
 			"version": "1.2.2",
 			"updateTo": {
 				"version": "1.2.2",
 				"pub_date": "2021-01-15T00:00:00",
 				"notes": "Minor bug fixes",
-				"name": "1.2.5",
+				"name": "1.2.2",
 				"url": "https://storage.singularitycdn.com/App/Releases/Mac/Singularity-darwin-x64-1.2.2.zip"
 			}
 		},

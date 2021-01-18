@@ -64,6 +64,16 @@ export default class HomePage extends React.Component {
               <div>
                 <h3 className="release-notes-title">Release Notes</h3>
                 <h5>
+                  1.2.3
+                  <span className="release-note-date">2021-01-17</span>
+                </h5>
+                <h5 className="release-note-section-header">Bug Fixes:</h5>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Fixed an issue where Singularity was installing the incorrect version of WoW addons in some cases.
+                </p>
+                <hr />
+                <h5>
                   1.2.2
                   <span className="release-note-date">2021-01-15</span>
                 </h5>
