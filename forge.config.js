@@ -76,7 +76,13 @@ module.exports = {
           "appleId": "admin@singularitymods.com",
           "appleIdPassword": password,
           },
-          appCopyright: "Copyright (C) 2020 Singularity Mods LLC"
+          appCopyright: "Copyright (C) 2020 Singularity Mods LLC",
+          protocols: [
+            {
+              name: 'Singularity addon installer',
+              schemes: ['singularity'],
+           }
+          ]
       },
         oss: {
             asar: true,

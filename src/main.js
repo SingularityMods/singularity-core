@@ -350,6 +350,13 @@ app.on('activate', () => {
   }
 });
 
+app.on('open-url', (event, data) => {
+  event.preventDefault();
+  log.info(data);
+});
+
+app.setAsDefaultProtocolClient('singularity');
+
 // Display the app menu when triggered
 ipcMain.on('display-app-menu', (e, args) => {
   if (process.platform === 'win32' && mainWindow) {
