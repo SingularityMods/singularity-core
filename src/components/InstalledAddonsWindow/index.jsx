@@ -129,7 +129,9 @@ class InstalledAddonsWindow extends React.Component {
       installedAddons.forEach((addon, index) => {
         const latestFile = getLatestFile(addon, addonVersion);
 
-        if (latestFile && installedAddons[index].installedFile.fileDate < latestFile.fileDate) {
+        if (latestFile
+            && (installedAddons[index].installedFile.fileDate < latestFile.fileDate
+            || installedAddons[index].installedFile.gameVersionFlavor !== addonVersion)) {
           installedAddons[index].updateAvailable = true;
           installedAddons[index].updateFile = latestFile;
         }
@@ -183,7 +185,9 @@ class InstalledAddonsWindow extends React.Component {
         installedAddons.forEach((addon, index) => {
           const latestFile = getLatestFile(addon, addonVersion);
 
-          if (latestFile && installedAddons[index].installedFile.fileDate < latestFile.fileDate) {
+          if (latestFile
+            && (installedAddons[index].installedFile.fileDate < latestFile.fileDate
+            || installedAddons[index].installedFile.gameVersionFlavor !== addonVersion)) {
             installedAddons[index].updateAvailable = true;
             installedAddons[index].updateFile = latestFile;
           }
@@ -584,6 +588,24 @@ class InstalledAddonsWindow extends React.Component {
     const {
       gameVersion,
     } = this.props;
+    const {
+      addonVersion,
+    } = this.state;
+    if (addons && addons.length > 0) {
+      addons.forEach((addon, index) => {
+        const latestFile = getLatestFile(addon, addonVersion);
+
+        if (latestFile
+            && (addons[index].installedFile.fileDate < latestFile.fileDate
+            || addons[index].installedFile.gameVersionFlavor !== addonVersion)) {
+          addons[index].updateAvailable = true;
+          addons[index].updateFile = latestFile;
+        }
+
+        addons[index].currentlyUpdating = false;
+        addons[index].errored = false;
+      });
+    }
     addons.sort(sortAddons);
     if (listenerGameVersion === gameVersion) {
       this.setState({
@@ -839,7 +861,9 @@ class InstalledAddonsWindow extends React.Component {
               </ReactTooltip>
             </div>
           );
-        } if (latestFile && row.installedFile.fileDate < latestFile.fileDate) {
+        } if (latestFile
+          && (row.installedFile.fileDate < latestFile.fileDate
+            || row.installedFile.gameVersionFlavor !== extraData.addonVersion)) {
           return <div><div><UpdateAddonButton handleClick={this.updateAddon} clickData={row} type="Update" /></div></div>;
         }
         return <div><div><span className="label label-danger">Up to Date</span></div></div>;

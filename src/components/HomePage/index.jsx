@@ -70,7 +70,8 @@ export default class HomePage extends React.Component {
                 <h5 className="release-note-section-header">Bug Fixes:</h5>
                 <p className="release-note-bullet">
                   {' '}
-                  - Fixed an issue where Singularity was installing the incorrect version of WoW addons in some cases.
+                  - Fixed an issue where Singularity was installing the incorrect version of WoW
+                  addons in some cases.
                 </p>
                 <hr />
                 <h5>

@@ -329,7 +329,6 @@ class AddonDetailsWindow extends React.Component {
       currentlyUpdating: true,
     });
     const latestFile = getLatestFile(addon, addonVersion);
-    console.log(latestFile);
     ipcRenderer.invoke('install-addon', gameId, gameVersion, addon, latestFile._id)
       .then((installedAddon) => {
         const { updateAvailable } = installedAddon;
