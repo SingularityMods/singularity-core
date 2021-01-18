@@ -95,6 +95,7 @@ class InstalledAddonsWindow extends React.Component {
     this.addonsFoundListener = this.addonsFoundListener.bind(this);
     this.addonsNotFoundListener = this.addonsNotFoundListener.bind(this);
     this.addonSettingsUpdatedListener = this.addonSettingsUpdatedListener.bind(this);
+    this.syncCompleteListener = this.syncCompleteListener.bind(this);
     this.updateAddon = this.updateAddon.bind(this);
     this.contextReinstallAddon = this.contextReinstallAddon.bind(this);
     this.contextUpdateAddon = this.contextUpdateAddon.bind(this);
@@ -119,6 +120,7 @@ class InstalledAddonsWindow extends React.Component {
     ipcRenderer.on('addons-found', this.addonsFoundListener);
     ipcRenderer.on('no-addons-found', this.addonsNotFoundListener);
     ipcRenderer.on('addon-settings-updated', this.addonSettingsUpdatedListener);
+    ipcRenderer.on('sync-status', this.syncCompleteListener);
     const gameSettings = ipcRenderer.sendSync('get-game-settings', gameId);
     const addonVersion = ipcRenderer.sendSync('get-game-addon-version', gameId, gameVersion);
     const profile = ipcRenderer.sendSync('get-profile');
@@ -127,7 +129,9 @@ class InstalledAddonsWindow extends React.Component {
       installedAddons.forEach((addon, index) => {
         const latestFile = getLatestFile(addon, addonVersion);
 
-        if (latestFile && installedAddons[index].installedFile.fileDate < latestFile.fileDate) {
+        if (latestFile
+            && (installedAddons[index].installedFile.fileDate < latestFile.fileDate
+            || installedAddons[index].installedFile.gameVersionFlavor !== addonVersion)) {
           installedAddons[index].updateAvailable = true;
           installedAddons[index].updateFile = latestFile;
         }
@@ -181,7 +185,9 @@ class InstalledAddonsWindow extends React.Component {
         installedAddons.forEach((addon, index) => {
           const latestFile = getLatestFile(addon, addonVersion);
 
-          if (latestFile && installedAddons[index].installedFile.fileDate < latestFile.fileDate) {
+          if (latestFile
+            && (installedAddons[index].installedFile.fileDate < latestFile.fileDate
+            || installedAddons[index].installedFile.gameVersionFlavor !== addonVersion)) {
             installedAddons[index].updateAvailable = true;
             installedAddons[index].updateFile = latestFile;
           }
@@ -210,12 +216,13 @@ class InstalledAddonsWindow extends React.Component {
     ipcRenderer.removeListener('addons-found', this.addonsFoundListener);
     ipcRenderer.removeListener('no-addons-found', this.addonsNotFoundListener);
     ipcRenderer.removeListener('addon-settings-updated', this.addonSettingsUpdatedListener);
+    ipcRenderer.removeListener('sync-status', this.syncCompleteListener);
   }
 
   handleSelectAddon(addonId) {
     const { onSelectAddon } = this.props;
     const { filter } = this.state;
-    onSelectAddon(addonId, filter);
+    onSelectAddon(addonId, filter, 1, 1);
   }
 
   handleOnSelect(row, isSelect) {
@@ -311,19 +318,21 @@ class InstalledAddonsWindow extends React.Component {
     } = this.state;
     const toUpdate = [];
     const pendingUpdates = [];
-    installedAddons.forEach((addon) => {
-      if (addon.updateAvailable) {
-        toUpdate.push(addon);
-        pendingUpdates.push(addon.addonId);
-      }
-    });
-    const nextUpdate = toUpdate.pop();
-    this.setState({
-      toUpdate,
-      pendingUpdates,
-    }, () => {
-      this.updateAddon(nextUpdate);
-    });
+    if (installedAddons) {
+      installedAddons.forEach((addon) => {
+        if (addon.updateAvailable) {
+          toUpdate.push(addon);
+          pendingUpdates.push(addon.addonId);
+        }
+      });
+      const nextUpdate = toUpdate.pop();
+      this.setState({
+        toUpdate,
+        pendingUpdates,
+      }, () => {
+        this.updateAddon(nextUpdate);
+      });
+    }
   }
 
   uninstallAddon() {
@@ -538,6 +547,21 @@ class InstalledAddonsWindow extends React.Component {
     });
   }
 
+  syncCompleteListener(syncedGameId, syncedGameVersion, status) {
+    const {
+      gameId,
+      gameVersion,
+    } = this.props;
+    if (gameId === syncedGameId && gameVersion === syncedGameVersion && status === 'complete') {
+      const gameSettings = ipcRenderer.sendSync('get-game-settings', gameId);
+      const { installedAddons } = gameSettings[gameVersion];
+      installedAddons.sort(sortAddons);
+      this.setState({
+        installedAddons,
+      });
+    }
+  }
+
   autoUpdateCompleteListener() {
     const {
       gameId,
@@ -564,6 +588,24 @@ class InstalledAddonsWindow extends React.Component {
     const {
       gameVersion,
     } = this.props;
+    const {
+      addonVersion,
+    } = this.state;
+    if (addons && addons.length > 0) {
+      addons.forEach((addon, index) => {
+        const latestFile = getLatestFile(addon, addonVersion);
+
+        if (latestFile
+            && (addons[index].installedFile.fileDate < latestFile.fileDate
+            || addons[index].installedFile.gameVersionFlavor !== addonVersion)) {
+          addons[index].updateAvailable = true;
+          addons[index].updateFile = latestFile;
+        }
+
+        addons[index].currentlyUpdating = false;
+        addons[index].errored = false;
+      });
+    }
     addons.sort(sortAddons);
     if (listenerGameVersion === gameVersion) {
       this.setState({
@@ -602,7 +644,6 @@ class InstalledAddonsWindow extends React.Component {
       darkMode,
       gameId,
       gameVersion,
-      onSelectAddon,
       toggleActiveTab,
     } = this.props;
     const {
@@ -683,7 +724,7 @@ class InstalledAddonsWindow extends React.Component {
         return (
           <div className="installed-addon-title-column">
             <img className="addon-table-img" alt="Addon icon" src={avatarUrl} />
-            <div className="addon-name-section"><span role="button" tabIndex="0" className="addon-name" onClick={() => this.handleSelectAddon(row.addonId)} onKeyPress={() => onSelectAddon(row.addonId)}>{cellContent}</span></div>
+            <div className="addon-name-section"><span role="button" tabIndex="0" className="addon-name" onClick={() => this.handleSelectAddon(row.addonId)} onKeyPress={() => this.handleSelectAddon(row.addonId)}>{cellContent}</span></div>
           </div>
         );
       },
@@ -820,7 +861,9 @@ class InstalledAddonsWindow extends React.Component {
               </ReactTooltip>
             </div>
           );
-        } if (latestFile && row.installedFile.fileDate < latestFile.fileDate) {
+        } if (latestFile
+          && (row.installedFile.fileDate < latestFile.fileDate
+            || row.installedFile.gameVersionFlavor !== extraData.addonVersion)) {
           return <div><div><UpdateAddonButton handleClick={this.updateAddon} clickData={row} type="Update" /></div></div>;
         }
         return <div><div><span className="label label-danger">Up to Date</span></div></div>;

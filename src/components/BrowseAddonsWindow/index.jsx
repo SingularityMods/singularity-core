@@ -277,7 +277,7 @@ class BrowseAddonsWindow extends React.Component {
     this.setState({
       currentlyUpdating: newCurrentlyUpdating,
     });
-    ipcRenderer.invoke('install-addon', gameId, gameVersion, addon, latestFile.fileId)
+    ipcRenderer.invoke('install-addon', gameId, gameVersion, addon, latestFile._id)
       .then((installedAddon) => {
         const {
           erroredUpdates,

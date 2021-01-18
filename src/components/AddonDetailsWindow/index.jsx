@@ -87,7 +87,7 @@ class AddonDetailsWindow extends React.Component {
         if (addon.updateAvailable) {
           updateAvailable = true;
         }
-        installedFile = addon.fileName;
+        installedFile = addon.installedFile.fileName;
       }
     });
     this.setState({
@@ -321,13 +321,15 @@ class AddonDetailsWindow extends React.Component {
 
   installAddon(addon) {
     const {
+      addonVersion,
       gameId,
       gameVersion,
     } = this.state;
     this.setState({
       currentlyUpdating: true,
     });
-    ipcRenderer.invoke('install-addon', gameId, gameVersion, addon, null)
+    const latestFile = getLatestFile(addon, addonVersion);
+    ipcRenderer.invoke('install-addon', gameId, gameVersion, addon, latestFile._id)
       .then((installedAddon) => {
         const { updateAvailable } = installedAddon;
         this.setState({

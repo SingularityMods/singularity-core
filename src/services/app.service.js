@@ -160,7 +160,7 @@ function setAppConfig() {
   }
   if (version < '0.5.0') {
     const gameS = getGameSettings('1');
-    Object.entries(gameS).forEach((gameVersion) => {
+    Object.keys(gameS).forEach((gameVersion) => {
       const fixedAddons = [];
       const { installedAddons } = gameS[gameVersion];
       installedAddons.forEach((addon) => {

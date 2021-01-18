@@ -7,7 +7,7 @@
     "url": "git://github.com/singularitymods/singularity-core.git"
   },
   "description": "Singularity is the single app for your addon management.",
-  "version": "1.2.0",
+  "version": "1.2.3",
   "main": ".webpack/main",
   "scripts": {
     "start": "cross-env BUILD_ENV=dev electron-forge start",
@@ -75,10 +75,10 @@
     "ttf-loader": "^1.0.2"
   },
   "dependencies": {
-    "@sentry/electron": "^2.0.4",
+    "@sentry/electron": "^2.1.0",
     "@sentry/tracing": "^5.29.1",
     "archiver": "^5.0.2",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "bootstrap": "^4.5.2",
     "electron-dl": "^3.0.2",
     "electron-log": "^4.2.4",
