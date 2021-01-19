@@ -8,6 +8,7 @@ import fs, { promises as fsPromises } from 'fs';
 import hasha from 'hasha';
 import streamBuffers from 'stream-buffers';
 import PromisePool from 'es6-promise-pool';
+import queryString from 'query-string';
 import axios from 'axios';
 
 import log from 'electron-log';
@@ -522,6 +523,47 @@ async function getSyncProfilesFromCloud(enabled = []) {
   });
 }
 
+function handleProtocolUrl(url) {
+  console.log(url);
+  const urlParts = url.split('?');
+  if (!urlParts || urlParts.length < 2) {
+    log.error('Invalid protocol URL');
+  }
+  const query = queryString.parse(urlParts[1]);
+  let addonId;
+  let fileId;
+  let clusterId;
+  if ('addonId' in query) {
+    addonId = query.addonId;
+  }
+  if ('fileId' in query) {
+    fileId = query.fileId;
+  }
+  if ('clusterId' in query) {
+    clusterId = query.clusterId;
+  }
+  if (!addonId && !clusterId) {
+    log.error('Missing addonId in protocol URL');
+  }
+  return getAddonInfo(addonId)
+    .then((addon) => _installAddonFromProtocolUrl(addon, fileId))
+    .then((installedAddon) => {
+      console.log(installedAddon);
+      const {
+        gameId,
+        gameVersion,
+      } = installedAddon;
+      const win = getMainBrowserWindow();
+      if (win) {
+        win.webContents.send('install-addon-from-protocol', gameId, gameVersion, addonId, fileId);
+      }
+    })
+    .catch((error) => {
+      log.error('Error handling protocol URL');
+      log.error(error.message);
+    });
+}
+
 function handleSync() {
   return new Promise((resolve, reject) => {
     log.info('Starting addon sync process');
@@ -656,6 +698,54 @@ function handleUninstallDependencies(gameId, gameVersion, addon) {
     return pool.start()
       .then(() => resolve(addon))
       .catch((error) => reject(error));
+  });
+}
+
+function _installAddonFromProtocolUrl(addon, fileId) {
+  return new Promise((resolve, reject) => {
+    getAddonDownloadUrl(addon.addonId, fileId)
+      .then((fileInfo) => {
+        let gameId = 1;
+        const gameVersion = fileInfo.fileDetails.gameVersionFlavor;
+        if (gameVersion === 'wow_retail'
+          || gameVersion === 'wow_classic') {
+          gameId = 1;
+        } else if (gameVersion === 'eso') {
+          gameId = 2;
+        }
+        const addonDir = getAddonDir(gameId, gameVersion);
+        installAddon(addonDir, fileInfo.downloadUrl)
+          .then(() => {
+            updateInstalledAddonInfo(gameId, gameVersion, addon, fileInfo.fileDetails);
+          })
+          .then((installedAddon) => handleInstallDependencies(gameId, gameVersion, installedAddon))
+          .then((installedAddon) => {
+            const gameS = getGameSettings(gameId.toString());
+            if (gameS[gameVersion].sync && isAuthenticated()) {
+              log.info('Game version is configured to sync, updating profile');
+              return createAndSaveSyncProfile({ gameId, gameVersion })
+                .then(() => {
+                  log.info('Sync profile updated');
+                  return resolve(installedAddon);
+                })
+                .catch((err) => {
+                  log.error('Error saving sync profile');
+                  log.error(err);
+                  return resolve(installedAddon);
+                });
+            }
+            log.info(`Succesfully installed ${installedAddon.addonName}`);
+            return resolve(installedAddon);
+          })
+          .catch((error) => {
+            log.error(error.message);
+            return reject(error);
+          });
+      })
+      .catch((error) => {
+        log.error(error.message);
+        return reject(error);
+      });
   });
 }
 
@@ -1508,4 +1598,5 @@ export {
   uninstallAddon,
   updateESOAddonPath,
   updateSyncProfiles,
+  handleProtocolUrl,
 };

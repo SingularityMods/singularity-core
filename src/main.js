@@ -24,15 +24,13 @@ import {
   handleSync,
   setAddonUpdateInterval,
   updateSyncProfiles,
+  handleProtocolUrl,
 } from './services/file.service';
 import { initStorage, getAppData, setAppData } from './services/storage.service';
 import {
   initSentry,
   enableSentry,
 } from './services/sentry.service';
-import {
-  handleProtocolUrl,
-} from './services/singularity.service';
 
 // import ipc handlers
 require('./main-process');

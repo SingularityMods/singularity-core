@@ -462,6 +462,8 @@ function updateInstalledAddonInfo(gameId, gameVersion, addon, fileInfo) {
     ignoreUpdate,
     brokenInstallation: false,
     unknownUpdate: false,
+    gameId,
+    gameVersion,
   };
 
   const installedAddons = gameS[gameVersion].installedAddons
