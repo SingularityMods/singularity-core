@@ -390,31 +390,37 @@ function _getDirectoriesToFingerprint(gameAddonPath, maxDepth) {
         .map((e) => e.name))
       .then((entries) => {
         const directories = [];
-        entries.forEach((entry) => {
-          directories.push({
-            addonDir: entry,
-            directories: [
-              entry,
-            ],
+        if (entries) {
+          entries.forEach((entry) => {
+            directories.push({
+              addonDir: entry,
+              directories: [
+                entry,
+              ],
+            });
           });
-        });
+        }
         if (maxDepth === 1) {
           return resolve(directories);
         }
         const promises = [];
-        entries.forEach((entry) => {
-          promises.push(_getAddonSubDirectories(gameAddonPath, 1, maxDepth, entry, ''));
-        });
+        if (entries) {
+          entries.forEach((entry) => {
+            promises.push(_getAddonSubDirectories(gameAddonPath, 1, maxDepth, entry, ''));
+          });
+        }
         return Promise.allSettled(promises)
           .then((results) => {
-            results.forEach((result) => {
-              if (result.status === 'fulfilled') {
-                const index = directories
-                  .findIndex((obj) => obj.addonDir === result.value.addonDir);
-                directories[index].directories = directories[index].directories
-                  .concat(result.value.directories);
-              }
-            });
+            if (results) {
+              results.forEach((result) => {
+                if (result.status === 'fulfilled') {
+                  const index = directories
+                    .findIndex((obj) => obj.addonDir === result.value.addonDir);
+                  directories[index].directories = directories[index].directories
+                    .concat(result.value.directories);
+                }
+              });
+            }
             return resolve(directories);
           })
           .catch((error) => reject(error));
@@ -434,19 +440,23 @@ async function fingerprintAllAsync(gameId, addonDir, fingerprintDepth) {
         const promises = [];
         const { manifestFile } = getGameData(gameId.toString());
         addonFolders.forEach((dir) => {
-          dir.directories.forEach((d) => {
-            promises.push(_fingerprintAddonDir(manifestFile, addonDir, d));
-          });
+          if (dir.directories) {
+            dir.directories.forEach((d) => {
+              promises.push(_fingerprintAddonDir(manifestFile, addonDir, d));
+            });
+          }
         });
         Promise.allSettled(promises)
           .then((results) => {
             const addonHashMap = {};
-            results.forEach((result) => {
-              if (result.status === 'fulfilled') {
-                addonHashMap[result.value.d.split(path.sep)
-                  .join(path.posix.sep)] = result.value.hash;
-              }
-            });
+            if (results) {
+              results.forEach((result) => {
+                if (result.status === 'fulfilled') {
+                  addonHashMap[result.value.d.split(path.sep)
+                    .join(path.posix.sep)] = result.value.hash;
+                }
+              });
+            }
             resolve(addonHashMap);
           })
           .catch((e) => {
