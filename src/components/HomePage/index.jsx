@@ -45,7 +45,7 @@ export default class HomePage extends React.Component {
       darkMode,
     } = this.state;
     return (
-      <div className="HomePage">
+      <div id="HomePage">
         <Row>
           <Col className="homepage-title">
             <img alt="Singularity logo" src={darkMode ? '../img/logo_white.png' : '../img/logo.png'} className="app-logo-banner" />

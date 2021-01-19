@@ -1,7 +1,4 @@
-.HomePage{
-    height: 100vh;
 
-}
 
 .app-logo-banner {
     height:120px;
@@ -66,6 +63,7 @@
 
 .homepage-footer {
     padding-bottom: 5px;
+    display:none;
 }
 .homepage-content {
     color: var(--text-color);

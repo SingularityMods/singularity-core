@@ -4,36 +4,29 @@ import { Row, Col } from 'react-bootstrap';
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
+import { ipcRenderer } from 'electron';
 import AuthBar from '../../components/AuthBar';
 import AppMenu from '../AppMenu';
-
-const { ipcRenderer } = require('electron');
 
 class Header extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      updateAvailable: false,
       darkMode: false,
     };
-    this.updatePendingListener = this.updatePendingListener.bind(this);
     this.darkModeToggleListener = this.darkModeToggleListener.bind(this);
   }
 
   componentDidMount() {
-    const updateAvailable = ipcRenderer.sendSync('is-app-update-available');
-    ipcRenderer.on('update-pending', this.updatePendingListener);
     ipcRenderer.on('darkmode-toggle', this.darkModeToggleListener);
     const appSettings = ipcRenderer.sendSync('get-app-settings');
     const { darkMode } = appSettings;
     this.setState({
-      updateAvailable,
       darkMode,
     });
   }
 
   componentWillUnmount() {
-    ipcRenderer.removeListener('update-pending', this.updatePendingListener);
     ipcRenderer.removeListener('darkmode-toggle', this.darkModeToggleListener);
   }
 
@@ -43,17 +36,8 @@ class Header extends React.Component {
     });
   }
 
-  updatePendingListener() {
-    this.setState({
-      updateAvailable: true,
-    });
-  }
-
   render() {
-    function handleClickUpdate() {
-      ipcRenderer.send('install-pending-update');
-    }
-    const { darkMode, updateAvailable } = this.state;
+    const { darkMode } = this.state;
     const { onClick, onOpenProfileMenu } = this.props;
     return (
       <div>
@@ -70,18 +54,6 @@ class Header extends React.Component {
                 className="app-icon"
               />
             </div>
-            {updateAvailable
-              ? (
-                <div role="button" tabIndex="0" onClick={handleClickUpdate} onKeyPress={handleClickUpdate} className="app-update-button">
-                  <div className="app-update-button-header">
-                    Update Available
-                  </div>
-                  <div className="app-update-button-message">
-                    Click to restart and install
-                  </div>
-                </div>
-              )
-              : ''}
           </Col>
           <Col xs={6}>
             <AuthBar

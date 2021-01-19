@@ -1,0 +1,46 @@
+#Footer {
+  position:fixed;
+  bottom:0;
+  left:0;
+  height: 30px;
+  width: 100%;
+  z-index: 10;
+  background-color: var(--header-background-color);
+  box-shadow: 0px 0px 5px 0px var(--header-box-shadow-color);
+}
+
+#footer-message {
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 4px;
+  color: var(--text-color);
+}
+
+#footer-message.error {
+  color: var(--error-red);
+}
+
+#footer-message .footer-status-spinner {
+  margin-left: 5px;
+}
+
+
+#footer-message.transition-enter, #footer-message.transition-appear {
+  opacity: 0;
+}
+
+#footer-message.transition-enter-active,
+#footer-message.transition-appear-active,
+#footer-message.transition-exit-active {
+  opacity: 1;
+  transition: opacity 1000ms;
+}
+
+#footer-message.transition-exit {
+  opacity: 0;
+  transition: opacity 1000ms;
+}
+
+#footer-message .update-available-message {
+  color: var(--singularity-orange);
+}

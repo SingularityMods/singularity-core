@@ -716,7 +716,7 @@ class BrowseAddonsWindow extends React.Component {
                 : ''}
               <Row>
                 <Col xs={12}>
-                  {additionalAddons
+                  {additionalAddons && !loadingMore
                     ? <div className="load-more" role="button" tabIndex="0" onClick={this.loadMoreAddons} onKeyPress={this.loadMoreAddons}>load more</div>
                     : ''}
                 </Col>

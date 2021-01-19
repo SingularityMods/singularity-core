@@ -116,6 +116,10 @@ function getBackupDataAsync(key) {
   });
 }
 
+function isGameVersionInstalled(gameId, gameVersion) {
+  return gameSettings[gameId][gameVersion].installed;
+}
+
 function getInstalledGames() {
   const installed = [];
   Object.keys(gameSettings).forEach((gameId) => {
@@ -579,6 +583,7 @@ export {
   setBackupData,
   getBackupDataAsync,
   handleFingerprintResponse,
+  isGameVersionInstalled,
   setBackupDataAsync,
   saveBackupInfo,
   deleteBackupInfo,

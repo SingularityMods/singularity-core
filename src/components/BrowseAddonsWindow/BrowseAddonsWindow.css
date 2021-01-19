@@ -4,21 +4,21 @@
 }
 
 .browse-addon-window-content .addon-table-scrollbar {
-    height: calc(100vh - 275px);
+    height: calc(100vh - 305px);
     overflow: auto;
 }
 
 .browse-addon-window-content .addon-table-scrollbar.mac {
-    height: calc(100vh - 250px);
+    height: calc(100vh - 280px);
 }
 
 .category-window {
-    height: calc(100vh - 250px);
+    height: calc(100vh - 280px);
     overflow: auto;
 }
 
 .loading {
-    height: calc(100vh - 250px);
+    height: calc(100vh - 280px);
     overflow: auto;
 }
 

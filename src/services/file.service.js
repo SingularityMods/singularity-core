@@ -41,6 +41,7 @@ import {
   removeInstalledAddonInfo,
   getInstallDepsSetting,
   getUninstallDepsSetting,
+  isGameVersionInstalled,
 } from './storage.service';
 
 let syncing = false;
@@ -524,7 +525,6 @@ async function getSyncProfilesFromCloud(enabled = []) {
 }
 
 function handleProtocolUrl(url) {
-  console.log(url);
   const urlParts = url.split('?');
   if (!urlParts || urlParts.length < 2) {
     log.error('Invalid protocol URL');
@@ -548,19 +548,18 @@ function handleProtocolUrl(url) {
   return getAddonInfo(addonId)
     .then((addon) => _installAddonFromProtocolUrl(addon, fileId))
     .then((installedAddon) => {
-      console.log(installedAddon);
-      const {
-        gameId,
-        gameVersion,
-      } = installedAddon;
       const win = getMainBrowserWindow();
       if (win) {
-        win.webContents.send('install-addon-from-protocol', gameId, gameVersion, addonId, fileId);
+        win.webContents.send('app-status-message', `Installed addon ${installedAddon.addonName}`, 'success');
       }
     })
     .catch((error) => {
       log.error('Error handling protocol URL');
       log.error(error.message);
+      const win = getMainBrowserWindow();
+      if (win) {
+        win.webContents.send('app-status-message', 'Error installing addon from protocol URL', 'error');
+      }
     });
 }
 
@@ -703,6 +702,11 @@ function handleUninstallDependencies(gameId, gameVersion, addon) {
 
 function _installAddonFromProtocolUrl(addon, fileId) {
   return new Promise((resolve, reject) => {
+    const win = getMainBrowserWindow();
+    if (win) {
+      win.webContents.send('app-status-message', `Installing ${addon.addonName}`, 'status');
+    }
+    log.info(`Installing ${addon.addonName} from protocol URL`);
     getAddonDownloadUrl(addon.addonId, fileId)
       .then((fileInfo) => {
         let gameId = 1;
@@ -713,11 +717,12 @@ function _installAddonFromProtocolUrl(addon, fileId) {
         } else if (gameVersion === 'eso') {
           gameId = 2;
         }
+        if (!isGameVersionInstalled(gameId, gameVersion)) {
+          return reject(new Error('Game is not installed'));
+        }
         const addonDir = getAddonDir(gameId, gameVersion);
-        installAddon(addonDir, fileInfo.downloadUrl)
-          .then(() => {
-            updateInstalledAddonInfo(gameId, gameVersion, addon, fileInfo.fileDetails);
-          })
+        return installAddon(addonDir, fileInfo.downloadUrl)
+          .then(() => updateInstalledAddonInfo(gameId, gameVersion, addon, fileInfo.fileDetails))
           .then((installedAddon) => handleInstallDependencies(gameId, gameVersion, installedAddon))
           .then((installedAddon) => {
             const gameS = getGameSettings(gameId.toString());
@@ -734,7 +739,7 @@ function _installAddonFromProtocolUrl(addon, fileId) {
                   return resolve(installedAddon);
                 });
             }
-            log.info(`Succesfully installed ${installedAddon.addonName}`);
+            log.info(`Succesfully installed ${installedAddon.addonName} from protocol URL`);
             return resolve(installedAddon);
           })
           .catch((error) => {
@@ -804,7 +809,7 @@ function restoreGranularBackup(backup, includeSettings) {
     }
 
     if (!fs.existsSync(settingsPath)) {
-      reject(new Error("Settings directory doesn't exist"));
+      fs.mkdirSync(settingsPath, { recursive: true });
     }
 
     const tempDir = path.join(app.getPath('temp'), '/singularity');
@@ -825,12 +830,19 @@ function restoreGranularBackup(backup, includeSettings) {
     pool.start()
       .then(() => {
         log.info('All addons restored');
+        if (win) {
+          win.webContents.send('app-status-message', 'Finished restoring addons from backup', 'success');
+        }
         if (!includeSettings) {
           log.info('User did not opt to restore settings');
+          if (win) {
+            win.webContents.send('app-status-message', 'Backup restoration complete', 'success');
+          }
           return resolve('success');
         }
         if (cloud) {
           if (win) {
+            win.webContents.send('app-status-message', 'Downloading settings backup', 'status');
             win.webContents.send('restore-status', 'Downloading Settings Backup');
           }
           log.info('Downloading settings from the cloud');
@@ -844,10 +856,12 @@ function restoreGranularBackup(backup, includeSettings) {
                   if (fs.existsSync(savePath)) {
                     fsPromises.unlink(savePath);
                   }
+                  return Promise.resolve();
                 });
             });
         }
         if (win) {
+          win.webContents.send('app-status-message', 'Unpacking local settings backup', 'status');
           win.webContents.send('restore-status', 'Unpacking Local Settings Backup');
         }
         log.info('Grabbing settings file from backup');
@@ -859,14 +873,21 @@ function restoreGranularBackup(backup, includeSettings) {
               if (fs.existsSync(tmpFilePath)) {
                 fsPromises.unlink(tmpFilePath);
               }
+              return Promise.resolve();
             }));
       })
       .then(() => {
         log.info('Done restoring backup!');
+        if (win) {
+          win.webContents.send('app-status-message', 'Backup restoration complete', 'success');
+        }
         return resolve('success');
       })
       .catch((err) => {
         log.error(err);
+        if (win) {
+          win.webContents.send('app-status-message', 'Error restoring backup', 'error');
+        }
         reject(new Error('Error restoring backup'));
       });
   });
@@ -910,18 +931,31 @@ function setAddonUpdateInterval() {
     updateInterval = setInterval(() => {
       // checkAddons();
       log.info('Starting addon auto refresh and update');
+      const win = getMainBrowserWindow();
+      if (win) {
+        win.webContents.send('app-status-message', 'Automatic addon refresh started', 'status');
+      }
       findAndUpdateAddons()
         .then((profiles) => {
           updateSyncProfiles([...profiles])
             .then(() => {
+              if (win) {
+                win.webContents.send('app-status-message', 'Automatic addon refresh complete', 'success');
+              }
               log.info('All sync profiles updated');
             })
             .catch((syncError) => {
+              if (win) {
+                win.webContents.send('app-status-message', 'Automatic addon refresh error', 'error');
+              }
               log.error('Error updating sync profiles');
               log.error(syncError);
             });
         })
         .catch((updateError) => {
+          if (win) {
+            win.webContents.send('app-status-message', 'Automatic addon refresh error', 'error');
+          }
           log.error('Error while auto-udpating addons');
           log.error(updateError);
         });
@@ -1261,6 +1295,10 @@ function _installAddonFromSync(addon) {
 
 function _installDependency(gameId, gameVersion, dependency) {
   log.info(`Installing dependency ${dependency.name}`);
+  const win = getMainBrowserWindow();
+  if (win) {
+    win.webContents.send('app-status-message', `Installing dependency ${dependency.name}`, 'status');
+  }
   return new Promise((resolve, reject) => {
     const addonDir = getAddonDir(gameId, gameVersion);
     return getAddonInfo(dependency.addonId)
@@ -1439,6 +1477,7 @@ function _restoreAddonFile(gameId, gameVersion, addon) {
     const win = getMainBrowserWindow();
     if (win) {
       win.webContents.send('restore-status', `Restoring: ${addonName}`);
+      win.webContents.send('app-status-message', `Restoring ${addonName}`, 'status');
     }
     const addonDir = getAddonDir(gameId, gameVersion);
     return getAddonInfo(addonId)

@@ -17,6 +17,7 @@ import {
 } from '../../renderer-services/sentry';
 
 import Header from '../Header';
+import Footer from '../Footer';
 
 import AuthDialog from '../../components/Dialogs/AuthDialog';
 import BackupManagementDialog from '../../components/Dialogs/BackupManagementDialog';
@@ -478,6 +479,7 @@ class App extends React.Component {
               lastRestoreComplete={lastRestoreComplete}
             />
           </div>
+          <Footer />
         </Row>
       </Container>
     );

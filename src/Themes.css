@@ -19,6 +19,7 @@
     --settings-item-background-color: white;
     --context-menu-divider: #535353;
     --success-green: #00cc00;
+    --error-red: #b30000;
     --alert-dialog-border: #b30000;
 }
 
@@ -43,5 +44,6 @@
     --settings-item-background-color: #271550;
     --context-menu-divider: #535353;
     --success-green: #00cc00;
+    --error-red: #d10606;
     --alert-dialog-border: #b30000;
 }
