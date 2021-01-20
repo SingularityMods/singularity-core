@@ -551,6 +551,7 @@ function handleProtocolUrl(url) {
       const win = getMainBrowserWindow();
       if (win) {
         win.webContents.send('app-status-message', `Installed addon ${installedAddon.addonName}`, 'success');
+        win.webContents.send('addon-installed-automatically', installedAddon);
       }
     })
     .catch((error) => {

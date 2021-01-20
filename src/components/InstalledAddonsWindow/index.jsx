@@ -90,6 +90,7 @@ class InstalledAddonsWindow extends React.Component {
     this.clearSearchFilter = this.clearSearchFilter.bind(this);
     this.handleAddonInstallComplete = this.handleAddonInstallComplete.bind(this);
     this.handleAddonInstallFailed = this.handleAddonInstallFailed.bind(this);
+    this.addonInstalledListener = this.addonInstalledListener.bind(this);
     this.autoUpdateCompleteListener = this.autoUpdateCompleteListener.bind(this);
     this.authEventListener = this.authEventListener.bind(this);
     this.addonsFoundListener = this.addonsFoundListener.bind(this);
@@ -116,6 +117,7 @@ class InstalledAddonsWindow extends React.Component {
       gameVersion,
     } = this.props;
     ipcRenderer.on('addon-autoupdate-complete', this.autoUpdateCompleteListener);
+    ipcRenderer.on('addon-installed-automatically', this.addonInstalledListener);
     ipcRenderer.on('auth-event', this.authEventListener);
     ipcRenderer.on('addons-found', this.addonsFoundListener);
     ipcRenderer.on('no-addons-found', this.addonsNotFoundListener);
@@ -211,12 +213,15 @@ class InstalledAddonsWindow extends React.Component {
   }
 
   componentWillUnmount() {
+    ipcRenderer.removeAllListeners();
+    /*
     ipcRenderer.removeListener('addon-autoupdate-complete', this.autoUpdateCompleteListener);
     ipcRenderer.removeListener('auth-event', this.authEventListener);
     ipcRenderer.removeListener('addons-found', this.addonsFoundListener);
     ipcRenderer.removeListener('no-addons-found', this.addonsNotFoundListener);
     ipcRenderer.removeListener('addon-settings-updated', this.addonSettingsUpdatedListener);
     ipcRenderer.removeListener('sync-status', this.syncCompleteListener);
+    */
   }
 
   handleSelectAddon(addonId) {
@@ -545,6 +550,16 @@ class InstalledAddonsWindow extends React.Component {
     this.setState({
       filter: event.target.value,
     });
+  }
+
+  addonInstalledListener(_event, installedAddon) {
+    const {
+      gameId,
+      gameVersion,
+    } = this.props;
+    if (installedAddon.gameId === gameId && installedAddon.gameVersion === gameVersion) {
+      this.handleAddonInstallComplete(installedAddon);
+    }
   }
 
   syncCompleteListener(syncedGameId, syncedGameVersion, status) {

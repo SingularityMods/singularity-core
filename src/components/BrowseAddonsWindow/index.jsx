@@ -78,7 +78,7 @@ class BrowseAddonsWindow extends React.Component {
       gameId,
       gameVersion,
     } = this.props;
-    ipcRenderer.on('addon-installed', this.addonInstalledListener);
+    ipcRenderer.on('addon-installed-automatically', this.addonInstalledListener);
     const gameSettings = ipcRenderer.sendSync('get-game-settings', gameId);
     const categories = ipcRenderer.sendSync('get-game-addon-categories', gameId);
     const addonVersion = ipcRenderer.sendSync('get-game-addon-version', gameId, gameVersion);
@@ -148,7 +148,7 @@ class BrowseAddonsWindow extends React.Component {
   }
 
   componentWillUnmount() {
-    ipcRenderer.removeListener('addon-installed', this.addonInstalledListener);
+    ipcRenderer.removeListener('addon-installed-automatically', this.addonInstalledListener);
   }
 
   handleAddonSearchResult(addons) {
@@ -434,27 +434,26 @@ class BrowseAddonsWindow extends React.Component {
 
   addonInstalledListener(_event, installedAddon) {
     const {
-      currentlyUpdating,
-      erroredUpdates,
       installedAddons,
     } = this.state;
-    const currentlyInstalledAddons = installedAddons.map((addon) => {
-      if (addon.addonId !== installedAddon.addonId) {
-        return addon;
+    const {
+      gameId,
+      gameVersion,
+    } = this.props;
+    if (installedAddon.gameId === gameId && installedAddon.gameVersion === gameVersion) {
+      const currentlyInstalledAddons = installedAddons.map((addon) => {
+        if (addon.addonId !== installedAddon.addonId) {
+          return addon;
+        }
+        return installedAddon;
+      });
+      if (!currentlyInstalledAddons.includes(installedAddon)) {
+        currentlyInstalledAddons.splice(0, 0, installedAddon);
       }
-      return installedAddon;
-    });
-    if (!currentlyInstalledAddons.includes(installedAddon)) {
-      currentlyInstalledAddons.splice(0, 0, installedAddon);
+      this.setState({
+        installedAddons: currentlyInstalledAddons,
+      });
     }
-
-    const newCurrentlyUpdating = currentlyUpdating.filter((obj) => obj !== installedAddon.addonId);
-    const newErroredUpdates = erroredUpdates.filter((obj) => obj !== installedAddon.addonId);
-    this.setState({
-      installedAddons: currentlyInstalledAddons,
-      currentlyUpdating: newCurrentlyUpdating,
-      erroredUpdates: newErroredUpdates,
-    });
   }
 
   render() {
