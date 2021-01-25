@@ -80,16 +80,18 @@ class AddonDetailsWindow extends React.Component {
     let installedFile = '';
     let installedAddon = {};
 
-    installedAddons.forEach((addon) => {
-      if (addon.addonId === addonId) {
-        installedAddon = addon;
-        installed = true;
-        if (addon.updateAvailable) {
-          updateAvailable = true;
+    if (installedAddons) {
+      installedAddons.forEach((addon) => {
+        if (addon.addonId === addonId) {
+          installedAddon = addon;
+          installed = true;
+          if (addon.updateAvailable) {
+            updateAvailable = true;
+          }
+          installedFile = addon.installedFile.fileName;
         }
-        installedFile = addon.installedFile.fileName;
-      }
-    });
+      });
+    }
     this.setState({
       addonVersion,
       installed,
