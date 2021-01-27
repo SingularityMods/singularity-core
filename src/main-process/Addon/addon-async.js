@@ -29,6 +29,7 @@ import {
 import {
   getAddonDownloadUrl,
   getAddonInfo,
+  getCluster,
   searchForAddons,
 } from '../../services/singularity.service';
 
@@ -38,6 +39,16 @@ ipcMain.handle('search-for-addons', async (event, gameId, gameVersion, searchFil
     .catch((error) => {
       log.error(error.message);
       return reject(new Error('Error searching for addons'));
+    });
+}));
+
+ipcMain.handle('get-cluster', (event, clusterId) => new Promise((resolve, reject) => {
+  log.info(`Searching for cluster: ${clusterId}`);
+  getCluster(clusterId)
+    .then((cluster) => resolve(cluster))
+    .catch((error) => {
+      log.error(error.message);
+      return reject(new Error('Error searching for cluster'));
     });
 }));
 

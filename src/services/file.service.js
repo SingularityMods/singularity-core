@@ -23,6 +23,7 @@ import {
   getAddonInfo,
   getAddonDownloadUrl,
   getAddonsFromFingerprints,
+  getCluster,
 } from './singularity.service';
 import {
   addDependencies,
@@ -545,23 +546,43 @@ function handleProtocolUrl(url) {
   if (!addonId && !clusterId) {
     log.error('Missing addonId in protocol URL');
   }
-  return getAddonInfo(addonId)
-    .then((addon) => _installAddonFromProtocolUrl(addon, fileId))
-    .then((installedAddon) => {
-      const win = getMainBrowserWindow();
-      if (win) {
-        win.webContents.send('app-status-message', `Installed addon ${installedAddon.addonName}`, 'success');
-        win.webContents.send('addon-installed-automatically', installedAddon);
-      }
-    })
-    .catch((error) => {
-      log.error('Error handling protocol URL');
-      log.error(error.message);
-      const win = getMainBrowserWindow();
-      if (win) {
-        win.webContents.send('app-status-message', 'Error installing addon from protocol URL', 'error');
-      }
-    });
+  if (clusterId) {
+    return getCluster(clusterId)
+      .then((cluster) => {
+        const win = getMainBrowserWindow();
+        if (win) {
+          win.webContents.send('open-cluster', cluster);
+        }
+      })
+      .catch((error) => {
+        log.error('Error handling protocol URL');
+        log.error(error.message);
+        const win = getMainBrowserWindow();
+        if (win) {
+          win.webContents.send('app-status-message', 'Error opening addon cluster', 'error');
+        }
+      });
+  }
+  if (addonId) {
+    return getAddonInfo(addonId)
+      .then((addon) => _installAddonFromProtocolUrl(addon, fileId))
+      .then((installedAddon) => {
+        const win = getMainBrowserWindow();
+        if (win) {
+          win.webContents.send('app-status-message', `Installed addon ${installedAddon.addonName}`, 'success');
+          win.webContents.send('addon-installed-automatically', installedAddon);
+        }
+      })
+      .catch((error) => {
+        log.error('Error handling protocol URL');
+        log.error(error.message);
+        const win = getMainBrowserWindow();
+        if (win) {
+          win.webContents.send('app-status-message', 'Error installing addon from protocol URL', 'error');
+        }
+      });
+  }
+  return null;
 }
 
 function handleSync() {
