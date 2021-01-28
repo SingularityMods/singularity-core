@@ -215,7 +215,6 @@ if (!appLock) {
   });
 
   app.on('open-url', (event, data) => {
-    console.log(data);
     event.preventDefault();
     handleProtocolUrl(data);
   });

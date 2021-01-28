@@ -148,6 +148,18 @@ function getUninstallDepsSetting(gameId, gameVersion) {
   return gameSettings[gameId.toString()][gameVersion].defaults.uninstallDeps;
 }
 
+function getDefaultTrackBranch(gameId, gameVersion) {
+  return gameSettings[gameId.toString()][gameVersion].defaults.trackBranch;
+}
+
+function getDefaultAutoUpdate(gameId, gameVersion) {
+  return gameSettings[gameId.toString()][gameVersion].defaults.autoUpdate;
+}
+
+function isSyncEnabled(gameId, gameVersion) {
+  return gameSettings[gameId.toString()][gameVersion].sync;
+}
+
 function setGameSettings(key, val) {
   gameSettings[key] = val;
   const filePath = path.join(userDataPath, 'game-settings.json');
@@ -607,4 +619,7 @@ export {
   updateDependencyInfo,
   getInstallDepsSetting,
   getUninstallDepsSetting,
+  getDefaultTrackBranch,
+  getDefaultAutoUpdate,
+  isSyncEnabled,
 };

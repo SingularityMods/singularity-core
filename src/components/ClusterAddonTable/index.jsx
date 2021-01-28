@@ -10,7 +10,6 @@ function getLatestFile(addon, addonVersion) {
   const possibleFiles = addon.latestFiles.filter((file) => (
     file.gameVersionFlavor === addonVersion
   ));
-  console.log(possibleFiles);
   if (possibleFiles && possibleFiles.length > 0) {
     return possibleFiles.reduce((a, b) => ((a.releaseType < b.releaseType) ? a : b));
   }
@@ -27,7 +26,6 @@ function ClusterAddonTable(props) {
     handleSelectAddon,
     installAddon,
   } = props;
-  console.log(addons);
   const noTableData = () => (<div className="no-data-label">This cluster has no addons</div>);
 
   const columns = [{
@@ -66,14 +64,6 @@ function ClusterAddonTable(props) {
   }, {
     dataField: '_id',
     text: 'Action',
-    /*
-    formatExtraData: {
-      installedAddons,
-      gameVersion,
-      addonVersion,
-      currentlyUpdating,
-      erroredUpdates,
-    }, */
     formatExtraData: {
       installedAddons,
       gameVersion,
@@ -91,46 +81,7 @@ function ClusterAddonTable(props) {
       return (
         <UpdateAddonButton handleClick={installAddon} clickData={row} type="Install" />
       );
-    }
-
-    /*
-      if (extraData.erroredUpdates.includes(row.addonId)) {
-        return <span className="label label-danger">ERROR...</span>;
-      } if (extraData.currentlyUpdating.includes(row.addonId)) {
-        return (
-          <span className="label label-danger">Updating...</span>
-        );
-      }
-      let installed = false;
-      let installedFileDate;
-      for (let i = 0; i < extraData.installedAddons.length; i += 1) {
-        if (extraData.installedAddons[i].addonId === cellContent.toString()) {
-          installed = true;
-          installedFileDate = Date.parse(extraData.installedAddons[i].installedFile.fileDate);
-        }
-      }
-      if (!installed) {
-        return (
-          <UpdateAddonButton handleClick={this.installAddon} clickData={row} type="Install" />
-        );
-      }
-
-      for (let i = 0; i < row.latestFiles.length; i += 1) {
-        if (row.latestFiles[i].gameVersionFlavor === extraData.addonVersion
-            && row.latestFiles[i].releaseType === 1) {
-          const fileDate = Date.parse(row.latestFiles[i].fileDate);
-          if (fileDate > installedFileDate) {
-            return (
-              <UpdateAddonButton handleClick={this.installAddon} clickData={row} type="Update" />
-            );
-          }
-        }
-      }
-      return (
-        <span className="label label-danger">Up To Date</span>
-      );
-      */
-    ,
+    },
   }, {
     dataField: 'totalDownloadCount',
     text: 'Downloads',

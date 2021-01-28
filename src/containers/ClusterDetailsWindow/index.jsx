@@ -16,7 +16,6 @@ function getLatestFile(addon, addonVersion) {
   const possibleFiles = addon.latestFiles.filter((file) => (
     file.gameVersionFlavor === addonVersion
   ));
-  console.log(possibleFiles);
   if (possibleFiles && possibleFiles.length > 0) {
     return possibleFiles.reduce((a, b) => ((a.releaseType < b.releaseType) ? a : b));
   }
@@ -49,24 +48,33 @@ class ClusterDetailsWindow extends React.Component {
   }
 
   installAddon(addon) {
-    console.log(addon);
-
     const {
       cluster,
     } = this.props;
 
     const latestFile = getLatestFile(addon, cluster.gameVersion);
     ipcRenderer.invoke('install-addon-from-cluster', cluster.gameId, cluster.gameVersion, addon, latestFile._id)
-      .then((installedAddon) => {
-        console.log('installed');
+      .then(() => {
       })
-      .catch(() => {
-        console.log('error');
+      .catch((error) => {
+        this.setState({
+          errorMessage: error.message,
+        });
       });
   }
 
   installCluster() {
-    console.log('Install Cluster');
+    const {
+      cluster,
+    } = this.props;
+    ipcRenderer.invoke('install-cluster', cluster.clusterId, cluster.gameId, cluster.gameVersion)
+      .then(() => {
+      })
+      .catch((error) => {
+        this.setState({
+          errorMessage: error.message,
+        });
+      });
   }
 
   render() {
@@ -78,8 +86,6 @@ class ClusterDetailsWindow extends React.Component {
       cluster,
       handleGoBack,
     } = this.props;
-    console.log(cluster);
-    console.log(errorMessage);
     const numTags = cluster.tags.length;
 
     function getGameName(gameId) {
@@ -153,7 +159,7 @@ class ClusterDetailsWindow extends React.Component {
                         </Col>
                       </Row>
                       <Row>
-                        <Col xs="12" className="cluster-additional-info">
+                        <Col xs="6" className="cluster-additional-info">
                           <span className="cluster-info-small">
                             {cluster.downloads}
                             {' '}
@@ -172,6 +178,9 @@ class ClusterDetailsWindow extends React.Component {
                               ? 'None'
                               : ''}
                           </span>
+                        </Col>
+                        <Col xs={6} className="cluster-error-message">
+                          {errorMessage}
                         </Col>
                       </Row>
                     </Col>

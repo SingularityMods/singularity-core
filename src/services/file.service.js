@@ -24,6 +24,7 @@ import {
   getAddonDownloadUrl,
   getAddonsFromFingerprints,
   getCluster,
+  getClusterDownloadInfo,
 } from './singularity.service';
 import {
   addDependencies,
@@ -45,6 +46,8 @@ import {
   isGameVersionInstalled,
   getBannerPath,
   getInstalledAddons,
+  getDefaultTrackBranch,
+  isSyncEnabled,
 } from './storage.service';
 
 let syncing = false;
@@ -62,6 +65,8 @@ const syncedAddonsToRemove = [];
 
 const dependenciesToInstall = [];
 const dependenciesToRemove = [];
+
+const clusterAddonsToInstall = [];
 
 let updateInterval;
 
@@ -528,7 +533,6 @@ async function getSyncProfilesFromCloud(enabled = []) {
 }
 
 function handleProtocolUrl(url) {
-  console.log('handle');
   const urlParts = url.split('?');
   if (!urlParts || urlParts.length < 2) {
     log.error('Invalid protocol URL');
@@ -588,9 +592,7 @@ function handleProtocolUrl(url) {
       .catch((error) => {
         log.error('Error handling protocol URL');
         log.error(error.message);
-        console.log(error);
         if (win) {
-          console.log('inwin');
           win.webContents.send('app-status-message', 'Error retrieving cluster', 'error');
         }
       });
@@ -1017,6 +1019,83 @@ function setAddonUpdateInterval() {
   }
 }
 
+function installCluster(clusterId) {
+  return new Promise((resolve, reject) => {
+    log.info(`Installing cluster: ${clusterId}`);
+    getClusterDownloadInfo(clusterId)
+      .then((clusterInfo) => {
+        const {
+          addons,
+          gameId,
+          gameVersion,
+        } = clusterInfo;
+        const installedAddons = getInstalledAddons(gameId, gameVersion);
+
+        // Check for already installed addons
+        addons.forEach((addon) => {
+          const match = installedAddons.find((a) => a.addonId === addon._id);
+          if (!match) {
+            const installObj = {};
+            installObj.addon = addon;
+            log.info(`Addon ${addon.name} needs to be installed from cluster`);
+            installObj.gameVersion = gameVersion;
+            installObj.gameId = gameId;
+            clusterAddonsToInstall.push(installObj);
+          }
+        });
+        const pool = new PromisePool(_installAddonFromClusterProducer, 1);
+        pool.start()
+          .then(() => {
+            clusterInfo.bannerPath = getBannerPath(gameId);
+            clusterInfo.installedAddons = getInstalledAddons(gameId, gameVersion);
+            clusterInfo.addons.forEach((addon, index) => {
+              if (addon.authors && addon.authors.length > 0) {
+                clusterInfo.addons[index].author = addon.authors[0].name;
+              } else if (addon.curseAuthors) {
+                clusterInfo.addons[index].author = addon.curseAuthors[0].name;
+              } else if (addon.tukuiAuthor) {
+                clusterInfo.addons[index].author = addon.tukuiAuthor;
+              } else if (addon.mmouiAuthor) {
+                clusterInfo.addons[index].author = addon.mmouiAuthor;
+              }
+
+              if (addon.curseAttachments && addon.curseAttachments.length > 0) {
+                clusterInfo.addons[index].avatar = addon.curseAttachments[0].url;
+              } else if (addon.mmouiScreenshots && addon.mmouiScreenshots.length > 0) {
+                const [screenshot] = addon.mmouiScreenshots;
+                clusterInfo.addons[index].avatar = screenshot;
+              } else if (addon.tukuiScreenshotUrl) {
+                clusterInfo.addons[index].avatar = addon.tukuiScreenshotUrl;
+              } else {
+                clusterInfo.addons[index].avatar = '';
+              }
+            });
+
+            log.info('Done installing addons from cluster!');
+            const win = getMainBrowserWindow();
+            if (win) {
+              win.webContents.send('app-status-message', 'Finished installing cluster', 'success');
+              win.webContents.send('open-cluster', clusterInfo);
+            }
+            return resolve();
+          })
+          .catch((err) => {
+            log.error(err);
+            const win = getMainBrowserWindow();
+            if (win) {
+              win.webContents.send('app-status-message', 'Error installing cluster', 'error');
+            }
+            return reject(new Error('Error installing addons from cluster'));
+          });
+      })
+      .catch((error) => {
+        log.error('Error installing cluster');
+        log.error(error.message);
+        return reject(error);
+      });
+  });
+}
+
 function syncFromProfile(profile) {
   return new Promise((resolve, reject) => {
     const {
@@ -1175,6 +1254,71 @@ function _autoUpdateAddon(updateObj) {
       .then((installedAddon) => handleInstallDependencies(gameId, gameVersion, installedAddon))
       .then((installedAddon) => {
         if (gameS[gameVersion].sync && isAuthenticated()) {
+          log.info('Game version is configured to sync, updating profile');
+          return createAndSaveSyncProfile({ gameId, gameVersion })
+            .then(() => {
+              log.info('Sync profile updated');
+              return resolve(installedAddon);
+            })
+            .catch((err) => {
+              log.error('Error saving sync profile');
+              log.error(err);
+              return resolve(installedAddon);
+            });
+        }
+        log.info(`Succesfully installed ${installedAddon.addonName}`);
+        return resolve(installedAddon);
+      })
+      .catch((error) => {
+        log.error(error.message);
+        return reject(error);
+      });
+  });
+}
+
+function _installAddonFromCluster(installObj) {
+  return new Promise((resolve, reject) => {
+    const {
+      addon, gameId, gameVersion,
+    } = installObj;
+    addon.addonName = addon.name;
+    addon.addonId = addon._id;
+
+    const addonDir = getAddonDir(gameId, gameVersion);
+    const defaultTrackBranch = getDefaultTrackBranch(gameId, gameVersion);
+    let latestFile;
+
+    const possibleFiles = addon.latestFiles.filter((file) => (
+      file.releaseType <= defaultTrackBranch && file.gameVersionFlavor === gameVersion
+    ));
+    if (possibleFiles && possibleFiles.length > 0) {
+      latestFile = possibleFiles.reduce((a, b) => (
+        a.fileDate > b.fileDate ? a : b
+      ));
+    }
+    if (!latestFile) {
+      return reject(new Error('No acceptable install file found for addon'));
+    }
+
+    const win = getMainBrowserWindow();
+    if (win) {
+      win.webContents.send('app-status-message', `Installing ${addon.name}`, 'status');
+    }
+    log.info(`Installing addon ${addon.addonName}`);
+
+    return getAddonDownloadUrl(addon._id, latestFile._id)
+      .then((fileInfo) => installAddon(addonDir, fileInfo.downloadUrl)
+        .then(() => fileInfo)
+        .catch((err) => {
+          log.error(err.message);
+          return Promise.reject(err);
+        }))
+      .then((fileInfo) => updateInstalledAddonInfo(
+        gameId, gameVersion, addon, fileInfo.fileDetails,
+      ))
+      .then((installedAddon) => handleInstallDependencies(gameId, gameVersion, installedAddon))
+      .then((installedAddon) => {
+        if (isSyncEnabled(gameId, gameVersion) && isAuthenticated()) {
           log.info('Game version is configured to sync, updating profile');
           return createAndSaveSyncProfile({ gameId, gameVersion })
             .then(() => {
@@ -1597,6 +1741,13 @@ function _uninstallDir(p, d) {
 /*
  * Producer functions
  */
+function _installAddonFromClusterProducer() {
+  if (clusterAddonsToInstall.length > 0) {
+    return _installAddonFromCluster(clusterAddonsToInstall.pop());
+  }
+  return null;
+}
+
 function _autoUpdateAddonProducer() {
   if (autoUpdateAddonsLeft.length > 0) {
     return _autoUpdateAddon(autoUpdateAddonsLeft.pop());
@@ -1684,6 +1835,7 @@ export {
   handleSync,
   identifyAddons,
   installAddon,
+  installCluster,
   isSearchingForProfiles,
   restoreGranularBackup,
   setAddonUpdateInterval,

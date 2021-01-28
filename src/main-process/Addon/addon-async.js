@@ -26,6 +26,7 @@ import {
   installAddon,
   syncFromProfile,
   uninstallAddon,
+  installCluster,
 } from '../../services/file.service';
 import {
   getAddonDownloadUrl,
@@ -48,7 +49,7 @@ ipcMain.handle('get-cluster', (event, clusterId) => new Promise((resolve, reject
   getCluster(clusterId)
     .then((cluster) => resolve(cluster))
     .catch((error) => {
-      console.log(error);
+      log.error('Error searching for cluster');
       log.error(error.message);
       return reject(new Error('Error searching for cluster'));
     });
@@ -239,6 +240,21 @@ ipcMain.on('get-addon-info', async (event, addonId) => {
     });
 });
 
+ipcMain.handle('install-cluster', async (event, clusterId, gameId, gameVersion) => new Promise((resolve, reject) => {
+  if (isGameVersionInstalled(gameId, gameVersion)) {
+    log.info(`Installing cluster ${clusterId}`);
+    event.sender.send('app-status-message', `Installing cluster ${clusterId}`, 'status');
+    return installCluster(clusterId)
+      .then(() => resolve())
+      .catch((error) => {
+        log.error(error.message);
+        event.sender.send('app-status-message', 'Error installing cluster', 'error');
+        return reject(error);
+      });
+  }
+  return reject(new Error('Game version is not installed'));
+}));
+
 ipcMain.handle('install-addon-from-cluster', async (event, gameId, gameVersion, addon, fileId) => new Promise((resolve, reject) => {
   if (isGameVersionInstalled(gameId, gameVersion)) {
     log.info(`Installing addon ${addon.name}`);
@@ -265,17 +281,20 @@ ipcMain.handle('install-addon-from-cluster', async (event, gameId, gameVersion, 
                 .then(() => {
                   log.info('Sync profile updated');
                   event.sender.send('app-status-message', `Successfully installed ${installedAddon.addonName}`, 'success');
+                  event.sender.send('cluster-addon-installed', installedAddon);
                   return resolve(installedAddon);
                 })
                 .catch((err) => {
                   log.error('Error saving sync profile');
                   log.error(err);
                   event.sender.send('app-status-message', `Successfully installed ${installedAddon.addonName}`, 'success');
+                  event.sender.send('cluster-addon-installed', installedAddon);
                   return resolve(installedAddon);
                 });
             }
             log.info(`Successfully installed ${installedAddon.addonName}`);
             event.sender.send('app-status-message', `Successfully installed ${installedAddon.addonName}`, 'success');
+            event.sender.send('cluster-addon-installed', installedAddon);
             return resolve(installedAddon);
           })
           .catch((error) => {
@@ -283,6 +302,11 @@ ipcMain.handle('install-addon-from-cluster', async (event, gameId, gameVersion, 
             event.sender.send('app-status-message', `Error installing ${addon.name}`, 'error');
             return reject(error);
           });
+      })
+      .catch((error) => {
+        log.error(error.message);
+        event.sender.send('app-status-message', `Error installing ${addon.name}`, 'error');
+        return reject(error);
       });
   }
   return reject(new Error('Game version is not installed'));

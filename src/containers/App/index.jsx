@@ -86,6 +86,7 @@ class App extends React.Component {
     this.toggleBigSidebar = this.toggleBigSidebar.bind(this);
     this.openClusterListener = this.openClusterListener.bind(this);
     this.closeClusterWindow = this.closeClusterWindow.bind(this);
+    this.clusterAddonInstalledListener = this.clusterAddonInstalledListener.bind(this);
   }
 
   componentDidMount() {
@@ -96,6 +97,7 @@ class App extends React.Component {
     ipcRenderer.on('backup-status', this.backupStateListener);
     ipcRenderer.on('restore-status', this.restoreStateListener);
     ipcRenderer.on('open-cluster', this.openClusterListener);
+    ipcRenderer.on('cluster-addon-installed', this.clusterAddonInstalledListener);
     ipcRenderer.invoke('get-terms')
       .then((terms) => {
         this.setState({
@@ -136,6 +138,7 @@ class App extends React.Component {
     ipcRenderer.removeListener('backup-status', this.backupStateListener);
     ipcRenderer.removeListener('restore-status', this.restoreStateListener);
     ipcRenderer.removeListener('open-cluster', this.openClusterListener);
+    ipcRenderer.removeListener('cluster-addon-installed', this.clusterAddonInstalledListener);
   }
 
   /*
@@ -301,9 +304,27 @@ class App extends React.Component {
 
   // <<< Cluster Start >>>
   openClusterListener(_event, cluster) {
-    console.log(cluster);
     this.setState({
       selectedCluster: cluster,
+    });
+  }
+
+  clusterAddonInstalledListener(_event, installedAddon) {
+    const {
+      selectedCluster,
+    } = this.state;
+    const currentlyInstalledAddons = selectedCluster.installedAddons.map((a) => {
+      if (a.addonId !== installedAddon.addonId) {
+        return a;
+      }
+      return installedAddon;
+    });
+    if (!currentlyInstalledAddons.includes(installedAddon)) {
+      currentlyInstalledAddons.splice(0, 0, installedAddon);
+    }
+    selectedCluster.installedAddons = currentlyInstalledAddons;
+    this.setState({
+      selectedCluster,
     });
   }
 
@@ -331,6 +352,7 @@ class App extends React.Component {
       selectedGame: gameId,
       settingsOpened: false,
       authOpened: null,
+      selectedCluster: null,
     });
   }
 
@@ -415,14 +437,6 @@ class App extends React.Component {
             />
           )
           : ''}
-        {selectedCluster
-          ? (
-            <ClusterDetailsWindow
-              cluster={selectedCluster}
-              handleGoBack={this.closeClusterWindow}
-            />
-          )
-          : ''}
         {(authOpened && !selectedCluster)
           ? (
             <AuthDialog
@@ -498,20 +512,29 @@ class App extends React.Component {
                   games={games}
                 />
               )}
-            <MainContent
-              darkMode={darkMode}
-              openSettings={this.openSettings}
-              closeSettings={this.closeSettings}
-              openBackupManagementDialog={this.openBackupManagementDialog}
-              openBackupRestore={this.openBackupRestore}
-              selected={selectedGame}
-              selectedAddonId={selectedAddonId}
-              settingsOpened={settingsOpened}
-              backupPending={backupPending}
-              restorePending={restorePending}
-              latestCloudBackup={latestCloudBackup}
-              lastRestoreComplete={lastRestoreComplete}
-            />
+            {selectedCluster
+              ? (
+                <ClusterDetailsWindow
+                  cluster={selectedCluster}
+                  handleGoBack={this.closeClusterWindow}
+                />
+              )
+              : (
+                <MainContent
+                  darkMode={darkMode}
+                  openSettings={this.openSettings}
+                  closeSettings={this.closeSettings}
+                  openBackupManagementDialog={this.openBackupManagementDialog}
+                  openBackupRestore={this.openBackupRestore}
+                  selected={selectedGame}
+                  selectedAddonId={selectedAddonId}
+                  settingsOpened={settingsOpened}
+                  backupPending={backupPending}
+                  restorePending={restorePending}
+                  latestCloudBackup={latestCloudBackup}
+                  lastRestoreComplete={lastRestoreComplete}
+                />
+              )}
           </div>
           <Footer />
         </Row>
