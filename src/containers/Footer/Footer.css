@@ -4,7 +4,7 @@
   left:0;
   height: 30px;
   width: 100%;
-  z-index: 10;
+  z-index: 99;
   background-color: var(--header-background-color);
   box-shadow: 0px 0px 5px 0px var(--header-box-shadow-color);
 }

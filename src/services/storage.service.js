@@ -136,6 +136,10 @@ function getInstalledGames() {
   return installed;
 }
 
+function getInstalledAddons(gameId, gameVersion) {
+  return gameSettings[gameId.toString()][gameVersion].installedAddons;
+}
+
 function getInstallDepsSetting(gameId, gameVersion) {
   return gameSettings[gameId.toString()][gameVersion].defaults.installDeps;
 }
@@ -170,6 +174,11 @@ function getAddonDir(gameId, gameVersion) {
 function getAddonVersion(gameId, gameVersion) {
   const { gameVersions } = getGameData(gameId.toString());
   return gameVersions[gameVersion].addonVersion;
+}
+
+function getBannerPath(gameId) {
+  const gameD = getGameData(gameId.toString());
+  return gameD.bannerPath;
 }
 
 function setLocalAddonSyncProfile(profile) {
@@ -570,6 +579,7 @@ function setBackupData(key, val) {
 export {
   initStorage,
   getInstalledGames,
+  getInstalledAddons,
   getGameSettings,
   getAddonDir,
   getAddonVersion,
@@ -577,6 +587,7 @@ export {
   getGameData,
   getBackupData,
   getCategories,
+  getBannerPath,
   setGameSettings,
   setAppData,
   setGameData,

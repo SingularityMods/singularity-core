@@ -12,6 +12,7 @@
     --main-background-color: #d2d2d229;
     --header-background-color: white;
     --table-background-color: white;
+    --cluster-background-color: white;
     --table-highlight-color: #271550;
     --table-border-color: #CED0CE;
     --dialog-background-color: white;
@@ -37,6 +38,7 @@
     --main-background-color: #000000db;
     --header-background-color: #17083a;
     --table-background-color: #2a2a2a;
+    --cluster-background-color: #1c0f3a;
     --table-highlight-color: #271550;
     --table-border-color: #ED8323;
     --dialog-background-color: #2a2a2a;

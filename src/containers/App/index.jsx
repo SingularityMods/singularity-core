@@ -29,6 +29,7 @@ import SmallSidebar from '../SideBars/SmallSidebar';
 import MinimizedSidebar from '../SideBars/MinimizedSidebar';
 import MainContent from '../MainContent';
 import ProfileMenu from '../Menus/ProfileMenu';
+import ClusterDetailsWindow from '../ClusterDetailsWindow';
 
 const { ipcRenderer } = require('electron');
 
@@ -56,6 +57,7 @@ class App extends React.Component {
       lastRestoreComplete: new Date(),
       games: null,
       selectedAddonId: '',
+      selectedCluster: null,
     };
 
     this.granularBackupCompleteListener = this.granularBackupCompleteListener.bind(this);
@@ -82,6 +84,8 @@ class App extends React.Component {
     this.openProfileMenu = this.openProfileMenu.bind(this);
     this.closeProfileMenu = this.closeProfileMenu.bind(this);
     this.toggleBigSidebar = this.toggleBigSidebar.bind(this);
+    this.openClusterListener = this.openClusterListener.bind(this);
+    this.closeClusterWindow = this.closeClusterWindow.bind(this);
   }
 
   componentDidMount() {
@@ -91,6 +95,7 @@ class App extends React.Component {
     ipcRenderer.on('telemetry-toggle', this.telemetryToggleListener);
     ipcRenderer.on('backup-status', this.backupStateListener);
     ipcRenderer.on('restore-status', this.restoreStateListener);
+    ipcRenderer.on('open-cluster', this.openClusterListener);
     ipcRenderer.invoke('get-terms')
       .then((terms) => {
         this.setState({
@@ -130,6 +135,7 @@ class App extends React.Component {
     ipcRenderer.removeListener('telemetry-toggle', this.telemetryToggleListener);
     ipcRenderer.removeListener('backup-status', this.backupStateListener);
     ipcRenderer.removeListener('restore-status', this.restoreStateListener);
+    ipcRenderer.removeListener('open-cluster', this.openClusterListener);
   }
 
   /*
@@ -163,6 +169,7 @@ class App extends React.Component {
     this.setState({
       settingsOpened: true,
       profileMenuOpened: false,
+      selectedCluster: null,
     });
   }
 
@@ -194,6 +201,7 @@ class App extends React.Component {
       settingsOpened: false,
       authOpened: authTab,
       profileMenuOpened: false,
+      selectedCluster: null,
     });
   }
 
@@ -291,6 +299,22 @@ class App extends React.Component {
   }
   // << Backup Restore Dialog End >>>
 
+  // <<< Cluster Start >>>
+  openClusterListener(_event, cluster) {
+    console.log(cluster);
+    this.setState({
+      selectedCluster: cluster,
+    });
+  }
+
+  closeClusterWindow() {
+    this.setState({
+      selectedCluster: null,
+    });
+  }
+
+  // << Cluster End >>>
+
   /*
      * Additional Controls
      */
@@ -315,6 +339,7 @@ class App extends React.Component {
       selectedGame: null,
       settingsOpened: false,
       authOpened: null,
+      selectedCluster: null,
     });
   }
 
@@ -364,6 +389,7 @@ class App extends React.Component {
       telemetryPrompted,
       termsAccepted,
       selectedAddonId,
+      selectedCluster,
     } = this.state;
     return (
       <Container className="Main-Container Override">
@@ -389,7 +415,15 @@ class App extends React.Component {
             />
           )
           : ''}
-        {authOpened
+        {selectedCluster
+          ? (
+            <ClusterDetailsWindow
+              cluster={selectedCluster}
+              handleGoBack={this.closeClusterWindow}
+            />
+          )
+          : ''}
+        {(authOpened && !selectedCluster)
           ? (
             <AuthDialog
               key={authOpened}
@@ -400,7 +434,7 @@ class App extends React.Component {
             />
           )
           : ''}
-        {selectedBackup
+        {(selectedBackup && !selectedCluster)
           ? (
             <BackupRestoreDialog
               backup={selectedBackup}
@@ -413,7 +447,7 @@ class App extends React.Component {
             />
           )
           : ''}
-        {backupManagementOpts && !selectedBackup
+        {(backupManagementOpts && !selectedBackup && !selectedCluster)
           ? (
             <BackupManagementDialog
               darkMode={darkMode}
@@ -429,7 +463,7 @@ class App extends React.Component {
           : ''}
 
         <Header onClick={this.deselectAll} onOpenProfileMenu={this.openProfileMenu} />
-        {profileMenuOpened
+        {(profileMenuOpened)
           ? (
             <ProfileMenu
               darkMode={darkMode}

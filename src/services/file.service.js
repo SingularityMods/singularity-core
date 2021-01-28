@@ -43,6 +43,8 @@ import {
   getInstallDepsSetting,
   getUninstallDepsSetting,
   isGameVersionInstalled,
+  getBannerPath,
+  getInstalledAddons,
 } from './storage.service';
 
 let syncing = false;
@@ -526,6 +528,7 @@ async function getSyncProfilesFromCloud(enabled = []) {
 }
 
 function handleProtocolUrl(url) {
+  console.log('handle');
   const urlParts = url.split('?');
   if (!urlParts || urlParts.length < 2) {
     log.error('Invalid protocol URL');
@@ -547,19 +550,48 @@ function handleProtocolUrl(url) {
     log.error('Missing addonId in protocol URL');
   }
   if (clusterId) {
+    const win = getMainBrowserWindow();
+    if (win) {
+      win.webContents.send('app-status-message', `Retrieving info for cluster ${clusterId}`, 'status');
+    }
     return getCluster(clusterId)
       .then((cluster) => {
-        const win = getMainBrowserWindow();
+        cluster.bannerPath = getBannerPath(cluster.gameId);
+        cluster.installedAddons = getInstalledAddons(cluster.gameId, cluster.gameVersion);
+        cluster.addons.forEach((addon, index) => {
+          if (addon.authors && addon.authors.length > 0) {
+            cluster.addons[index].author = addon.authors[0].name;
+          } else if (addon.curseAuthors) {
+            cluster.addons[index].author = addon.curseAuthors[0].name;
+          } else if (cluster.tukuiAuthor) {
+            cluster.addons[index].author = addon.tukuiAuthor;
+          } else if (cluster.mmouiAuthor) {
+            cluster.addons[index].author = addon.mmouiAuthor;
+          }
+
+          if (addon.curseAttachments && addon.curseAttachments.length > 0) {
+            cluster.addons[index].avatar = addon.curseAttachments[0].url;
+          } else if (addon.mmouiScreenshots && addon.mmouiScreenshots.length > 0) {
+            const [screenshot] = addon.mmouiScreenshots;
+            cluster.addons[index].avatar = screenshot;
+          } else if (addon.tukuiScreenshotUrl) {
+            cluster.addons[index].avatar = addon.tukuiScreenshotUrl;
+          } else {
+            cluster.addons[index].avatar = '';
+          }
+        });
         if (win) {
+          win.webContents.send('app-status-message', '', 'success');
           win.webContents.send('open-cluster', cluster);
         }
       })
       .catch((error) => {
         log.error('Error handling protocol URL');
         log.error(error.message);
-        const win = getMainBrowserWindow();
+        console.log(error);
         if (win) {
-          win.webContents.send('app-status-message', 'Error opening addon cluster', 'error');
+          console.log('inwin');
+          win.webContents.send('app-status-message', 'Error retrieving cluster', 'error');
         }
       });
   }

@@ -103,12 +103,13 @@
     }
 
     .backup-dialog-button.btn.btn-primary {
-        background-color: var(--singularity-orange);
+        background-color: var(--primary-color);
+        border: 1px solid var(--secondary-color);
     }
     
     .backup-dialog-button.btn.btn-primary:focus {
-        background-color: var(--singularity-orange);
-        border-color: var(--singularity-orange);
+        background-color: var(--primary-color);
+        border-color: var(--secondary-color);
         -webkit-box-shadow: none;
         box-shadow: none;
         outline:none;

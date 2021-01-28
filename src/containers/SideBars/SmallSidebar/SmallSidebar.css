@@ -7,9 +7,9 @@
     padding: 5px;
 }
 
-    .SmallSidebar .sidebar-title {
-        color: var(--sidebar-text-color);
-        font-size: 0.77rem;
-        text-align: center;
-        border-bottom: 2px solid var(--sidebar-text-color);
-    }
+.SmallSidebar .sidebar-title {
+    color: var(--sidebar-text-color);
+    font-size: 0.77rem;
+    text-align: center;
+    border-bottom: 2px solid var(--sidebar-text-color);
+}

@@ -107,8 +107,6 @@
 
 .addon-table table.table-bordered thead tr th {
     border-top: 1px solid var(--table-border-color);
-
-
 }
 
 .addon-table thead tr:first-child th:first-child {
@@ -196,40 +194,41 @@ outline: none;
 }
 
 
-    .backup-button.UpdateAddonButton.disabled,
-    .backup-button.UpdateAddonButton.disabled:hover {
-        cursor: not-allowed;
-        color: #E6E8E6;
-        background-color: #ED8323aa;
-        border: none;
-    }
+.backup-button.UpdateAddonButton.disabled,
+.backup-button.UpdateAddonButton.disabled:hover {
+    cursor: not-allowed;
+    color: #E6E8E6;
+    background-color: #ED8323aa;
+    border: none;
+}
 
-    .backup-button.btn.btn-primary {
-        background-color: var(--singularity-orange);
-    }
-    
-    .backup-button.btn.btn-primary:focus {
-        background-color: var(--singularity-orange);
-        border-color: var(--singularity-orange);
-        -webkit-box-shadow: none;
-        box-shadow: none;
-        outline:none;
-    }
-    
-    .backup-button.btn.btn-primary:active {
-        background-color: var(--secondary-color);
-        border-color: var(--secondary-color);
-        -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
-        box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
-        outline:none;
-    }
-    
-    .backup-button.btn.btn-primary:not(:disabled):not(.disabled):active {
-        background-color: var(--secondary-color);
-        border-color: var(--secondary-color);
-        -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
-        box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
-    }
+.backup-button.btn.btn-primary {
+    background-color: var(--primary-color);
+    border: 1px solid var(--secondary-color);
+}
+
+.backup-button.btn.btn-primary:focus {
+    background-color: var(--primary-color);
+    border-color: var(--secondary-color);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    outline:none;
+}
+
+.backup-button.btn.btn-primary:active {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
+    box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
+    outline:none;
+}
+
+.backup-button.btn.btn-primary:not(:disabled):not(.disabled):active {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
+    box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
+}
 
 .no-backups {
     margin-left: 5px;
