@@ -337,6 +337,11 @@ function showMainWindow() {
       log.error('Unable to destroy splash window, should still exist');
     }
     mainWindow.show();
+    //const protocolUrl = checkForProtocolUrl(process.argv);
+    const protocolUrl = 'singularity://install?clusterId=256ZX94obD';
+    if (protocolUrl) {
+      handleProtocolUrl(protocolUrl);
+    }
   } else {
     log.info('Waiting for main window to be ready');
     setTimeout(showMainWindow, 1000);

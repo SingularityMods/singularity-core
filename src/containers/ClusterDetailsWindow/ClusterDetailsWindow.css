@@ -8,6 +8,12 @@
   overflow:hidden;
 }
 
+#ClusterDetailsWindow #cluster-details-scrollbar {
+  height: calc(100vh - 210px);
+  overflow-y:auto;
+  padding-bottom: 20px;
+}
+
 #ClusterDetailsWindow .cluster-avatar {
   float: left;
   margin-left: 30px;
