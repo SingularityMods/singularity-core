@@ -8,6 +8,17 @@
   overflow:hidden;
 }
 
+#ClusterDetailsWindow .cluster-avatar {
+  float: left;
+  margin-left: 30px;
+  margin-top:10px;
+}
+
+#ClusterDetailsWindow .cluster-avatar img {
+  height: 100px;
+  width: 100px;
+}
+
 #ClusterDetailsWindow .addon-details-window {
   height: calc(100vh - 185px);
   padding-left:10px;

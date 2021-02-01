@@ -108,6 +108,16 @@ class ClusterDetailsWindow extends React.Component {
       return '';
     }
 
+    function getDefaultAvatar() {
+      if (gameId === 1) {
+        return 'https://storage.singularitycdn.com/GameAssets/1/Icons/wow-icon.png';
+      }
+      if (gameId === 2) {
+        return 'https://storage.singularitycdn.com/GameAssets/2/Icons/eso-icon.png';
+      }
+      return '';
+    }
+
     return (
       <div id="ClusterDetailsWindow" className={process.platform === 'darwin' ? 'mac' : ''}>
         <Row>
@@ -134,6 +144,11 @@ class ClusterDetailsWindow extends React.Component {
                       <UpdateAddonButton className="install-button" handleClick={this.installCluster} type="Install Cluster" />
                     </Col>
                   </Row>
+                  <div className="cluster-avatar">
+                    {cluster.avatar && cluster.avatar !== ''
+                      ? <img src={cluster.avatar} alt="Cluster avatar" />
+                      : <img src={getDefaultAvatar()} alt="Cluster avatar" />}
+                  </div>
                   <Row className="cluster-info-row">
                     <Col xs="12" className="cluster-info">
                       <Row>
