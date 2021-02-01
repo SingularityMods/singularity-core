@@ -23,6 +23,7 @@
 #ClusterDetailsWindow .cluster-avatar img {
   height: 100px;
   width: 100px;
+  border: 1px solid var(--singularity-orange);
 }
 
 #ClusterDetailsWindow .addon-details-window {
