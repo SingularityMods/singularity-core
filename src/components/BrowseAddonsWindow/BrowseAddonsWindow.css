@@ -5,16 +5,12 @@
 
 .browse-addon-window-content .addon-table-scrollbar {
     height: calc(100vh - 315px);
-    overflow: auto;
+    width: 100%;
+    overflow-y: auto;
 }
 
 .browse-addon-window-content .addon-table-scrollbar.mac {
     height: calc(100vh - 290px);
-}
-
-.category-window {
-    height: calc(100vh - 280px);
-    overflow: auto;
 }
 
 .loading {

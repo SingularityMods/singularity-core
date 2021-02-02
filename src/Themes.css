@@ -6,7 +6,7 @@
     --secondary: #b71c1c;
     --secondary-light: #f05545;
     --secondary-dark: #7f0000;
-    --background: #fdfdfd;
+    --background: #f7f7f7;
     --container: #ffffff;
     --container-light: #ffffff;
     --surface: #F5F5F6;
@@ -37,26 +37,4 @@
     --on-surface: #ffffff;
     --success-green: #00cc00;
     --error-red: #d10606;
-
-
-    --text-color: white;
-    --alternative-text-color: black;
-    --singularity-orange: #ED8323;
-    --primary-color: #271550;
-    --primary-box-shadow-color: #3e227f;
-    --secondary-color: #ED8323;
-    --secondary-box-shadow-color: #ED8323;
-    --header-box-shadow-color: #4c00ffb8;
-    --background-color: #180d31;
-    --main-background-color: #000000db;
-    --header-background-color: #17083a;
-    --table-background-color: #2a2a2a;
-    --cluster-background-color: #1c0f3a;
-    --table-highlight-color: #271550;
-    --table-border-color: #ED8323;
-    --dialog-background-color: #2a2a2a;
-    --sidebar-text-color: #ED8323;
-    --settings-item-background-color: #271550;
-    --context-menu-divider: #535353;
-    --alert-dialog-border: #b30000;
 }

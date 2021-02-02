@@ -1,3 +1,4 @@
+
 #AddonTable .table-bordered,
 #AddonTable .table-bordered table,
 #AddonTable .table-bordered thead,
@@ -5,6 +6,7 @@
 #AddonTable .table-bordered th,
 #AddonTable .table-bordered td {
     border: none;
+    padding: 0.5rem;
 }
 
 #AddonTable .table-bordered {
@@ -16,7 +18,7 @@
 }
 
 #AddonTable td {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
 }
 
 #AddonTable .table-bordered tr.addon-table-header {

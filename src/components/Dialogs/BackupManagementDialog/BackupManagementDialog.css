@@ -92,15 +92,6 @@
     border:none;
 }
 
-    .backup-dialog-button.UpdateAddonButton.disabled,
-    .backup-dialog-button.UpdateAddonButton.disabled:hover {
-        cursor: not-allowed;
-        color: var(--on-primary);
-        background-color: var(--primary);
-        opacity: 0.5;
-        border: none;
-    }
-
     .backup-dialog-button.btn.btn-primary {
         background-color: var(--primary);
         border: 1px solid var(--primary);
@@ -113,20 +104,35 @@
         box-shadow: none;
         outline:none;
     }
+
+    .backup-dialog-button.btn.btn-primary:hover {
+        background-color: var(--secondary);
+        border: 1px solid var(--secondary);
+    }
     
     .backup-dialog-button.btn.btn-primary:active {
-        background-color: var(--primary-dark);
-        border-color: var(--primary-dark);
-        -webkit-box-shadow: 0px 0px 4px 1px var(--primary-dark);
-        box-shadow: 0px 0px 4px 1px var(--primary-dark);
+        background-color: var(--secondary-light);
+        border-color: var(--secondary-light);
+        -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-light);
+        box-shadow: 0px 0px 4px 1px var(--secondary-light);
         outline:none;
     }
     
     .backup-dialog-button.btn.btn-primary:not(:disabled):not(.disabled):active {
-        background-color: var(--primary-dark);
-        border-color: var(--primary-dark);
-        -webkit-box-shadow: 0px 0px 4px 1px var(--primary-dark);
-        box-shadow: 0px 0px 4px 1px var(--primary-dark);
+        background-color: var(--secondary-light);
+        border-color: var(--secondary-light);
+        -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-light);
+        box-shadow: 0px 0px 4px 1px var(--secondary-light);
+    }
+
+
+    .backup-dialog-button.UpdateAddonButton.disabled,
+    .backup-dialog-button.UpdateAddonButton.disabled:disabled:hover,
+    .backup-dialog-button.btn.btn-primary:disabled:hover {
+        cursor: not-allowed;
+        color: var(--on-primary);
+        background-color: var(--primary);
+        opacity: 0.5;
     }
 
 
