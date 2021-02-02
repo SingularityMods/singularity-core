@@ -395,10 +395,10 @@ class SettingsWindow extends React.Component {
                               onChange={this.toggleDarkMode}
                               checked={appSettings.darkMode}
                               className="settings-switch"
-                              onColor="#ED8323"
+                              onColor="#00cc00"
                               height={20}
                               width={40}
-                              activeBoxShadow="0 0 2px 3px #ED8323"
+                              activeBoxShadow="0 0 2px 3px #00cc00"
                             />
                           )
                           : ''}
@@ -463,10 +463,10 @@ class SettingsWindow extends React.Component {
                                   onChange={this.toggleCloseToTray}
                                   checked={appSettings.closeToTray}
                                   className="settings-switch"
-                                  onColor="#ED8323"
+                                  onColor="#00cc00"
                                   height={20}
                                   width={40}
-                                  activeBoxShadow="0 0 2px 3px #ED8323"
+                                  activeBoxShadow="0 0 2px 3px #00cc00"
                                 />
                               )
                               : ''}
@@ -485,10 +485,10 @@ class SettingsWindow extends React.Component {
                               onChange={this.toggleBeta}
                               checked={appSettings.beta}
                               className="settings-switch"
-                              onColor="#ED8323"
+                              onColor="#00cc00"
                               height={20}
                               width={40}
-                              activeBoxShadow="0 0 2px 3px #ED8323"
+                              activeBoxShadow="0 0 2px 3px #00cc00"
                             />
                           )
                           : ''}
@@ -506,10 +506,10 @@ class SettingsWindow extends React.Component {
                                 onChange={this.toggleTelemetry}
                                 checked={appSettings.telemetry}
                                 className="settings-switch"
-                                onColor="#ED8323"
+                                onColor="#00cc00"
                                 height={20}
                                 width={40}
-                                activeBoxShadow="0 0 2px 3px #ED8323"
+                                activeBoxShadow="0 0 2px 3px #00cc00"
                               />
                             </div>
                           )
@@ -619,10 +619,10 @@ class SettingsWindow extends React.Component {
                               checked={gameDefaults.eso.autoUpdate}
                               gameversion="eso"
                               id="eso_auto_update"
-                              onColor="#ED8323"
+                              onColor="#00cc00"
                               height={20}
                               width={40}
-                              activeBoxShadow="0 0 2px 3px #ED8323"
+                              activeBoxShadow="0 0 2px 3px #00cc00"
                             />
                           )
                           : ''}
@@ -640,10 +640,10 @@ class SettingsWindow extends React.Component {
                               checked={gameDefaults.eso.installDeps}
                               gameversion="eso"
                               id="eso_install_deps"
-                              onColor="#ED8323"
+                              onColor="#00cc00"
                               height={20}
                               width={40}
-                              activeBoxShadow="0 0 2px 3px #ED8323"
+                              activeBoxShadow="0 0 2px 3px #00cc00"
                             />
                           )
                           : ''}
@@ -661,10 +661,10 @@ class SettingsWindow extends React.Component {
                               checked={gameDefaults.eso.uninstallDeps}
                               gameversion="eso"
                               id="eso_uninstall_deps"
-                              onColor="#ED8323"
+                              onColor="#00cc00"
                               height={20}
                               width={40}
-                              activeBoxShadow="0 0 2px 3px #ED8323"
+                              activeBoxShadow="0 0 2px 3px #00cc00"
                             />
                           )
                           : ''}
@@ -790,10 +790,10 @@ class SettingsWindow extends React.Component {
                               checked={gameDefaults.wow_retail.autoUpdate}
                               gameversion="wow_retail"
                               id="wow_retail_auto_update"
-                              onColor="#ED8323"
+                              onColor="#00cc00"
                               height={20}
                               width={40}
-                              activeBoxShadow="0 0 2px 3px #ED8323"
+                              activeBoxShadow="0 0 2px 3px #00cc00"
                             />
                           )
                           : ''}
@@ -866,10 +866,10 @@ class SettingsWindow extends React.Component {
                               checked={gameDefaults.wow_classic.autoUpdate}
                               gameversion="wow_classic"
                               id="wow_classic_auto_update"
-                              onColor="#ED8323"
+                              onColor="#00cc00"
                               height={20}
                               width={40}
-                              activeBoxShadow="0 0 2px 3px #ED8323"
+                              activeBoxShadow="0 0 2px 3px #00cc00"
                             />
                           )
                           : ''}
@@ -942,10 +942,10 @@ class SettingsWindow extends React.Component {
                               checked={gameDefaults.wow_retail_ptr.autoUpdate}
                               gameversion="wow_retail_ptr"
                               id="wow_retail_ptr_auto_update"
-                              onColor="#ED8323"
+                              onColor="#00cc00"
                               height={20}
                               width={40}
-                              activeBoxShadow="0 0 2px 3px #ED8323"
+                              activeBoxShadow="0 0 2px 3px #00cc00"
                             />
                           )
                           : ''}
@@ -1019,10 +1019,10 @@ class SettingsWindow extends React.Component {
                               checked={gameDefaults.wow_classic_ptr.autoUpdate}
                               gameversion="wow_classic_ptr"
                               id="wow_classic_ptr_auto_update"
-                              onColor="#ED8323"
+                              onColor="#00cc00"
                               height={20}
                               width={40}
-                              activeBoxShadow="0 0 2px 3px #ED8323"
+                              activeBoxShadow="0 0 2px 3px #00cc00"
                             />
                           )
                           : ''}
@@ -1095,10 +1095,10 @@ class SettingsWindow extends React.Component {
                               checked={gameDefaults.wow_retail_beta.autoUpdate}
                               gameversion="wow_retail_beta"
                               id="wow_retail_beta_auto_update"
-                              onColor="#ED8323"
+                              onColor="#00cc00"
                               height={20}
                               width={40}
-                              activeBoxShadow="0 0 2px 3px #ED8323"
+                              activeBoxShadow="0 0 2px 3px #00cc00"
                             />
                           )
                           : ''}

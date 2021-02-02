@@ -108,7 +108,7 @@ class ClusterDetailsWindow extends React.Component {
       return '';
     }
 
-    function getDefaultAvatar() {
+    function getDefaultAvatar(gameId) {
       if (gameId === 1) {
         return 'https://storage.singularitycdn.com/GameAssets/1/Icons/wow-icon.png';
       }
@@ -147,7 +147,7 @@ class ClusterDetailsWindow extends React.Component {
                   <div className="cluster-avatar">
                     {cluster.avatar && cluster.avatar !== ''
                       ? <img src={cluster.avatar} alt="Cluster avatar" />
-                      : <img src={getDefaultAvatar()} alt="Cluster avatar" />}
+                      : <img src={getDefaultAvatar(cluster.gameId)} alt="Cluster avatar" />}
                   </div>
                   <Row className="cluster-info-row">
                     <Col xs="12" className="cluster-info">

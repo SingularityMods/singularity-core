@@ -48,7 +48,7 @@ export default class HomePage extends React.Component {
       <div id="HomePage">
         <Row>
           <Col className="homepage-title">
-            <img alt="Singularity logo" src={darkMode ? '../img/logo_white.png' : '../img/logo.png'} className="app-logo-banner" />
+            <img alt="Singularity logo" src={darkMode ? '../img/logo_v2_white.png' : '../img/logo_v2.png'} className="app-logo-banner" />
           </Col>
         </Row>
 
@@ -466,11 +466,6 @@ export default class HomePage extends React.Component {
             </SimpleBar>
           </Col>
 
-        </Row>
-        <Row>
-          <Col xs={12} className="homepage-footer">
-            <div className="footer-link"><a target="_blank" rel="noreferrer" href="https://github.com/SingularityMods/singularity-core/issues">Support</a></div>
-          </Col>
         </Row>
       </div>
     );

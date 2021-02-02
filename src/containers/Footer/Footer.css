@@ -5,15 +5,19 @@
   height: 30px;
   width: 100%;
   z-index: 99;
-  background-color: var(--header-background-color);
-  box-shadow: 0px 0px 5px 0px var(--header-box-shadow-color);
+  background-color: var(--container);
+  box-shadow: 0px 0px 5px 0px var(--primary);
 }
 
 #footer-message {
   text-align: center;
   font-size: 0.9rem;
   margin-top: 4px;
-  color: var(--text-color);
+  color: var(--on-background);
+}
+
+#footer-message .update-available-message {
+  color: var(--on-background);
 }
 
 #footer-message.error {
@@ -39,8 +43,4 @@
 #footer-message.transition-exit {
   opacity: 0;
   transition: opacity 1000ms;
-}
-
-#footer-message .update-available-message {
-  color: var(--singularity-orange);
 }

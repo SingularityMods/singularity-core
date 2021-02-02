@@ -1,5 +1,20 @@
 [data-theme^="light"],
 [data-theme] [data-theme^="light"] {
+    --primary: #455a64;
+    --primary-light: #718792;
+    --primary-dark: #1c313a;
+    --secondary: #d50000;
+    --secondary-light: #ff5131;
+    --secondary-dark: #9b0000;
+    --background: #eeeeee;
+    --container: #F5F5F6;
+    --container-light: #ffffff;
+    --surface: #F5F5F6;
+    --on-primary: #ffffff;
+    --on-secondary: #ffffff;
+    --on-background: #000000;
+    --on-surface: #000000;
+
     --text-color: black;
     --alternative-text-color: white;
     --singularity-orange: #ED8323;
@@ -26,6 +41,22 @@
 
 [data-theme^="dark"],
 [data-theme] [data-theme^="dark"] {
+    --primary: #191919;
+    --primary-light: #3f3f3f;
+    --primary-dark: #0f0f0f;
+    --secondary: #d32f2f;
+    --secondary-light: #ff6659;
+    --secondary-dark: #9a0007;
+    --background: #121212;
+    --container: #1d1d1d;
+    --container-light: #3a3a3a;
+    --surface: #F5F5F6;
+    --on-primary: #ffffff;
+    --on-secondary: #ffffff;
+    --on-background: #ffffff;
+    --on-surface: #ffffff;
+
+
     --text-color: white;
     --alternative-text-color: black;
     --singularity-orange: #ED8323;

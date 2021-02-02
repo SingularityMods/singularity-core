@@ -50,7 +50,7 @@ class Header extends React.Component {
               <img
                 alt="App logo"
                 key={darkMode}
-                src={darkMode ? '../img/app_icon_white.png' : '../img/app_icon.png'}
+                src={darkMode ? '../img/app_icon_v2_white.png' : '../img/app_icon_v2.png'}
                 className="app-icon"
               />
             </div>

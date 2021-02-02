@@ -1,9 +1,10 @@
 .ProfileMenu {
-    color: var(--text-color);
+    color: var(--on-background);
     border: none;
     border-radius: 5px;
-    background-color: var(--dialog-background-color);
-    box-shadow: 0px 0px 2px 1px var(--table-border-color);
+    background-color: var(--container);
+    border: 1px solid var(--primary);
+    box-shadow: 0px 0px 2px 1px var(--primary);
     z-index: 99;
     position: absolute;
     width: 200px;
@@ -20,7 +21,7 @@
 }
 
 .profile-menu-header{
-    border-bottom: 1px solid var(--context-menu-divider);
+    border-bottom: 1px solid var(--primary-light);
     height: 50px;
     min-width: 200px;
     overflow-x:hidden;
@@ -53,7 +54,7 @@
     padding-top: 3px;
     padding-left: 10px;
     padding-right: 5px;
-    border-bottom: 1px solid var(--context-menu-divider);
+    border-bottom: 1px solid var(--primary-light);
     min-width: 200px;
 }
 
@@ -65,14 +66,16 @@
   z-index:100;
   display: block;
   position: relative;
-  color: var(--text-color);
+  color: var(--on-background);
   text-decoration: none;
   height: 100%;
 }
 
-.profile-menu-item:hover {
+.profile-menu-item:hover,
+.profile-menu-item:hover a {
     border-radius: 5px;
-    background-color: var(--primary-color);
+    color: var(--on-primary);
+    background-color: var(--primary-dark);
 }
 
 .profile-menu-item-icon {

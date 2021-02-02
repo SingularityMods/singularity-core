@@ -1,5 +1,5 @@
 .GameWindow {
-    background-color: var(--background-color);
+    background-color: var(--background);
 }
 
 .game-banner.col
@@ -19,7 +19,7 @@
 }
 
 .addon-table-scrollbar .simplebar-scrollbar {
-    background-color: #8f8f8f;
+    background-color: var(--primary);
     width: 8px;
     border-radius: 5px;
 }

@@ -1043,7 +1043,7 @@ function installCluster(clusterId) {
             clusterAddonsToInstall.push(installObj);
           }
         });
-        if (clusterAddonsToInstall.length === 0 ) {
+        if (clusterAddonsToInstall.length === 0) {
           const win = getMainBrowserWindow();
           if (win) {
             win.webContents.send('app-status-message', 'No new addons in cluster', 'success');

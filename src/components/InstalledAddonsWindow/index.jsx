@@ -8,9 +8,9 @@ import PropTypes from 'prop-types';
 import {
   Row, Col, Button, Form,
 } from 'react-bootstrap';
-import BootstrapTable from 'react-bootstrap-table-next';
 import ReactTooltip from 'react-tooltip';
 
+import AddonTable from '../AddonTable';
 import UpdateAddonButton from '../Buttons/UpdateAddonButton';
 import GameMenuButton from '../Buttons/GameMenuButton';
 import LoadingSpinner from '../LoadingSpinner';
@@ -937,7 +937,7 @@ class InstalledAddonsWindow extends React.Component {
     const updateAvailable = installedAddons.some((e) => addonUpdateAvailable(e) === true);
 
     return (
-      <div className="InstalledAddonsWindow">
+      <div id="InstalledAddonsWindow">
         <Row>
           <Col xs={12} className="installed-addon-window-content">
             <div>
@@ -1033,14 +1033,12 @@ class InstalledAddonsWindow extends React.Component {
                           installedAddons={installedAddons}
                         />
                         <Col xs={12}>
-                          <BootstrapTable
-                            keyField="addonId"
-                            data={filteredAddons}
+                          <AddonTable
+                            addons={filteredAddons}
                             columns={columns}
                             selectRow={selectRow}
-                            headerClasses="installed-addons-header"
-                            rowClasses="installed-addons-row"
-                            noDataIndication={
+                            keyField="addonId"
+                            noTableData={
                               installedAddons && installedAddons.length > 0
                                 ? noTableData
                                 : noAddonsInstalled

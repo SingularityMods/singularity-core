@@ -10,24 +10,22 @@
   z-index: 100;
 }
 
-
-
 .terms-dialog-content {
-  color: var(--text-color);
+  color: var(--on-background);
   position: relative;
   margin: 100px auto 0;
   height: 200px;
   width: 500px;
-  border: 1px solid #ED8323;
+  border: 1px solid var(--secondary);
   border-radius: 5px;
-  background-color: var(--dialog-background-color);
+  background-color: var(--container);
   padding: 0 5px;
-  box-shadow: 0px 0px 5px 0px var(--primary-color);
+  box-shadow: 0px 0px 5px 0px var(--secondary);
   -webkit-app-region: no-drag;
 }
 
 .terms-dialog-content a {
-  color: var(--singularity-orange);
+  color: var(--secondary);
 }
 
 .terms-dialog-control {
@@ -61,9 +59,9 @@
 .terms-button {
   margin-left:10px;
   margin-right: 10px;
-  color: var(--text-color);
-  background-color: var(--primary-color);
-  border: 1px solid var(--primary-color);
+  color: var(--on-primary);
+  background-color: var(--primary);
+  border: 1px solid var(--primary);
   border-radius: 3px;
   padding: 5px;
 }
@@ -78,34 +76,34 @@ outline: none;
 }
 
 .terms-dialog-scrollbar .simplebar-scrollbar {
-  background-color: #8f8f8f;
+  background-color: var(--primary);
   width: 8px;
   border-radius: 5px;
 }
 
 .terms-button.btn.btn-primary {
-  background-color: var(--singularity-orange);
+  background-color: var(--primary);
 }
 
 .terms-button.btn.btn-primary:focus {
-  background-color: var(--singularity-orange);
-  border-color: var(--singularity-orange);
+  background-color: var(--primary);
+  border-color: var(--primary);
   -webkit-box-shadow: none;
   box-shadow: none;
   outline:none;
 }
 
 .terms-button.btn.btn-primary:active {
-  background-color: var(--secondary-color);
-  border-color: var(--secondary-color);
-  -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
-  box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
+  -webkit-box-shadow: 0px 0px 4px 1px var(--primary-dark);
+  box-shadow: 0px 0px 4px 1px var(--primary-dark);
   outline:none;
 }
 
 .terms-button.btn.btn-primary:not(:disabled):not(.disabled):active {
-  background-color: var(--secondary-color);
-  border-color: var(--secondary-color);
-  -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
-  box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
+  -webkit-box-shadow: 0px 0px 4px 1px var(--primary-dark);
+  box-shadow: 0px 0px 4px 1px var(--primary-dark);
 }

@@ -7,8 +7,9 @@ import PropTypes from 'prop-types';
 import {
   Row, Col, Form, DropdownButton, Dropdown,
 } from 'react-bootstrap';
-import BootstrapTable from 'react-bootstrap-table-next';
+// import BootstrapTable from 'react-bootstrap-table-next';
 
+import AddonTable from '../AddonTable';
 import UpdateAddonButton from '../Buttons/UpdateAddonButton';
 import GameMenuButton from '../Buttons/GameMenuButton';
 
@@ -506,21 +507,10 @@ class BrowseAddonsWindow extends React.Component {
         } else {
           avatarUrl = '../img/app_icon.png';
         }
-
         return (
-          <div className="browse-addon-title-column">
+          <div className="installed-addon-title-column">
             <img className="addon-table-img" alt="Addon icon" src={avatarUrl} />
-            <div className="addon-name-section">
-              <div
-                className="addon-name"
-                role="button"
-                tabIndex="0"
-                onClick={() => this.handleSelectAddon(row.addonId)}
-                onKeyPress={() => this.handleSelectAddon(row.addonId)}
-              >
-                {cellContent}
-              </div>
-            </div>
+            <div className="addon-name-section"><span role="button" tabIndex="0" className="addon-name" onClick={() => this.handleSelectAddon(row.addonId)} onKeyPress={() => this.handleSelectAddon(row.addonId)}>{cellContent}</span></div>
           </div>
         );
       },
@@ -641,6 +631,7 @@ class BrowseAddonsWindow extends React.Component {
       dataField: 'author',
       text: 'Author',
     }];
+
     return (
       <div className="BrowseAddonsWindow">
         <Row>
@@ -696,14 +687,11 @@ class BrowseAddonsWindow extends React.Component {
               <Row className="addon-table">
                 <Col xs={12}>
                   {addonList ? (
-                    <BootstrapTable
-                      keyField="addonId"
-                      className="browse-addon-table"
-                      headerClasses="browse-addons-header"
-                      data={addonList}
+                    <AddonTable
+                      addons={addonList}
                       columns={browseAddonsColumns}
-                      noDataIndication={noTableData}
-                      sort={{ dataField: 'price', order: sortOrder === 1 ? 'asc' : 'desc', sortFunc: () => {} }}
+                      keyField="addonId"
+                      noTableData={noTableData}
                     />
                   ) : (
                     ''

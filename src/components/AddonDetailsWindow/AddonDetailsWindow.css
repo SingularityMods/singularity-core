@@ -10,7 +10,7 @@
 
 .addon-info {
   margin-left:-25px;
-    color: var(--text-color);
+    color: var(--on-background);
 }
 
 .addon-info-row .addon-icon {
@@ -33,21 +33,21 @@
 
 .addon-details-menu .GameMenuButton,
 .addon-details-menu .GameMenuButton {
-    color: var(--text-color)
+    color: var(--on-background)
 }
 
 .addon-details-menu .GameMenuButton.active-tab,
 .addon-details-menu .GameMenuButton:focus {
-    color: var(--singularity-orange);
+    color: var(--secondary);
     padding-bottom: 3px;
-    border-bottom: 3px solid var(--singularity-orange);
+    border-bottom: 3px solid var(--secondary);
     border-radius: unset
 }
 
 .addon-details-menu .GameMenuButton.active-tab:hover,
 .addon-details-menu .GameMenuButton:hover {
-    color: var(--singularity-orange);
-    background-color: #00000000;
+    color: var(--secondary);
+    background-color: var(--background);
 }
 
 .addon-details-window {
@@ -57,7 +57,7 @@
 }
 
 .addon-details-window .simplebar-scrollbar {
-    background-color: #8f8f8f;
+    background-color: var(--primary);
     width: 8px;
     border-radius: 5px
 }
@@ -65,7 +65,7 @@
 .addon-details-section {
     margin-top:10px;
     padding-right: 5px;
-    color: var(--text-color);
+    color: var(--on-background);
 }
 
 .addon-info-install-btn .uninstall-button {
@@ -75,16 +75,17 @@
 .addon-info-install-btn .UpdateAddonButton.disabled,
 .addon-info-install-btn .UpdateAddonButton.disabled:hover {
     cursor: not-allowed;
-    color: var(--text-color);
-    background-color: #00000000;
+    color: var(--on-background);
+    background-color: var(--background);
+    opacity: 0.5;
     border: none;
 }
 
 
 .addon-page-link {
     margin-right: 5px;
-    color: var(--text-color);
-    background-color: #e6e8e600;
+    color: var(--on-background);
+    background-color: var(--background);
     border: none;
 }
 
@@ -95,21 +96,21 @@
 .addon-page-link:hover,
 .addon-page-link:focus:hover,
 .addon-page-link:hover a {
-    color: var(--singularity-orange);
-    background-color: #00000000;
+    color: var(--secondary);
+    background-color: var(--background);
     text-decoration: none;
 }
 
 .addon-details-menu .addon-page-link.active-tab:hover,
 .addon-details-menu .addon-page-link:hover {
-    color: var(--singularity-orange);
-    background-color: #00000000;
+    color: var(--secondary);
+    background-color: var(--background);
 }
 
 .addon-page-link:focus,
 .addon-page-link:focus a,
 .addon-page-link a:focus {
-    background-color: #00000000;
+    background-color: var(--background);
     -webkit-box-shadow: none;
     box-shadow: none;
 }
@@ -117,31 +118,31 @@
 .addon-page-link.btn-primary:not(:disabled):not(.disabled):active,
 .addon-page-link.btn-primary:not(:disabled):not(.disabled):active a
  {
-    color: white;
-    background-color: var(--secondary-color);
+    color: var(--on-background);
+    background-color: var(--background);
     border: none;
-    -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
-    box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
+    -webkit-box-shadow: 0px 0px 4px 1px var(--background);
+    box-shadow: 0px 0px 4px 1px var(--background);
 }
 
 .addon-details-menu .addon-page-link,
 .addon-details-menu .addon-page-link {
-    color: var(--text-color)
+    color: var(--on-background)
 }
 
 .addon-details-menu .addon-page-link.active-tab,
 .addon-details-menu .addon-page-link:focus {
-    color: var(--singularity-orange);
+    color: var(--secondary);
     background-color: #00000000;
     padding-bottom: 3px;
-    border-bottom: 3px solid var(--singularity-orange);
+    border-bottom: 3px solid var(--secondary);
     border-radius: unset
 }
 
 .addon-details-menu .addon-page-link.active-tab:hover,
 .addon-details-menu .addon-page-link:hover {
-    color: var(--singularity-orange);
-    background-color: #00000000;
+    color: var(--secondary);
+    background-color: var(--background);
 }
 
 .addon-page-link-icon{

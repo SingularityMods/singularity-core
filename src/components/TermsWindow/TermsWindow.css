@@ -12,14 +12,14 @@
 .terms-window-content {
     position: absolute;
     z-index: 10;
-    background-color: white;
-    color: black;
+    background-color: var(--container);
+    color: var(--on-background);
     width: 80%;
     height: 90%;
     top: 25px;
     left: 10%;
-    border: 1px solid var(--primary-color);
-    box-shadow: 0px 0px 5px 0px var(--primary-color);
+    border: 1px solid var(--primary);
+    box-shadow: 0px 0px 5px 0px var(--primary);
 }
 
 .terms-window-header h1 {
@@ -50,9 +50,9 @@
 
 .terms-button {
     margin-left: 20px;
-    color: var(--text-color);
-    background-color: var(--primary-color);
-    border: 1px solid var(--primary-color);
+    color: var(--on-primary);
+    background-color: var(--primary);
+    border: 1px solid var(--primary);
     border-radius: 3px;
     padding: 5px;
 }
@@ -67,7 +67,7 @@
 }
 
 .terms-window-scrollbar .simplebar-scrollbar {
-    background-color: #8f8f8f;
+    background-color: var(--primary);
     width: 8px;
     border-radius: 5px;
 }

@@ -15,7 +15,7 @@
   float:left;
 }
 .addon-sync-toggle-label{
-    color: var(--text-color);
+    color: var(--on-background);
     float: left;
     margin-top:5px;
     margin-left: 0px;
@@ -35,7 +35,7 @@
 }
 
 .sync-status-icon{
-    color: var(--text-color);
+    color: var(--on-background);
     font-size: 0.8rem;
     float: left;
     margin-top: 7px;
@@ -43,7 +43,7 @@
 }
 
 .sync-status-icon .sync-error {
-    color: red;
+    color: var(--error-red);
 }
 
 .sync-status-icon .sync-success {
