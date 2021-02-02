@@ -12,12 +12,14 @@
 }
 
 .homepage-content {
+    color: var(--on-background);
     border-radius: 5px;
     padding-top:5px;
     background-color: var(--container);
     margin: 25px auto;
     max-width: 94%;
-    box-shadow: 0px 0px 2px 2px var(--primary);
+    border: 1px solid var(--primary-light);
+    box-shadow: 0px 0px 2px 2px var(--primary-light);
 }
 
 a.release-notes-link{
@@ -44,7 +46,7 @@ a.release-notes-link{
 .home-page-bar .simplebar-scrollbar,
 .home-page-content-bar .simplebar-scrollbar{
 
-    background-color: var(--container);
+    background-color: var(--primary-dark);
     width: 8px;
     border-radius: 5px
 }

@@ -4,12 +4,12 @@
 }
 
 .browse-addon-window-content .addon-table-scrollbar {
-    height: calc(100vh - 305px);
+    height: calc(100vh - 315px);
     overflow: auto;
 }
 
 .browse-addon-window-content .addon-table-scrollbar.mac {
-    height: calc(100vh - 280px);
+    height: calc(100vh - 290px);
 }
 
 .category-window {
@@ -64,11 +64,16 @@
     box-shadow: none;
 }
 
-#category-dropdown:active {
+#category-dropdown:hover {
     background-color: var(--secondary);
-    border-color: var(--secondary);
-    -webkit-box-shadow: 0px 0px 4px 1px var(--secondary);
-    box-shadow: 0px 0px 4px 1px var(--secondary);
+    border-color : var(--secondary);
+}
+
+#category-dropdown:active {
+    background-color: var(--secondary-dark);
+    border-color: var(--secondary-dark);
+    -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-dark);
+    box-shadow: 0px 0px 4px 1px var(--secondary-dark);
 }
 
 .load-more {
@@ -111,13 +116,16 @@
     color: var(--on-background);
     background-color: var(--primary);
 }
-.browse-addon-buttons .dropdown-menu .dropdown-item:hover,
-.browse-addon-buttons .dropdown-menu .dropdown-item:active {
+.browse-addon-buttons .dropdown-menu .dropdown-item:hover {
     color: var(--on-primary);
     background-color: var(--primary-dark);
 }
+.browse-addon-buttons .dropdown-menu .dropdown-item:active {
+    color: var(--on-secondary);
+    background-color: var(--secondary-dark);
+}
 
-.BrowseAddonsWindow .search-filter-clear{
+#BrowseAddonsWindow .search-filter-clear{
   color: var(--on-background);
   position: absolute;
   right: 22px;
@@ -126,21 +134,31 @@
   cursor: pointer;
 }
 
-.BrowseAddonsWindow .search-filter-clear:focus {
+#BrowseAddonsWindow .search-filter-clear:focus {
   outline: none;
 }
 
-.BrowseAddonsWindow .addon-search-field,
-.BrowseAddonsWindow .addon-search-field:active  {
+#BrowseAddonsWindow .addon-search-field,
+#BrowseAddonsWindow .addon-search-field:active  {
     background-color: var(--container);
     color: var(--on-background);
     border-color: var(--primary);
 }
 
-
-.BrowseAddonsWindow .addon-search-field:focus {
+#BrowseAddonsWindow .addon-search-field:focus {
     color: var(--on-background);
     background-color: var(--container);
-    border-color: var(--primary);
+    border-color: var(--primary-light);
     box-shadow: 0 0 0 1px var(--primary);
 }
+
+#BrowseAddonsWindow .addon-search-field:active {
+    border: 1px solid var(--primary-light);
+}
+
+
+#BrowseAddonsWindow .search-filter-clear:active {
+    outline: none;
+    border: 1px solid var(--primary-light);
+  }
+  

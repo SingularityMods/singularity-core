@@ -633,7 +633,7 @@ class BrowseAddonsWindow extends React.Component {
     }];
 
     return (
-      <div className="BrowseAddonsWindow">
+      <div id="BrowseAddonsWindow">
         <Row>
           <Col className="browse-addon-window-content">
             <Row className="addon-window-menu">

@@ -46,11 +46,11 @@
 }
 
 .SettingsWindow .dropdown-menu {
-    color: var(--on-primary);
+    color: var(--on-background);
     background-color: var(--container-light);
-    border-color: var(--primary-light);
-    -webkit-box-shadow: 0px 0px 1px 1px var(--primary-light);
-    box-shadow: 0px 0px 1px 1px var(--primary-light);
+    border-color: var(--primary);
+    -webkit-box-shadow: 0px 0px 1px 1px var(--primary);
+    box-shadow: 0px 0px 1px 1px var(--primary);
 }
 
 .SettingsWindow .dropdown-menu .dropdown-item {
@@ -58,13 +58,18 @@
 }
 
 .SettingsWindow .dropdown-menu .dropdown-item:focus {
-    color: var(--primary);
-    background-color: var(--container);
+    color: var(--on-background);
+    background-color: var(--container-light);
 }
 
 .SettingsWindow .dropdown-menu .dropdown-item:hover {
     color: var(--on-primary);
     background-color: var(--primary-dark);
+}
+
+.SettingsWindow .dropdown-menu .dropdown-item:active {
+    color: var(--on-secondary);
+    background-color: var(--secondary-dark);
 }
 
 .SettingsWindow .btn.btn-primary {

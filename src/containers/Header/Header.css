@@ -5,7 +5,7 @@
     width: 100%;
     position: relative;
     overflow: visible;
-    box-shadow: 0px 0px 5px 0px var(--primary-dark);
+    box-shadow: 0px 0px 5px 0px var(--primary-light);
 }
 
 .Header .col {
