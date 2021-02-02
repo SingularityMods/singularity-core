@@ -70,10 +70,10 @@
 }
 
 #category-dropdown:active {
-    background-color: var(--secondary-dark);
-    border-color: var(--secondary-dark);
-    -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-dark);
-    box-shadow: 0px 0px 4px 1px var(--secondary-dark);
+    background-color: var(--secondary-light);
+    border-color: var(--secondary-light);
+    -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-light);
+    box-shadow: 0px 0px 4px 1px var(--secondary-light);
 }
 
 .load-more {

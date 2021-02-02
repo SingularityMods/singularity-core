@@ -79,6 +79,7 @@ ipcMain.on('logout-auth', async (event) => {
     .then(() => {
       log.info('User logged out');
       event.sender.send('auth-event', 'logout', true, null);
+      event.sender.send('app-status-message', `Successfully logged out`, 'success');
     })
     .catch(() => {
       event.sender.send('auth-event', 'logout', false, 'Error logging out user');
