@@ -31,23 +31,37 @@
     margin-top:3px;
 }
 
-.addon-details-menu .GameMenuButton,
 .addon-details-menu .GameMenuButton {
-    color: var(--on-background)
+    color: var(--on-background);
+    padding-bottom: 3px;
 }
 
 .addon-details-menu .GameMenuButton.active-tab,
-.addon-details-menu .GameMenuButton:focus {
+.addon-details-menu .GameMenuButton.active-tab:focus,
+.addon-details-menu .GameMenuButton.active-tab:active,
+.addon-details-menu .GameMenuButton.active-tab:hover {
     color: var(--secondary);
-    padding-bottom: 3px;
     border-bottom: 3px solid var(--secondary);
-    border-radius: unset
+    border-radius: unset;
 }
 
-.addon-details-menu .GameMenuButton.active-tab:hover,
+.addon-details-menu .GameMenuButton:focus {
+    color: var(--on-background);
+    border: none;
+}
+
 .addon-details-menu .GameMenuButton:hover {
     color: var(--secondary);
     background-color: var(--background);
+    border:none;
+}
+
+.addon-details-menu .GameMenuButton.btn-primary:not(:disabled):not(.disabled):active {
+    color: var(--secondary-light);
+    background-color: var(--background);
+    border: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
 }
 
 .addon-details-window {
@@ -121,8 +135,8 @@
     color: var(--on-background);
     background-color: var(--background);
     border: none;
-    -webkit-box-shadow: 0px 0px 4px 1px var(--background);
-    box-shadow: 0px 0px 4px 1px var(--background);
+    -webkit-box-shadow: none;
+    box-shadow: none;
 }
 
 .addon-details-menu .addon-page-link,
@@ -142,6 +156,15 @@
 .addon-details-menu .addon-page-link.active-tab:hover,
 .addon-details-menu .addon-page-link:hover {
     color: var(--secondary);
+    background-color: var(--background);
+}
+
+.addon-details-menu .addon-page-link.active-tab:active,
+.addon-details-menu .addon-page-link:active,
+.addon-details-menu .addon-page-link.active-tab a:active,
+.addon-details-menu .addon-page-link a:active
+ {
+    color: var(--secondary-light);
     background-color: var(--background);
 }
 

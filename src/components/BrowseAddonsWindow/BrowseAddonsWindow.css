@@ -103,10 +103,10 @@
 
 .browse-addon-buttons .dropdown-menu {
     color: var(--on-background);
-    background-color: var(--container);
-    border-color: var(--primary);
-    -webkit-box-shadow: 0px 0px 1px 1px var(--primary);
-    box-shadow: 0px 0px 1px 1px var(--primary);
+    background-color: var(--container-light);
+    border-color: var(--primary-dark);
+    -webkit-box-shadow: 0px 0px 1px 1px var(--primary-dark);
+    box-shadow: 0px 0px 1px 1px var(--primary-dark);
 }
 
 .browse-addon-buttons .dropdown-menu .dropdown-item {

@@ -1,3 +1,23 @@
+#AddonTable .table-bordered,
+#AddonTable .table-bordered table,
+#AddonTable .table-bordered thead,
+#AddonTable .table-bordered tr,
+#AddonTable .table-bordered th,
+#AddonTable .table-bordered td {
+    border: none;
+}
+
+#AddonTable .table-bordered {
+  margin-bottom: 0;
+}
+
+#AddonTable th {
+  font-size: 0.8rem;
+}
+
+#AddonTable td {
+  font-size: 0.8rem;
+}
 
 #AddonTable .table-bordered tr.addon-table-header {
   color: white;

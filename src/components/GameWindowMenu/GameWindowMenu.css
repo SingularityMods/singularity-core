@@ -30,7 +30,7 @@
 
 .game-settings .dropdown-menu {
     color: var(--on-background);
-    background-color: var(--container);
+    background-color: var(--container-light);
     border-color: var(--primary-dark);
     -webkit-box-shadow: 0px 0px 1px 1px var(--primary-dark);
     box-shadow: 0px 0px 1px 1px var(--primary-dark);

@@ -6,6 +6,7 @@ import { Row, Col } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 
 import UpdateAddonButton from '../Buttons/UpdateAddonButton';
+import AddonTable from '../AddonTable';
 
 class AddonVersionTable extends React.Component {
   constructor(props) {
@@ -60,6 +61,9 @@ class AddonVersionTable extends React.Component {
     }, {
       dataField: 'fileDate',
       text: 'Date',
+      formatter: (cellContent) => {
+        return formatDate(new Date(cellContent));
+      }
     }, {
       dataField: 'gameVersion',
       text: 'Patch',
@@ -106,17 +110,66 @@ class AddonVersionTable extends React.Component {
         );
       },
     }];
+
+    function formatDate(date2) {
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December',
+      ];
+      const date1 = new Date();
+      const diff = Math.floor(date1.getTime() - date2.getTime());
+      const day = 1000 * 60 * 60 * 24;
+      const minute = 1000 * 60;
+      const minutes = Math.floor(diff / minute);
+      const hours = Math.floor(minutes / 60);
+      const days = Math.floor(diff / day);
+      const months = Math.floor(days / 31);
+      const years = Math.floor(months / 12);
+      let message = '';
+      if (years > 0 || months > 0) {
+        message = `${monthNames[date2.getMonth()]} ${date2.getDate()}, ${date2.getFullYear()}`;
+      } else if (days > 0) {
+        message += days;
+        if (days > 1) {
+          message += ' days ago';
+        } else {
+          message += ' day ago';
+        }
+      } else if (hours > 0) {
+        message += hours;
+        if (hours > 1) {
+          message += ' hours ago';
+        } else {
+          message += ' hour ago';
+        }
+      } else if (minutes > 0) {
+        message += minutes;
+        if (minutes > 1) {
+          message += ' minutes ago';
+        } else {
+          message += ' minute ago';
+        }
+      }
+      return message;
+    }
     return (
       <Row>
         <Col xs={12} className="addon-version-table">
           {addon && addon.gameVersionLatestFiles
             ? (
+              <AddonTable
+                addons={tableData}
+                columns={columns}
+                keyField="_id"
+                noTableData={() => {}}
+              />
+              /*
               <BootstrapTable
                 className="addon-version-table"
                 keyField="_id"
                 data={tableData}
                 columns={columns}
               />
+              */
             )
             : ''}
         </Col>

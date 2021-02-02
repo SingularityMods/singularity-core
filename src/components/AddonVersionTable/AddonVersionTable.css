@@ -1,3 +1,4 @@
+/*
 .addon-version-table table {
  width: 100%;
 }
@@ -11,11 +12,11 @@
     font-size: 0.8rem;
     color: var(--on-background);
 }
-
+*/
 .addon-details-section .UpdateAddonButton.disabled,
 .addon-details-section .UpdateAddonButton.disabled:hover {
     cursor: not-allowed;
     color: var(--on-background);
-    background-color: var(--background);
+    background-color: var(--container);
     border: none;
 }

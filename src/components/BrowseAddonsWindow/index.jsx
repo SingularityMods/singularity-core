@@ -470,7 +470,6 @@ class BrowseAddonsWindow extends React.Component {
       selectedCategory,
       searchFilter,
       searching,
-      sortOrder,
     } = this.state;
     const {
       gameVersion,
@@ -592,10 +591,11 @@ class BrowseAddonsWindow extends React.Component {
         if (!latest) {
           latest = cellContent.find((f) => f.gameVersionFlavor === gameV && f.releaseType === 3);
         }
-        const fileDate = new Date(Date.parse(latest.fileDate));
-        const [month, date, year] = fileDate.toLocaleDateString().split('/');
+
+        // const fileDate = new Date(Date.parse(latest.fileDate));
+        // const [month, date, year] = fileDate.toLocaleDateString().split('/');
         return (
-          `${year}-${month}-${date}`
+          formatDate(new Date(latest.fileDate))
         );
       },
     }, {
@@ -632,6 +632,46 @@ class BrowseAddonsWindow extends React.Component {
       text: 'Author',
     }];
 
+    function formatDate(date2) {
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December',
+      ];
+      const date1 = new Date();
+      const diff = Math.floor(date1.getTime() - date2.getTime());
+      const day = 1000 * 60 * 60 * 24;
+      const minute = 1000 * 60;
+      const minutes = Math.floor(diff / minute);
+      const hours = Math.floor(minutes / 60);
+      const days = Math.floor(diff / day);
+      const months = Math.floor(days / 31);
+      const years = Math.floor(months / 12);
+      let message = '';
+      if (years > 0 || months > 0) {
+        message = `${monthNames[date2.getMonth()]} ${date2.getDate()}, ${date2.getFullYear()}`;
+      } else if (days > 0) {
+        message += days;
+        if (days > 1) {
+          message += ' days ago';
+        } else {
+          message += ' day ago';
+        }
+      } else if (hours > 0) {
+        message += hours;
+        if (hours > 1) {
+          message += ' hours ago';
+        } else {
+          message += ' hour ago';
+        }
+      } else if (minutes > 0) {
+        message += minutes;
+        if (minutes > 1) {
+          message += ' minutes ago';
+        } else {
+          message += ' minute ago';
+        }
+      }
+      return message;
+    }
     return (
       <div id="BrowseAddonsWindow">
         <Row>

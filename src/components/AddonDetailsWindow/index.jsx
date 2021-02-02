@@ -499,8 +499,9 @@ class AddonDetailsWindow extends React.Component {
 
                   </Col>
                 </Row>
-                <Row className="addon-details-section">
-                  {addon && addon.addonName
+                <Row>
+                  <Col xs={12} className="addon-details-section">
+                    {addon && addon.addonName
                     ? {
                       1: <div dangerouslySetInnerHTML={{ __html: addon.description }} />,
                       2: 'test 2',
@@ -513,7 +514,8 @@ class AddonDetailsWindow extends React.Component {
                         handleInstall={this.installAddonFile}
                       />,
                     }[activeTab]
-                    : ''}
+                    : ''}`
+                  </Col>
                 </Row>
               </SimpleBar>
             </div>
