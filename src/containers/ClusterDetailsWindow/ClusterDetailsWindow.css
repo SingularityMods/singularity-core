@@ -3,7 +3,7 @@
   top: 0;
   left: 0;
   height: calc(100vh - 30px);
-  background-color: var(--cluster-background-color);
+  background-color: var(--background);
   z-index: 50;
   overflow:hidden;
 }
@@ -23,7 +23,7 @@
 #ClusterDetailsWindow .cluster-avatar img {
   height: 100px;
   width: 100px;
-  border: 1px solid var(--singularity-orange);
+  border: 1px solid var(--on-background);
 }
 
 #ClusterDetailsWindow .addon-details-window {
@@ -68,7 +68,7 @@
 }
 
 #ClusterDetailsWindow .cluster-info {
-  color: var(--text-color);
+  color: var(--on-background);
   margin-top: 5px;
 }
 
@@ -87,7 +87,7 @@
 
 
 #ClusterDetailsWindow .cluster-details-window .simplebar-scrollbar {
-  background-color: #8f8f8f;
+  background-color: var(--primary-light);
   width: 8px;
   border-radius: 5px
 }
@@ -95,7 +95,7 @@
 #ClusterDetailsWindow .cluster-details-section {
   margin-top:10px;
   padding-right: 5px;
-  color: var(--text-color);
+  color: var(--on-background);
 }
 
 #ClusterDetailsWindow .install-button {
