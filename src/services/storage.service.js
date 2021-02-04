@@ -8,6 +8,7 @@ import appDataDefaults from './storage-service-defaults/appData.json';
 import backupDataDefaults from './storage-service-defaults/backupData.json';
 import syncProfileDefault from './storage-service-defaults/syncProfile.json';
 import categoryDefaults from './storage-service-defaults/categories.json';
+import themeDefaults from './storage-service-defaults/themes.json';
 
 const userDataPath = (app).getPath('userData');
 
@@ -15,6 +16,7 @@ let gameSettings = null;
 let appData = null;
 let gameData = null;
 let categories = null;
+let themes = null;
 
 function initStorage() {
   log.info('Initializing data storage');
@@ -46,14 +48,13 @@ function initStorage() {
     log.info('Using default Category data');
     categories = categoryDefaults;
   }
-  /*
-    try {
-        let filePath = path.join(userDataPath, 'backup-data.json');
-        backupData = JSON.parse(fs.readFileSync(filePath));
-    } catch (error) {
-        log.info("Using default backup data");
-        backupData = backupDataDefaults;
-    } */
+  try {
+    const filePath = path.join(userDataPath, 'theme-data.json');
+    themes = JSON.parse(fs.readFileSync(filePath));
+  } catch (error) {
+    log.info('No user themes configured');
+    themes = themeDefaults;
+  }
 }
 
 function getGameSettings(key) {
@@ -70,6 +71,16 @@ function getGameData(key) {
 
 function getCategories(key) {
   return categories[key];
+}
+
+function getAllThemes() {
+  return themes;
+}
+
+function setTheme(key, val) {
+  themes[key] = val;
+  const filePath = path.join(userDataPath, 'theme-data.json');
+  fs.writeFileSync(filePath, JSON.stringify(themes));
 }
 
 function getLocalAddonSyncProfile(gameId, gameVersion) {
@@ -622,4 +633,6 @@ export {
   getDefaultTrackBranch,
   getDefaultAutoUpdate,
   isSyncEnabled,
+  getAllThemes,
+  setTheme,
 };
