@@ -49,13 +49,13 @@
 
 #category-dropdown {
     background-color: var(--primary);
-    border-color: var(--primary);
+    border-color: var(--secondary);
     float: left;
 }
 
 #category-dropdown:focus {
     background-color: var(--primary);
-    border-color: var(--primary);
+    border-color: var(--secondary);
     -webkit-box-shadow: none;
     box-shadow: none;
 }
@@ -100,9 +100,9 @@
 .browse-addon-buttons .dropdown-menu {
     color: var(--on-background);
     background-color: var(--container-light);
-    border-color: var(--primary-dark);
-    -webkit-box-shadow: 0px 0px 1px 1px var(--primary-dark);
-    box-shadow: 0px 0px 1px 1px var(--primary-dark);
+    border-color: var(--secondary);
+    -webkit-box-shadow: 0px 0px 1px 1px var(--secondary);
+    box-shadow: 0px 0px 1px 1px var(--secondary);
 }
 
 .browse-addon-buttons .dropdown-menu .dropdown-item {

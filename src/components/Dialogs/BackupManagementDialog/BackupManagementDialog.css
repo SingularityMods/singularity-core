@@ -28,8 +28,8 @@
 }
 
 .backup-management-dialog-exit .menubar-btn{
-    color: var(--on-background);
-    background-color: var(--container);
+    color: var(--on-secondary);
+    background-color: var(--secondary);
     position: absolute;
     right: 0;
     top: 0;
@@ -93,21 +93,21 @@
 }
 
     .backup-dialog-button.btn.btn-primary {
-        background-color: var(--primary);
-        border: 1px solid var(--primary);
+        background-color: var(--secondary);
+        border: 1px solid var(--secondary);
     }
     
     .backup-dialog-button.btn.btn-primary:focus {
-        background-color: var(--primary);
-        border-color: var(--primary);
+        background-color: var(--secondary);
+        border-color: var(--secondary);
         -webkit-box-shadow: none;
         box-shadow: none;
         outline:none;
     }
 
     .backup-dialog-button.btn.btn-primary:hover {
-        background-color: var(--secondary);
-        border: 1px solid var(--secondary);
+        background-color: var(--secondary-light);
+        border: 1px solid var(--secondary-light);
     }
     
     .backup-dialog-button.btn.btn-primary:active {

@@ -408,10 +408,10 @@ class BackupManagementDialog extends React.Component {
                     onChange={this.toggleCloud}
                     checked={cloud}
                     className="settings-switch"
-                    onColor="#ED8323"
+                    onColor="#00cc00"
                     height={20}
                     width={40}
-                    activeBoxShadow="0 0 2px 3px #ED8323"
+                    activeBoxShadow="0 0 2px 3px #00cc00"
                   />
                 </div>
                 <ReactTooltip id="cloudToggleTooltip">
