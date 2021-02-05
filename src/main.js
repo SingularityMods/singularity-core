@@ -44,6 +44,7 @@ let splash;
 let tray = null;
 let isQuitting = false;
 let mainWindowReady = false;
+let launchProtocolUrl;
 
 const appLock = app.requestSingleInstanceLock();
 
@@ -214,12 +215,21 @@ if (!appLock) {
     }
   });
 
+  if (!app.isDefaultProtocolClient('singularity')) {
+    app.setAsDefaultProtocolClient('singularity');
+  }
+
+  app.on('will-finish-launching', () => {
+    app.on('open-url', (event, data) => {
+      event.preventDefault();
+      launchProtocolUrl = data;
+    });
+  })
+
   app.on('open-url', (event, data) => {
     event.preventDefault();
     handleProtocolUrl(data);
   });
-
-  app.setAsDefaultProtocolClient('singularity');
 
   // Display the app menu when triggered
   ipcMain.on('display-app-menu', (e, args) => {
@@ -337,7 +347,7 @@ function showMainWindow() {
       log.error('Unable to destroy splash window, should still exist');
     }
     mainWindow.show();
-    const protocolUrl = checkForProtocolUrl(process.argv);
+    const protocolUrl = launchProtocolUrl || checkForProtocolUrl(process.argv);
     if (protocolUrl) {
       handleProtocolUrl(protocolUrl);
     }
