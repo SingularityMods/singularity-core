@@ -169,6 +169,7 @@ ipcMain.on('find-addons-async', async (event, gameId, gameVersion) => {
   fingerprintAllAsync(gameId, gameS[gameVersion].addonPath, gameD.fingerprintDepth)
     .then((hashMap) => {
       log.info(`Fingerprinted ${Object.keys(hashMap).length} directories for ${gameVersion}`);
+      event.sender.send('app-status-message', 'Checking for updates', 'status');
       identifyAddons(gameId.toString(), gameVersion, hashMap)
         .then(() => {
           if (gameS[gameVersion].sync && isAuthenticated()) {

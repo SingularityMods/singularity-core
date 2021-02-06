@@ -1017,7 +1017,7 @@ class InstalledAddonsWindow extends React.Component {
                     : ''}
                 </div>
 
-                {isRefreshing
+                {isRefreshing && (!filteredAddons || filteredAddons.length === 0)
                   ? <LoadingSpinner />
                   : (
                     <SimpleBar scrollbarMaxSize={50} className={process.platform === 'darwin' ? 'addon-table-scrollbar mac' : 'addon-table-scrollbar'}>
