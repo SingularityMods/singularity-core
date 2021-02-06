@@ -39,7 +39,13 @@ module.exports = {
             "appleId": "admin@singularitymods.com",
             "appleIdPassword": password,
             },
-            appCopyright: "Copyright (C) 2020 Singularity Mods LLC"
+            appCopyright: "Copyright (C) 2020 Singularity Mods LLC",
+            protocols: [
+              {
+                name: 'Singularity addon installer',
+                schemes: ['singularity'],
+             }
+            ]
         },
         beta: {
           asar: false,
@@ -163,7 +169,7 @@ module.exports = {
             "setupIcon": path.join(__dirname, 'assets/icons/app_icon.ico'),
             "iconUrl": "https://storage.singularitycdn.com/icons/app/app_icon.ico",
             "loadingGif": path.join(__dirname, 'assets/gifs/loading.gif'),
-            "remoteReleases": "https://storage.singularitycdn.com/App/Releases/Win/Beta/",
+            "remoteReleases": "https://storage.singularitycdn.com/App/Releases/Win/Beta",
             "certificateFile": "SingularityWinDistribution.pfx",
             certificatePassword: process.env.SINGULARITY_CERT_PASSWORD,
             "rfc3161TimeStampServer": "http://timestamp.comodoca.com"
