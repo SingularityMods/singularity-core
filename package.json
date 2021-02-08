@@ -89,6 +89,7 @@
     "hasha": "^5.2.0",
     "jsonwebtoken": "^8.5.1",
     "keytar": "^7.2.0",
+    "luaparse": "^0.3.0",
     "ncp": "^2.0.0",
     "prop-types": "^15.7.2",
     "query-string": "^6.13.8",

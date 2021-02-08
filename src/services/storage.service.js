@@ -147,6 +147,10 @@ function getInstalledGames() {
   return installed;
 }
 
+function getInstallPath(gameId, gameVersion) {
+  return gameSettings[gameId.toString()][gameVersion].installPath;
+}
+
 function getInstalledAddons(gameId, gameVersion) {
   return gameSettings[gameId.toString()][gameVersion].installedAddons;
 }
@@ -632,6 +636,7 @@ export {
   getUninstallDepsSetting,
   getDefaultTrackBranch,
   getDefaultAutoUpdate,
+  getInstallPath,
   isSyncEnabled,
   getAllThemes,
   setTheme,
