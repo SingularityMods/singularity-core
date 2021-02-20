@@ -65,8 +65,20 @@ export default class HomePage extends React.Component {
                 <h3 className="release-notes-title">Release Notes</h3>
                 <h5>
                   1.3.0
-                  <span className="release-note-date">2021-02-07</span>
+                  <span className="release-note-date">2021-02-20</span>
                 </h5>
+                <p>
+                  You can now install addons and addon clusters directly from
+                  {' '}
+                  <a className="release-notes-link" target="_blank" rel="noreferrer" href="https://singularitymods.com">SingularityMods.com!</a>
+                  {' '}
+                  If have found Singularity useful, please consider contributing to our
+                  {' '}
+                  <a className="release-notes-link" target="_blank" rel="noreferrer" href="https://www.patreon.com/xorro">Patreon.</a>
+                  {' '}
+                  If you find an addon useful, don&apos;t forget to contribute to the author's
+                  patreon too!
+                </p>
                 <h5 className="release-note-section-header">New Features:</h5>
                 <p className="release-note-bullet">
                   {' '}
@@ -74,7 +86,7 @@ export default class HomePage extends React.Component {
                 </p>
                 <p className="release-note-bullet">
                   {' '}
-                  - Singularity now has a message bar at the bottom of the window to provide better
+                  - Singularity now has a message bar to provide better
                   visibility into actions as they complete.
                 </p>
                 <hr />
