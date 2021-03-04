@@ -76,7 +76,7 @@ export default class HomePage extends React.Component {
                   {' '}
                   <a className="release-notes-link" target="_blank" rel="noreferrer" href="https://www.patreon.com/xorro">Patreon.</a>
                   {' '}
-                  If you find an addon useful, don&apos;t forget to contribute to the author's
+                  If you find an addon useful, don&apos;t forget to contribute to the author&apos;s
                   patreon too!
                 </p>
                 <h5 className="release-note-section-header">New Features:</h5>

@@ -215,7 +215,7 @@ function findAndUpdateAddons() {
     const promises = [];
     const needsSyncProfileUpdate = new Set();
     const installedGames = getInstalledGames();
-    if (!installedGames || installedGames.length == 0) {
+    if (!installedGames || installedGames.length === 0) {
       return resolve([]);
     }
     installedGames.forEach((gameId) => {
@@ -224,7 +224,7 @@ function findAndUpdateAddons() {
         promises.push(_findAddonsForGameVersion(gameId, gameVersion, gameS[gameVersion].sync));
       });
     });
-    Promise.allSettled(promises)
+    return Promise.allSettled(promises)
       .then((results) => {
         const toUpdate = [];
         results.forEach((result) => {
@@ -1015,8 +1015,7 @@ function setAddonUpdateInterval() {
                 log.error('Error updating sync profiles');
                 log.error(syncError);
               });
-          }
-          else {
+          } else {
             if (win) {
               win.webContents.send('app-status-message', 'Automatic addon refresh complete', 'success');
             }

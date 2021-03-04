@@ -3,7 +3,6 @@ import './AddonVersionTable.css';
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'react-bootstrap';
-import BootstrapTable from 'react-bootstrap-table-next';
 
 import UpdateAddonButton from '../Buttons/UpdateAddonButton';
 import AddonTable from '../AddonTable';
@@ -61,9 +60,7 @@ class AddonVersionTable extends React.Component {
     }, {
       dataField: 'fileDate',
       text: 'Date',
-      formatter: (cellContent) => {
-        return formatDate(new Date(cellContent));
-      }
+      formatter: (cellContent) => formatDate(new Date(cellContent)),
     }, {
       dataField: 'gameVersion',
       text: 'Patch',
@@ -162,14 +159,6 @@ class AddonVersionTable extends React.Component {
                 keyField="_id"
                 noTableData={() => {}}
               />
-              /*
-              <BootstrapTable
-                className="addon-version-table"
-                keyField="_id"
-                data={tableData}
-                columns={columns}
-              />
-              */
             )
             : ''}
         </Col>

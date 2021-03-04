@@ -585,20 +585,6 @@ function deleteBackupInfo(gameId, gameVersion, data) {
   });
 }
 
-function setBackupData(key, val) {
-  const filePath = path.join(userDataPath, 'backup-data.json');
-  let backupData;
-  try {
-    backupData = JSON.parse(fs.readFileSync(filePath));
-  } catch (error) {
-    log.info('User has no backup data, creating new file');
-    backupData = backupDataDefaults;
-  }
-
-  backupData[key] = val;
-  fs.writeFileSync(filePath, JSON.stringify(backupData));
-}
-
 export {
   initStorage,
   getInstalledGames,
@@ -614,7 +600,6 @@ export {
   setGameSettings,
   setAppData,
   setGameData,
-  setBackupData,
   getBackupDataAsync,
   handleFingerprintResponse,
   isGameVersionInstalled,

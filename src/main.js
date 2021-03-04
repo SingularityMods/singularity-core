@@ -224,7 +224,7 @@ if (!appLock) {
       event.preventDefault();
       launchProtocolUrl = data;
     });
-  })
+  });
 
   app.on('open-url', (event, data) => {
     event.preventDefault();
