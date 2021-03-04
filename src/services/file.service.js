@@ -107,20 +107,22 @@ function createGranularBackupObj(gameId, gameVersion) {
     const gameS = getGameSettings(gameId.toString());
     const { installedAddons, settingsPath } = gameS[gameVersion];
     const addonBackup = [];
-    installedAddons.forEach((addon) => {
-      addonBackup.push(
-        {
-          addonId: addon.addonId,
-          addonName: addon.addonName,
-          fileId: addon.installedFile.fileId,
-          fileName: addon.installedFile.fileName,
-          fileDate: addon.installedFile.fileDate,
-          downloadUrl: addon.installedFile.downloadUrl,
-          releaseType: addon.installedFile.releaseType,
-          gameVersion: addon.installedFile.gameVersion,
-        },
-      );
-    });
+    if (installedAddons && installedAddons.length > 0) {
+      installedAddons.forEach((addon) => {
+        addonBackup.push(
+          {
+            addonId: addon.addonId,
+            addonName: addon.addonName,
+            fileId: addon.installedFile.fileId,
+            fileName: addon.installedFile.fileName,
+            fileDate: addon.installedFile.fileDate,
+            downloadUrl: addon.installedFile.downloadUrl,
+            releaseType: addon.installedFile.releaseType,
+            gameVersion: addon.installedFile.gameVersion,
+          },
+        );
+      });
+    }
     if (!fs.existsSync(settingsPath)) {
       reject(new Error("Settings directory doesn't exist"));
     }
@@ -166,22 +168,24 @@ function createSyncProfileObj(gameId, gameVersion) {
   const gameS = getGameSettings(gameId.toString());
   const { installedAddons } = gameS[gameVersion];
   const addons = [];
-  installedAddons.forEach((addon) => {
-    addons.push(
-      {
-        addonId: addon.addonId,
-        addonName: addon.addonName,
-        trackBranch: addon.trackBranch,
-        autoUpdate: addon.autoUpdate,
-        fileId: addon.installedFile.fileId,
-        fileName: addon.installedFile.fileName,
-        fileDate: addon.installedFile.fileDate,
-        downloadUrl: addon.installedFile.downloadUrl,
-        releaseType: addon.installedFile.releaseType,
-        gameVersion: addon.installedFile.gameVersion,
-      },
-    );
-  });
+  if (installedAddons && installedAddons.length > 0) {
+    installedAddons.forEach((addon) => {
+      addons.push(
+        {
+          addonId: addon.addonId,
+          addonName: addon.addonName,
+          trackBranch: addon.trackBranch,
+          autoUpdate: addon.autoUpdate,
+          fileId: addon.installedFile.fileId,
+          fileName: addon.installedFile.fileName,
+          fileDate: addon.installedFile.fileDate,
+          downloadUrl: addon.installedFile.downloadUrl,
+          releaseType: addon.installedFile.releaseType,
+          gameVersion: addon.installedFile.gameVersion,
+        },
+      );
+    });
+  }
   return {
     gameId,
     uuid: getAppData('UUID'),
@@ -211,6 +215,9 @@ function findAndUpdateAddons() {
     const promises = [];
     const needsSyncProfileUpdate = new Set();
     const installedGames = getInstalledGames();
+    if (!installedGames || installedGames.length == 0) {
+      return resolve([]);
+    }
     installedGames.forEach((gameId) => {
       const gameS = getGameSettings(gameId.toString());
       Object.entries(gameS).forEach(([gameVersion]) => {
@@ -993,20 +1000,28 @@ function setAddonUpdateInterval() {
       }
       findAndUpdateAddons()
         .then((profiles) => {
-          updateSyncProfiles([...profiles])
-            .then(() => {
-              if (win) {
-                win.webContents.send('app-status-message', 'Automatic addon refresh complete', 'success');
-              }
-              log.info('All sync profiles updated');
-            })
-            .catch((syncError) => {
-              if (win) {
-                win.webContents.send('app-status-message', 'Automatic addon refresh error', 'error');
-              }
-              log.error('Error updating sync profiles');
-              log.error(syncError);
-            });
+          if (profiles && profiles.length > 0) {
+            updateSyncProfiles([...profiles])
+              .then(() => {
+                if (win) {
+                  win.webContents.send('app-status-message', 'Automatic addon refresh complete', 'success');
+                }
+                log.info('All sync profiles updated');
+              })
+              .catch((syncError) => {
+                if (win) {
+                  win.webContents.send('app-status-message', 'Automatic addon refresh error', 'error');
+                }
+                log.error('Error updating sync profiles');
+                log.error(syncError);
+              });
+          }
+          else {
+            if (win) {
+              win.webContents.send('app-status-message', 'Automatic addon refresh complete', 'success');
+            }
+            log.info('No profiles to sync. Refresh complete.');
+          }
         })
         .catch((updateError) => {
           if (win) {
@@ -1208,11 +1223,11 @@ function updateSyncProfiles(profiles) {
       profiles.forEach((profile) => {
         syncProfilesToCreate.push(profile);
       });
-      const win = getMainBrowserWindow();
       const pool = new PromisePool(_createSyncProfileProducer, 3);
       return pool.start()
         .then(() => {
           syncing = false;
+          const win = getMainBrowserWindow();
           if (win) {
             profiles.forEach((profile) => {
               win.webContents.send('sync-status', profile.gameId, profile.gameVersion, 'sync-complete', null, null);
@@ -1223,6 +1238,7 @@ function updateSyncProfiles(profiles) {
         })
         .catch((err) => {
           syncing = false;
+          const win = getMainBrowserWindow();
           if (win) {
             profiles.forEach((profile) => {
               win.webContents.send('sync-status', profile.gameId, profile.gameVersion, 'error', null, 'Error in sync after auto-updating');
