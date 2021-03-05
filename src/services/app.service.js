@@ -12,6 +12,7 @@ import {
   setGameSettings,
   setAppData,
   setGameData,
+  convertAllBackups,
 } from './storage.service';
 import {
   enableSentry,
@@ -973,6 +974,17 @@ function setAppConfig() {
     const esoD = getGameData('2');
     esoD.fingerprintDepth = 3;
     setGameData('2', esoD);
+  }
+  if (version < '1.3.2') {
+    // Convert backups to new format
+    convertAllBackups()
+      .then(() => {
+        log.info('Done converting backups');
+      })
+      .catch((error) => {
+        log.error('Error converting backups');
+        log.error(error);
+      });
   }
   // Set new version
   setAppData('version', app.getVersion());

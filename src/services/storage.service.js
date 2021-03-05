@@ -99,18 +99,6 @@ function getLocalAddonSyncProfile(gameId, gameVersion) {
   });
 }
 
-function getBackupData(key) {
-  const filePath = path.join(userDataPath, 'backup-data.json');
-  let backupData;
-  try {
-    backupData = JSON.parse(fs.readFileSync(filePath));
-  } catch (error) {
-    log.info('User has no backup data, returning defaults');
-    backupData = backupDataDefaults;
-  }
-  return backupData[key];
-}
-
 function getBackupDataAsync(key) {
   return new Promise((resolve) => {
     const filePath = path.join(userDataPath, 'backup-data.json');
@@ -124,6 +112,26 @@ function getBackupDataAsync(key) {
         const backupData = backupDataDefaults;
         resolve(backupData[key]);
       });
+  });
+}
+
+function getLocalBackupDetails(backupUUID) {
+  return new Promise((resolve, reject) => {
+    const filePath = path.join(userDataPath, 'backups', `${backupUUID}.json`);
+    fsPromises.access(filePath, fs.constants.R_OK)
+      .then(() => {
+        fsPromises.readFile(filePath)
+          .then((fileData) => {
+            const backupData = JSON.parse(fileData);
+            resolve(backupData);
+          })
+          .catch((error) => {
+            log.error('Error reading backup file that should exist');
+            log.error(error);
+            reject(error);
+          });
+      })
+      .catch(() => reject(new Error('File does not exist')));
   });
 }
 
@@ -521,31 +529,134 @@ function removeInstalledAddonInfo(gameId, gameVersion, addonId) {
 
 function saveBackupInfo(gameId, gameVersion, data) {
   return new Promise((resolve, reject) => {
-    const filePath = path.join(userDataPath, 'backup-data.json');
-    fsPromises.readFile(filePath)
-      .then((fileData) => {
-        const backupData = JSON.parse(fileData);
-        backupData[gameId][gameVersion].backups.push(data);
-        fsPromises.writeFile(filePath, JSON.stringify(backupData))
-          .then(() => {
-            resolve({});
+    const newBackupFIle = path.join(userDataPath, 'backups', `${data.backupUUID}.json`);
+    const backupInfoFile = path.join(userDataPath, 'backup-data.json');
+    fsPromises.writeFile(newBackupFIle, JSON.stringify(data))
+      .then(() => {
+        fsPromises.readFile(backupInfoFile)
+          .then((fileData) => {
+            const backupData = JSON.parse(fileData);
+            const backupRecord = {
+              version: 3,
+              time: data.time,
+              backupUUID: data.backupUUID,
+              gameId: data.gameId,
+              gameVersion: data.gameVersion,
+              size: data.size,
+            };
+            backupData[gameId][gameVersion].backups.push(backupRecord);
+            fsPromises.writeFile(backupInfoFile, JSON.stringify(backupData))
+              .then(() => {
+                resolve({});
+              })
+              .catch((err) => {
+                log.error(err);
+                reject(new Error('Error writing backup data'));
+              });
           })
-          .catch((err) => {
-            log.error(err);
-            reject(new Error('Error writing backup data'));
+          .catch(() => {
+            log.info('User has no backup data, creating new file');
+            const backupData = backupDataDefaults;
+            const backupRecord = {
+              version: 3,
+              time: data.time,
+              backupUUID: data.backupUUID,
+              gameId: data.gameId,
+              gameVersion: data.gameVersion,
+              size: data.size,
+            };
+            backupData[gameId][gameVersion].backups.push(backupRecord);
+            fsPromises.writeFile(backupInfoFile, JSON.stringify(backupData))
+              .then(() => {
+                resolve({});
+              })
+              .catch((err) => {
+                log.error(err);
+                reject(new Error('Error writing backup data'));
+              });
           });
       })
-      .catch(() => {
-        log.info('User has no backup data, creating new file');
-        const backupData = backupDataDefaults;
-        backupData[gameId][gameVersion].backups.push(data);
-        fsPromises.writeFile(filePath, JSON.stringify(backupData))
-          .then(() => {
-            resolve({});
+      .catch((error) => {
+        log.error(error);
+        reject(new Error('Error writing backup data'));
+      });
+  });
+}
+
+function convertBackup(backup) {
+  return new Promise((resolve, reject) => {
+    log.info(`Converting: ${backup.backupUUID}`);
+    const newBackupFIle = path.join(userDataPath, 'backups', `${backup.backupUUID}.json`);
+    fsPromises.writeFile(newBackupFIle, JSON.stringify(backup))
+      .then(() => {
+        delete backup.file;
+        delete backup.addons;
+        delete backup.uuid;
+        delete backup.hostname;
+        return resolve(backup);
+      })
+      .catch((error) => {
+        log.error(`Error converting: ${backup.backupUUID}`);
+        log.error(error);
+        return reject(error);
+      });
+  });
+}
+
+function convertAllBackups() {
+  log.info('Converting backups from v2 to v3');
+  return new Promise((resolve, reject) => {
+    const backupInfoFile = path.join(userDataPath, 'backup-data.json');
+    createBackupDir()
+      .then(() => {
+        fsPromises.readFile(backupInfoFile)
+          .then((fileData) => {
+            const promises = [];
+            log.info('Backups found, beginning conversion');
+            const backupData = JSON.parse(fileData);
+            Object.keys(backupData).forEach((gameId) => {
+              Object.keys(backupData[gameId]).forEach((gameVersion) => {
+                if (backupData[gameId][gameVersion].backups.length > 0) {
+                  backupData[gameId][gameVersion].backups.forEach((backup) => {
+                    promises.push(convertBackup(backup));
+                  });
+                }
+              });
+            });
+            if (promises.length === 0) {
+              return resolve();
+            }
+            return Promise.all(promises)
+              .then((results) => {
+                const newBackupData = backupDataDefaults;
+                results.forEach((result) => {
+                  newBackupData[result.gameId.toString()][result.gameVersion.toString()]
+                    .backups.push(result);
+                });
+                return resolve();
+              })
+              .catch((error) => reject(error));
           })
-          .catch((err) => {
-            log.error(err);
-            reject(new Error('Error writing backup data'));
+          .catch(() => {
+            log.info('No backups found');
+            return resolve();
+          });
+      })
+      .catch((error) => reject(error));
+  });
+}
+
+function createBackupDir() {
+  return new Promise((resolve, reject) => {
+    const newDir = path.join(userDataPath, 'backups');
+    fsPromises.access(newDir, fs.constants.F_OK)
+      .then(() => resolve())
+      .catch(() => {
+        fsPromises.mkdir(newDir, { recursive: true })
+          .then(() => resolve())
+          .catch((error) => {
+            log.error('Error creating backup directory');
+            return reject(error);
           });
       });
   });
@@ -553,19 +664,43 @@ function saveBackupInfo(gameId, gameVersion, data) {
 
 function deleteBackupInfo(gameId, gameVersion, data) {
   return new Promise((resolve, reject) => {
-    const filePath = path.join(userDataPath, 'backup-data.json');
-    fsPromises.readFile(filePath)
+    const backupInfoFile = path.join(userDataPath, 'backup-data.json');
+    fsPromises.readFile(backupInfoFile)
       .then((fileData) => {
         const backupData = JSON.parse(fileData);
-        backupData[gameId][gameVersion].backups = backupData[gameId][gameVersion].backups
-          .filter((item) => item.backupUUID !== data.backupUUID);
-        fsPromises.writeFile(filePath, JSON.stringify(backupData))
+        const backupFilePath = path.join(userDataPath, 'backups', `${data.backupUUID}.json`);
+        fsPromises.access(backupFilePath, fs.constants.F_OK)
           .then(() => {
-            resolve({});
+            fsPromises.unlink(backupFilePath)
+              .then(() => {
+                backupData[gameId][gameVersion].backups = backupData[gameId][gameVersion].backups
+                  .filter((item) => item.backupUUID !== data.backupUUID);
+                fsPromises.writeFile(backupInfoFile, JSON.stringify(backupData))
+                  .then(() => {
+                    resolve({});
+                  })
+                  .catch((err) => {
+                    log.error(err);
+                    reject(new Error('Error writing backup data'));
+                  });
+              })
+              .catch((error) => {
+                log.error(error);
+                reject(new Error('Error removing old backup file'));
+              });
           })
-          .catch((err) => {
-            log.error(err);
-            reject(new Error('Error writing backup data'));
+          .catch(() => {
+            // File doesn't exist, make sure our backup records are cleaned up anyway
+            backupData[gameId][gameVersion].backups = backupData[gameId][gameVersion].backups
+              .filter((item) => item.backupUUID !== data.backupUUID);
+            fsPromises.writeFile(backupInfoFile, JSON.stringify(backupData))
+              .then(() => {
+                resolve({});
+              })
+              .catch((err) => {
+                log.error(err);
+                reject(new Error('Error writing backup data'));
+              });
           });
       })
       .catch(() => {
@@ -573,7 +708,7 @@ function deleteBackupInfo(gameId, gameVersion, data) {
         const backupData = backupDataDefaults;
         backupData[gameId][gameVersion].backups = backupData[gameId][gameVersion].backups
           .filter((item) => item.backupUUID !== data.backupUUID);
-        fsPromises.writeFile(filePath, JSON.stringify(backupData))
+        fsPromises.writeFile(backupInfoFile, JSON.stringify(backupData))
           .then(() => {
             resolve({});
           })
@@ -594,13 +729,13 @@ export {
   getAddonVersion,
   getAppData,
   getGameData,
-  getBackupData,
   getCategories,
   getBannerPath,
   setGameSettings,
   setAppData,
   setGameData,
   getBackupDataAsync,
+  getLocalBackupDetails,
   handleFingerprintResponse,
   isGameVersionInstalled,
   setBackupDataAsync,
@@ -620,4 +755,5 @@ export {
   isSyncEnabled,
   getAllThemes,
   setTheme,
+  convertAllBackups,
 };

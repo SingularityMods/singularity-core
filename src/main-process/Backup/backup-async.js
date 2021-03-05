@@ -12,7 +12,12 @@ import {
   deleteLocalBackup,
   restoreGranularBackup,
 } from '../../services/file.service';
-import { getAppData, getBackupDataAsync, saveBackupInfo } from '../../services/storage.service';
+import {
+  getAppData,
+  getBackupDataAsync,
+  getLocalBackupDetails,
+  saveBackupInfo,
+} from '../../services/storage.service';
 
 ipcMain.on('create-granular-backup', async (event, gameId, gameVersion, cloud) => {
   log.info('Creating granular backup');
@@ -213,6 +218,15 @@ ipcMain.on('get-local-backups', (event, gameId, gameVersion) => {
       event.sender.send('local-backups-found', false, gameId, gameVersion, null, 'Error searching for local backups');
     });
 });
+
+ipcMain.handle('get-backup-details', (event, backupUUID) => new Promise((resolve, reject) => {
+  getLocalBackupDetails(backupUUID)
+    .then((backupDetails) => resolve(backupDetails))
+    .catch((error) => {
+      log.error(error);
+      return reject(new Error('Error retrieving backup details'));
+    });
+}));
 
 ipcMain.on('restore-granular-backup', async (event, backup, includeSettings) => {
   log.info('Restoring granular backup');
