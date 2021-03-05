@@ -633,7 +633,15 @@ function convertAllBackups() {
                   newBackupData[result.gameId.toString()][result.gameVersion.toString()]
                     .backups.push(result);
                 });
-                return resolve();
+                fsPromises.writeFile(backupInfoFile, JSON.stringify(newBackupData))
+                  .then(() => {
+                    return resolve();
+                  })
+                  .catch((error) => {
+                    log.error('Error saving new backup file');
+                    log.error(error);
+                    return reject(error);
+                  })
               })
               .catch((error) => reject(error));
           })
