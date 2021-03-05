@@ -64,6 +64,31 @@ export default class HomePage extends React.Component {
               <div>
                 <h3 className="release-notes-title">Release Notes</h3>
                 <h5>
+                  1.3.2
+                  <span className="release-note-date">2021-03-05</span>
+                </h5>
+                <h5 className="release-note-section-header">Bug Fixes:</h5>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Fixed an issue that could cause Singularity to crash or fail to load addon
+                  backups. As part of this fix, during the update to 1.3.2, Singularity will
+                  convert all old backups to a new format. If you are using your own custom cloud
+                  storage for backups, you will need to backup the new &ldquo;backups/&rdquo;
+                  directory as well as the old backup-data.josn file in the same directory
+                  location.
+                </p>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Fixed an issue that could cause Singularity to crash while attempting to
+                  identify installed addons.
+                </p>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Fixed an issue that could cause Singularity to crash while updating Addon
+                  sync profiles.
+                </p>
+                <hr />
+                <h5>
                   1.3.0
                   <span className="release-note-date">2021-02-20</span>
                 </h5>
