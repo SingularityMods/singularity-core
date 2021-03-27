@@ -11,6 +11,7 @@
   "main": ".webpack/main",
   "scripts": {
     "start": "cross-env BUILD_ENV=dev electron-forge start",
+    "start-prod": "cross-env BUILD_ENV=prod electron-forge start",
     "package": "cross-env BUILD_ENV=oss electron-forge package",
     "package-prod": "cross-env BUILD_ENV=prod electron-forge package",
     "make": "cross-env BUILD_ENV=oss electron-forge make",
@@ -97,6 +98,7 @@
     "react-bootstrap-table-next": "^4.0.3",
     "react-dom": "^16.14.0",
     "react-hot-loader": "^4.13.0",
+    "react-markdown": "^5.0.3",
     "react-switch": "^5.0.1",
     "react-tooltip": "^4.2.14",
     "react-transition-group": "^4.4.1",

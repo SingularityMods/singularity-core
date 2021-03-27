@@ -45,6 +45,7 @@ class AddonVersionTable extends React.Component {
       gameVersion,
       installedAddon,
     } = this.state;
+
     const {
       handleInstall,
     } = this.props;
@@ -151,7 +152,7 @@ class AddonVersionTable extends React.Component {
     return (
       <Row>
         <Col xs={12} className="addon-version-table">
-          {addon && addon.gameVersionLatestFiles
+          {addon && addon.latestFiles
             ? (
               <AddonTable
                 addons={tableData}

@@ -4,6 +4,7 @@ import 'simplebar/dist/simplebar.min.css';
 import SimpleBar from 'simplebar-react';
 import * as React from 'react';
 import PropTypes from 'prop-types';
+import ReactMarkdown from 'react-markdown';
 import { Row, Col, Button } from 'react-bootstrap';
 
 import AddonScreenshotsTab from '../AddonScreenshotsTab';
@@ -503,7 +504,17 @@ class AddonDetailsWindow extends React.Component {
                   <Col xs={12} className="addon-details-section">
                     {addon && addon.addonName
                       ? {
-                        1: <div dangerouslySetInnerHTML={{ __html: addon.description }} />,
+                        1: (
+                          <ReactMarkdown
+                            className="description"
+                            source={addon.description}
+                            renderers={{
+                              link: (props) => (
+                                <a href={props.href} target="_blank" rel="noreferrer">{props.children}</a>
+                              ),
+                            }}
+                          />
+                        ),
                         2: 'test 2',
                         3: <AddonScreenshotsTab screenshots={addon.screenshots} />,
                         4: <AddonVersionTable
@@ -515,7 +526,6 @@ class AddonDetailsWindow extends React.Component {
                         />,
                       }[activeTab]
                       : ''}
-                    `
                   </Col>
                 </Row>
               </SimpleBar>

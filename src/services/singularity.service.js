@@ -41,6 +41,7 @@ function getAddonDownloadUrl(addonId, fileId) {
         'x-app-uuid': getAppData('UUID'),
       },
     };
+
     let requestUrl = `${AppConfig.API_URL}/addon/download/${addonId}`;
     if (fileId) {
       requestUrl = `${AppConfig.API_URL}/addon/download/${addonId}/${fileId}`;

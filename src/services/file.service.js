@@ -12,6 +12,7 @@ import queryString from 'query-string';
 import axios from 'axios';
 
 import log from 'electron-log';
+import AppConfig from '../config/app.config';
 import { getMainBrowserWindow } from './electron.service';
 
 import {
@@ -85,7 +86,7 @@ function createAndSaveSyncProfile(obj) {
         'x-auth': getAccessToken(),
       },
     };
-    axios.post('https://api.singularitymods.com/api/v1/user/sync/set', syncProfile, axiosConfig)
+    axios.post(`${AppConfig.API_URL}/user/sync/set`, syncProfile, axiosConfig)
       .then((res) => {
         if (res && res.status === 200 && res.data.success) {
           resolve({});
@@ -510,7 +511,7 @@ async function getSyncProfilesFromCloud(enabled = []) {
           'x-auth': getAccessToken(),
         },
       };
-      axios.get('https://api.singularitymods.com/api/v1/user/sync/get?all=true', axiosConfig)
+      axios.get(`${AppConfig.API_URL}/user/sync/get?all=true`, axiosConfig)
         .then((res) => {
           if (res.status === 200 && res.data.success) {
             log.info('Addon sync profiles found');
