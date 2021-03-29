@@ -1,22 +1,13 @@
 /*@import url('SettingsWindow.css');*/
 .SettingsWindow {
-    color: var(--text-color);
-}
-
-.settings-exit .menubar-btn {
-    margin-right: 10px;
-    margin-top: 2px;
-    float:right;
-    font-size: 1.2rem;
-    color: var(--text-color);
-    background-color: var(-background-color);
+    color: var(--on-background);
 }
 
 .settings-window-header {
     text-align: center;
     font-size: 2rem;
     font-weight: bold;
-    border-bottom: 1px solid var(--table-border-color);
+    border-bottom: 1px solid var(--primary);
 }
 
 .settings-window-section-header{
@@ -28,123 +19,111 @@
     margin-top: 10px; 
 }
 .settings-item {
-    border: 1px solid var(--table-border-color);
+    border: 1px solid var(--primary-light);
     border-radius: 3px;
     height: 60px;
     padding-top: 15px;
-    background-color: var(--settings-item-background-color);
+    background-color: var(--container);
+    box-shadow: 0px 0px 2px 1px var(--primary-light);
+    margin-bottom: 4px;
 }
 
 .SettingsWindow .settings-item-name {
-    color: var(--text-color);
+    color: var(--on-background);
     font-size: 0.8rem;
     font-weight: bold;
-}
-
-.SettingsWindow .dropdown .btn-primary {
-    padding-top:3px;
-    padding-bottom: 3px;
-    color: var(--text-color);
-    background-color: var(--table-background-color);
-    border-color: var(--table-border-color);
-    -webkit-box-shadow: 0px 0px 1px 1px var(--table-border-color);
-    box-shadow: 0px 0px 1px 1px var(--table-border-color);
-}
-
-.SettingsWindow .dropdown .btn-primary:active {
-    padding-top: 3px;
-    padding-bottom: 3px;
-    color: var(--text-color);
-    background-color: var(--table-background-color);
-    border-color: var(--table-border-color);
-    -webkit-box-shadow: 0px 0px 1px 1px var(--table-border-color);
-    box-shadow: 0px 0px 1px 1px var(--table-border-color);
 }
 
 .SettingsWindow .dropdown .btn-primary:focus,
 .SettingsWindow .dropdown .btn-primary.dropdown-toggle:focus {
     padding-top: 3px;
     padding-bottom: 3px;
-    color: var(--text-color);
-    background-color: var(--table-background-color);
-    border-color: var(--table-border-color);
-    -webkit-box-shadow: 0px 0px 1px 1px var(--table-border-color);
-    box-shadow: 0px 0px 1px 1px var(--table-border-color);
+    color: var(--on-background);
+    background-color: var(--container-light);
+    border-color: var(--primary);
+    -webkit-box-shadow: 0px 0px 1px 1px var(--primary);
+    box-shadow: 0px 0px 1px 1px var(--primary);
 }
 
 .SettingsWindow .dropdown-menu {
-    color: var(--text-color);
-    background-color: var(--table-background-color);
-    border-color: var(--table-border-color);
-    -webkit-box-shadow: 0px 0px 1px 1px var(--table-border-color);
-    box-shadow: 0px 0px 1px 1px var(--table-border-color);
+    color: var(--on-background);
+    background-color: var(--container-light);
+    border-color: var(--primary);
+    -webkit-box-shadow: 0px 0px 1px 1px var(--primary);
+    box-shadow: 0px 0px 1px 1px var(--primary);
 }
 
-    .SettingsWindow .dropdown-menu .dropdown-item {
-        color: var(--text-color);
-    }
+.SettingsWindow .dropdown-menu .dropdown-item {
+    color: var(--on-background);
+}
 
-        .SettingsWindow .dropdown-menu .dropdown-item:focus {
-            color: var(--singularity-orange);
-            background-color: var(--table-background-color);
-        }
+.SettingsWindow .dropdown-menu .dropdown-item:focus {
+    color: var(--on-background);
+    background-color: var(--container-light);
+}
 
-        .SettingsWindow .dropdown-menu .dropdown-item:hover {
-            color: var(--singularity-orange);
-            background-color: var(--table-background-color);
-        }
+.SettingsWindow .dropdown-menu .dropdown-item:hover {
+    color: var(--on-primary);
+    background-color: var(--primary-dark);
+}
+
+.SettingsWindow .dropdown-menu .dropdown-item:active {
+    color: var(--on-secondary);
+    background-color: var(--secondary-dark);
+}
 
 .SettingsWindow .btn.btn-primary {
     padding-top: 3px;
     padding-bottom: 3px;
-    color: var(--text-color);
-    background-color: var(--table-background-color);
-    border-color: var(--table-border-color);
-    -webkit-box-shadow: 0px 0px 1px 1px var(--table-border-color);
-    box-shadow: 0px 0px 1px 1px var(--table-border-color);
+    color: var(--on-background);
+    background-color: var(--container-light);
+    border-color: var(--primary);
+    -webkit-box-shadow: 0px 0px 1px 1px var(--primary);
+    box-shadow: 0px 0px 1px 1px var(--primary);
 }
 
-    .SettingsWindow .btn.btn-primary:active {
-        padding-top: 3px;
-        padding-bottom: 3px;
-        color: var(--text-color);
-        background-color: var(--table-background-color);
-        border-color: var(--table-border-color);
-        -webkit-box-shadow: 0px 0px 1px 1px var(--singularity-orange);
-        box-shadow: 0px 0px 1px 1px var(--singularity-orange);
-        outline: none;
-    }
+.SettingsWindow .btn.btn-primary:active {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    color: var(--on-background);
+    background-color: var(--container);
+    border-color: var(--secondary-dark);
+    -webkit-box-shadow: 0px 0px 1px 1px var(--secondary);
+    box-shadow: 0px 0px 1px 1px var(--secondary);
+    outline: none;
+}
 
-        .SettingsWindow .btn.btn-primary:active:focus {
-            padding-top: 3px;
-            padding-bottom: 3px;
-            color: var(--text-color);
-            background-color: var(--table-background-color);
-            border-color: var(--table-border-color);
-            -webkit-box-shadow: 0px 0px 1px 1px var(--singularity-orange);
-            box-shadow: 0px 0px 1px 1px var(--singularity-orange);
-            outline: none;
-        }
+.SettingsWindow .btn.btn-primary:active:focus {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    color: var(--on-background);
+    background-color: var(--container);
+    border-color: var(--secondary-dark);
+    -webkit-box-shadow: 0px 0px 1px 1px var(--secondary);
+    box-shadow: 0px 0px 1px 1px var(--secondary);
+    outline: none;
+}
 
 .settings-item-config p{ 
   float: left;
 }
+
 .SettingsWindow .errorMsg{ 
     float:left;
     margin-left: 20px;
     font-size: 0.8rem;
-    color: var(--text-color);
+    color: var(--on-background);
 }
 
 .settingsLoading {
     float:right;
     margin-left: 20px;
     font-size: 1.3rem;
-    color: var(--singularity-orange);
+    color: var(--secondary);
 }
 
 .settings-scrollbar .simplebar-scrollbar {
-    background-color: #8f8f8f;
+    background-color: var(--primary);
     width: 8px;
     border-radius: 5px
 }

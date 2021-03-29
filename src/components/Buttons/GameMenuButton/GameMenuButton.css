@@ -1,41 +1,39 @@
 .GameMenuButton {
     margin-right: 5px;
-    color: var(--singularity-orange);
-    background-color: #e6e8e600;
+    color: var(--on-background);
+    background-color: var(--background);
     border: none;
 }
 
-    .GameMenuButton:hover,
-    .GameMenuButton:focus:hover {
-        color: white;
-        background-color: var(--secondary-color);
-        border-color: var(--secondary-color);
-    }
+.GameMenuButton:focus {
+    color: var(--on-background);
+    background-color: var(--background);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
 
-    .GameMenuButton:focus {
-        color: var(--singularity-orange);
-        background-color: #e6e8e600;
-        -webkit-box-shadow: none;
-        box-shadow: none;
-    }
+.GameMenuButton:hover {
+    color: var(--on-secondary);
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+}
 
-    .GameMenuButton.btn-primary:not(:disabled):not(.disabled):active {
-        color: white;
-        background-color: var(--secondary-color);
-        border: none;
-        -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
-        box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
-    }
+.GameMenuButton.btn-primary:not(:disabled):not(.disabled):active {
+    color: var(--on-secondary);
+    background-color: var(--secondary-light);
+    border: none;
+    -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-light);
+    box-shadow: 0px 0px 4px 1px var(--secondary-light);
+}
 
-
-
-    .GameMenuButton.disabled,
-    .GameMenuButton.disabled:hover {
-        cursor: not-allowed;
-        color: var(--text-color);
-        background-color: #e6e8e600;
-        border: none;
-    }
+.GameMenuButton.disabled,
+.GameMenuButton.disabled:hover {
+    cursor: not-allowed;
+    opacity: 0.5;
+    color: var(--on-background);
+    background-color: var(--background);
+    border: none;
+}
 .hidden {
     display: none;
 }

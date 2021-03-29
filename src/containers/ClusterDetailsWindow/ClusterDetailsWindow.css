@@ -1,0 +1,108 @@
+#ClusterDetailsWindow {
+  position: static;
+  top: 0;
+  left: 0;
+  height: calc(100vh - 30px);
+  background-color: var(--background);
+  z-index: 50;
+  overflow:hidden;
+}
+
+#ClusterDetailsWindow #cluster-details-scrollbar {
+  height: calc(100vh - 210px);
+  overflow-y:auto;
+  padding-bottom: 20px;
+}
+
+#ClusterDetailsWindow .cluster-avatar {
+  float: left;
+  margin-left: 30px;
+  margin-top:10px;
+}
+
+#ClusterDetailsWindow .cluster-avatar img {
+  height: 100px;
+  width: 100px;
+  border: 1px solid var(--on-background);
+}
+
+#ClusterDetailsWindow .addon-details-window {
+  height: calc(100vh - 185px);
+  padding-left:10px;
+  padding-right:10px;
+}
+
+#ClusterDetailsWindow .cluster-error-message {
+  text-align: right;
+  color: var(--error-red);
+  overflow:hidden;
+}
+
+#ClusterDetailsWindow .game-banner.col
+{
+    height: 100px;
+    background-color: black;
+    width: 100%;
+    text-align: center;
+}
+
+#ClusterDetailsWindow .game-banner-image {
+    height: 100px;
+}
+
+.installed-addon-window-content .addon-table-scrollbar.mac {
+  height: calc(100vh - 280px);
+}
+
+#ClusterDetailsWindow .cluster-info-small {
+  font-size: 0.8rem;
+}
+
+#ClusterDetailsWindow .cluster-name {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+#ClusterDetailsWindow .cluster-info-pad-left {
+  padding-left: 10px;
+}
+
+#ClusterDetailsWindow .cluster-info {
+  color: var(--on-background);
+  margin-top: 5px;
+}
+
+#ClusterDetailsWindow .cluster-details-top-menu {
+  padding-top: 3px;
+  padding-bottom: 3px;
+  position: absolute;
+  width: 100%;
+  z-index: 51;
+}
+
+#ClusterDetailsWindow .cluster-details-top-menu .GameMenuButton {
+  float: right;
+}
+
+
+
+#ClusterDetailsWindow .cluster-details-window .simplebar-scrollbar {
+  background-color: var(--primary-light);
+  width: 8px;
+  border-radius: 5px
+}
+
+#ClusterDetailsWindow .cluster-details-section {
+  margin-top:10px;
+  padding-right: 5px;
+  color: var(--on-background);
+}
+
+#ClusterDetailsWindow .install-button {
+  float:right;
+}
+
+#ClusterDetailsWindow .cluster-page-link-icon{
+  margin-left: 5px;
+}
+

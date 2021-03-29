@@ -7,8 +7,9 @@ import PropTypes from 'prop-types';
 import {
   Row, Col, Form, DropdownButton, Dropdown,
 } from 'react-bootstrap';
-import BootstrapTable from 'react-bootstrap-table-next';
+// import BootstrapTable from 'react-bootstrap-table-next';
 
+import AddonTable from '../AddonTable';
 import UpdateAddonButton from '../Buttons/UpdateAddonButton';
 import GameMenuButton from '../Buttons/GameMenuButton';
 
@@ -78,7 +79,7 @@ class BrowseAddonsWindow extends React.Component {
       gameId,
       gameVersion,
     } = this.props;
-    ipcRenderer.on('addon-installed', this.addonInstalledListener);
+    ipcRenderer.on('addon-installed-automatically', this.addonInstalledListener);
     const gameSettings = ipcRenderer.sendSync('get-game-settings', gameId);
     const categories = ipcRenderer.sendSync('get-game-addon-categories', gameId);
     const addonVersion = ipcRenderer.sendSync('get-game-addon-version', gameId, gameVersion);
@@ -148,7 +149,7 @@ class BrowseAddonsWindow extends React.Component {
   }
 
   componentWillUnmount() {
-    ipcRenderer.removeListener('addon-installed', this.addonInstalledListener);
+    ipcRenderer.removeListener('addon-installed-automatically', this.addonInstalledListener);
   }
 
   handleAddonSearchResult(addons) {
@@ -434,27 +435,26 @@ class BrowseAddonsWindow extends React.Component {
 
   addonInstalledListener(_event, installedAddon) {
     const {
-      currentlyUpdating,
-      erroredUpdates,
       installedAddons,
     } = this.state;
-    const currentlyInstalledAddons = installedAddons.map((addon) => {
-      if (addon.addonId !== installedAddon.addonId) {
-        return addon;
+    const {
+      gameId,
+      gameVersion,
+    } = this.props;
+    if (installedAddon.gameId === gameId && installedAddon.gameVersion === gameVersion) {
+      const currentlyInstalledAddons = installedAddons.map((addon) => {
+        if (addon.addonId !== installedAddon.addonId) {
+          return addon;
+        }
+        return installedAddon;
+      });
+      if (!currentlyInstalledAddons.includes(installedAddon)) {
+        currentlyInstalledAddons.splice(0, 0, installedAddon);
       }
-      return installedAddon;
-    });
-    if (!currentlyInstalledAddons.includes(installedAddon)) {
-      currentlyInstalledAddons.splice(0, 0, installedAddon);
+      this.setState({
+        installedAddons: currentlyInstalledAddons,
+      });
     }
-
-    const newCurrentlyUpdating = currentlyUpdating.filter((obj) => obj !== installedAddon.addonId);
-    const newErroredUpdates = erroredUpdates.filter((obj) => obj !== installedAddon.addonId);
-    this.setState({
-      installedAddons: currentlyInstalledAddons,
-      currentlyUpdating: newCurrentlyUpdating,
-      erroredUpdates: newErroredUpdates,
-    });
   }
 
   render() {
@@ -470,7 +470,6 @@ class BrowseAddonsWindow extends React.Component {
       selectedCategory,
       searchFilter,
       searching,
-      sortOrder,
     } = this.state;
     const {
       gameVersion,
@@ -507,21 +506,10 @@ class BrowseAddonsWindow extends React.Component {
         } else {
           avatarUrl = '../img/app_icon.png';
         }
-
         return (
-          <div className="browse-addon-title-column">
+          <div className="installed-addon-title-column">
             <img className="addon-table-img" alt="Addon icon" src={avatarUrl} />
-            <div className="addon-name-section">
-              <div
-                className="addon-name"
-                role="button"
-                tabIndex="0"
-                onClick={() => this.handleSelectAddon(row.addonId)}
-                onKeyPress={() => this.handleSelectAddon(row.addonId)}
-              >
-                {cellContent}
-              </div>
-            </div>
+            <div className="addon-name-section"><span role="button" tabIndex="0" className="addon-name" onClick={() => this.handleSelectAddon(row.addonId)} onKeyPress={() => this.handleSelectAddon(row.addonId)}>{cellContent}</span></div>
           </div>
         );
       },
@@ -603,10 +591,11 @@ class BrowseAddonsWindow extends React.Component {
         if (!latest) {
           latest = cellContent.find((f) => f.gameVersionFlavor === gameV && f.releaseType === 3);
         }
-        const fileDate = new Date(Date.parse(latest.fileDate));
-        const [month, date, year] = fileDate.toLocaleDateString().split('/');
+
+        // const fileDate = new Date(Date.parse(latest.fileDate));
+        // const [month, date, year] = fileDate.toLocaleDateString().split('/');
         return (
-          `${year}-${month}-${date}`
+          formatDate(new Date(latest.fileDate))
         );
       },
     }, {
@@ -642,8 +631,49 @@ class BrowseAddonsWindow extends React.Component {
       dataField: 'author',
       text: 'Author',
     }];
+
+    function formatDate(date2) {
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December',
+      ];
+      const date1 = new Date();
+      const diff = Math.floor(date1.getTime() - date2.getTime());
+      const day = 1000 * 60 * 60 * 24;
+      const minute = 1000 * 60;
+      const minutes = Math.floor(diff / minute);
+      const hours = Math.floor(minutes / 60);
+      const days = Math.floor(diff / day);
+      const months = Math.floor(days / 31);
+      const years = Math.floor(months / 12);
+      let message = '';
+      if (years > 0 || months > 0) {
+        message = `${monthNames[date2.getMonth()]} ${date2.getDate()}, ${date2.getFullYear()}`;
+      } else if (days > 0) {
+        message += days;
+        if (days > 1) {
+          message += ' days ago';
+        } else {
+          message += ' day ago';
+        }
+      } else if (hours > 0) {
+        message += hours;
+        if (hours > 1) {
+          message += ' hours ago';
+        } else {
+          message += ' hour ago';
+        }
+      } else if (minutes > 0) {
+        message += minutes;
+        if (minutes > 1) {
+          message += ' minutes ago';
+        } else {
+          message += ' minute ago';
+        }
+      }
+      return message;
+    }
     return (
-      <div className="BrowseAddonsWindow">
+      <div id="BrowseAddonsWindow">
         <Row>
           <Col className="browse-addon-window-content">
             <Row className="addon-window-menu">
@@ -697,14 +727,11 @@ class BrowseAddonsWindow extends React.Component {
               <Row className="addon-table">
                 <Col xs={12}>
                   {addonList ? (
-                    <BootstrapTable
-                      keyField="addonId"
-                      className="browse-addon-table"
-                      headerClasses="browse-addons-header"
-                      data={addonList}
+                    <AddonTable
+                      addons={addonList}
                       columns={browseAddonsColumns}
-                      noDataIndication={noTableData}
-                      sort={{ dataField: 'price', order: sortOrder === 1 ? 'asc' : 'desc', sortFunc: () => {} }}
+                      keyField="addonId"
+                      noTableData={noTableData}
                     />
                   ) : (
                     ''
@@ -716,7 +743,7 @@ class BrowseAddonsWindow extends React.Component {
                 : ''}
               <Row>
                 <Col xs={12}>
-                  {additionalAddons
+                  {additionalAddons && !loadingMore
                     ? <div className="load-more" role="button" tabIndex="0" onClick={this.loadMoreAddons} onKeyPress={this.loadMoreAddons}>load more</div>
                     : ''}
                 </Col>

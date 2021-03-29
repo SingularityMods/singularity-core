@@ -45,10 +45,10 @@ export default class HomePage extends React.Component {
       darkMode,
     } = this.state;
     return (
-      <div className="HomePage">
+      <div id="HomePage">
         <Row>
           <Col className="homepage-title">
-            <img alt="Singularity logo" src={darkMode ? '../img/logo_white.png' : '../img/logo.png'} className="app-logo-banner" />
+            <img alt="Singularity logo" src={darkMode ? '../img/logo_v2_white.png' : '../img/logo_v2.png'} className="app-logo-banner" />
           </Col>
         </Row>
 
@@ -63,6 +63,73 @@ export default class HomePage extends React.Component {
             <SimpleBar scrollbarMaxSize={50} className={process.platform === 'darwin' ? 'home-page-bar mac' : 'home-page-bar'}>
               <div>
                 <h3 className="release-notes-title">Release Notes</h3>
+                <h5>
+                  1.3.2
+                  <span className="release-note-date">2021-03-05</span>
+                </h5>
+                <h5 className="release-note-section-header">Bug Fixes:</h5>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Fixed an issue that could cause Singularity to crash or fail to load addon
+                  backups. As part of this fix, during the update to 1.3.2, Singularity will
+                  convert all old backups to a new format. If you are using your own custom cloud
+                  storage for backups, you will need to backup the new &ldquo;backups/&rdquo;
+                  directory as well as the old backup-data.josn file in the same directory
+                  location.
+                </p>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Fixed an issue that could cause Singularity to crash while attempting to
+                  identify installed addons.
+                </p>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Fixed an issue that could cause Singularity to crash while updating Addon
+                  sync profiles.
+                </p>
+                <hr />
+                <h5>
+                  1.3.0
+                  <span className="release-note-date">2021-02-20</span>
+                </h5>
+                <p>
+                  You can now install addons and addon clusters directly from
+                  {' '}
+                  <a className="release-notes-link" target="_blank" rel="noreferrer" href="https://singularitymods.com">SingularityMods.com!</a>
+                  {' '}
+                  If have found Singularity useful, please consider contributing to our
+                  {' '}
+                  <a className="release-notes-link" target="_blank" rel="noreferrer" href="https://www.patreon.com/xorro">Patreon.</a>
+                  {' '}
+                  If you find an addon useful, don&apos;t forget to contribute to the author&apos;s
+                  patreon too!
+                </p>
+                <h5 className="release-note-section-header">New Features:</h5>
+                <p className="release-note-bullet">
+                  {' '}
+                  - You can now install addons and addon clusters straight from SingularityMods.com
+                </p>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Singularity now has a message bar to provide better
+                  visibility into actions as they complete.
+                </p>
+                <hr />
+                <h5>
+                  1.2.4
+                  <span className="release-note-date">2021-01-18</span>
+                </h5>
+                <h5 className="release-note-section-header">Bug Fixes:</h5>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Fixed an issue that could cause Singularity to lock up while identifying addons.
+                </p>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Fixed an issue that caused Singularity to not flag the correct release branch
+                  and auto update settings for newly installed addons.
+                </p>
+                <hr />
                 <h5>
                   1.2.3
                   <span className="release-note-date">2021-01-17</span>
@@ -436,11 +503,6 @@ export default class HomePage extends React.Component {
             </SimpleBar>
           </Col>
 
-        </Row>
-        <Row>
-          <Col xs={12} className="homepage-footer">
-            <div className="footer-link"><a target="_blank" rel="noreferrer" href="https://github.com/SingularityMods/singularity-core/issues">Support</a></div>
-          </Col>
         </Row>
       </div>
     );

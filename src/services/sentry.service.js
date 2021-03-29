@@ -24,9 +24,9 @@ function disableSentry() {
 
 function _beforeSend(event) {
   if (!enabled) {
-    return event;
+    return null;
   }
-  return null;
+  return event;
 }
 
 export {

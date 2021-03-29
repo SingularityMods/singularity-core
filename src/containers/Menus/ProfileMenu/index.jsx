@@ -40,7 +40,14 @@ class ProfileMenu extends React.Component {
     const { handleClose } = this.props;
     event.preventDefault();
     ipcRenderer.send('logout-auth');
-    handleClose();
+    ipcRenderer.invoke('logout')
+      .then(() => {
+        this.setState({ profile: null });
+        handleClose();
+      })
+      .catch(() => {
+        handleClose();
+      });
   }
 
   render() {

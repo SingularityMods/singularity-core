@@ -74,11 +74,27 @@ ipcMain.on('login-auth', async (event, email, password) => {
     });
 });
 
+ipcMain.handle('logout', async (event) => new Promise((resolve, reject) => {
+  logout()
+    .then(() => {
+      log.info('User logged out');
+      event.sender.send('auth-event', 'logout', true, null);
+      event.sender.send('app-status-message', 'Successfully logged out', 'success');
+      return resolve();
+    })
+    .catch((error) => {
+      event.sender.send('auth-event', 'logout', false, 'Error logging out user');
+      event.sender.send('app-status-message', 'Successfully logged out', 'success');
+      return reject(error);
+    });
+}));
+
 ipcMain.on('logout-auth', async (event) => {
   logout()
     .then(() => {
       log.info('User logged out');
       event.sender.send('auth-event', 'logout', true, null);
+      event.sender.send('app-status-message', 'Successfully logged out', 'success');
     })
     .catch(() => {
       event.sender.send('auth-event', 'logout', false, 'Error logging out user');

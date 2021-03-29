@@ -1,5 +1,5 @@
 .SmallSidebar {
-    background-color: var(--primary-color);
+    background-color: var(--secondary);
     float: left;
     position: static;
     height: 100%;
@@ -7,9 +7,9 @@
     padding: 5px;
 }
 
-    .SmallSidebar .sidebar-title {
-        color: var(--sidebar-text-color);
-        font-size: 0.77rem;
-        text-align: center;
-        border-bottom: 2px solid var(--sidebar-text-color);
-    }
+.SmallSidebar .sidebar-title {
+    color: var(--on-primary);
+    font-size: 0.77rem;
+    text-align: center;
+    border-bottom: 2px solid var(--on-primary);
+}

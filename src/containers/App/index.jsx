@@ -17,6 +17,7 @@ import {
 } from '../../renderer-services/sentry';
 
 import Header from '../Header';
+import Footer from '../Footer';
 
 import AuthDialog from '../../components/Dialogs/AuthDialog';
 import BackupManagementDialog from '../../components/Dialogs/BackupManagementDialog';
@@ -28,6 +29,7 @@ import SmallSidebar from '../SideBars/SmallSidebar';
 import MinimizedSidebar from '../SideBars/MinimizedSidebar';
 import MainContent from '../MainContent';
 import ProfileMenu from '../Menus/ProfileMenu';
+import ClusterDetailsWindow from '../ClusterDetailsWindow';
 
 const { ipcRenderer } = require('electron');
 
@@ -54,6 +56,8 @@ class App extends React.Component {
       latestCloudBackup: new Date(),
       lastRestoreComplete: new Date(),
       games: null,
+      selectedAddonId: '',
+      selectedCluster: null,
     };
 
     this.granularBackupCompleteListener = this.granularBackupCompleteListener.bind(this);
@@ -80,6 +84,9 @@ class App extends React.Component {
     this.openProfileMenu = this.openProfileMenu.bind(this);
     this.closeProfileMenu = this.closeProfileMenu.bind(this);
     this.toggleBigSidebar = this.toggleBigSidebar.bind(this);
+    this.openClusterListener = this.openClusterListener.bind(this);
+    this.closeClusterWindow = this.closeClusterWindow.bind(this);
+    this.clusterAddonInstalledListener = this.clusterAddonInstalledListener.bind(this);
   }
 
   componentDidMount() {
@@ -89,6 +96,8 @@ class App extends React.Component {
     ipcRenderer.on('telemetry-toggle', this.telemetryToggleListener);
     ipcRenderer.on('backup-status', this.backupStateListener);
     ipcRenderer.on('restore-status', this.restoreStateListener);
+    ipcRenderer.on('open-cluster', this.openClusterListener);
+    ipcRenderer.on('cluster-addon-installed', this.clusterAddonInstalledListener);
     ipcRenderer.invoke('get-terms')
       .then((terms) => {
         this.setState({
@@ -128,6 +137,8 @@ class App extends React.Component {
     ipcRenderer.removeListener('telemetry-toggle', this.telemetryToggleListener);
     ipcRenderer.removeListener('backup-status', this.backupStateListener);
     ipcRenderer.removeListener('restore-status', this.restoreStateListener);
+    ipcRenderer.removeListener('open-cluster', this.openClusterListener);
+    ipcRenderer.removeListener('cluster-addon-installed', this.clusterAddonInstalledListener);
   }
 
   /*
@@ -161,6 +172,7 @@ class App extends React.Component {
     this.setState({
       settingsOpened: true,
       profileMenuOpened: false,
+      selectedCluster: null,
     });
   }
 
@@ -192,6 +204,7 @@ class App extends React.Component {
       settingsOpened: false,
       authOpened: authTab,
       profileMenuOpened: false,
+      selectedCluster: null,
     });
   }
 
@@ -289,6 +302,40 @@ class App extends React.Component {
   }
   // << Backup Restore Dialog End >>>
 
+  // <<< Cluster Start >>>
+  openClusterListener(_event, cluster) {
+    this.setState({
+      selectedCluster: cluster,
+    });
+  }
+
+  clusterAddonInstalledListener(_event, installedAddon) {
+    const {
+      selectedCluster,
+    } = this.state;
+    const currentlyInstalledAddons = selectedCluster.installedAddons.map((a) => {
+      if (a.addonId !== installedAddon.addonId) {
+        return a;
+      }
+      return installedAddon;
+    });
+    if (!currentlyInstalledAddons.includes(installedAddon)) {
+      currentlyInstalledAddons.splice(0, 0, installedAddon);
+    }
+    selectedCluster.installedAddons = currentlyInstalledAddons;
+    this.setState({
+      selectedCluster,
+    });
+  }
+
+  closeClusterWindow() {
+    this.setState({
+      selectedCluster: null,
+    });
+  }
+
+  // << Cluster End >>>
+
   /*
      * Additional Controls
      */
@@ -305,6 +352,7 @@ class App extends React.Component {
       selectedGame: gameId,
       settingsOpened: false,
       authOpened: null,
+      selectedCluster: null,
     });
   }
 
@@ -313,6 +361,7 @@ class App extends React.Component {
       selectedGame: null,
       settingsOpened: false,
       authOpened: null,
+      selectedCluster: null,
     });
   }
 
@@ -361,6 +410,8 @@ class App extends React.Component {
       settingsOpened,
       telemetryPrompted,
       termsAccepted,
+      selectedAddonId,
+      selectedCluster,
     } = this.state;
     return (
       <Container className="Main-Container Override">
@@ -386,7 +437,7 @@ class App extends React.Component {
             />
           )
           : ''}
-        {authOpened
+        {(authOpened && !selectedCluster)
           ? (
             <AuthDialog
               key={authOpened}
@@ -397,7 +448,7 @@ class App extends React.Component {
             />
           )
           : ''}
-        {selectedBackup
+        {(selectedBackup && !selectedCluster)
           ? (
             <BackupRestoreDialog
               backup={selectedBackup}
@@ -410,7 +461,7 @@ class App extends React.Component {
             />
           )
           : ''}
-        {backupManagementOpts && !selectedBackup
+        {(backupManagementOpts && !selectedBackup && !selectedCluster)
           ? (
             <BackupManagementDialog
               darkMode={darkMode}
@@ -426,7 +477,7 @@ class App extends React.Component {
           : ''}
 
         <Header onClick={this.deselectAll} onOpenProfileMenu={this.openProfileMenu} />
-        {profileMenuOpened
+        {(profileMenuOpened)
           ? (
             <ProfileMenu
               darkMode={darkMode}
@@ -461,20 +512,31 @@ class App extends React.Component {
                   games={games}
                 />
               )}
-            <MainContent
-              darkMode={darkMode}
-              openSettings={this.openSettings}
-              closeSettings={this.closeSettings}
-              openBackupManagementDialog={this.openBackupManagementDialog}
-              openBackupRestore={this.openBackupRestore}
-              selected={selectedGame}
-              settingsOpened={settingsOpened}
-              backupPending={backupPending}
-              restorePending={restorePending}
-              latestCloudBackup={latestCloudBackup}
-              lastRestoreComplete={lastRestoreComplete}
-            />
+            {selectedCluster
+              ? (
+                <ClusterDetailsWindow
+                  cluster={selectedCluster}
+                  handleGoBack={this.closeClusterWindow}
+                />
+              )
+              : (
+                <MainContent
+                  darkMode={darkMode}
+                  openSettings={this.openSettings}
+                  closeSettings={this.closeSettings}
+                  openBackupManagementDialog={this.openBackupManagementDialog}
+                  openBackupRestore={this.openBackupRestore}
+                  selected={selectedGame}
+                  selectedAddonId={selectedAddonId}
+                  settingsOpened={settingsOpened}
+                  backupPending={backupPending}
+                  restorePending={restorePending}
+                  latestCloudBackup={latestCloudBackup}
+                  lastRestoreComplete={lastRestoreComplete}
+                />
+              )}
           </div>
+          <Footer />
         </Row>
       </Container>
     );

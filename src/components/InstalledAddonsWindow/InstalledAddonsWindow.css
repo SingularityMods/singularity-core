@@ -11,10 +11,6 @@
   overflow:hidden;
 }
 
-.context-class {
-    color: red;
-}
-
 .game-banner.col {
     height: 100px;
     background-color: black;
@@ -23,7 +19,7 @@
 }
 
 .window-message {
-    color: var(--text-color);
+    color: var(--on-background);
     margin-top: 25px;
     text-align: center;
     font-weight: bold;
@@ -33,13 +29,14 @@
     text-align: center;
 }
 
-.installed-addon-window-content .addon-table-scrollbar {
-    height: calc(100vh - 275px);
+#InstalledAddonsWindow .addon-table-scrollbar {
+    height: calc(100vh - 315px);
     overflow: auto;
+    margin-bottom: 10px;
 }
 
-.installed-addon-window-content .addon-table-scrollbar.mac {
-    height: calc(100vh - 250px);
+#InstalledAddonsWindow .addon-table-scrollbar.mac {
+    height: calc(100vh - 290px);
 }
 
 .addon-table th {
@@ -73,86 +70,6 @@
     float: right;
 }
 
-.addon-table .table-bordered tr.installed-addons-header {
-    color: white;
-    background-color: var(--primary-color);
-}
-
-.addon-table .table-bordered tr.installed-addons-header th:focus {
-    outline: none;
-    background-color: var(--primary-color);
-    -webkit-box-shadow: none;
-    box-shadow: none;
-}
-
-.addon-table .table-bordered tr.installed-addons-header th.sortable {
-    cursor: pointer;
-}
-
-.addon-table .table-bordered tr.selected-addon-row,
-.addon-table .table-bordered tr.selected-addon-row td{
-    background-color: var(--secondary-color);
-    color: white;
-}
-.addon-table table.table-bordered {
-    border-collapse: separate;
-    border-spacing: 0;
-}
-
-.addon-table .table-bordered tr,
-.addon-table .table-bordered td {
-    color: var(--text-color);
-    background-color: var(--table-background-color);
-}
-
-.addon-table table.table-bordered thead tr th {
-    border-top: 1px solid var(--table-border-color);
-
-
-}
-
-.addon-table thead tr:first-child th:first-child {
-    border-radius: 1em 0 0 0;
-    border-left: 1px solid var(--table-border-color);
-    /*border: none;*/
-}
-
-.addon-table thead tr:first-child th:last-child {
-    border-radius: 0 1em 0 0;
-    border-right: 1px solid var(--table-border-color);
-    /*border: none;*/
-}
-
-.addon-table tbody tr:last-child td:first-child {
-    border-radius: 0 0 0 1em;
-}
-
-.addon-table tbody tr:last-child td:last-child {
-    border-radius: 0 0 1em 0;
-}
-
-
-.addon-table table.table-bordered tbody tr td:first-child {
-    border-left: 1px solid var(--table-border-color);
-}
-
-.addon-table table.table-bordered tbody tr td:last-child {
-    border-right: 1px solid var(--table-border-color);
-}
-
-.addon-table table.table-bordered tbody tr:last-child td {
-    border-bottom: 1px solid var(--table-border-color);
-}
-
-.addon-table .table-bordered tr .label.label-danger {
-font-size: 0.8rem;
-margin-left: 0px;
-}
-
-#installed-addon-table .table-bordered td.react-bs-table-no-data {
-    border-radius: 0 0 1em 1em;
-}
-
 .no-data-label{
     text-align: center;
 }
@@ -162,7 +79,7 @@ margin-left: 0px;
 }
 
 .no-addons-link{
-    color: var(--singularity-orange);
+    color: var(--secondary);
     cursor: pointer;
 }
 
@@ -177,59 +94,78 @@ margin-left: 0px;
 }
 
 .addon-name {
-  color: var(--singularity-orange);
+  color: var(--on-background);
 }
 .addon-name:hover {
-  color: var(--singularity-orange);
-  text-decoration-color: var(--singularity-orange);
+  color: var(--secondary);
+  text-decoration-color: var(--secondary);
 }
 .addon-name:focus{
 outline: none;
 }
 
-.addon-table tr.selected-addon-row .addon-name {
-  color: white;
+.addon-search-field,
+.addon-search-field:active,
+.addon-search-field:focus {
+    border: 1px solid var(--primary);
+    color: var(--on-background);
+    background-color: var(--container);
 }
 
 .addon-search-field.filter-field {
     float: right;
 }
 
+.addon-search-field:focus {
+    outline: none;
+    border: 1px solid var(--primary-light);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
 
-    .backup-button.UpdateAddonButton.disabled,
-    .backup-button.UpdateAddonButton.disabled:hover {
-        cursor: not-allowed;
-        color: #E6E8E6;
-        background-color: #ED8323aa;
-        border: none;
-    }
 
-    .backup-button.btn.btn-primary {
-        background-color: var(--singularity-orange);
-    }
-    
-    .backup-button.btn.btn-primary:focus {
-        background-color: var(--singularity-orange);
-        border-color: var(--singularity-orange);
-        -webkit-box-shadow: none;
-        box-shadow: none;
-        outline:none;
-    }
-    
-    .backup-button.btn.btn-primary:active {
-        background-color: var(--secondary-color);
-        border-color: var(--secondary-color);
-        -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
-        box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
-        outline:none;
-    }
-    
-    .backup-button.btn.btn-primary:not(:disabled):not(.disabled):active {
-        background-color: var(--secondary-color);
-        border-color: var(--secondary-color);
-        -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
-        box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
-    }
+.backup-button.UpdateAddonButton.disabled,
+.backup-button.UpdateAddonButton.disabled:hover {
+    cursor: not-allowed;
+    color: var(--on-primary);
+    background-color: var(--primary);
+    opacity: 0.5;
+    border: none;
+}
+
+.backup-button.btn.btn-primary {
+    background-color: var(--primary);
+    border: 1px solid var(--primary);
+}
+
+.backup-button.btn.btn-primary:focus {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    outline:none;
+}
+
+.backup-button.btn.btn-primary:hover {
+    color: var(--on-secondary);
+    background-color: var(--secondary);
+    border: 1px solid var(--secondary);
+}
+
+.backup-button.btn.btn-primary:active {
+    background-color: var(--secondary-light);
+    border-color: var(--secondary-light);
+    -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-light);
+    box-shadow: 0px 0px 4px 1px var(--secondary-light);
+    outline:none;
+}
+
+.backup-button.btn.btn-primary:not(:disabled):not(.disabled):active {
+    background-color: var(--secondary-light);
+    border-color: var(--secondary-light);
+    -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-light);
+    box-shadow: 0px 0px 4px 1px var(--secondary-light);
+}
 
 .no-backups {
     margin-left: 5px;
@@ -249,7 +185,7 @@ outline: none;
     margin-right: 3px;
     height: 20px;
     float: left;
-    background-color: #2a2a2a;
+    background-color: var(--background);
     border-radius: 50%;
     padding: 2px;
 }
@@ -265,8 +201,8 @@ outline: none;
     clear: both;
 }
 
-.InstalledAddonsWindow .search-filter-clear{
-  color: var(--text-color);
+#InstalledAddonsWindow .search-filter-clear{
+  color: var(--on-primary);
   position: absolute;
   right: 22px;
   top: 7px;
@@ -274,6 +210,6 @@ outline: none;
   cursor: pointer;
 }
 
-.InstalledAddonsWindow .search-filter-clear:focus {
+#InstalledAddonsWindow .search-filter-clear:focus {
   outline: none;
 }

@@ -1,6 +1,26 @@
 {
-	"currentRelease": "1.2.1",
+	"currentRelease": "1.3.0-beta.1",
 	"releases": [
+    {
+			"version": "1.3.0-beta.1",
+			"updateTo": {
+				"version": "1.3.0-beta.1",
+				"pub_date": "2021-02-15T00:00:00",
+				"notes": "Overhauled fingerprint engine",
+				"name": "1.3.0-beta.1",
+				"url": "https://storage.singularitycdn.com/App/Releases/Mac/Singularity-darwin-x64-1.3.0-beta.1.zip"
+			}
+		},
+		{
+			"version": "1.3.0-beta.0",
+			"updateTo": {
+				"version": "1.3.0-beta.0",
+				"pub_date": "2021-02-05T00:00:00",
+				"notes": "Overhauled fingerprint engine",
+				"name": "1.3.0-beta.0",
+				"url": "https://storage.singularitycdn.com/App/Releases/Mac/Singularity-darwin-x64-1.3.0-beta.0.zip"
+			}
+		},
 		{
 			"version": "1.2.1",
 			"updateTo": {

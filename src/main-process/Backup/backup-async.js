@@ -12,11 +12,17 @@ import {
   deleteLocalBackup,
   restoreGranularBackup,
 } from '../../services/file.service';
-import { getAppData, getBackupDataAsync, saveBackupInfo } from '../../services/storage.service';
+import {
+  getAppData,
+  getBackupDataAsync,
+  getLocalBackupDetails,
+  saveBackupInfo,
+} from '../../services/storage.service';
 
 ipcMain.on('create-granular-backup', async (event, gameId, gameVersion, cloud) => {
   log.info('Creating granular backup');
   event.sender.send('backup-status', 'Initializing Backup');
+  event.sender.send('app-status-message', 'Initializing backup', 'status');
   createGranularBackupObj(gameId, gameVersion)
     .then((backupObj) => {
       const fileData = {
@@ -33,6 +39,7 @@ ipcMain.on('create-granular-backup', async (event, gameId, gameVersion, cloud) =
       const size = Buffer.byteLength(JSON.stringify(fileData));
       fileData.size = size;
       event.sender.send('backup-status', 'Saving Backup Locally');
+      event.sender.send('app-status-message', 'Saving backup locally', 'status');
       return saveBackupInfo(gameId.toString(), gameVersion, fileData)
         .then(() => fileData);
     })
@@ -57,6 +64,7 @@ ipcMain.on('create-granular-backup', async (event, gameId, gameVersion, cloud) =
           },
         };
         event.sender.send('backup-status', 'Saving Addon Backup To Cloud');
+        event.sender.send('app-status-message', 'Saving addon backup to cloud', 'status');
         return axios.post(`${AppConfig.API_URL}/user/backup`, postData, axiosConfig)
           .then((res) => {
             if (res && res.status === 200 && res.data.success) {
@@ -73,6 +81,7 @@ ipcMain.on('create-granular-backup', async (event, gameId, gameVersion, cloud) =
               const dataBuf = Buffer.from(fileData.file, 'base64');
               log.info('Uploading settings file');
               event.sender.send('backup-status', 'Saving Settings Backup To Cloud');
+              event.sender.send('app-status-message', 'Saving settings backup to cloud', 'status');
               return axios.put(uploadUrl, dataBuf, putConfig)
                 .then((res2) => {
                   if (res2 && res2.status === 200) {
@@ -96,25 +105,30 @@ ipcMain.on('create-granular-backup', async (event, gameId, gameVersion, cloud) =
                     if (res3.status === 200) {
                       log.info('Confirmed settings upload');
                       event.sender.send('granular-backup-complete', true, 'cloud', gameId, gameVersion, null);
+                      event.sender.send('app-status-message', 'Backup complete', 'success');
                     } else {
                       log.error('Error creating cloud backup');
                       event.sender.send('granular-backup-complete', false, 'cloud', gameId, gameVersion, null);
+                      event.sender.send('app-status-message', 'Error saving backup', 'error');
                     }
                   }
                 });
             }
             log.error('Error creating cloud backup');
             event.sender.send('granular-backup-complete', false, 'cloud', gameId, gameVersion, null);
+            event.sender.send('app-status-message', 'Error saving backup', 'error');
             return Promise.resolve(null);
           });
       }
       event.sender.send('granular-backup-complete', true, 'local', gameId, gameVersion, null);
+      event.sender.send('app-status-message', 'Error saving backup', 'error');
       return Promise.resolve(null);
     })
     .catch((err) => {
       log.error('Error creating cloud backup');
       log.error(err);
       event.sender.send('granular-backup-complete', false, 'cloud', gameId, gameVersion, null);
+      event.sender.send('app-status-message', 'Error saving backup', 'error');
     });
 });
 
@@ -204,6 +218,15 @@ ipcMain.on('get-local-backups', (event, gameId, gameVersion) => {
       event.sender.send('local-backups-found', false, gameId, gameVersion, null, 'Error searching for local backups');
     });
 });
+
+ipcMain.handle('get-backup-details', (event, backupUUID) => new Promise((resolve, reject) => {
+  getLocalBackupDetails(backupUUID)
+    .then((backupDetails) => resolve(backupDetails))
+    .catch((error) => {
+      log.error(error);
+      return reject(new Error('Error retrieving backup details'));
+    });
+}));
 
 ipcMain.on('restore-granular-backup', async (event, backup, includeSettings) => {
   log.info('Restoring granular backup');

@@ -9,7 +9,7 @@
     },
     "telemetry-prompted": false,
     "userConfigurable": {
-      "darkMode": false,
+      "darkMode": true,
       "addonUpdateInterval": "1h",
       "backupDir": "",
       "defaultWowVersion": "wow_retail",

@@ -8,13 +8,13 @@
   min-width: 400px;
   transform: translate(-50%, 0);
   max-width: 700px;
-  border: 1px solid #ED8323;
-  color: var(--text-color);
+  border: 1px solid var(--secondary);
+  color: var(--on-background);
   border-radius: 5px;
-  background-color: var(--dialog-background-color);
+  background-color: var(--container);
   padding: 0 5px;
-  border: 2px solid var(--alert-dialog-border);
-  box-shadow: 0px 0px 5px 0px var(--alert-dialog-border);
+  border: 2px solid var(--secondary);
+  box-shadow: 0px 0px 5px 0px var(--secondary);
 }
 
 .ConfirmDeleteDialog .left-notch {
@@ -24,8 +24,8 @@
   width: 0; 
   height: 0; 
   border-left: 40px solid transparent;
-  border-top: 40px solid var(--alert-dialog-border);
-  box-shadow: 0px 0px 5px 0px var(--alert-dialog-border);
+  border-top: 40px solid var(--secondary);
+  box-shadow: 0px 0px 5px 0px var(--secondary);
 }
 .ConfirmDeleteDialog .right-notch {
   display:none;
@@ -35,21 +35,8 @@
   height: 0; 
   border-left: 15px solid transparent;
   border-right: 15px solid transparent;
-  border-bottom: 15px solid #ED8323;
+  border-bottom: 15px solid var(--secondary);
 }
-
-/*
-.confirm-delete-dialog-content {
-    position: absolute;
-    top: 0;
-    height: 175px;
-    width: 300px;
-    border: 1px solid #ED8323;
-    border-radius: 5px;
-    background-color: var(--dialog-background-color);
-    padding: 0 5px;
-    box-shadow: 0px 0px 5px 0px var(--primary-color);
-}*/
 
 .confirm-delete-dialog-title {
     text-align: center;
@@ -86,8 +73,9 @@
     .confirm-delete-dialog-button.UpdateAddonButton.disabled,
     .confirm-delete-dialog-button.UpdateAddonButton.disabled:hover {
         cursor: not-allowed;
-        color: #E6E8E6;
-        background-color: #ED8323aa;
+        color: var(--on-primary);
+        background-color: var(--primary);
+        opacity: 0.5;
         border: none;
     }
 

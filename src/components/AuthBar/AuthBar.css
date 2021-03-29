@@ -6,8 +6,8 @@
 .authbar-btn.btn.btn-primary{ 
     float: right;
     font-size: 1rem;
-    border: 1px solid white;
-    background-color: var(--background-color);
+    border: 1px solid var(--on-background);
+    background-color: var(--background);
     margin-left: 10px;
 }
 
@@ -25,7 +25,7 @@
     width: 42px;
     height: 42px;
     border-radius: 50%;
-    border: 1px solid black;
+    border: 1px solid var(--primary);
     overflow:hidden;
 }
 

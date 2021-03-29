@@ -5,11 +5,11 @@
 
 body {
   font-family: "Open Sans";
+  background-color: var(--background);
 }
 
 html, body, #root, .App, .Override.container, .Override .col-md-3, .Override .col-md-1, .Override .col {
   height: 100%;
-  color: black;
 }
 
 .row {
@@ -45,7 +45,6 @@ p {
 }
 
 .Override .fill {
-  color: #efefef;
   position: relative;
   display: block;
 }
@@ -74,5 +73,5 @@ p {
 }
 
 .wrapper {
-  background-color: var(--background-color);
+  background-color: var(--background);
 }

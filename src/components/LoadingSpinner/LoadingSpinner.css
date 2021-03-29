@@ -5,5 +5,5 @@
 
 .LoadingSpinner .fa-spinner {
     font-size: 2rem;
-    color: var(--secondary-color);
+    color: var(--secondary);
 }

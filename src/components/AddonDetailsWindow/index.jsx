@@ -80,16 +80,18 @@ class AddonDetailsWindow extends React.Component {
     let installedFile = '';
     let installedAddon = {};
 
-    installedAddons.forEach((addon) => {
-      if (addon.addonId === addonId) {
-        installedAddon = addon;
-        installed = true;
-        if (addon.updateAvailable) {
-          updateAvailable = true;
+    if (installedAddons) {
+      installedAddons.forEach((addon) => {
+        if (addon.addonId === addonId) {
+          installedAddon = addon;
+          installed = true;
+          if (addon.updateAvailable) {
+            updateAvailable = true;
+          }
+          installedFile = addon.installedFile.fileName;
         }
-        installedFile = addon.installedFile.fileName;
-      }
-    });
+      });
+    }
     this.setState({
       addonVersion,
       installed,
@@ -497,21 +499,24 @@ class AddonDetailsWindow extends React.Component {
 
                   </Col>
                 </Row>
-                <Row className="addon-details-section">
-                  {addon && addon.addonName
-                    ? {
-                      1: <div dangerouslySetInnerHTML={{ __html: addon.description }} />,
-                      2: 'test 2',
-                      3: <AddonScreenshotsTab screenshots={addon.screenshots} />,
-                      4: <AddonVersionTable
-                        gameVersion={gameVersion}
-                        addon={addon}
-                        installedAddon={installedAddon}
-                        currentlyInstallingFile={currentlyInstallingFile}
-                        handleInstall={this.installAddonFile}
-                      />,
-                    }[activeTab]
-                    : ''}
+                <Row>
+                  <Col xs={12} className="addon-details-section">
+                    {addon && addon.addonName
+                      ? {
+                        1: <div dangerouslySetInnerHTML={{ __html: addon.description }} />,
+                        2: 'test 2',
+                        3: <AddonScreenshotsTab screenshots={addon.screenshots} />,
+                        4: <AddonVersionTable
+                          gameVersion={gameVersion}
+                          addon={addon}
+                          installedAddon={installedAddon}
+                          currentlyInstallingFile={currentlyInstallingFile}
+                          handleInstall={this.installAddonFile}
+                        />,
+                      }[activeTab]
+                      : ''}
+                    `
+                  </Col>
                 </Row>
               </SimpleBar>
             </div>

@@ -1,15 +1,15 @@
 .Header {
     z-index: 50;
-    background-color: var(--header-background-color);
+    background-color: var(--primary-dark);
     height: 50px;
     width: 100%;
     position: relative;
     overflow: visible;
-    box-shadow: 0px 0px 5px 0px var(--header-box-shadow-color);
+    box-shadow: 0px 0px 5px 0px var(--primary-light);
 }
 
 .Header .col {
-    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 5px 0px var(--primary-dark);
 }
 
 .frame-menu {
@@ -20,47 +20,11 @@
   border:none;
   outline:none;
 }
+
 .app-icon {
     float:left;
     height: 40px;
     margin-top: 5px;
     cursor: pointer;
     -webkit-app-region: no-drag;
-}
-
-.app-update-button {
-    color: white;
-    background-color: var(--secondary-color);
-    cursor: pointer;
-    float: left;
-    padding: 5px;
-    margin-top: 5px;
-    margin-left: 25px;
-    border: 1px solid black;
-    border-radius: 0.5rem;
-    animation: glowing 1300ms infinite;
-    -webkit-app-region: no-drag;
-}
-
-.app-update-button-header{
-    font-size: 0.8rem;
-}
-.app-update-button-message {
-    font-size: 0.5rem;
-    text-align: center;
-}
-
-
-@keyframes glowing {
-    0% {
-        box-shadow: 0 0 1px var(--primary-color);
-    }
-
-    50% {
-        box-shadow: 0 0 10px var(--primary-color);
-    }
-
-    100% {
-        box-shadow: 0 0 1px var(--primary-color);
-    }
 }

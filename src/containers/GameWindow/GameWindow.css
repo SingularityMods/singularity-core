@@ -1,5 +1,5 @@
 .GameWindow {
-    background-color: var(--background-color);
+    background-color: var(--background);
 }
 
 .game-banner.col
@@ -19,31 +19,11 @@
 }
 
 .addon-table-scrollbar .simplebar-scrollbar {
-    background-color: #8f8f8f;
+    background-color: var(--primary);
     width: 8px;
     border-radius: 5px;
 }
 
-.addon-table .table-bordered,
-.addon-table .table-bordered table,
-.addon-table .table-bordered thead,
-.addon-table .table-bordered tr,
-.addon-table .table-bordered th,
-.addon-table .table-bordered td {
-    border: none;
-}
-
-.addon-table .table-bordered {
-    margin-bottom: 0;
-}
-
-.addon-table th {
-    font-size: 0.8rem;
-}
-
-.addon-table td {
-    font-size: 0.8rem;
-}
 .no-addons-found-window .btn {
     border: none;
 }

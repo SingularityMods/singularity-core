@@ -14,13 +14,12 @@ class BackupRestoreDialog extends React.Component {
   constructor(props) {
     super(props);
     const {
-      backup,
       backupPending,
       restorePending,
       restoreState,
     } = this.props;
     this.state = {
-      backup,
+      backupDetails: null,
       restoreSettings: false,
       selectedRows: [],
       restoreError: '',
@@ -39,7 +38,19 @@ class BackupRestoreDialog extends React.Component {
   }
 
   componentDidMount() {
+    const { backup } = this.props;
     ipcRenderer.on('granular-restore-complete', this.restoreListener);
+    ipcRenderer.invoke('get-backup-details', backup.backupUUID)
+      .then((backupDetails) => {
+        this.setState({
+          backupDetails,
+        });
+      })
+      .catch((error) => {
+        this.setState({
+          restoreError: error.message,
+        });
+      });
     const darkMode = ipcRenderer.sendSync('is-dark-mode');
     this.setState({
       darkMode,
@@ -79,17 +90,23 @@ class BackupRestoreDialog extends React.Component {
 
   handleRestore() {
     const {
-      backup,
+      backupDetails,
       restoreSettings,
       selectedRows,
     } = this.state;
     const {
       onSubmit,
     } = this.props;
-    const restoreBackup = {};
-    Object.assign(restoreBackup, backup);
-    restoreBackup.addons = selectedRows;
-    onSubmit(restoreBackup, restoreSettings);
+    if (backupDetails) {
+      const restoreBackup = {};
+      Object.assign(restoreBackup, backupDetails);
+      restoreBackup.addons = selectedRows;
+      onSubmit(restoreBackup, restoreSettings);
+    } else {
+      this.setState({
+        restoreError: 'Missing backup details',
+      });
+    }
   }
 
   onRowSelect(row, isSelected) {
@@ -146,6 +163,7 @@ class BackupRestoreDialog extends React.Component {
       restoreSettings,
       restoreState,
       selectedRows,
+      backupDetails,
     } = this.state;
     const columns = [{
       dataField: 'addonName',
@@ -297,14 +315,18 @@ class BackupRestoreDialog extends React.Component {
           <Row>
             <Col xs={12} className="restore-backup-addon-table">
               <SimpleBar scrollbarMaxSize={50} className={process.platform === 'darwin' ? 'backup-restore-addon-table-scrollbar mac' : 'backup-restore-addon-table-scrollbar'}>
-                <BootstrapTable
-                  keyField="addonId"
-                  data={backup.addons}
-                  columns={columns}
-                  selectRow={selectRow}
-                  headerClasses="restore-addon-header"
-                  rowClasses="restore-addon-row"
-                />
+                {backupDetails
+                  ? (
+                    <BootstrapTable
+                      keyField="addonId"
+                      data={backupDetails.addons}
+                      columns={columns}
+                      selectRow={selectRow}
+                      headerClasses="restore-addon-header"
+                      rowClasses="restore-addon-row"
+                    />
+                  )
+                  : ''}
               </SimpleBar>
             </Col>
           </Row>

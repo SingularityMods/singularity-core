@@ -4,27 +4,20 @@
 }
 
 .browse-addon-window-content .addon-table-scrollbar {
-    height: calc(100vh - 275px);
-    overflow: auto;
+    height: calc(100vh - 315px);
+    width: 100%;
+    overflow-y: auto;
 }
 
 .browse-addon-window-content .addon-table-scrollbar.mac {
-    height: calc(100vh - 250px);
-}
-
-.category-window {
-    height: calc(100vh - 250px);
-    overflow: auto;
+    height: calc(100vh - 290px);
 }
 
 .loading {
-    height: calc(100vh - 250px);
+    height: calc(100vh - 280px);
     overflow: auto;
 }
 
-.category-window-title {
-    color: var(--text-color);
-}
 .addon-window-menu {
     margin-top: 5px;
 }
@@ -46,13 +39,7 @@
 }
 
 .browse-addon-game-button {
-    color: white;
     float: left;
-}
-
-.browse-addon-game-button:active {
-    color: white;
-
 }
 
 .dropdown-menu {
@@ -61,77 +48,33 @@
 }
 
 #category-dropdown {
-    background-color: var(--singularity-orange);
-    border-color: var(--singularity-orange);
+    background-color: var(--primary);
+    border-color: var(--secondary);
     float: left;
 }
 
-    #category-dropdown:focus {
-        background-color: var(--singularity-orange);
-        border-color: var(--singularity-orange);
-        -webkit-box-shadow: none;
-        box-shadow: none;
-    }
-
-    #category-dropdown:active {
-        background-color: var(--secondary-color);
-        border-color: var(--secondary-color);
-        -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-color);
-        box-shadow: 0px 0px 4px 1px var(--secondary-color);
-    }
-
-.browse-addon-table td {
-    font-size: 0.6rem;
-}
-
-.addon-table .react-bootstrap-table {
-    font-size: 0.5rem;
-}
-.browse-addon-title-column {
-    width: 100%;
-}
-
-.browse-addon-title-column .addon-table-img {
-  height: 50px;
-  width: 50px;
-  margin-right: 5px;
-  float:left;
-  overflow:hidden;
-}
-
-.browse-addon-title-column .addon-name {
-    color: var(--singularity-orange);
-}
-.browse-addon-title-column .addon-name:hover {
-    color: var(--singularity-orange);
-    text-decoration-color: var(--singularity-orange);
-}
-.browse-addon-title-column .addon-name:focus{
-  outline: none;
-}
-
-
-
-.addon-table .table-bordered tr.browse-addons-header {
-    color: white;
-    background-color: var(--primary-color);
-}
-
-.addon-table .table-bordered tr.browse-addons-header th:focus {
-    color: white;
-    outline: none;
-    background-color: var(--primary-color);
+#category-dropdown:focus {
+    background-color: var(--primary);
+    border-color: var(--secondary);
     -webkit-box-shadow: none;
     box-shadow: none;
 }
 
-.addon-table .table-bordered tr.browse-addons-header th.sortable {
-    cursor: pointer;
+#category-dropdown:hover {
+    background-color: var(--secondary);
+    border-color : var(--secondary);
+}
+
+#category-dropdown:active {
+    background-color: var(--secondary-light);
+    border-color: var(--secondary-light);
+    -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-light);
+    box-shadow: 0px 0px 4px 1px var(--secondary-light);
 }
 
 .load-more {
     padding-top: 10px;
-    color: var(--singularity-orange);
+    color: var(--secondary);
     cursor: pointer;
     font-weight: bold;
     text-align: center;
@@ -154,45 +97,32 @@
     font-size: 1.2rem;
 }
 
-.addon-search-field {
-    background-color: var(--settings-item-background-color);
-    color: var(--text-color);
-    border-color: var(--table-border-color);
-}
-
-.addon-table tr.selected-addon-row .browse-addon-name {
-    color: white;
-}
-
-.addon-search-field:focus {
-    color: var(--text-color);
-    border-color: var(--table-border-color);
-    box-shadow: 0 0 0 1px var(--table-border-color);
-    background-color: var(--settings-item-background-color);
-}
-
 .browse-addon-buttons .dropdown-menu {
-    color: var(--text-color);
-    background-color: var(--table-background-color);
-    border-color: var(--table-border-color);
-    -webkit-box-shadow: 0px 0px 1px 1px var(--table-border-color);
-    box-shadow: 0px 0px 1px 1px var(--table-border-color);
+    color: var(--on-background);
+    background-color: var(--container-light);
+    border-color: var(--secondary);
+    -webkit-box-shadow: 0px 0px 1px 1px var(--secondary);
+    box-shadow: 0px 0px 1px 1px var(--secondary);
 }
 
 .browse-addon-buttons .dropdown-menu .dropdown-item {
-    color: var(--text-color);
+    color: var(--on-background);
 }
 .browse-addon-buttons .dropdown-menu .dropdown-item:focus {
-    color: var(--singularity-orange);
-    background-color: var(--table-background-color);
+    color: var(--on-background);
+    background-color: var(--primary);
 }
 .browse-addon-buttons .dropdown-menu .dropdown-item:hover {
-    color: var(--singularity-orange);
-    background-color: var(--table-background-color);
+    color: var(--on-primary);
+    background-color: var(--primary-dark);
+}
+.browse-addon-buttons .dropdown-menu .dropdown-item:active {
+    color: var(--on-secondary);
+    background-color: var(--secondary-dark);
 }
 
-.BrowseAddonsWindow .search-filter-clear{
-  color: var(--text-color);
+#BrowseAddonsWindow .search-filter-clear{
+  color: var(--on-background);
   position: absolute;
   right: 22px;
   top: 7px;
@@ -200,26 +130,31 @@
   cursor: pointer;
 }
 
-.BrowseAddonsWindow .search-filter-clear:focus {
+#BrowseAddonsWindow .search-filter-clear:focus {
   outline: none;
 }
 
-/*
-table thead .caret {
-    display: inline-block;
-    width: 0;
-    height: 0;
-    margin-left: 2px;
-    vertical-align: middle;
-    border-top: 4px dashed;
-    border-top: 4px solid \9;
-    border-right: 4px solid transparent;
-    border-left: 4px solid transparent;
-    }
-    
-    table thead .dropup .caret, table thead .navbar-fixed-bottom .dropdown .caret {
-    border-top: 0;
-    border-bottom: 4px dashed;
-    border-bottom: 4px solid \9;
-    content: "";
-    }*/
+#BrowseAddonsWindow .addon-search-field,
+#BrowseAddonsWindow .addon-search-field:active  {
+    background-color: var(--container);
+    color: var(--on-background);
+    border-color: var(--primary);
+}
+
+#BrowseAddonsWindow .addon-search-field:focus {
+    color: var(--on-background);
+    background-color: var(--container);
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 1px var(--primary);
+}
+
+#BrowseAddonsWindow .addon-search-field:active {
+    border: 1px solid var(--primary-light);
+}
+
+
+#BrowseAddonsWindow .search-filter-clear:active {
+    outline: none;
+    border: 1px solid var(--primary-light);
+  }
+  

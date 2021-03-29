@@ -1,47 +1,58 @@
 .GameWindowMenu {
     height: 50px;
+    margin-top:5px;
 }
 
 #game-version-select-dropdown {
-    background-color: var(--singularity-orange);
-    border-color: var(--singularity-orange);
+    background-color: var(--primary);
+    border-color: var(--primary);
     float: right;
 }
 
 #game-version-select-dropdown:focus {
-    background-color: var(--singularity-orange);
-    border-color: var(--singularity-orange);
+    background-color: var(--primary);
+    border-color: var(--primary);
     -webkit-box-shadow: none;
     box-shadow: none;
 }
 
+#game-version-select-dropdown:hover {
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+}
+
 #game-version-select-dropdown:active {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
-    -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
-    box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
+    background-color: var(--secondary-light);
+    border-color: var(--secondary-light);
+    -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-light);
+    box-shadow: 0px 0px 4px 1px var(--secondary-light);
 }
 
 .game-settings .dropdown-menu {
-    color: var(--text-color);
-    background-color: var(--table-background-color);
-    border-color: var(--table-border-color);
-    -webkit-box-shadow: 0px 0px 1px 1px var(--table-border-color);
-    box-shadow: 0px 0px 1px 1px var(--table-border-color);
+    color: var(--on-background);
+    background-color: var(--container-light);
+    border-color: var(--primary-dark);
+    -webkit-box-shadow: 0px 0px 1px 1px var(--primary-dark);
+    box-shadow: 0px 0px 1px 1px var(--primary-dark);
 }
 
 .game-settings .dropdown-menu .dropdown-item {
-    color: var(--text-color);
+    color: var(--on-background);
 }
 
 .game-settings .dropdown-menu .dropdown-item:focus {
-    color: var(--singularity-orange);
-    background-color: var(--table-background-color);
+    color: var(--on-background);
+    background-color: var(--container);
 }
 
 .game-settings .dropdown-menu .dropdown-item:hover {
-    color: var(--singularity-orange);
-    background-color: var(--table-background-color);
+    color: var(--on-primary);
+    background-color: var(--primary-dark);
+}
+
+.game-settings .dropdown-menu .dropdown-item:active {
+    color: var(--on-secondary);
+    background-color: var(--secondary-dark);
 }
 
 .window-menu-selector .nav-tabs {
@@ -49,26 +60,23 @@
 }
 
 .window-menu-selector .nav-tabs .nav-item {
-    color: var(--text-color);
+    color: var(--on-background);
     font-weight:bold;
     border: none;
     font-size: 1.05rem;
 }
 
-    .window-menu-selector .nav-tabs .nav-item:hover {
-        color: var(--singularity-orange);
-    }
+.window-menu-selector .nav-tabs .nav-item:hover {
+    color: var(--secondary);
+}
 
-.window-menu-selector .nav-tabs .nav-item:focus {
+.window-menu-selector .nav-tabs .nav-item:active {
     outline: none;
+    color: var(--secondary-light);
 }
 
 .window-menu-selector .nav-tabs .nav-item.active {
-    background-color: #00000000;
-    color: var(--singularity-orange);
-    border-bottom: 3px solid var(--singularity-orange);
-}
-
-.game-settings .dropdown-item:active {
-    background-color: var(--secondary-color);
+    background-color: var(--background);
+    color: var(--secondary);
+    border-bottom: 3px solid var(--secondary);
 }

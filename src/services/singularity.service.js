@@ -1,9 +1,11 @@
 import { app } from 'electron';
 import axios from 'axios';
 
-// import { getAccessToken, isAuthenticated } from '../../services/auth.service';
 import AppConfig from '../config/app.config';
-import { getAppData, getAddonVersion } from './storage.service';
+import {
+  getAppData,
+  getAddonVersion,
+} from './storage.service';
 
 function getAddonsFromFingerprints(directories) {
   return new Promise((resolve, reject) => {
@@ -54,6 +56,27 @@ function getAddonDownloadUrl(addonId, fileId) {
   });
 }
 
+function getClusterDownloadInfo(clusterId) {
+  return new Promise((resolve, reject) => {
+    const axiosConfig = {
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'User-Agent': `Singularity-${app.getVersion()}`,
+        'x-app-uuid': getAppData('UUID'),
+      },
+    };
+    const requestUrl = `${AppConfig.API_URL}/cluster/download/${clusterId}`;
+    return axios.get(requestUrl, axiosConfig)
+      .then((res) => {
+        if (res.status !== 200) {
+          return reject(new Error('No download info recieved'));
+        }
+        return resolve(res.data);
+      })
+      .catch((error) => reject(error));
+  });
+}
+
 function getAddonInfo(addonId) {
   return new Promise((resolve, reject) => {
     const axiosConfig = {
@@ -68,6 +91,27 @@ function getAddonInfo(addonId) {
       .then((res) => {
         if (res.status !== 200) {
           return reject(new Error('No addon info recieved'));
+        }
+        return resolve(res.data);
+      })
+      .catch((error) => reject(error));
+  });
+}
+
+function getCluster(clusterId) {
+  return new Promise((resolve, reject) => {
+    const axiosConfig = {
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'User-Agent': `Singularity-${app.getVersion()}`,
+        'x-app-uuid': getAppData('UUID'),
+      },
+    };
+    const requestUrl = `${AppConfig.API_URL}/cluster/${clusterId}`;
+    return axios.get(requestUrl, axiosConfig)
+      .then((res) => {
+        if (res.status !== 200) {
+          return reject(new Error('No addon cluster recieved'));
         }
         return resolve(res.data);
       })
@@ -105,5 +149,7 @@ export {
   getAddonInfo,
   getAddonDownloadUrl,
   getAddonsFromFingerprints,
+  getCluster,
+  getClusterDownloadInfo,
   searchForAddons,
 };

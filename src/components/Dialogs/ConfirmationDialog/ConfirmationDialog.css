@@ -1,8 +1,8 @@
 @import url('ConfirmationDialog.css');
 
 .ConfirmationDialog {
-    color: var(--text-color);
-    background-color: var(--table-background-color);
+    color: var(--on-background);
+    background-color: var(--container);
 }
 
 
@@ -45,11 +45,11 @@
     top: 200px;
     height: 175px;
     width: 300px;
-    border: 1px solid #ED8323;
+    border: 1px solid var(--secondary);
     border-radius: 5px;
-    background-color: var(--dialog-background-color);
+    background-color: var(--container);
     padding: 0 5px;
-    box-shadow: 0px 0px 5px 0px var(--primary-color);
+    box-shadow: 0px 0px 5px 0px var(--secondary);
 }
 
 .confirmation-dialog-title {
@@ -71,8 +71,9 @@
     .confirmation-dialog-button.UpdateAddonButton.disabled,
     .confirmation-dialog-button.UpdateAddonButton.disabled:hover {
         cursor: not-allowed;
-        color: #E6E8E6;
-        background-color: #ED8323aa;
+        color: var(--on-primary);
+        background-color: var(--primary);
+        opacity: 0.5;
         border: none;
     }
 
@@ -83,6 +84,6 @@
 }
 
 .confirmation-dialog-exit .menubar-btn {
-    color: var(--text-color);
-    background-color: var(--dialog-background-color);
+    color: var(--on-background);
+    background-color: var(--container);
 }

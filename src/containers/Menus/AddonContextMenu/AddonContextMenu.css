@@ -1,17 +1,17 @@
 .AddonContextMenu {
-    border: none;
+    color:var(--on-background);
+    border: 1px solid var(--secondary);
     border-radius: 5px 5px 0 0;
-    background-color: var(--dialog-background-color);
-    box-shadow: 0px 0px 2px 1px var(--table-border-color);
+    background-color: var(--container-light);
+    box-shadow: 0px 0px 2px 1px var(--secondary);
     display: inline-block;
     z-index: 200;
     max-width: fit-content;
-    color: var(--text-color);
     padding: 0;
 }
 
 .context-menu-header{
-    border-bottom: 1px solid var(--context-menu-divider);
+    border-bottom: 1px solid var(--primary);
     height: 50px;
     min-width: 200px;
 }
@@ -26,7 +26,7 @@
 }
 
 .context-menu-item a {
-  color: var(--text-color);
+  color: var(--on-background);
   text-decoration: none;
 }
 
@@ -63,7 +63,7 @@
     padding-top: 3px;
     padding-left: 10px;
     padding-right: 5px;
-    border-bottom: 1px solid var(--context-menu-divider);
+    border-bottom: 1px solid var(--primary);
 }
 
 .context-menu-item.disabled {
@@ -95,7 +95,8 @@
 }
 
 .context-menu-item:hover {
-    background-color: var(--primary-color);
+    color: var(--on-secondary);
+    background-color: var(--secondary);
 }
 
 
@@ -105,14 +106,14 @@
     right: -142px;
     width: 140px;
     top: 55px;
-    border: none;
+    color: var(--on-background);
+    border: 1px solid var(--secondary);
     border-radius: 5px 5px 0 0;
-    background-color: var(--dialog-background-color);
-    box-shadow: 0px 0px 2px 1px var(--table-border-color);
+    background-color: var(--container-light);
+    box-shadow: 0px 0px 2px 1px var(--secondary);
     display: inline-block;
     z-index: 200;
     max-width: fit-content;
-    color: var(--text-color);
     padding: 0;
 }
 
@@ -153,7 +154,7 @@
 .context-menu-branch-menu .sub-header,
 .context-menu-setting-menu .sub-header{
     height: 30px;
-    border-bottom: 1px solid var(--context-menu-divider);
+    border-bottom: 1px solid var(--primary);
 }
 
 
@@ -171,7 +172,7 @@
 }
 
 .context-menu-item-icon.selected {
-    color: var(--singularity-orange);
+    color: var(--secondary);
 }
 
 .context-uninstall {

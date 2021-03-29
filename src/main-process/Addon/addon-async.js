@@ -15,6 +15,7 @@ import {
   setGameSettings,
   updateInstalledAddonInfo,
   removeInstalledAddonInfo,
+  isGameVersionInstalled,
 } from '../../services/storage.service';
 import {
   createAndSaveSyncProfile,
@@ -25,10 +26,12 @@ import {
   installAddon,
   syncFromProfile,
   uninstallAddon,
+  installCluster,
 } from '../../services/file.service';
 import {
   getAddonDownloadUrl,
   getAddonInfo,
+  getCluster,
   searchForAddons,
 } from '../../services/singularity.service';
 
@@ -38,6 +41,17 @@ ipcMain.handle('search-for-addons', async (event, gameId, gameVersion, searchFil
     .catch((error) => {
       log.error(error.message);
       return reject(new Error('Error searching for addons'));
+    });
+}));
+
+ipcMain.handle('get-cluster', (event, clusterId) => new Promise((resolve, reject) => {
+  log.info(`Searching for cluster: ${clusterId}`);
+  getCluster(clusterId)
+    .then((cluster) => resolve(cluster))
+    .catch((error) => {
+      log.error('Error searching for cluster');
+      log.error(error.message);
+      return reject(new Error('Error searching for cluster'));
     });
 }));
 
@@ -145,7 +159,8 @@ ipcMain.handle('get-installed-addons', async (event, gameId, gameVersion) => new
 }));
 
 ipcMain.on('find-addons-async', async (event, gameId, gameVersion) => {
-  log.info('Called: find-addons');
+  log.info('Identifying installed addons');
+  event.sender.send('app-status-message', 'Identifying installed addons', 'status');
   const gameS = getGameSettings(gameId.toString());
   const gameD = getGameData(gameId.toString());
   if (gameS[gameVersion].sync) {
@@ -154,11 +169,13 @@ ipcMain.on('find-addons-async', async (event, gameId, gameVersion) => {
   fingerprintAllAsync(gameId, gameS[gameVersion].addonPath, gameD.fingerprintDepth)
     .then((hashMap) => {
       log.info(`Fingerprinted ${Object.keys(hashMap).length} directories for ${gameVersion}`);
+      event.sender.send('app-status-message', 'Checking for updates', 'status');
       identifyAddons(gameId.toString(), gameVersion, hashMap)
         .then(() => {
           if (gameS[gameVersion].sync && isAuthenticated()) {
             log.info('Sync enabled for game version');
             log.info('Fetching addon sync profile');
+            event.sender.send('app-status-message', 'Checking addon sync profile', 'status');
             const axiosConfig = {
               headers: {
                 'Content-Type': 'application/json;charset=UTF-8',
@@ -180,11 +197,13 @@ ipcMain.on('find-addons-async', async (event, gameId, gameVersion) => {
               })
               .then(() => {
                 log.info('Sync process complete');
+                event.sender.send('app-status-message', 'Addon sync complete', 'success');
                 event.sender.send('sync-status', gameId, gameVersion, 'sync-complete', new Date(), null);
               })
               .catch((err) => {
                 log.error('Error handling addon sync');
                 log.error(err);
+                event.sender.send('app-status-message', 'Error syncing addons', 'error');
                 if (err instanceof String) {
                   event.sender.send('sync-status', gameId, gameVersion, 'error', null, err);
                 } else {
@@ -196,16 +215,19 @@ ipcMain.on('find-addons-async', async (event, gameId, gameVersion) => {
             log.info('User is not authenticated, nothing to sync');
             event.sender.send('sync-status', gameId, gameVersion, 'error', null, 'User not authenticated');
           }
+          event.sender.send('app-status-message', 'Finished identifying addons', 'success');
           return Promise.resolve();
         })
         .catch((err) => {
           log.error(`Error attempting to identify addons for ${gameVersion} in find-addons`);
           log.error(err);
+          event.sender.send('app-status-message', 'Error identifying addons', 'error');
         });
     })
     .catch((fingerprintErr) => {
       log.error(`Error attempting to identify addons for ${gameVersion} in find-addons`);
       log.error(fingerprintErr);
+      event.sender.send('app-status-message', 'Error identifying addons', 'error');
     });
 });
 
@@ -219,10 +241,83 @@ ipcMain.on('get-addon-info', async (event, addonId) => {
     });
 });
 
+ipcMain.handle('install-cluster', async (event, clusterId, gameId, gameVersion) => new Promise((resolve, reject) => {
+  if (isGameVersionInstalled(gameId, gameVersion)) {
+    log.info(`Installing cluster ${clusterId}`);
+    event.sender.send('app-status-message', `Installing cluster ${clusterId}`, 'status');
+    return installCluster(clusterId)
+      .then(() => resolve())
+      .catch((error) => {
+        log.error(error.message);
+        event.sender.send('app-status-message', 'Error installing cluster', 'error');
+        return reject(error);
+      });
+  }
+  return reject(new Error('Game version is not installed'));
+}));
+
+ipcMain.handle('install-addon-from-cluster', async (event, gameId, gameVersion, addon, fileId) => new Promise((resolve, reject) => {
+  if (isGameVersionInstalled(gameId, gameVersion)) {
+    log.info(`Installing addon ${addon.name}`);
+    event.sender.send('app-status-message', `Installing ${addon.name}`, 'status');
+    const addonDir = getAddonDir(gameId, gameVersion);
+    return getAddonInfo(addon._id)
+      .then((addonInfo) => {
+        getAddonDownloadUrl(addonInfo.addonId, fileId)
+          .then((fileInfo) => installAddon(addonDir, fileInfo.downloadUrl)
+            .then(() => fileInfo)
+            .catch((err) => {
+              log.error(err.message);
+              return Promise.reject(err);
+            }))
+          .then((fileInfo) => updateInstalledAddonInfo(
+            gameId, gameVersion, addonInfo, fileInfo.fileDetails,
+          ))
+          .then((installedAddon) => handleInstallDependencies(gameId, gameVersion, installedAddon))
+          .then((installedAddon) => {
+            const gameS = getGameSettings(gameId.toString());
+            if (gameS[gameVersion].sync && isAuthenticated()) {
+              log.info('Game version is configured to sync, updating profile');
+              return createAndSaveSyncProfile({ gameId, gameVersion })
+                .then(() => {
+                  log.info('Sync profile updated');
+                  event.sender.send('app-status-message', `Successfully installed ${installedAddon.addonName}`, 'success');
+                  event.sender.send('cluster-addon-installed', installedAddon);
+                  return resolve(installedAddon);
+                })
+                .catch((err) => {
+                  log.error('Error saving sync profile');
+                  log.error(err);
+                  event.sender.send('app-status-message', `Successfully installed ${installedAddon.addonName}`, 'success');
+                  event.sender.send('cluster-addon-installed', installedAddon);
+                  return resolve(installedAddon);
+                });
+            }
+            log.info(`Successfully installed ${installedAddon.addonName}`);
+            event.sender.send('app-status-message', `Successfully installed ${installedAddon.addonName}`, 'success');
+            event.sender.send('cluster-addon-installed', installedAddon);
+            return resolve(installedAddon);
+          })
+          .catch((error) => {
+            log.error(error.message);
+            event.sender.send('app-status-message', `Error installing ${addon.name}`, 'error');
+            return reject(error);
+          });
+      })
+      .catch((error) => {
+        log.error(error.message);
+        event.sender.send('app-status-message', `Error installing ${addon.name}`, 'error');
+        return reject(error);
+      });
+  }
+  return reject(new Error('Game version is not installed'));
+}));
+
 ipcMain.handle('install-addon', async (
   event, gameId, gameVersion, addon, fileId,
 ) => new Promise((resolve, reject) => {
   log.info(`Installing addon ${addon.addonName}`);
+  event.sender.send('app-status-message', `Installing ${addon.addonName}`, 'status');
   const addonDir = getAddonDir(gameId, gameVersion);
   return getAddonDownloadUrl(addon.addonId, fileId)
     .then((fileInfo) => installAddon(addonDir, fileInfo.downloadUrl)
@@ -240,19 +335,23 @@ ipcMain.handle('install-addon', async (
         return createAndSaveSyncProfile({ gameId, gameVersion })
           .then(() => {
             log.info('Sync profile updated');
+            event.sender.send('app-status-message', `Successfully installed ${installedAddon.addonName}`, 'success');
             return resolve(installedAddon);
           })
           .catch((err) => {
             log.error('Error saving sync profile');
             log.error(err);
+            event.sender.send('app-status-message', `Successfully installed ${installedAddon.addonName}`, 'success');
             return resolve(installedAddon);
           });
       }
-      log.info(`Succesfully installed ${installedAddon.addonName}`);
+      log.info(`Successfully installed ${installedAddon.addonName}`);
+      event.sender.send('app-status-message', `Successfully installed ${installedAddon.addonName}`, 'success');
       return resolve(installedAddon);
     })
     .catch((error) => {
       log.error(error.message);
+      event.sender.send('app-status-message', `Error installing ${addon.addonName}`, 'error');
       return reject(error);
     });
 }));

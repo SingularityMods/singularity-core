@@ -2,8 +2,7 @@
 
 .AuthDialog {
     z-index: 100;
-    color: var(--text-color);
-    background-color: var(--table-background-color);
+    color: var(--on-background);
     position: absolute;
     top: 0;
     left: 0;
@@ -17,11 +16,11 @@
     margin: 25px auto 0;
     height: 495px;
     width: 500px;
-    border: 1px solid #ED8323;
+    border: 1px solid var(--secondary);
     border-radius: 5px;
-    background-color: var(--dialog-background-color);
+    background-color: var(--container);
     padding: 0 5px;
-    box-shadow: 0px 0px 5px 0px var(--primary-color);
+    box-shadow: 0px 0px 5px 0px var(--secondary);
     -webkit-app-region: no-drag;
 }
 
@@ -63,15 +62,22 @@
 
 .auth-dialog-button {
     margin: auto;
-
     border: none;
+}
+
+.auth-dialog-content input:focus,
+.auth-dialog-content input:active  {
+    outline: none;
+    border: none;
+    box-shadow: none;
 }
 
 .auth-dialog-button.UpdateAddonButton.disabled,
 .auth-dialog-button.UpdateAddonButton.disabled:hover {
     cursor: not-allowed;
-    color: #E6E8E6;
-    background-color: #ED8323aa;
+    color: var(--on-primary);
+    background-color: var(--primary);
+    opacity: 0.5;
     border: none;
 }
 
@@ -93,8 +99,8 @@
     margin-right: -10px;
     margin-top: 2px;
     float: right;
-    color: var(--text-color);
-    background-color: var(--dialog-background-color);
+    color: var(--on-background);
+    background-color: var(--container);
     -webkit-app-region: no-drag;
 }
 
@@ -104,7 +110,7 @@
 
 .auth-form-error {
     text-align: center;
-    color: red;
+    color: var(--error-red);
     font-size: 0.9rem;
     height: 21px;
 }
@@ -128,24 +134,29 @@
 }
 
 .auth-dialog-select .nav-tabs .nav-item {
-    color: var(--text-color);
+    color: var(--on-background);
     font-weight:bold;
     border: none;
     font-size: 1.05rem;
 }
 
-    .auth-dialog-select .nav-tabs .nav-item:hover {
-        color: var(--singularity-orange);
-    }
-
 .auth-dialog-select .nav-tabs .nav-item:focus {
     outline: none;
 }
 
+.auth-dialog-select .nav-tabs .nav-item:hover {
+    color: var(--secondary);
+}
+
+.auth-dialog-select .nav-tabs .nav-item:active {
+    color: var(--secondary-dark);
+}
+
+
 .auth-dialog-select .nav-tabs .nav-item.active {
-    background-color: #00000000;
-    color: var(--singularity-orange);
-    border-bottom: 3px solid var(--singularity-orange);
+    background-color: var(--container);
+    color: var(--secondary);
+    border-bottom: 3px solid var(--secondary);
 }
 
 .signup-validation-spinner {
@@ -169,31 +180,34 @@
     margin-top: 197px;
 }
 .auth-dialog-button.btn.btn-primary {
-    background-color: var(--singularity-orange);
+    background-color: var(--secondary);
 }
 
 .auth-dialog-button.btn.btn-primary:focus {
-    background-color: var(--singularity-orange);
-    border-color: var(--singularity-orange);
+    background-color: var(--secondary);
+    border-color: var(--secondary);
     -webkit-box-shadow: none;
     box-shadow: none;
     outline:none;
 }
 
-.auth-dialog-button.btn.btn-primary:active {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
-    -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
-    box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
+.auth-dialog-button.btn.btn-primary:hover {
+    background-color: var(--secondary-light);
+    border-color: var(--secondary-light);
+    -webkit-box-shadow: none;
+    box-shadow: none;
     outline:none;
 }
 
+.auth-dialog-button.btn.btn-primary:active,
 .auth-dialog-button.btn.btn-primary:not(:disabled):not(.disabled):active {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
-    -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
-    box-shadow: 0px 0px 4px 1px var(--secondary-box-shadow-color);
+    background-color: var(--secondary-light);
+    border-color: var(--secondary-light);
+    -webkit-box-shadow: 0px 0px 4px 1px var(--secondary-light);
+    box-shadow: 0px 0px 4px 1px var(--secondary-light);
+    outline:none;
 }
+
 .email-resent-icon-container {
     position: absolute;
     left: 160px;
@@ -201,12 +215,12 @@
 }
 
 .email-resent-icon {
-    color: #00FF00;
+    color: var(--success-green);
     font-size: 1.2rem;
 }
 
 .email-resent-icon.failed {
-    color: red;
+    color: var(--error-red);
 }
 
 .resend-email-spinner {
@@ -219,7 +233,7 @@
 }
 
 .signup-link {
-    color: var(--singularity-orange);
+    color: var(--secondary);
 }
 
 .auth-form-terms-message.forgot-password {
