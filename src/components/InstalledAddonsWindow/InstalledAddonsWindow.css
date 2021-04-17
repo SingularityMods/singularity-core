@@ -70,6 +70,28 @@
     float: right;
 }
 
+#InstalledAddonsWindow .extras-link {
+    float: right;
+    margin-left: 5px;
+    margin-top: 5px;
+}
+
+#InstalledAddonsWindow .extras-link:focus {
+    outline: none;
+}
+
+#InstalledAddonsWindow .extras-icon {
+    color: var(--on-background);
+}
+
+#InstalledAddonsWindow .extras-link:hover .extras-icon {
+    color: var(--secondary);
+}
+
+#InstalledAddonsWindow .extras-link:active .extras-icon {
+    color: var(--secondary-light);
+}
+
 .no-data-label{
     text-align: center;
 }

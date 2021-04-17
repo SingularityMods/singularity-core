@@ -57,6 +57,28 @@ function getAddonDownloadUrl(addonId, fileId) {
   });
 }
 
+function getWagoDownloadUrl(gameVersionFlavor) {
+  return new Promise((resolve, reject) => {
+    const axiosConfig = {
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'User-Agent': `Singularity-${app.getVersion()}`,
+        'x-app-uuid': getAppData('UUID'),
+      },
+    };
+
+    const requestUrl = `${AppConfig.API_URL}/wago/${gameVersionFlavor}`;
+    return axios.get(requestUrl, axiosConfig)
+      .then((res) => {
+        if (res.status !== 200) {
+          return reject(new Error('No download info recieved'));
+        }
+        return resolve(res.data);
+      })
+      .catch((error) => reject(error));
+  });
+}
+
 function getClusterDownloadInfo(clusterId) {
   return new Promise((resolve, reject) => {
     const axiosConfig = {
@@ -153,4 +175,5 @@ export {
   getCluster,
   getClusterDownloadInfo,
   searchForAddons,
+  getWagoDownloadUrl,
 };

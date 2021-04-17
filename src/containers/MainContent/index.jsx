@@ -18,6 +18,7 @@ function MainContent(props) {
     openBackupManagementDialog,
     openBackupRestore,
     openSettings,
+    openWowExtras,
     restorePending,
     selected,
     selectedAddonId,
@@ -35,6 +36,7 @@ function MainContent(props) {
             gameId={selected}
             openBackupManagementDialog={openBackupManagementDialog}
             openBackupRestore={openBackupRestore}
+            openWowExtras={openWowExtras}
             backupPending={backupPending}
             restorePending={restorePending}
             latestCloudBackup={latestCloudBackup}
@@ -55,6 +57,7 @@ MainContent.propTypes = {
   lastRestoreComplete: PropTypes.instanceOf(Date).isRequired,
   openBackupManagementDialog: PropTypes.func.isRequired,
   openBackupRestore: PropTypes.func.isRequired,
+  openWowExtras: PropTypes.func.isRequired,
   openSettings: PropTypes.func.isRequired,
   restorePending: PropTypes.bool.isRequired,
   selected: PropTypes.number,

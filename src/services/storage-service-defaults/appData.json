@@ -15,6 +15,7 @@
       "defaultWowVersion": "wow_retail",
       "closeToTray": false,
       "beta": false,
-      "telemetry": false
+      "telemetry": false,
+      "wagoApiKey": ""
     }
   }

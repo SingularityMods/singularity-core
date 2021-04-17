@@ -23,6 +23,7 @@ import AuthDialog from '../../components/Dialogs/AuthDialog';
 import BackupManagementDialog from '../../components/Dialogs/BackupManagementDialog';
 import BackupRestoreDialog from '../../components/Dialogs/BackupRestoreDialog';
 import TermsDialog from '../../components/Dialogs/TermsDialog';
+import WowExtrasDialog from '../../components/Dialogs/WowExtrasDialog';
 
 import BigSidebar from '../SideBars/BigSidebar';
 import SmallSidebar from '../SideBars/SmallSidebar';
@@ -44,6 +45,7 @@ class App extends React.Component {
       settingsOpened: false,
       profileMenuOpened: false,
       authOpened: null,
+      wowExtrasOpened: null,
       termsAccepted: false,
       telemetryPrompted: false,
       telemetryEnabled: false,
@@ -86,6 +88,8 @@ class App extends React.Component {
     this.toggleBigSidebar = this.toggleBigSidebar.bind(this);
     this.openClusterListener = this.openClusterListener.bind(this);
     this.closeClusterWindow = this.closeClusterWindow.bind(this);
+    this.openWowExtras = this.openWowExtras.bind(this);
+    this.closeWowExtras = this.closeWowExtras.bind(this);
     this.clusterAddonInstalledListener = this.clusterAddonInstalledListener.bind(this);
   }
 
@@ -214,6 +218,21 @@ class App extends React.Component {
     });
   }
   // <<< Auth Dialog End >>>
+
+  // <<< Wow Extras >>>
+  openWowExtras(gameVersion) {
+    this.setState({
+      wowExtrasOpened: gameVersion,
+    });
+  }
+
+  closeWowExtras() {
+    this.setState({
+      wowExtrasOpened: null,
+    });
+  }
+
+  // <<< Wow Extras End >>>
 
   // <<< Backup Management Dialog Start >>>
   openBackupManagementDialog(opts) {
@@ -408,6 +427,7 @@ class App extends React.Component {
       selectedBackup,
       selectedGame,
       settingsOpened,
+      wowExtrasOpened,
       telemetryPrompted,
       termsAccepted,
       selectedAddonId,
@@ -475,7 +495,15 @@ class App extends React.Component {
             />
           )
           : ''}
-
+        {wowExtrasOpened && !selectedCluster
+          ? (
+            <WowExtrasDialog
+              gameVersion={wowExtrasOpened}
+              onExit={this.closeWowExtras}
+              wagoUpdating={false}
+            />
+          )
+          : ''}
         <Header onClick={this.deselectAll} onOpenProfileMenu={this.openProfileMenu} />
         {(profileMenuOpened)
           ? (
@@ -526,6 +554,7 @@ class App extends React.Component {
                   closeSettings={this.closeSettings}
                   openBackupManagementDialog={this.openBackupManagementDialog}
                   openBackupRestore={this.openBackupRestore}
+                  openWowExtras={this.openWowExtras}
                   selected={selectedGame}
                   selectedAddonId={selectedAddonId}
                   settingsOpened={settingsOpened}
