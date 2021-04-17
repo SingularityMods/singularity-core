@@ -24,6 +24,14 @@ import {
   setGameSettings,
 } from '../../services/storage.service';
 
+ipcMain.handle('set-wago-api-key', (_event, apiKey) => {
+  const userConfig = getAppData('userConfigurable');
+  userConfig.wagoApiKey = apiKey;
+  return setAppData('userConfigurable', userConfig);
+});
+
+ipcMain.handle('get-wago-api-key', () => getAppData('userConfigurable').wagoApiKey);
+
 ipcMain.on('set-app-settings', (event, appSettings) => {
   const prevSettings = getAppData('userConfigurable');
   setAppData('userConfigurable', appSettings);

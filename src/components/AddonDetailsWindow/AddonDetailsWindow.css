@@ -106,6 +106,9 @@
 .addon-page-link a {
     color: var(--text-color);
 }
+.description a {
+    color: var(--secondary);
+}
 
 .addon-page-link:hover,
 .addon-page-link:focus:hover,

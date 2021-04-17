@@ -31,6 +31,9 @@ import {
   initSentry,
   enableSentry,
 } from './services/sentry.service';
+import {
+  checkForWagoUpdates,
+} from './services/wago.service';
 
 // import ipc handlers
 require('./main-process');
@@ -337,6 +340,7 @@ function createSplashWindow() {
 
 function showMainWindow() {
   if (mainWindowReady) {
+    checkForWagoUpdates();
     log.info('Hide splash and show main window');
     if (isAuthenticated()) {
       mainWindow.webContents.send('auth-event', 'refresh', true, null);

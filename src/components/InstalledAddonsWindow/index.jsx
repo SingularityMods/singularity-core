@@ -660,6 +660,7 @@ class InstalledAddonsWindow extends React.Component {
       gameId,
       gameVersion,
       toggleActiveTab,
+      openWowExtras,
     } = this.props;
     const {
       appUUID,
@@ -996,6 +997,19 @@ class InstalledAddonsWindow extends React.Component {
                     </Form.Group>
                   </Col>
                   <Col xs={{ span: 2 }}>
+                    {gameId === 1
+                      ? (
+                        <div
+                          className="extras-link"
+                          role="button"
+                          tabIndex="0"
+                          onClick={() => openWowExtras(gameVersion)}
+                          onKeyPress={() => openWowExtras(gameVersion)}
+                        >
+                          <i className="fas fa-cogs extras-icon" />
+                        </div>
+                      )
+                      : ''}
                     <Button
                       className="backup-button"
                       onClick={this.openBackupDialog}
@@ -1068,6 +1082,7 @@ InstalledAddonsWindow.propTypes = {
   lastRestoreComplete: PropTypes.object.isRequired,
   onSelectAddon: PropTypes.func.isRequired,
   openBackupManagementDialog: PropTypes.func.isRequired,
+  openWowExtras: PropTypes.func.isRequired,
   restorePending: PropTypes.bool.isRequired,
   toggleActiveTab: PropTypes.func.isRequired,
 };

@@ -1,0 +1,292 @@
+
+#WowExtrasDialog {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: #000000aa;
+    z-index: 100;
+}
+
+#WowExtrasDialog .content {
+    color: var(--on-background);
+    position: relative;
+    margin-right: auto;
+    margin-left: auto;
+    top: 50px;
+    max-height: fit-content;
+    width: 770px;
+    border: 1px solid var(--secondary);
+    border-radius: 5px;
+    background-color: var(--container);
+    padding: 0 5px;
+    box-shadow: 0px 0px 5px 0px var(--secondary);
+    overflow: hidden;
+    padding-bottom: 5px;
+}
+
+#WowExtrasDialog .exit .menubar-btn{
+    color: var(--on-background);
+    background-color: var(--container);
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin-top:3px;
+    margin-right:3px;
+    z-index: 101;
+}
+
+.wow-extras-dialog-title {
+    text-align:center;
+    margin-top:15px;
+}
+.wow-extras-dialog-title h2 {
+    font-weight: bold;
+}
+
+.wow-extras-detail {
+    font-size: 0.8rem;
+}
+
+.wow-extras-detail .wow-extras-detail-label {
+    font-weight: bold;
+}
+
+.wow-extras-option-settins{
+    margin-top: 10px;
+}
+
+.wow-extras-confirm-option {
+    float: left;
+    margin-top: 40px;
+}
+
+.wow-extras-message{
+    margin-left: -20px;
+}
+
+.pending-message {
+    margin-left: 10px;
+    font-size: 0.75rem;
+}
+
+#WowExtrasDialog .dialog-button.back-button{
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 5px;
+    margin-right: 0px;
+    cursor: pointer;
+    z-index: 101;
+}
+
+#WowExtrasDialog .dialog-button {
+    color: var(--on-secondary);
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+}
+
+#WowExtrasDialog .dialog-button:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+#WowExtrasDialog .dialog-button:hover {
+    background-color: var(--secondary-light);
+    border-color: var(--secondary-light);
+}
+
+#WowExtrasDialog .dialog-button:active {
+    box-shadow: 0px 0px 4px 1px var(--secondary-light);
+}
+
+#WowExtrasDialog #extras-sub-menu {
+    margin-top: 5px;
+    padding: 0;
+}
+
+#WowExtrasDialog #extras-menu .nav-tabs,
+#WowExtrasDialog #extras-sub-menu .nav-tabs { 
+  border-color: var(--secondary);
+}
+
+#WowExtrasDialog #extras-menu .nav-tabs .nav-item,
+#WowExtrasDialog #extras-sub-menu .nav-tabs .nav-item {
+  color: var(--on-secondary);
+  border: none;
+}
+
+#WowExtrasDialog #extras-menu .nav-tabs .nav-item.active,
+#WowExtrasDialog #extras-sub-menu .nav-tabs .nav-item.active {
+  background-color: var(--secondary);
+}
+
+#WowExtrasDialog .extras-title {
+    margin-top: 10px;
+}
+
+#WowExtrasDialog .extras-header {
+    background-color: var(--container-light);
+    padding-top: 5px;
+    padding-bottom: 10px;
+    border-radius: 5px;
+}
+
+#WowExtrasDialog .settings-switch {
+    margin-top: 5px;
+    margin-left: 10px;
+}
+
+#WowExtrasDialog .extras-header #wago-api-key .form-group {
+  display: inline;
+}
+
+#WowExtrasDialog .header-label {
+    float: left;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+#WowExtrasDialog #apiKey {
+    width: 80%;
+    float: left;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+#WowExtrasDialog #apiKey:read-only {
+  opacity: 0.5;
+}
+
+#WowExtrasDialog .api-key-button {
+    position: absolute;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+#WowExtrasDialog .api-key-button:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+#WowExtrasDialog .error-message-section {
+  color: var(--error-red);
+  text-align: center;
+}
+
+.wago-table .table-bordered,
+.wago-table .table-bordered table,
+.wago-table .table-bordered thead,
+.wago-table .table-bordered tr,
+.wago-table .table-bordered th,
+.wago-table .table-bordered td {
+    border: none;
+    padding: 0.5rem;
+}
+
+.wago-table .table-bordered {
+  margin-bottom: 0;
+}
+
+.wago-table th {
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.wago-table th:focus {
+    outline: none;
+} 
+
+.wago-table td {
+  font-size: 0.75rem;
+}
+
+.wago-table .table-bordered tr.table-header {
+  color: white;
+  background-color: var(--primary);
+}
+
+.wago-table .table-bordered tr.table-header th:focus {
+  outline: none;
+  background-color: var(--primary);
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.wago-table .table-bordered tr.table-header th.sortable {
+  cursor: pointer;
+}
+
+.wago-table .table-bordered tr.selected-addon-row,
+.wago-table .table-bordered tr.selected-addon-row td{
+  background-color: var(--primary-dark);
+}
+
+.wago-table tr.selected-addon-row .addon-name {
+  color: var(--on-primary);
+}
+
+.wago-table table.table-bordered {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.wago-table .table-bordered tr,
+.wago-table .table-bordered td {
+  color: var(--on-background);
+  background-color: var(--container);
+}
+
+.wago-table table.table-bordered thead tr th {
+  border-top: 1px solid var(--primary-light);
+}
+
+.wago-table thead tr:first-child th:first-child {
+  border-radius: 1em 0 0 0;
+  border-left: 1px solid var(--primary-light);
+}
+
+.wago-table thead tr:first-child th:last-child {
+  border-radius: 0 1em 0 0;
+  border-right: 1px solid var(--primary-light);
+}
+
+.wago-table tbody tr:last-child td:first-child {
+  border-radius: 0 0 0 1em;
+}
+
+.wago-table tbody tr:last-child td:last-child {
+  border-radius: 0 0 1em 0;
+}
+
+
+.wago-table table.table-bordered tbody tr td:first-child {
+  border-left: 1px solid var(--primary-light);
+}
+
+.wago-table table.table-bordered tbody tr td:last-child {
+  border-right: 1px solid var(--primary-light);
+}
+
+.wago-table table.table-bordered tbody tr:last-child td {
+  border-bottom: 1px solid var(--primary-light);
+}
+
+.wago-table .table-bordered tr .label.label-danger {
+font-size: 0.8rem;
+margin-left: 0px;
+}
+
+.wago-table .table-bordered td.react-bs-table-no-data {
+  border-radius: 0 0 1em 1em;
+}
+
+.wago-table tr.selected-addon-row .label,
+.wago-table tr.selected-addon-row td {
+    color: var(--on-primary);
+}
+
+.wago-table a {
+    color: var(--secondary);
+}

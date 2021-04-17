@@ -155,6 +155,48 @@ function getInstalledGames() {
   return installed;
 }
 
+function getWago(gameVersion) {
+  return gameSettings['1'][gameVersion].wago;
+}
+
+function setWago(gameVersion, config) {
+  gameSettings['1'][gameVersion].wago = config;
+  const filePath = path.join(userDataPath, 'game-settings.json');
+  return fs.writeFileSync(filePath, JSON.stringify(gameSettings));
+}
+
+function getWagoAPIKey() {
+  return appData.userConfigurable.wagoApiKey;
+}
+
+function setWagoAPIKey(key) {
+  appData.userConfigurable.wagoApiKey = key;
+  const filePath = path.join(userDataPath, 'app-data.json');
+  return fs.writeFileSync(filePath, JSON.stringify(appData));
+}
+
+function updateWagoScriptInfo(gameVersion, wa, plater) {
+  gameSettings['1'][gameVersion].wago.wa = wa;
+  gameSettings['1'][gameVersion].wago.plater = plater;
+  const filePath = path.join(userDataPath, 'game-settings.json');
+  fs.writeFileSync(filePath, JSON.stringify(gameSettings));
+  return (gameSettings['1'][gameVersion].wago);
+}
+
+function getWagoEnabledVersions() {
+  const enabled = [];
+  Object.keys(gameSettings['1']).forEach((gameVersion) => {
+    if (gameSettings['1'][gameVersion].wago.enabled) {
+      enabled.push(gameVersion);
+    }
+  });
+  return enabled;
+}
+
+function getInstallPath(gameId, gameVersion) {
+  return gameSettings[gameId.toString()][gameVersion].installPath;
+}
+
 function getInstalledAddons(gameId, gameVersion) {
   return gameSettings[gameId.toString()][gameVersion].installedAddons;
 }
@@ -200,6 +242,11 @@ function setGameData(key, val) {
 function getAddonDir(gameId, gameVersion) {
   const gameS = getGameSettings(gameId.toString());
   return gameS[gameVersion].addonPath;
+}
+
+function getAddonSettingsDir(gameId, gameVersion) {
+  const gameS = getGameSettings(gameId.toString());
+  return gameS[gameVersion].settingsPath;
 }
 
 function getAddonVersion(gameId, gameVersion) {
@@ -732,11 +779,18 @@ export {
   getInstalledAddons,
   getGameSettings,
   getAddonDir,
+  getAddonSettingsDir,
   getAddonVersion,
   getAppData,
   getGameData,
   getCategories,
   getBannerPath,
+  getWago,
+  setWago,
+  getWagoAPIKey,
+  setWagoAPIKey,
+  updateWagoScriptInfo,
+  getWagoEnabledVersions,
   setGameSettings,
   setAppData,
   setGameData,
@@ -758,6 +812,7 @@ export {
   getUninstallDepsSetting,
   getDefaultTrackBranch,
   getDefaultAutoUpdate,
+  getInstallPath,
   isSyncEnabled,
   getAllThemes,
   setTheme,

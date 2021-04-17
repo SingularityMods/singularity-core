@@ -986,6 +986,21 @@ function setAppConfig() {
         log.error(error);
       });
   }
+  if (version < app.getVersion()) {
+    const wowS = getGameSettings('1');
+    Object.keys(wowS).forEach((gameVersion) => {
+      wowS[gameVersion].wago = {
+        enabled: false,
+        enabledFor: [],
+        wa: [],
+        plater: [],
+      };
+    });
+    setGameSettings('1', wowS);
+    const userConf = getAppData('userConfigurable');
+    userConf.wagoApiKey = '';
+    setAppData('userConfigurable', userConf);
+  }
   // Set new version
   setAppData('version', app.getVersion());
   // Set UUID if it doesn't exist

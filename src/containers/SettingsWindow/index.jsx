@@ -50,7 +50,7 @@ class SettingsWindow extends React.Component {
       wow_retail_ptr: gameSettings.wow_retail_ptr.installPath,
       wow_classic_ptr: gameSettings.wow_classic_ptr.installPath,
       wow_retail_beta: gameSettings.wow_retail_beta.installPath,
-
+      wow_classic_beta: gameSettings.wow_classic_beta.installPath,
     };
     const esoSettings = {
       installPath: esoConfig.eso.installPath,
@@ -62,6 +62,7 @@ class SettingsWindow extends React.Component {
       wow_retail_ptr: gameSettings.wow_retail_ptr.defaults,
       wow_classic_ptr: gameSettings.wow_classic_ptr.defaults,
       wow_retail_beta: gameSettings.wow_retail_beta.defaults,
+      wow_classic_beta: gameSettings.wow_classic_beta.defaults,
       eso: esoConfig.eso.defaults,
     };
     this.setState({
@@ -328,6 +329,9 @@ class SettingsWindow extends React.Component {
           break;
         case 'wow_retail_beta':
           defaultWowTitle = 'Retail Beta';
+          break;
+        case 'wow_classic_beta':
+          defaultWowTitle = 'Classic Beta';
           break;
         default:
           defaultWowTitle = 'Retail';
@@ -1030,7 +1034,7 @@ class SettingsWindow extends React.Component {
                     </Row>
                     <Row className="settings-item">
                       <Col xs={4} md={3} className="settings-item-name">
-                        <div>Beta Install Path</div>
+                        <div>Retail Beta Install Path</div>
                       </Col>
                       <Col xs={8} md={9} className="settings-item-config">
                         <p data-tip data-for="beta-dir-location">
@@ -1051,7 +1055,7 @@ class SettingsWindow extends React.Component {
                     </Row>
                     <Row className="settings-item">
                       <Col xs={4} md={3} className="settings-item-name">
-                        <div>Beta Default Addon Track</div>
+                        <div>Retail Beta Default Addon Track</div>
                       </Col>
                       <Col xs={8} md={9} className="settings-item-config">
                         <DropdownButton
@@ -1095,6 +1099,82 @@ class SettingsWindow extends React.Component {
                               checked={gameDefaults.wow_retail_beta.autoUpdate}
                               gameversion="wow_retail_beta"
                               id="wow_retail_beta_auto_update"
+                              onColor="#00cc00"
+                              height={20}
+                              width={40}
+                              activeBoxShadow="0 0 2px 3px #00cc00"
+                            />
+                          )
+                          : ''}
+                      </Col>
+                    </Row>
+                    <Row className="settings-item">
+                      <Col xs={4} md={3} className="settings-item-name">
+                        <div>Classic Beta Install Path</div>
+                      </Col>
+                      <Col xs={8} md={9} className="settings-item-config">
+                        <p data-tip data-for="beta-dir-location">
+                          <Button
+                            className="select-install-dir-button"
+                            onClick={() => changeWowInstallDir('wow_classic_beta')}
+                          >
+                            {wowInstalls.wow_classic_beta || 'Not Installed'}
+                          </Button>
+                        </p>
+                        <ReactTooltip id="beta-dir-location">
+                          <span>{wowInstalls.wow_classic_beta || 'Not Installed'}</span>
+                        </ReactTooltip>
+                        {wowInstallsErr && wowInstallsErr.wow_classic_beta
+                          ? <span className="errorMsg">Couldn&apos;t find game in location</span>
+                          : ''}
+                      </Col>
+                    </Row>
+                    <Row className="settings-item">
+                      <Col xs={4} md={3} className="settings-item-name">
+                        <div>Classic Beta Default Addon Track</div>
+                      </Col>
+                      <Col xs={8} md={9} className="settings-item-config">
+                        <DropdownButton
+                          id="default-wow-classic-track-dropdown"
+                          title={getDefaultTrackTile(gameDefaults.wow_classic_beta.trackBranch)}
+                          onSelect={this.toggleDefaultWowAddonTrack}
+                        >
+                          <Dropdown.Item
+                            gameversion="wow_classic_beta"
+                            key={1}
+                            eventKey={1}
+                          >
+                            Release
+                          </Dropdown.Item>
+                          <Dropdown.Item
+                            gameversion="wow_classic_beta"
+                            key={2}
+                            eventKey={2}
+                          >
+                            Beta
+                          </Dropdown.Item>
+                          <Dropdown.Item
+                            gameversion="wow_classic_beta"
+                            key={3}
+                            eventKey={3}
+                          >
+                            Alpha
+                          </Dropdown.Item>
+                        </DropdownButton>
+                      </Col>
+                    </Row>
+                    <Row className="settings-item">
+                      <Col xs={4} md={3} className="settings-item-name">
+                        <div>Classic Beta Default Auto Update</div>
+                      </Col>
+                      <Col xs={8} md={9} className="settings-item-config">
+                        {appSettings
+                          ? (
+                            <Switch
+                              onChange={this.toggleDefaultAutoUpdate}
+                              checked={gameDefaults.wow_classic_beta.autoUpdate}
+                              gameversion="wow_classic_beta"
+                              id="wow_classic_beta_auto_update"
                               onColor="#00cc00"
                               height={20}
                               width={40}

@@ -195,6 +195,7 @@ class GameWindow extends React.Component {
       lastRestoreComplete,
       openBackupManagementDialog,
       openBackupRestore,
+      openWowExtras,
     } = this.props;
     return (
       <div className="GameWindow">
@@ -237,6 +238,7 @@ class GameWindow extends React.Component {
                         restorePending={restorePending}
                         openBackupManagementDialog={openBackupManagementDialog}
                         openBackupRestore={openBackupRestore}
+                        openWowExtras={openWowExtras}
                         latestCloudBackup={latestCloudBackup}
                         lastRestoreComplete={lastRestoreComplete}
                         toggleActiveTab={this.toggleActiveTab}
@@ -282,6 +284,7 @@ GameWindow.propTypes = {
   lastRestoreComplete: PropTypes.instanceOf(Date).isRequired,
   openBackupManagementDialog: PropTypes.func.isRequired,
   openBackupRestore: PropTypes.func.isRequired,
+  openWowExtras: PropTypes.func.isRequired,
   restorePending: PropTypes.bool.isRequired,
   selectedAddonId: PropTypes.string.isRequired,
 };
