@@ -347,8 +347,8 @@ class WowExtrasDialog extends React.Component {
                                 {loading
                                   ? (
                                     <span className="loading-spinner">
-                                    <i className="fas fa-spinner fa-spin loading-icon" />
-                                  </span>
+                                      <i className="fas fa-spinner fa-spin loading-icon" />
+                                    </span>
                                   )
                                   : ''}
                               </Col>

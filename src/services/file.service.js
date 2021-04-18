@@ -273,15 +273,13 @@ function autoFindGame(gameId) {
     }
     const {
       gameVersions,
-      addonDir,
       likelyInstallPaths,
-      settingsDir,
       addonDirLocation,
       settingsDirLocation,
     } = getGameData(gameId.toString());
     const promises = [];
     Object.entries(gameVersions).forEach(([gameVersion]) => {
-      const { gameDir } = gameVersions[gameVersion];
+      const { gameDir, addonDir, settingsDir } = gameVersions[gameVersion];
       likelyInstallPaths[platform].forEach((dir) => {
         promises.push(_checkForGameVersion({
           selectedPath: dir,
@@ -311,12 +309,12 @@ function autoFindGame(gameId) {
   });
 }
 
-function updateESOAddonPath(selectedPath) {
+function updateESOAddonPath(gameVersion, selectedPath) {
   return new Promise((resolve) => {
     const gameS = getGameSettings('2');
     const gameD = getGameData('2');
-    gameS.eso.addonPath = selectedPath;
-    gameS.eso.settingsPath = path.join(gameS.eso.addonPath, '..', path.sep, '..', path.sep, '..', path.sep, gameD.settingsDir);
+    gameS[gameVersion].addonPath = selectedPath;
+    gameS[gameVersion].settingsPath = path.join(gameS[gameVersion].addonPath, '..', path.sep, '..', path.sep, '..', path.sep, gameD.gameVersions[gameVersion].settingsDir);
     setGameSettings('2', gameS);
     return resolve();
   });
@@ -325,11 +323,11 @@ function updateESOAddonPath(selectedPath) {
 function findInstalledGame(gameId, selectedPath) {
   return new Promise((resolve, reject) => {
     const {
-      gameVersions, addonDir, settingsDir, addonDirLocation, settingsDirLocation,
+      gameVersions, addonDirLocation, settingsDirLocation,
     } = getGameData(gameId.toString());
     const promises = [];
     Object.entries(gameVersions).forEach(([gameVersion]) => {
-      const { gameDir } = gameVersions[gameVersion];
+      const { gameDir, addonDir, settingsDir } = gameVersions[gameVersion];
       promises.push(_checkForGameVersion({
         gameId,
         gameVersion,

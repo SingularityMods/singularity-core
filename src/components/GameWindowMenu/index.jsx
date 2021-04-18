@@ -75,39 +75,35 @@ class GameWindowMenu extends React.Component {
             </Tabs>
           </Col>
           <Col xs={{ span: 4, offset: 2 }} className="game-settings">
-            {gameId === 1
-              ? (
-                <DropdownButton
-                  id="game-version-select-dropdown"
-                  title={selectedGameVersionNickName}
-                  onSelect={this.toggleGameVersion}
+            <DropdownButton
+              id="game-version-select-dropdown"
+              title={selectedGameVersionNickName}
+              onSelect={this.toggleGameVersion}
+            >
+              {installedVersions && installedVersions.map((version) => (
+                <Dropdown.Item
+                  key={version.gameVersion}
+                  eventKey={version.gameVersion}
                 >
-                  {installedVersions && installedVersions.map((version) => (
-                    <Dropdown.Item
-                      key={version.gameVersion}
-                      eventKey={version.gameVersion}
-                    >
-                      {version.nickName}
-                    </Dropdown.Item>
-                  ))}
-                  {((gameId === 1 && installedVersions && installedVersions.length < 5)
-                || (gameId === 2 && installedVersions && installedVersions.length < 1))
-                    ? <Dropdown.Divider />
-                    : ''}
-                  {((gameId === 1 && installedVersions && installedVersions.length < 5)
-                || (gameId === 2 && installedVersions && installedVersions.length < 1))
-                    ? (
-                      <Dropdown.Item
-                        key="find"
-                        eventKey="find"
-                      >
-                        Find More
-                      </Dropdown.Item>
-                    )
-                    : ''}
-                </DropdownButton>
-              )
-              : ''}
+                  {version.nickName}
+                </Dropdown.Item>
+              ))}
+              {((gameId === 1 && installedVersions && installedVersions.length < 6)
+            || (gameId === 2 && installedVersions && installedVersions.length < 2))
+                ? <Dropdown.Divider />
+                : ''}
+              {((gameId === 1 && installedVersions && installedVersions.length < 6)
+            || (gameId === 2 && installedVersions && installedVersions.length < 2))
+                ? (
+                  <Dropdown.Item
+                    key="find"
+                    eventKey="find"
+                  >
+                    Find More
+                  </Dropdown.Item>
+                )
+                : ''}
+            </DropdownButton>
           </Col>
         </Row>
       </div>

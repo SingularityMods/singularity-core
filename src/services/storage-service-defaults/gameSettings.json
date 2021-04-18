@@ -152,8 +152,27 @@
   "2": {
     "eso": {
       "name": "Elder Scrolls Online",
-      "nickName": "ESO",
+      "nickName": "Live",
       "shortName": "eso",
+      "installed": false,
+      "sync": false,
+      "defaults": {
+        "trackBranch": 1,
+        "autoUpdate": false,
+        "installDeps": true,
+        "uninstallDeps": true
+      },
+      "installPath": "",
+      "addonPath": "",
+      "settingsPath": "",
+      "installedAddons": [],
+      "unknownAddonDirs": [],
+      "dependencies": {}
+    },
+    "eso_pts": {
+      "name": "Elder Scrolls Online PTS",
+      "nickName": "PTS",
+      "shortName": "eso_pts",
       "installed": false,
       "sync": false,
       "defaults": {

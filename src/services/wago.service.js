@@ -187,8 +187,8 @@ function _checkAPIForUpdates(addon, list) {
 
 function _checkForUpdates(addon, list, account) {
   return new Promise((resolve, reject) => {
-    if (list.length == 0) {
-      return resolve([])
+    if (list.length === 0) {
+      return resolve([]);
     }
     return _checkAPIForUpdates(addon, list)
       .then((results) => {
@@ -215,7 +215,7 @@ function _checkForUpdates(addon, list, account) {
         });
         return resolve(returnData);
       })
-      .catch((error) => reject(error))
+      .catch((error) => reject(error));
   });
 }
 
@@ -435,8 +435,8 @@ function _handleUpdateResults(addon, scriptList) {
     const promises = [];
     const uids = [];
     const ids = [];
-    if (scriptList.length == 0) {
-      return  resolve({
+    if (scriptList.length === 0) {
+      return resolve({
         type: addon,
         scriptList,
         slugData: [],

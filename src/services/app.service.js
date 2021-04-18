@@ -987,6 +987,7 @@ function setAppConfig() {
       });
   }
   if (version < app.getVersion()) {
+    /* Add wago object to each WoW game version */
     const wowS = getGameSettings('1');
     Object.keys(wowS).forEach((gameVersion) => {
       wowS[gameVersion].wago = {
@@ -997,9 +998,64 @@ function setAppConfig() {
       };
     });
     setGameSettings('1', wowS);
+    /* Add wago API key config to app config */
     const userConf = getAppData('userConfigurable');
     userConf.wagoApiKey = '';
     setAppData('userConfigurable', userConf);
+    /* Add change to gameData structure */
+    const wowD = getGameData('1');
+    Object.keys(wowD.gameVersions).forEach((gameVersion) => {
+      wowD.gameVersions[gameVersion].addonDir = 'Interface/Addons/';
+      wowD.gameVersions[gameVersion].addonDir = 'WTF/';
+    });
+    setGameData('1', wowD);
+    const esoD = getGameData('2');
+    esoD.gameVersions.eso.nickName = 'Live';
+    esoD.gameVersions.eso.addonDir = 'Elder Scrolls Online/live/AddOns/';
+    esoD.gameVersions.eso.settingsDir = 'Elder Scrolls Online/live/SavedVariables/';
+    esoD.gameVersions.eso_pts = {
+      name: 'Elder Scrolls Online PTS',
+      nickName: 'PTS',
+      shortName: 'eso_pts',
+      addonVersion: 'eso',
+      flavorString: 'eso',
+      addonDir: 'Elder Scrolls Online/pts/AddOns/',
+      settingsDir: 'Elder Scrolls Online/pts/SavedVariables/',
+      gameDir: {
+        win: [
+          'The Elder Scrolls Online PTS/game/client/eso.exe',
+          'The Elder Scrolls Online PTS/game/client/eso64.exe',
+        ],
+        mac: ['The Elder Scrolls Online PTS/game_mac/pubplayerclient/eso.app'],
+        linux: [
+          'The Elder Scrolls Online PTS/game/client/eso.exe',
+          'The Elder Scrolls Online PTS/game/client/eso64.exe',
+        ],
+      },
+    };
+    setGameData('2', esoD);
+    /* Add new flavor to eso settings */
+    const esoS = getGameSettings('2');
+    esoS.eso.nickName = 'Live';
+    esoS.eso_pts = {
+      name: 'Elder Scrolls Online PTS',
+      nickName: 'PTS',
+      shortName: 'eso_pts',
+      installed: false,
+      sync: false,
+      defaults: {
+        trackBranch: 1,
+        autoUpdate: false,
+        installDeps: true,
+        uninstallDeps: true,
+      },
+      installPath: '',
+      addonPath: '',
+      settingsPath: '',
+      installedAddons: [],
+      unknownAddonDirs: [],
+      dependencies: {},
+    };
   }
   // Set new version
   setAppData('version', app.getVersion());

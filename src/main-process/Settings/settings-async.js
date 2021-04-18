@@ -114,7 +114,7 @@ ipcMain.on('toggle-sidebar', (event, toggle) => {
   setAppData('sidebarMinimized', toggle);
 });
 
-ipcMain.handle('update-eso-addon-path', () => new Promise((resolve, reject) => {
+ipcMain.handle('update-eso-addon-path', (_event, gameVersion) => new Promise((resolve, reject) => {
   dialog.showOpenDialog({
     properties: ['openDirectory'],
   })
@@ -131,7 +131,7 @@ ipcMain.handle('update-eso-addon-path', () => new Promise((resolve, reject) => {
         });
       }
       const [resultPath] = result.filePaths;
-      return updateESOAddonPath(resultPath)
+      return updateESOAddonPath(gameVersion, resultPath)
         .then(() => resolve({
           success: true,
         }));
@@ -142,7 +142,7 @@ ipcMain.handle('update-eso-addon-path', () => new Promise((resolve, reject) => {
     });
 }));
 
-ipcMain.handle('update-eso-install-path', () => new Promise((resolve, reject) => {
+ipcMain.handle('update-eso-install-path', (event, gameVersion) => new Promise((resolve, reject) => {
   dialog.showOpenDialog({
     properties: ['openDirectory'],
   })
@@ -162,6 +162,11 @@ ipcMain.handle('update-eso-install-path', () => new Promise((resolve, reject) =>
       return findInstalledGame('2', resultPath)
         .then((installedVersions) => {
           if (installedVersions && installedVersions.length > 0) {
+            if (installedVersions.includes(gameVersion)) {
+              const currentSettings = getGameSettings('2');
+              currentSettings[gameVersion].installPath = resultPath;
+              setGameSettings('2', currentSettings);
+            }
             return resolve({
               success: true,
               message: '',

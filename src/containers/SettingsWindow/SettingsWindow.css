@@ -129,7 +129,7 @@
 }
 
 .settings-scrollbar {
-    height: calc(100vh - 50px);
+    height: calc(100vh - 60px);
     margin-right: 0px;
     padding-bottom: 45px;
     overflow-x: hidden;
