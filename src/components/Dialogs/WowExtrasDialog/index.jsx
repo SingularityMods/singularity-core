@@ -24,6 +24,7 @@ class WowExtrasDialog extends React.Component {
       apiKey: '',
       apiKeyLocked: true,
       errorMessage: null,
+      loading: false,
     };
     this.toggleMenuTab = this.toggleMenuTab.bind(this);
     this.toggleSubMenuTab = this.toggleSubMenuTab.bind(this);
@@ -100,11 +101,9 @@ class WowExtrasDialog extends React.Component {
     const {
       gameVersion,
     } = this.props;
+    this.setState({ loading: true });
     ipcRenderer.invoke('toggle-wago', gameVersion, checked)
       .then(() => {
-        this.setState({
-          enabled: checked,
-        });
         if (checked) {
           ipcRenderer.invoke('check-wago-updates', gameVersion)
             .then((wago) => {
@@ -133,13 +132,20 @@ class WowExtrasDialog extends React.Component {
                 enabled,
                 wa,
                 plater,
+                loading: false,
               });
             })
             .catch((error) => {
               this.setState({
                 errorMessage: error.message,
+                loading: false,
               });
             });
+        } else {
+          this.setState({
+            enabled: checked,
+            loading: false,
+          });
         }
       })
       .catch((error) => {
@@ -191,6 +197,7 @@ class WowExtrasDialog extends React.Component {
       apiKey,
       apiKeyLocked,
       errorMessage,
+      loading,
     } = this.state;
 
     function formatDate(date2) {
@@ -323,7 +330,7 @@ class WowExtrasDialog extends React.Component {
                           <Col xs={12} className="extras-header">
                             <Row>
                               <Col xs={12} className="wago-header-item" id="wago-enabled">
-                                <div>
+                                <div className="enable-switch-container">
                                   <span className="switch-label">Enabled:</span>
                                   <Switch
                                     id="wagoEnabled"
@@ -337,6 +344,13 @@ class WowExtrasDialog extends React.Component {
                                     activeBoxShadow="0 0 2px 3px #00cc00"
                                   />
                                 </div>
+                                {loading
+                                  ? (
+                                    <span className="loading-spinner">
+                                    <i className="fas fa-spinner fa-spin loading-icon" />
+                                  </span>
+                                  )
+                                  : ''}
                               </Col>
                             </Row>
                             <Row>

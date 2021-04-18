@@ -36,6 +36,14 @@
     margin-right:3px;
     z-index: 101;
 }
+#WowExtrasDialog .enable-switch-container {
+  float: left;
+}
+#WowExtrasDialog .loading-spinner {
+  float: left;
+  margin-top: 5px;
+  margin-left: 5px;
+}
 
 .wow-extras-scrollbar {
   max-height: calc(100vh - 170px);

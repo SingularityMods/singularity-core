@@ -186,32 +186,37 @@ function _checkAPIForUpdates(addon, list) {
 }
 
 function _checkForUpdates(addon, list, account) {
-  return new Promise((resolve, reject) => _checkAPIForUpdates(addon, list)
-    .then((results) => {
-      const returnData = [];
-      results.forEach((result) => {
-        let match = list.find((o) => o.slug === result.slug);
-        if (!match) {
-          match = list.find((o) => o.slug === result._id);
-        }
-        if (!match) {
-          return;
-        }
-        result.type = addon;
-        result.account = account;
-        result.updateAvailable = false;
-        result.uid = match.uid;
-        result.id = match.id;
-        if (result.version > match.version
-            && (!match.skip || match.skip !== result.version)
-        ) {
-          result.updateAvailable = true;
-        }
-        returnData.push(result);
-      });
-      return resolve(returnData);
-    })
-    .catch((error) => reject(error)));
+  return new Promise((resolve, reject) => {
+    if (list.length == 0) {
+      return resolve([])
+    }
+    return _checkAPIForUpdates(addon, list)
+      .then((results) => {
+        const returnData = [];
+        results.forEach((result) => {
+          let match = list.find((o) => o.slug === result.slug);
+          if (!match) {
+            match = list.find((o) => o.slug === result._id);
+          }
+          if (!match) {
+            return;
+          }
+          result.type = addon;
+          result.account = account;
+          result.updateAvailable = false;
+          result.uid = match.uid;
+          result.id = match.id;
+          if (result.version > match.version
+              && (!match.skip || match.skip !== result.version)
+          ) {
+            result.updateAvailable = true;
+          }
+          returnData.push(result);
+        });
+        return resolve(returnData);
+      })
+      .catch((error) => reject(error))
+  });
 }
 
 function _doesItemExist(dir) {
@@ -430,6 +435,15 @@ function _handleUpdateResults(addon, scriptList) {
     const promises = [];
     const uids = [];
     const ids = [];
+    if (scriptList.length == 0) {
+      return  resolve({
+        type: addon,
+        scriptList,
+        slugData: [],
+        uidData: [],
+        idData: [],
+      });
+    }
     scriptList.forEach((script) => {
       uids.push(script.uid);
       ids.push(script.id);
@@ -535,6 +549,7 @@ function checkGameVersionForWagoUpdates(gameVersion) {
           } else if (result.reason.message !== 'Path does not contain a WAGO config') {
             log.error(result.reason.message);
           }
+          log.info(`Finished checking for WAGO updates for ${gameVersion}`);
         });
         return _installUpdates(gameVersion, updateInfo, addonInfo)
           .then((newWagoSettings) => resolve(newWagoSettings))
