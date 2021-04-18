@@ -37,6 +37,20 @@
     z-index: 101;
 }
 
+.wow-extras-scrollbar {
+  max-height: calc(100vh - 170px);
+  overflow: auto;
+  padding-right:15px;
+  margin-right:-10px;
+}
+
+.wow-extras-scrollbar .simplebar-scrollbar {
+  height: 50px;
+  background-color: var(--primary);
+  width: 8px;
+  border-radius: 5px;
+}
+
 .wow-extras-dialog-title {
     text-align:center;
     margin-top:15px;

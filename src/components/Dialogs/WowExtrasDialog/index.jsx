@@ -8,6 +8,7 @@ import {
 import Switch from 'react-switch';
 import BootstrapTable from 'react-bootstrap-table-next';
 import ReactTooltip from 'react-tooltip';
+import SimpleBar from 'simplebar-react';
 
 import { ipcRenderer } from 'electron';
 
@@ -306,156 +307,158 @@ class WowExtrasDialog extends React.Component {
           </Row>
           <Row>
             <Col xs={12} id="extras-tab-window">
-              {currentTab === 'wago'
-                ? (
-                  <Row>
-                    <Col xs={12} id="wago-tab" className="extras-tab-content">
-                      <Row>
-                        <Col xs={12} className="extras-title">
-                          <h4>
-                            Wago Auto Updates
-                          </h4>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col xs={12} className="extras-header">
-                          <Row>
-                            <Col xs={12} className="wago-header-item" id="wago-enabled">
-                              <div>
-                                <span className="switch-label">Enabled:</span>
-                                <Switch
-                                  id="wagoEnabled"
-                                  disabled={wagoUpdating}
-                                  onChange={this.toggleEnabled}
-                                  checked={enabled}
-                                  className="settings-switch"
-                                  onColor="#00cc00"
-                                  height={20}
-                                  width={40}
-                                  activeBoxShadow="0 0 2px 3px #00cc00"
-                                />
-                              </div>
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col xs={12} className="wago-header-item" id="wago-api-key">
-                              <span
-                                className="header-label"
-                              >
-                                API Key:
-                              </span>
-                              <ReactTooltip id="apiTootip">
-                                Not required but lets you update private scripts you maintain.
-                              </ReactTooltip>
-                              <Form
-                                data-tip
-                                data-for="apiTootip"
-                              >
-                                <FormGroup>
-                                  <FormControl
-                                    id="apiKey"
-                                    name="apiKey"
-                                    type="text"
-                                    autoComplete="off"
-                                    value={apiKey}
-                                    onChange={this.changeApiKey}
-                                    readOnly={apiKeyLocked}
-                                    onKeyPress={(event) => {
-                                      if (event.key === 'Enter') {
-                                        this.submitApiKey(event);
-                                      }
-                                    }}
+              <SimpleBar scrollbarMaxSize={50} className={process.platform === 'darwin' ? 'wow-extras-scrollbar mac' : 'wow-extras-scrollbar'}>
+                {currentTab === 'wago'
+                  ? (
+                    <Row>
+                      <Col xs={12} id="wago-tab" className="extras-tab-content">
+                        <Row>
+                          <Col xs={12} className="extras-title">
+                            <h4>
+                              Wago Auto Updates
+                            </h4>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col xs={12} className="extras-header">
+                            <Row>
+                              <Col xs={12} className="wago-header-item" id="wago-enabled">
+                                <div>
+                                  <span className="switch-label">Enabled:</span>
+                                  <Switch
+                                    id="wagoEnabled"
+                                    disabled={wagoUpdating}
+                                    onChange={this.toggleEnabled}
+                                    checked={enabled}
+                                    className="settings-switch"
+                                    onColor="#00cc00"
+                                    height={20}
+                                    width={40}
+                                    activeBoxShadow="0 0 2px 3px #00cc00"
                                   />
-                                  {apiKeyLocked
-                                    ? (
-                                      <Button
-                                        id="unlock-api-key-button"
-                                        className="dialog-button api-key-button"
-                                        onClick={this.unlockApiKey}
-                                      >
-                                        Change
-                                      </Button>
-                                    )
-                                    : (
-                                      <Button
-                                        id="submit-api-key-button"
-                                        className="dialog-button api-key-button"
-                                        onClick={this.submitApiKey}
-                                      >
-                                        Submit
-                                      </Button>
-                                    )}
-                                </FormGroup>
-                              </Form>
-                            </Col>
-                          </Row>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col xs={12} id="extras-sub-menu">
-                          <Tabs
-                            id="wow-extras-sub-menu-tabs"
-                            activeKey={currentSubTab}
-                            onSelect={this.toggleSubMenuTab}
-                          >
-                            <Tab
-                              className={currentSubTab === 'weakauras' ? 'extras-menu-tab selected' : 'extras-menu-tab'}
-                              eventKey="weakauras"
-                              title="WeakAuras"
-                            />
-                            <Tab
-                              className={currentSubTab === 'plater' ? 'extras-menu-tab selected' : 'extras-menu-tab'}
-                              eventKey="plater"
-                              title="Plater"
-                            />
-                          </Tabs>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col xs={12} className="error-message-section">
-                          {errorMessage
-                            ? (
-                              <span classNme="error-message">{errorMessage}</span>
-                            )
-                            : ''}
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col xs={12} className="wago-table-section">
-                          {currentSubTab === 'weakauras'
-                            ? (
-                              <div className="wago-table">
-                                <BootstrapTable
-                                  keyField="_id"
-                                  data={wa || []}
-                                  columns={columns}
-                                  noDataIndication={noTableData}
-                                  headerClasses="table-header"
-                                  rowClasses="table-row"
-                                />
-                              </div>
-                            )
-                            : ''}
-                          {currentSubTab === 'plater'
-                            ? (
-                              <div className="wago-table">
-                                <BootstrapTable
-                                  keyField="_id"
-                                  data={plater || []}
-                                  columns={columns}
-                                  noDataIndication={noTableData}
-                                  headerClasses="table-header"
-                                  rowClasses="table-row"
-                                />
-                              </div>
-                            )
-                            : ''}
-                        </Col>
-                      </Row>
-                    </Col>
-                  </Row>
-                )
-                : ''}
+                                </div>
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col xs={12} className="wago-header-item" id="wago-api-key">
+                                <span
+                                  className="header-label"
+                                >
+                                  API Key:
+                                </span>
+                                <ReactTooltip id="apiTootip">
+                                  Not required but lets you update private scripts you maintain.
+                                </ReactTooltip>
+                                <Form
+                                  data-tip
+                                  data-for="apiTootip"
+                                >
+                                  <FormGroup>
+                                    <FormControl
+                                      id="apiKey"
+                                      name="apiKey"
+                                      type="text"
+                                      autoComplete="off"
+                                      value={apiKey}
+                                      onChange={this.changeApiKey}
+                                      readOnly={apiKeyLocked}
+                                      onKeyPress={(event) => {
+                                        if (event.key === 'Enter') {
+                                          this.submitApiKey(event);
+                                        }
+                                      }}
+                                    />
+                                    {apiKeyLocked
+                                      ? (
+                                        <Button
+                                          id="unlock-api-key-button"
+                                          className="dialog-button api-key-button"
+                                          onClick={this.unlockApiKey}
+                                        >
+                                          Change
+                                        </Button>
+                                      )
+                                      : (
+                                        <Button
+                                          id="submit-api-key-button"
+                                          className="dialog-button api-key-button"
+                                          onClick={this.submitApiKey}
+                                        >
+                                          Submit
+                                        </Button>
+                                      )}
+                                  </FormGroup>
+                                </Form>
+                              </Col>
+                            </Row>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col xs={12} id="extras-sub-menu">
+                            <Tabs
+                              id="wow-extras-sub-menu-tabs"
+                              activeKey={currentSubTab}
+                              onSelect={this.toggleSubMenuTab}
+                            >
+                              <Tab
+                                className={currentSubTab === 'weakauras' ? 'extras-menu-tab selected' : 'extras-menu-tab'}
+                                eventKey="weakauras"
+                                title="WeakAuras"
+                              />
+                              <Tab
+                                className={currentSubTab === 'plater' ? 'extras-menu-tab selected' : 'extras-menu-tab'}
+                                eventKey="plater"
+                                title="Plater"
+                              />
+                            </Tabs>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col xs={12} className="error-message-section">
+                            {errorMessage
+                              ? (
+                                <span classNme="error-message">{errorMessage}</span>
+                              )
+                              : ''}
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col xs={12} className="wago-table-section">
+                            {currentSubTab === 'weakauras'
+                              ? (
+                                <div className="wago-table">
+                                  <BootstrapTable
+                                    keyField="_id"
+                                    data={wa || []}
+                                    columns={columns}
+                                    noDataIndication={noTableData}
+                                    headerClasses="table-header"
+                                    rowClasses="table-row"
+                                  />
+                                </div>
+                              )
+                              : ''}
+                            {currentSubTab === 'plater'
+                              ? (
+                                <div className="wago-table">
+                                  <BootstrapTable
+                                    keyField="_id"
+                                    data={plater || []}
+                                    columns={columns}
+                                    noDataIndication={noTableData}
+                                    headerClasses="table-header"
+                                    rowClasses="table-row"
+                                  />
+                                </div>
+                              )
+                              : ''}
+                          </Col>
+                        </Row>
+                      </Col>
+                    </Row>
+                  )
+                  : ''}
+              </SimpleBar>
             </Col>
           </Row>
         </div>
