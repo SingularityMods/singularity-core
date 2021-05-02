@@ -242,7 +242,9 @@ ipcMain.handle('get-backup-details', (event, backupUUID, cloud) => new Promise((
       if (res.status === 200 && res.data.success) {
         event.sender.send('app-status-message', 'Cloud backup details found', 'success');
         log.info('Cloud backup found');
-        return resolve(res.data.backup);
+        const backup = res.data.backup;
+        backup.cloud = cloud;
+        return resolve(backup);
       }
       event.sender.send('app-status-message', 'Error retrieving cloud backup details', 'error');
       log.info('No cloud backup found');
