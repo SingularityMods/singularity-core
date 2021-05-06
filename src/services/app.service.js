@@ -1008,6 +1008,7 @@ function setAppConfig() {
       wowD.gameVersions[gameVersion].addonDir = 'Interface/Addons/';
       wowD.gameVersions[gameVersion].addonDir = 'WTF/';
     });
+    wowD.gameVersions['wow_classic_beta'].addonVersion = 'wow_tbc';
     setGameData('1', wowD);
     const esoD = getGameData('2');
     esoD.gameVersions.eso.nickName = 'Live';

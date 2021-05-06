@@ -125,7 +125,7 @@
           "name": "World of Warcraft Classic Beta",
           "nickName": "Classic Beta",
           "shortName": "wow-classic-beta",
-          "addonVersion": "wow_classic",
+          "addonVersion": "wow_tbc",
           "flavorString": "wow_classic_beta",
           "macFlavorString": "/_beta_",
           "executable": "WowClassicB.exe",
