@@ -19,9 +19,9 @@ function getWowAccounts(gameVersion) {
             return resolve(filteredDirs);
           }
         }
-        return reject(new Error('No accounts identified for game verison'));
+        return reject(new Error('No accounts identified for game version'));
       })
-      .catch(() => reject(new Error('No accounts identified for game verison')));
+      .catch(() => reject(new Error('No accounts identified for game version')));
   });
 }
 

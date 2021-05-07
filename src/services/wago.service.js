@@ -47,14 +47,16 @@ function installCompanion(gameVersion) {
     let gameVersionFlavor;
     switch (gameVersion) {
       case 'wow_retail':
-      case 'wow_reatil_ptr':
+      case 'wow_retail_ptr':
       case 'wow_retail_beta':
         gameVersionFlavor = 'wow_retail';
         break;
       case 'wow_classic':
       case 'wow_classic_ptr':
-      case 'wow_classic_beta':
         gameVersionFlavor = 'wow_classic';
+        break;
+      case 'wow_classic_beta':
+        gameVersionFlavor = 'wow_burning_crusade';
         break;
       default:
         gameVersionFlavor = 'wow_retail';

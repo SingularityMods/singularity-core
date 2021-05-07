@@ -91,7 +91,7 @@ function getLocalAddonSyncProfile(gameId, gameVersion) {
         resolve(JSON.parse(fileData));
       })
       .catch(() => {
-        log.info('User has no sync profile for that game verison yet, returning blank profile');
+        log.info('User has no sync profile for that game version yet, returning blank profile');
         let syncProfile = {};
         syncProfile = Object.assign(syncProfile, syncProfileDefault);
         resolve(syncProfile);
