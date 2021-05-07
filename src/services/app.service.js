@@ -1,10 +1,8 @@
 import { app } from 'electron';
-import axios from 'axios';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import log from 'electron-log';
 
-import AppConfig from '../config/app.config';
 import {
   getGameSettings,
   getAppData,
@@ -25,77 +23,6 @@ function toggleSentry(enabled) {
   } else {
     disableSentry();
   }
-}
-
-function getLatestTerms() {
-  log.info('Checking for latest ToS');
-  return new Promise((resolve, reject) => {
-    const axiosConfig = {
-      headers: {
-        'User-Agent': `Singularity-${app.getVersion()}`,
-        'x-app-uuid': getAppData('UUID'),
-      },
-    };
-    axios.get(`${AppConfig.API_URL}app/latest/tos`, axiosConfig)
-      .then((response) => {
-        if (response.status === 200) {
-          const tos = response.data;
-          const currentTos = getAppData('tos');
-          if (tos.version > currentTos.version) {
-            currentTos.version = tos.version;
-            currentTos.accepted = false;
-            currentTos.text = tos.text;
-            setAppData('tos', currentTos);
-            log.info('New ToS found');
-            return resolve(true);
-          }
-          log.info('No new ToS found');
-          return resolve(false);
-        }
-        return resolve(false);
-      })
-      .catch((err) => {
-        log.error('Error checking for latest ToS');
-        log.error(err.message);
-        return reject(new Error('Error checking for latest ToS'));
-      });
-  });
-}
-
-// Download the latest Privacy Policy from the API
-function getLatestPrivacy() {
-  log.info('Checking for latest Privacy Policy');
-  return new Promise((resolve, reject) => {
-    const axiosConfig = {
-      headers: {
-        'User-Agent': `Singularity-${app.getVersion()}`,
-        'x-app-uuid': getAppData('UUID'),
-      },
-    };
-    axios.get(`${AppConfig.API_URL}app/latest/privacy`, axiosConfig)
-      .then((response) => {
-        if (response.status === 200) {
-          const privacy = response.data;
-          const currentPrivacy = getAppData('privacy');
-          if (privacy.version > currentPrivacy.version) {
-            currentPrivacy.version = privacy.version;
-            currentPrivacy.accepted = false;
-            currentPrivacy.text = privacy.text;
-            setAppData('privacy', currentPrivacy);
-            log.info('New Privacy Policy found');
-            return resolve(true);
-          }
-          log.info('No new Privacy Policy found');
-          return resolve(false);
-        }
-        return resolve(false);
-      })
-      .catch((err) => {
-        log.error('Error checking for latest Privacy Policy');
-        log.error(err.message);
-        return reject(new Error('Error checking for latest Privacy Policy'));
-      });
-  });
 }
 
 function setAppConfig() {
@@ -1008,7 +935,7 @@ function setAppConfig() {
       wowD.gameVersions[gameVersion].addonDir = 'Interface/Addons/';
       wowD.gameVersions[gameVersion].addonDir = 'WTF/';
     });
-    wowD.gameVersions['wow_classic_beta'].addonVersion = 'wow_tbc';
+    wowD.gameVersions.wow_classic_beta.addonVersion = 'wow_tbc';
     setGameData('1', wowD);
     const esoD = getGameData('2');
     esoD.gameVersions.eso.nickName = 'Live';
@@ -1067,8 +994,6 @@ function setAppConfig() {
 }
 
 export {
-  getLatestTerms,
-  getLatestPrivacy,
   setAppConfig,
   toggleSentry,
 };

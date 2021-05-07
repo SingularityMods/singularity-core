@@ -21,7 +21,7 @@ function getAddonsFromFingerprints(directories) {
       },
     };
     const postData = { directories };
-    return axios.post(`${AppConfig.API_URL}/addons/identify`, postData, axiosConfig)
+    return axios.post(`${AppConfig.API_URL}/addon/identify`, postData, axiosConfig)
       .then((res) => {
         if (res.status !== 200) {
           return reject(new Error('Unable to fingerprint addons'));
@@ -42,14 +42,14 @@ function getAddonDownloadUrl(addonId, fileId) {
       },
     };
 
-    let requestUrl = `${AppConfig.API_URL}/addon/download/${addonId}`;
+    let requestUrl = `${AppConfig.API_URL}/addon/${addonId}/download`;
     if (fileId) {
-      requestUrl = `${AppConfig.API_URL}/addon/download/${addonId}/${fileId}`;
+      requestUrl = `${AppConfig.API_URL}/addon/${addonId}/download/${fileId}`;
     }
     return axios.get(requestUrl, axiosConfig)
       .then((res) => {
         if (res.status !== 200) {
-          return reject(new Error('No download info recieved'));
+          return reject(new Error('No download info received'));
         }
         return resolve(res.data);
       })
@@ -71,7 +71,7 @@ function getWagoDownloadUrl(gameVersionFlavor) {
     return axios.get(requestUrl, axiosConfig)
       .then((res) => {
         if (res.status !== 200) {
-          return reject(new Error('No download info recieved'));
+          return reject(new Error('No download info received'));
         }
         return resolve(res.data);
       })
@@ -88,11 +88,11 @@ function getClusterDownloadInfo(clusterId) {
         'x-app-uuid': getAppData('UUID'),
       },
     };
-    const requestUrl = `${AppConfig.API_URL}/cluster/download/${clusterId}`;
+    const requestUrl = `${AppConfig.API_URL}/cluster/${clusterId}/download`;
     return axios.get(requestUrl, axiosConfig)
       .then((res) => {
         if (res.status !== 200) {
-          return reject(new Error('No download info recieved'));
+          return reject(new Error('No download info received'));
         }
         return resolve(res.data);
       })
@@ -113,7 +113,7 @@ function getAddonInfo(addonId) {
     return axios.get(requestUrl, axiosConfig)
       .then((res) => {
         if (res.status !== 200) {
-          return reject(new Error('No addon info recieved'));
+          return reject(new Error('No addon info received'));
         }
         return resolve(res.data);
       })
@@ -134,7 +134,7 @@ function getCluster(clusterId) {
     return axios.get(requestUrl, axiosConfig)
       .then((res) => {
         if (res.status !== 200) {
-          return reject(new Error('No addon cluster recieved'));
+          return reject(new Error('No addon cluster received'));
         }
         return resolve(res.data);
       })
@@ -156,11 +156,11 @@ function searchForAddons(
         'x-app-uuid': getAppData('UUID'),
       },
     };
-    const requestUrl = `${AppConfig.API_URL}/addons/search?gameId=${gameId}&gameVersionFlavor=${addonVersion}&filter=${searchFilter}&category=${catId}&index=${index}&sort=${sort}&sortOrder=${sortOrder}`;
+    const requestUrl = `${AppConfig.API_URL}/addon/search?gameId=${gameId}&gameVersionFlavor=${addonVersion}&filter=${searchFilter}&category=${catId}&index=${index}&sort=${sort}&sortOrder=${sortOrder}`;
     return axios.get(requestUrl, axiosConfig)
       .then((res) => {
         if (res.status !== 200) {
-          return reject(new Error('No addon info recieved'));
+          return reject(new Error('No addon info received'));
         }
         return resolve(res.data);
       })
