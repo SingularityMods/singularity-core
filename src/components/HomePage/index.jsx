@@ -48,7 +48,7 @@ export default class HomePage extends React.Component {
       <div id="HomePage">
         <Row>
           <Col className="homepage-title">
-            <img alt="Singularity logo" src={darkMode ? '../img/logo_v2_white.png' : '../img/logo_v2.png'} className="app-logo-banner" />
+            <img alt="Singularity logo" src={darkMode ? '../img/logo_dark.png' : '../img/logo_light.png'} className="app-logo-banner" />
           </Col>
         </Row>
 

@@ -393,7 +393,7 @@ class AddonDetailsWindow extends React.Component {
       } else if (gameId === 2) {
         avatarUrl = '../img/icons/eso-icon.png';
       } else {
-        avatarUrl = '../img/app_icon.png';
+        avatarUrl = '../img/app_icon_light.png';
       }
       if (addon.categories) {
         categoryNames = Array.prototype.map.call(addon.categories, (c) => c.name).toString();
