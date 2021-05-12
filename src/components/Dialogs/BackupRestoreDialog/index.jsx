@@ -13,11 +13,6 @@ import { ipcRenderer } from 'electron';
 class BackupRestoreDialog extends React.Component {
   constructor(props) {
     super(props);
-    const {
-      backupPending,
-      restorePending,
-      restoreState,
-    } = this.props;
     this.state = {
       loading: true,
       backupDetails: null,
@@ -26,9 +21,6 @@ class BackupRestoreDialog extends React.Component {
       restoreError: '',
       restoreMessage: '',
       darkMode: false,
-      restoreState,
-      backupPending,
-      restorePending,
     };
 
     this.restoreListener = this.restoreListener.bind(this);
@@ -58,25 +50,6 @@ class BackupRestoreDialog extends React.Component {
     this.setState({
       darkMode,
     });
-  }
-
-  componentDidUpdate(prevProps) {
-    const {
-      backupPending,
-      restorePending,
-      restoreState,
-    } = this.props;
-    if (backupPending !== prevProps.backupPending || restorePending !== prevProps.restorePending) {
-      this.setState({
-        backupPending,
-        restorePending,
-      });
-    }
-    if (restoreState !== prevProps.restoreState) {
-      this.setState({
-        restoreState,
-      });
-    }
   }
 
   componentWillUnmount() {
@@ -156,15 +129,15 @@ class BackupRestoreDialog extends React.Component {
     const {
       backup,
       onExit,
+      backupPending,
+      restorePending,
+      restoreState,
     } = this.props;
     const {
-      backupPending,
       darkMode,
       restoreError,
       restoreMessage,
-      restorePending,
       restoreSettings,
-      restoreState,
       selectedRows,
       backupDetails,
       loading,
