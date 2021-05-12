@@ -3,10 +3,11 @@
 </p>
 
 [![Singularity Discord](https://img.shields.io/static/v1?label=Discord&message=Singularity&color=7289DA)](https://discord.gg/xNcqjUD) 
+[![Singularity Patreon](https://img.shields.io/static/v1?label=Patreon&message=Singularity&color=f96854)](https://www.patreon.com/xorro) 
 
 # Singularity Addon Manager
 
-Singularity is the single app for your addon management. We created Singularity because privacy is important and how other people treat your privacy matters. 
+Singularity is the single app for your addon management. We created Singularity because privacy is important and how other people treat your privacy matters.
 
 ## Build Singularity
 
