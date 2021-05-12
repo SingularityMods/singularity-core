@@ -1836,7 +1836,7 @@ setInterval(() => {
   } else {
     log.info('Already searching for sync profile updates, skipping this run');
   }
-}, 1000 * 60 * 1);
+}, 1000 * 60 * 3);
 
 export {
   autoFindGame,
