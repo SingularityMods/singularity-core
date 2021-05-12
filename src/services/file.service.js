@@ -1133,20 +1133,20 @@ function syncFromProfile(profile) {
 
     installedAddons.forEach((addon) => {
       const profileMatch = addons.find((a) => a.addonId === addon.addonId);
-      if (!profileMatch && !addon.unknownUpdate && !addon.brokenInstallation) {
-        const addonToRemove = addon;
-        addonToRemove.gameId = gameId;
-        addonToRemove.gameVersion = gameVersion;
-        log.info(`Addon ${addonToRemove.addonName} not in sync profile, add to remove list`);
-        syncedAddonsToRemove.push(addonToRemove);
-      } else if (
-        addon.installedFile.fileId !== profileMatch.fileId
+      if (profileMatch
+          && addon.installedFile.fileId !== profileMatch.fileId
           && addon.installedFile._id !== profileMatch.fileId
       ) {
         log.info(`Addon ${addon.addonName} needs to be updated from profile, add to list`);
         profileMatch.gameVersion = gameVersion;
         profileMatch.gameId = gameId;
         syncedAddonsToInstall.push(profileMatch);
+      } else if (!profileMatch && !addon.unknownUpdate && !addon.brokenInstallation) {
+        const addonToRemove = addon;
+        addonToRemove.gameId = gameId;
+        addonToRemove.gameVersion = gameVersion;
+        log.info(`Addon ${addonToRemove.addonName} not in sync profile, add to remove list`);
+        syncedAddonsToRemove.push(addonToRemove);
       }
     });
     addons.forEach((addon) => {
