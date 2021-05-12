@@ -913,7 +913,7 @@ function setAppConfig() {
         log.error(error);
       });
   }
-  if (version < app.getVersion()) {
+  if (version < '1.4.0') {
     /* Add wago object to each WoW game version */
     const wowS = getGameSettings('1');
     Object.keys(wowS).forEach((gameVersion) => {
