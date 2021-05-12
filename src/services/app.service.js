@@ -933,9 +933,10 @@ function setAppConfig() {
     const wowD = getGameData('1');
     Object.keys(wowD.gameVersions).forEach((gameVersion) => {
       wowD.gameVersions[gameVersion].addonDir = 'Interface/Addons/';
-      wowD.gameVersions[gameVersion].addonDir = 'WTF/';
+      wowD.gameVersions[gameVersion].settingsDir = 'WTF/';
     });
-    wowD.gameVersions.wow_classic_beta.addonVersion = 'wow_tbc';
+    wowD.gameVersions.wow_classic_ptr.addonVersion = 'wow_burning_crusade';
+    wowD.gameVersions.wow_classic_beta.addonVersion = 'wow_burning_crusade';
     setGameData('1', wowD);
     const esoD = getGameData('2');
     esoD.gameVersions.eso.nickName = 'Live';

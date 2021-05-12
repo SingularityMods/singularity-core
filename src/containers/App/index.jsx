@@ -257,26 +257,28 @@ class App extends React.Component {
     });
   }
 
-  granularBackupCompleteListener(_event, success, type, eventGameId, eventGameVersion) {
-    const { gameId, gameVersion } = this.state;
-    if (eventGameId === gameId && eventGameVersion === gameVersion && success) {
-      if (type === 'cloud') {
-        this.setState({
-          backupState: null,
-          backupPending: false,
-          latestCloudBackup: new Date(),
-        });
+  granularBackupCompleteListener(_event, success, type, eventGameId) {
+    const { selectedGame } = this.state;
+    if (eventGameId === selectedGame) {
+      if (success) {
+        if (type === 'cloud') {
+          this.setState({
+            backupState: null,
+            backupPending: false,
+            latestCloudBackup: new Date(),
+          });
+        } else {
+          this.setState({
+            backupState: null,
+            backupPending: false,
+          });
+        }
       } else {
         this.setState({
           backupState: null,
           backupPending: false,
         });
       }
-    } else {
-      this.setState({
-        backupState: null,
-        backupPending: false,
-      });
     }
   }
 

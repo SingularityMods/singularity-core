@@ -127,7 +127,7 @@ ipcMain.on('create-granular-backup', async (event, gameId, gameVersion, cloud) =
     .catch((err) => {
       log.error('Error creating cloud backup');
       log.error(err);
-      event.sender.send('granular-backup-complete', false, 'cloud', gameId, gameVersion, null);
+      event.sender.send('granular-backup-complete', false, 'cloud', gameId, gameVersion, err.message);
       event.sender.send('app-status-message', 'Error saving backup', 'error');
     });
 });

@@ -17,6 +17,7 @@ import {
   getWagoEnabledVersions,
   updateWagoScriptInfo,
   updateInstalledAddonInfo,
+  removeInstalledAddonInfo,
 } from './storage.service';
 import {
   createAndSaveSyncProfile,
@@ -41,6 +42,46 @@ function isCompanionInstalled(gameVersion) {
   });
 }
 
+function uninstallCompanion(gameVersion) {
+  return new Promise((resolve, reject) => {
+    const gameId = 1;
+    const addonDir = getAddonDir(gameId, gameVersion);
+    const dir = path.join(addonDir, 'WeakAurasCompanion');
+    let gameVersionFlavor;
+    switch (gameVersion) {
+      case 'wow_retail':
+      case 'wow_retail_ptr':
+      case 'wow_retail_beta':
+        gameVersionFlavor = 'wow_retail';
+        break;
+      case 'wow_classic':
+        gameVersionFlavor = 'wow_classic';
+        break;
+      case 'wow_classic_ptr':
+      case 'wow_classic_beta':
+        gameVersionFlavor = 'wow_burning_crusade';
+        break;
+      default:
+        gameVersionFlavor = 'wow_retail';
+        break;
+    }
+    fsPromises.access(dir, fs.constants.F_OK)
+      .then(() => fsPromises.rmdir(dir, { recursive: true })
+        .then(() => getWagoDownloadUrl(gameVersionFlavor))
+        .then((fileInfo) => removeInstalledAddonInfo(gameId, gameVersion, fileInfo.project))
+        .then(() => resolve())
+        .catch((err) => {
+          log.error('Error uninstalling WAGO Updater');
+          log.error(err);
+          reject(err);
+        }))
+      .catch(() => {
+        log.error("Companion doesn't exist.");
+        return resolve();
+      });
+  });
+}
+
 function installCompanion(gameVersion) {
   return new Promise((resolve, reject) => {
     const gameId = 1;
@@ -52,9 +93,9 @@ function installCompanion(gameVersion) {
         gameVersionFlavor = 'wow_retail';
         break;
       case 'wow_classic':
-      case 'wow_classic_ptr':
         gameVersionFlavor = 'wow_classic';
         break;
+      case 'wow_classic_ptr':
       case 'wow_classic_beta':
         gameVersionFlavor = 'wow_burning_crusade';
         break;
@@ -74,6 +115,8 @@ function installCompanion(gameVersion) {
         const latestFiles = [];
         latestFiles.push(fileInfo.fileDetails);
         const tmpAddon = {
+          addonName: 'WAGO Updater',
+          addonId: fileInfo.fileDetails.project,
           trackBranch: 1,
           autoUpdate: false,
           ignoreUpdate: true,
@@ -615,6 +658,7 @@ setInterval(() => {
 
 export {
   installCompanion,
+  uninstallCompanion,
   checkForWagoUpdates,
   checkGameVersionForWagoUpdates,
 };

@@ -36,7 +36,7 @@ function getLatestFile(addon, addonVersion) {
 }
 
 function sortAddons(a, b) {
-  if (!a.ignureUpdate && !b.ignoreUpdate) {
+  if (!a.ignoreUpdate && !b.ignoreUpdate) {
     if (a.updateAvailable && b.updateAvailable) {
       if (a.addonName < b.addonName) return -1;
       return 1;
@@ -214,14 +214,6 @@ class InstalledAddonsWindow extends React.Component {
 
   componentWillUnmount() {
     ipcRenderer.removeAllListeners();
-    /*
-    ipcRenderer.removeListener('addon-autoupdate-complete', this.autoUpdateCompleteListener);
-    ipcRenderer.removeListener('auth-event', this.authEventListener);
-    ipcRenderer.removeListener('addons-found', this.addonsFoundListener);
-    ipcRenderer.removeListener('no-addons-found', this.addonsNotFoundListener);
-    ipcRenderer.removeListener('addon-settings-updated', this.addonSettingsUpdatedListener);
-    ipcRenderer.removeListener('sync-status', this.syncCompleteListener);
-    */
   }
 
   handleSelectAddon(addonId) {

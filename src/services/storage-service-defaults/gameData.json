@@ -87,7 +87,7 @@
           "name": "World of Warcraft Classic PTR",
           "nickName": "Classic PTR",
           "shortName": "wow-classic-ptr",
-          "addonVersion": "wow_classic",
+          "addonVersion": "wow_burning_crusade",
           "executable": "WowClassicT.exe",
           "macExecutable": "World of Warcraft Classic Test.app",
           "addonDir": "Interface/Addons/",

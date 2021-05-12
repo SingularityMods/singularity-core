@@ -13,6 +13,7 @@ import {
 } from '../../services/storage.service';
 import {
   checkGameVersionForWagoUpdates,
+  uninstallCompanion,
 } from '../../services/wago.service';
 
 ipcMain.handle('get-games', () => {
@@ -86,11 +87,21 @@ ipcMain.handle('get-wago-settings', (_event, gameVersion) => getWago(gameVersion
 
 ipcMain.handle('set-wago-settings', (_event, gameVersion, settings) => setWago(gameVersion, settings));
 
-ipcMain.handle('toggle-wago', (_event, gameVersion, enabled) => {
+ipcMain.handle('toggle-wago', (_event, gameVersion, enabled) => new Promise((resolve, reject) => {
   const wagoConf = getWago(gameVersion);
   wagoConf.enabled = enabled;
-  return setWago(gameVersion, wagoConf);
-});
+  setWago(gameVersion, wagoConf);
+  if (!enabled) {
+    log.info('Uninstalling WAGO Updater addon');
+    uninstallCompanion(gameVersion)
+      .then(() => {
+        log.info('WAGO Updater uninstalled');
+        return resolve();
+      })
+      .catch((e) => reject(e));
+  }
+  return resolve();
+}));
 
 ipcMain.handle('check-wago-updates', (event, gameVersion) => new Promise((resolve, reject) => {
   event.sender.send('app-status-message', 'Checking for Wago updates', 'status');
