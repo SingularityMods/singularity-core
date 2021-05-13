@@ -12,6 +12,7 @@ import queryString from 'query-string';
 import axios from 'axios';
 
 import log from 'electron-log';
+import AppConfig from '../config/app.config';
 import { getMainBrowserWindow } from './electron.service';
 
 import {
@@ -85,7 +86,7 @@ function createAndSaveSyncProfile(obj) {
         'x-auth': getAccessToken(),
       },
     };
-    axios.post('https://api.singularitymods.com/api/v1/user/sync/set', syncProfile, axiosConfig)
+    axios.post(`${AppConfig.API_URL}/user/sync/set`, syncProfile, axiosConfig)
       .then((res) => {
         if (res && res.status === 200 && res.data.success) {
           resolve({});
@@ -272,15 +273,13 @@ function autoFindGame(gameId) {
     }
     const {
       gameVersions,
-      addonDir,
       likelyInstallPaths,
-      settingsDir,
       addonDirLocation,
       settingsDirLocation,
     } = getGameData(gameId.toString());
     const promises = [];
     Object.entries(gameVersions).forEach(([gameVersion]) => {
-      const { gameDir } = gameVersions[gameVersion];
+      const { gameDir, addonDir, settingsDir } = gameVersions[gameVersion];
       likelyInstallPaths[platform].forEach((dir) => {
         promises.push(_checkForGameVersion({
           selectedPath: dir,
@@ -310,12 +309,12 @@ function autoFindGame(gameId) {
   });
 }
 
-function updateESOAddonPath(selectedPath) {
+function updateESOAddonPath(gameVersion, selectedPath) {
   return new Promise((resolve) => {
     const gameS = getGameSettings('2');
     const gameD = getGameData('2');
-    gameS.eso.addonPath = selectedPath;
-    gameS.eso.settingsPath = path.join(gameS.eso.addonPath, '..', path.sep, '..', path.sep, '..', path.sep, gameD.settingsDir);
+    gameS[gameVersion].addonPath = selectedPath;
+    gameS[gameVersion].settingsPath = path.join(gameS[gameVersion].addonPath, '..', path.sep, '..', path.sep, '..', path.sep, gameD.gameVersions[gameVersion].settingsDir);
     setGameSettings('2', gameS);
     return resolve();
   });
@@ -324,11 +323,11 @@ function updateESOAddonPath(selectedPath) {
 function findInstalledGame(gameId, selectedPath) {
   return new Promise((resolve, reject) => {
     const {
-      gameVersions, addonDir, settingsDir, addonDirLocation, settingsDirLocation,
+      gameVersions, addonDirLocation, settingsDirLocation,
     } = getGameData(gameId.toString());
     const promises = [];
     Object.entries(gameVersions).forEach(([gameVersion]) => {
-      const { gameDir } = gameVersions[gameVersion];
+      const { gameDir, addonDir, settingsDir } = gameVersions[gameVersion];
       promises.push(_checkForGameVersion({
         gameId,
         gameVersion,
@@ -510,7 +509,7 @@ async function getSyncProfilesFromCloud(enabled = []) {
           'x-auth': getAccessToken(),
         },
       };
-      axios.get('https://api.singularitymods.com/api/v1/user/sync/get?all=true', axiosConfig)
+      axios.get(`${AppConfig.API_URL}/user/sync/get?all=true`, axiosConfig)
         .then((res) => {
           if (res.status === 200 && res.data.success) {
             log.info('Addon sync profiles found');
@@ -1134,20 +1133,20 @@ function syncFromProfile(profile) {
 
     installedAddons.forEach((addon) => {
       const profileMatch = addons.find((a) => a.addonId === addon.addonId);
-      if (!profileMatch && !addon.unknownUpdate && !addon.brokenInstallation) {
-        const addonToRemove = addon;
-        addonToRemove.gameId = gameId;
-        addonToRemove.gameVersion = gameVersion;
-        log.info(`Addon ${addonToRemove.addonName} not in sync profile, add to remove list`);
-        syncedAddonsToRemove.push(addonToRemove);
-      } else if (
-        addon.installedFile.fileId !== profileMatch.fileId
+      if (profileMatch
+          && addon.installedFile.fileId !== profileMatch.fileId
           && addon.installedFile._id !== profileMatch.fileId
       ) {
         log.info(`Addon ${addon.addonName} needs to be updated from profile, add to list`);
         profileMatch.gameVersion = gameVersion;
         profileMatch.gameId = gameId;
         syncedAddonsToInstall.push(profileMatch);
+      } else if (!profileMatch && !addon.unknownUpdate && !addon.brokenInstallation) {
+        const addonToRemove = addon;
+        addonToRemove.gameId = gameId;
+        addonToRemove.gameVersion = gameVersion;
+        log.info(`Addon ${addonToRemove.addonName} not in sync profile, add to remove list`);
+        syncedAddonsToRemove.push(addonToRemove);
       }
     });
     addons.forEach((addon) => {
@@ -1837,7 +1836,7 @@ setInterval(() => {
   } else {
     log.info('Already searching for sync profile updates, skipping this run');
   }
-}, 1000 * 60 * 1);
+}, 1000 * 60 * 3);
 
 export {
   autoFindGame,

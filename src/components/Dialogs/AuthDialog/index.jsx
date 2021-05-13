@@ -523,7 +523,7 @@ class AuthDialog extends React.Component {
               </Row>
               <Row className="auth-dialog-title verify">
                 <Col xs={12}>
-                  <img key={darkMode} alt="Singularity icon" src={darkMode ? '../img/app_icon_v2.png' : '../img/app_icon_v2_on_white.png'} className="app-icon" />
+                  <img key={darkMode} alt="Singularity icon" src={darkMode ? '../img/app_icon_dark.png' : '../img/app_icon_light.png'} className="app-icon" />
                   <h2>Check Your Email</h2>
                 </Col>
               </Row>
@@ -579,7 +579,7 @@ class AuthDialog extends React.Component {
               </Row>
               <Row className={dialogTab === 'signup' ? 'auth-dialog-title' : 'auth-dialog-title login'}>
                 <Col xs={12}>
-                  <img alt="Singularity logo" key={darkMode} src={darkMode ? '../img/app_icon_v2.png' : '../img/app_icon_v2_on_white.png'} className="app-icon" />
+                  <img alt="Singularity logo" key={darkMode} src={darkMode ? '../img/app_icon_dark.png' : '../img/app_icon_light.png'} className="app-icon" />
                   {dialogTab === 'signup'
                     ? <h2>Sign up</h2>
                     : <h2>Log in</h2>}

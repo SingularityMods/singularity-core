@@ -231,8 +231,8 @@ margin-left: 0px;
     border-radius: 0 0 1em 1em;
 }
 
-.backup-restore-message {
-    margin-top: 30px;
+.backup-message {
+    margin-top: 40px;
 }
 
 .backup-addon-details-column {
@@ -251,11 +251,11 @@ margin-left: 0px;
     height: 5px;
 }
 
-.backup-restore-message.restore-success {
+.backup-message.restore-success {
     color:var(--success-green);
 }
 
-.backup-restore-message.restore-error {
+.backup-message.restore-error {
     color: var(--error-red);
 }
 

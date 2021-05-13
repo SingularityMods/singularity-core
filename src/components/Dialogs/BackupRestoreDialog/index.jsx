@@ -13,21 +13,14 @@ import { ipcRenderer } from 'electron';
 class BackupRestoreDialog extends React.Component {
   constructor(props) {
     super(props);
-    const {
-      backupPending,
-      restorePending,
-      restoreState,
-    } = this.props;
     this.state = {
+      loading: true,
       backupDetails: null,
       restoreSettings: false,
       selectedRows: [],
       restoreError: '',
       restoreMessage: '',
       darkMode: false,
-      restoreState,
-      backupPending,
-      restorePending,
     };
 
     this.restoreListener = this.restoreListener.bind(this);
@@ -40,40 +33,23 @@ class BackupRestoreDialog extends React.Component {
   componentDidMount() {
     const { backup } = this.props;
     ipcRenderer.on('granular-restore-complete', this.restoreListener);
-    ipcRenderer.invoke('get-backup-details', backup.backupUUID)
+    ipcRenderer.invoke('get-backup-details', backup.backupUUID, backup.cloud)
       .then((backupDetails) => {
         this.setState({
           backupDetails,
+          loading: false,
         });
       })
       .catch((error) => {
         this.setState({
           restoreError: error.message,
+          loading: false,
         });
       });
     const darkMode = ipcRenderer.sendSync('is-dark-mode');
     this.setState({
       darkMode,
     });
-  }
-
-  componentDidUpdate(prevProps) {
-    const {
-      backupPending,
-      restorePending,
-      restoreState,
-    } = this.props;
-    if (backupPending !== prevProps.backupPending || restorePending !== prevProps.restorePending) {
-      this.setState({
-        backupPending,
-        restorePending,
-      });
-    }
-    if (restoreState !== prevProps.restoreState) {
-      this.setState({
-        restoreState,
-      });
-    }
   }
 
   componentWillUnmount() {
@@ -153,17 +129,18 @@ class BackupRestoreDialog extends React.Component {
     const {
       backup,
       onExit,
+      backupPending,
+      restorePending,
+      restoreState,
     } = this.props;
     const {
-      backupPending,
       darkMode,
       restoreError,
       restoreMessage,
-      restorePending,
       restoreSettings,
-      restoreState,
       selectedRows,
       backupDetails,
+      loading,
     } = this.state;
     const columns = [{
       dataField: 'addonName',
@@ -205,6 +182,16 @@ class BackupRestoreDialog extends React.Component {
       }
     }
     function getMessage() {
+      if (loading) {
+        return (
+          <div>
+            <Spinner animation="border" size="sm" variant={darkMode ? 'light' : 'dark'} role="status" className="restore-pending-spinner" id="restore-pending-spinner">
+              <span className="sr-only">Loading...</span>
+            </Spinner>
+            <span className="pending-message">Loading Backup Details</span>
+          </div>
+        );
+      }
       if (backupPending) {
         return (
           <div>

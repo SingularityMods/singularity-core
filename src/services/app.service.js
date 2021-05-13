@@ -1,10 +1,8 @@
 import { app } from 'electron';
-import axios from 'axios';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import log from 'electron-log';
 
-import AppConfig from '../config/app.config';
 import {
   getGameSettings,
   getAppData,
@@ -25,77 +23,6 @@ function toggleSentry(enabled) {
   } else {
     disableSentry();
   }
-}
-
-function getLatestTerms() {
-  log.info('Checking for latest ToS');
-  return new Promise((resolve, reject) => {
-    const axiosConfig = {
-      headers: {
-        'User-Agent': `Singularity-${app.getVersion()}`,
-        'x-app-uuid': getAppData('UUID'),
-      },
-    };
-    axios.get(`${AppConfig.API_URL}app/latest/tos`, axiosConfig)
-      .then((response) => {
-        if (response.status === 200) {
-          const tos = response.data;
-          const currentTos = getAppData('tos');
-          if (tos.version > currentTos.version) {
-            currentTos.version = tos.version;
-            currentTos.accepted = false;
-            currentTos.text = tos.text;
-            setAppData('tos', currentTos);
-            log.info('New ToS found');
-            return resolve(true);
-          }
-          log.info('No new ToS found');
-          return resolve(false);
-        }
-        return resolve(false);
-      })
-      .catch((err) => {
-        log.error('Error checking for latest ToS');
-        log.error(err.message);
-        return reject(new Error('Error checking for latest ToS'));
-      });
-  });
-}
-
-// Download the latest Privacy Policy from the API
-function getLatestPrivacy() {
-  log.info('Checking for latest Privacy Policy');
-  return new Promise((resolve, reject) => {
-    const axiosConfig = {
-      headers: {
-        'User-Agent': `Singularity-${app.getVersion()}`,
-        'x-app-uuid': getAppData('UUID'),
-      },
-    };
-    axios.get(`${AppConfig.API_URL}app/latest/privacy`, axiosConfig)
-      .then((response) => {
-        if (response.status === 200) {
-          const privacy = response.data;
-          const currentPrivacy = getAppData('privacy');
-          if (privacy.version > currentPrivacy.version) {
-            currentPrivacy.version = privacy.version;
-            currentPrivacy.accepted = false;
-            currentPrivacy.text = privacy.text;
-            setAppData('privacy', currentPrivacy);
-            log.info('New Privacy Policy found');
-            return resolve(true);
-          }
-          log.info('No new Privacy Policy found');
-          return resolve(false);
-        }
-        return resolve(false);
-      })
-      .catch((err) => {
-        log.error('Error checking for latest Privacy Policy');
-        log.error(err.message);
-        return reject(new Error('Error checking for latest Privacy Policy'));
-      });
-  });
 }
 
 function setAppConfig() {
@@ -986,6 +913,79 @@ function setAppConfig() {
         log.error(error);
       });
   }
+  if (version < '1.4.0') {
+    /* Add wago object to each WoW game version */
+    const wowS = getGameSettings('1');
+    Object.keys(wowS).forEach((gameVersion) => {
+      wowS[gameVersion].wago = {
+        enabled: false,
+        enabledFor: [],
+        wa: [],
+        plater: [],
+      };
+    });
+    setGameSettings('1', wowS);
+    /* Add wago API key config to app config */
+    const userConf = getAppData('userConfigurable');
+    userConf.wagoApiKey = '';
+    setAppData('userConfigurable', userConf);
+    /* Add change to gameData structure */
+    const wowD = getGameData('1');
+    Object.keys(wowD.gameVersions).forEach((gameVersion) => {
+      wowD.gameVersions[gameVersion].addonDir = 'Interface/Addons/';
+      wowD.gameVersions[gameVersion].settingsDir = 'WTF/';
+    });
+    wowD.gameVersions.wow_classic_ptr.addonVersion = 'wow_burning_crusade';
+    wowD.gameVersions.wow_classic_beta.addonVersion = 'wow_burning_crusade';
+    setGameData('1', wowD);
+    const esoD = getGameData('2');
+    esoD.gameVersions.eso.nickName = 'Live';
+    esoD.gameVersions.eso.addonDir = 'Elder Scrolls Online/live/AddOns/';
+    esoD.gameVersions.eso.settingsDir = 'Elder Scrolls Online/live/SavedVariables/';
+    esoD.gameVersions.eso_pts = {
+      name: 'Elder Scrolls Online PTS',
+      nickName: 'PTS',
+      shortName: 'eso_pts',
+      addonVersion: 'eso',
+      flavorString: 'eso',
+      addonDir: 'Elder Scrolls Online/pts/AddOns/',
+      settingsDir: 'Elder Scrolls Online/pts/SavedVariables/',
+      gameDir: {
+        win: [
+          'The Elder Scrolls Online PTS/game/client/eso.exe',
+          'The Elder Scrolls Online PTS/game/client/eso64.exe',
+        ],
+        mac: ['The Elder Scrolls Online PTS/game_mac/pubplayerclient/eso.app'],
+        linux: [
+          'The Elder Scrolls Online PTS/game/client/eso.exe',
+          'The Elder Scrolls Online PTS/game/client/eso64.exe',
+        ],
+      },
+    };
+    setGameData('2', esoD);
+    /* Add new flavor to eso settings */
+    const esoS = getGameSettings('2');
+    esoS.eso.nickName = 'Live';
+    esoS.eso_pts = {
+      name: 'Elder Scrolls Online PTS',
+      nickName: 'PTS',
+      shortName: 'eso_pts',
+      installed: false,
+      sync: false,
+      defaults: {
+        trackBranch: 1,
+        autoUpdate: false,
+        installDeps: true,
+        uninstallDeps: true,
+      },
+      installPath: '',
+      addonPath: '',
+      settingsPath: '',
+      installedAddons: [],
+      unknownAddonDirs: [],
+      dependencies: {},
+    };
+  }
   // Set new version
   setAppData('version', app.getVersion());
   // Set UUID if it doesn't exist
@@ -995,8 +995,6 @@ function setAppConfig() {
 }
 
 export {
-  getLatestTerms,
-  getLatestPrivacy,
   setAppConfig,
   toggleSentry,
 };

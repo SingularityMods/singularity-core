@@ -15,20 +15,12 @@ import { ipcRenderer } from 'electron';
 class BackupManagementDialog extends React.Component {
   constructor(props) {
     super(props);
-    const {
-      backupPending,
-      backupState,
-      restorePending,
-    } = this.props;
     this.state = {
       backups: [],
       cloudBackups: [],
       cloud: false,
       profile: {},
       darkMode: false,
-      backupPending,
-      restorePending,
-      backupState,
       deletePending: false,
       searchingForLocalBackups: false,
       searchingForCloudBackups: false,
@@ -66,11 +58,8 @@ class BackupManagementDialog extends React.Component {
 
   componentDidUpdate(prevProps) {
     const {
-      backupPending,
-      backupState,
       latestCloudBackup,
       opts,
-      restorePending,
     } = this.props;
     if (latestCloudBackup !== prevProps.latestCloudBackup) {
       ipcRenderer.send('get-cloud-backups', opts.gameId, opts.gameVersion);
@@ -78,17 +67,6 @@ class BackupManagementDialog extends React.Component {
       this.setState({
         searchingForLocalBackups: true,
         searchingForCloudBackups: true,
-      });
-    }
-    if (backupPending !== prevProps.backupPending || restorePending !== prevProps.restorePending) {
-      this.setState({
-        backupPending,
-        restorePending,
-      });
-    }
-    if (backupState !== prevProps.backupState) {
-      this.setState({
-        backupState,
       });
     }
   }
@@ -104,6 +82,9 @@ class BackupManagementDialog extends React.Component {
     const { cloud } = this.state;
     const { onSubmit } = this.props;
     onSubmit(cloud);
+    this.setState({
+      backupError: null,
+    });
   }
 
   toggleCloud(checked) {
@@ -138,20 +119,22 @@ class BackupManagementDialog extends React.Component {
     });
   }
 
-  backupCompleteListener(event, success) {
+  backupCompleteListener(event, success, type, eventGameId, eventGameVersion, errMsg) {
     const { opts } = this.props;
-    if (success) {
-      ipcRenderer.send('get-local-backups', opts.gameId, opts.gameVersion);
-      ipcRenderer.send('get-cloud-backups', opts.gameId, opts.gameVersion);
-      this.setState({
-        restoreMessage: '',
-        searchingForLocalBackups: true,
-        searchingForCloudBackups: true,
-      });
-    } else {
-      this.setState({
-        restoreError: 'Backup Failed',
-      });
+    if (eventGameId === opts.gameId && eventGameVersion === opts.gameVersion) {
+      if (success) {
+        ipcRenderer.send('get-local-backups', opts.gameId, opts.gameVersion);
+        ipcRenderer.send('get-cloud-backups', opts.gameId, opts.gameVersion);
+        this.setState({
+          restoreMessage: '',
+          searchingForLocalBackups: true,
+          searchingForCloudBackups: true,
+        });
+      } else {
+        this.setState({
+          backupError: errMsg || 'Backup Failed',
+        });
+      }
     }
   }
 
@@ -191,21 +174,21 @@ class BackupManagementDialog extends React.Component {
   render() {
     const {
       backups,
-      backupState,
-      backupPending,
       cloud,
       cloudBackups,
       darkMode,
       deletePending,
       profile,
-      restoreError,
+      backupError,
       restoreMessage,
-      restorePending,
       searchingForLocalBackups,
       searchingForCloudBackups,
     } = this.state;
     const {
       onExit,
+      backupState,
+      backupPending,
+      restorePending,
     } = this.props;
     const formatBytes = (a, b = 2) => { if (a === 0) return '0 Bytes'; const c = b < 0 ? 0 : b; const d = Math.floor(Math.log(a) / Math.log(1024)); return `${parseFloat((a / (1024 ** d)).toFixed(c))} ${['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'][d]}`; };
     let tableData = [];
@@ -300,11 +283,11 @@ class BackupManagementDialog extends React.Component {
         );
       }
       if (restoreMessage) {
-        return <div className="backup-restore-message restore-success">{restoreMessage}</div>;
+        return <div className="backup-message restore-success">{restoreMessage}</div>;
       }
 
-      if (restoreError) {
-        <div className="backup-restore-message restore-error">{restoreError}</div>;
+      if (backupError) {
+        return <div className="backup-message restore-error">{backupError}</div>;
       }
       return '';
     }

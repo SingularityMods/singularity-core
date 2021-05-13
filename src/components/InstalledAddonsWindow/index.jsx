@@ -36,7 +36,7 @@ function getLatestFile(addon, addonVersion) {
 }
 
 function sortAddons(a, b) {
-  if (!a.ignureUpdate && !b.ignoreUpdate) {
+  if (!a.ignoreUpdate && !b.ignoreUpdate) {
     if (a.updateAvailable && b.updateAvailable) {
       if (a.addonName < b.addonName) return -1;
       return 1;
@@ -214,14 +214,6 @@ class InstalledAddonsWindow extends React.Component {
 
   componentWillUnmount() {
     ipcRenderer.removeAllListeners();
-    /*
-    ipcRenderer.removeListener('addon-autoupdate-complete', this.autoUpdateCompleteListener);
-    ipcRenderer.removeListener('auth-event', this.authEventListener);
-    ipcRenderer.removeListener('addons-found', this.addonsFoundListener);
-    ipcRenderer.removeListener('no-addons-found', this.addonsNotFoundListener);
-    ipcRenderer.removeListener('addon-settings-updated', this.addonSettingsUpdatedListener);
-    ipcRenderer.removeListener('sync-status', this.syncCompleteListener);
-    */
   }
 
   handleSelectAddon(addonId) {
@@ -660,6 +652,7 @@ class InstalledAddonsWindow extends React.Component {
       gameId,
       gameVersion,
       toggleActiveTab,
+      openWowExtras,
     } = this.props;
     const {
       appUUID,
@@ -734,7 +727,7 @@ class InstalledAddonsWindow extends React.Component {
         } else if (formatExtraData === 2) {
           avatarUrl = '../img/icons/eso-icon.png';
         } else {
-          avatarUrl = '../img/app_icon.png';
+          avatarUrl = '../img/app_icon_light.png';
         }
         return (
           <div className="installed-addon-title-column">
@@ -996,6 +989,19 @@ class InstalledAddonsWindow extends React.Component {
                     </Form.Group>
                   </Col>
                   <Col xs={{ span: 2 }}>
+                    {gameId === 1
+                      ? (
+                        <div
+                          className="extras-link"
+                          role="button"
+                          tabIndex="0"
+                          onClick={() => openWowExtras(gameVersion)}
+                          onKeyPress={() => openWowExtras(gameVersion)}
+                        >
+                          <i className="fas fa-cogs extras-icon" />
+                        </div>
+                      )
+                      : ''}
                     <Button
                       className="backup-button"
                       onClick={this.openBackupDialog}
@@ -1068,6 +1074,7 @@ InstalledAddonsWindow.propTypes = {
   lastRestoreComplete: PropTypes.object.isRequired,
   onSelectAddon: PropTypes.func.isRequired,
   openBackupManagementDialog: PropTypes.func.isRequired,
+  openWowExtras: PropTypes.func.isRequired,
   restorePending: PropTypes.bool.isRequired,
   toggleActiveTab: PropTypes.func.isRequired,
 };

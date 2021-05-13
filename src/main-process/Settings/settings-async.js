@@ -24,6 +24,14 @@ import {
   setGameSettings,
 } from '../../services/storage.service';
 
+ipcMain.handle('set-wago-api-key', (_event, apiKey) => {
+  const userConfig = getAppData('userConfigurable');
+  userConfig.wagoApiKey = apiKey;
+  return setAppData('userConfigurable', userConfig);
+});
+
+ipcMain.handle('get-wago-api-key', () => getAppData('userConfigurable').wagoApiKey);
+
 ipcMain.on('set-app-settings', (event, appSettings) => {
   const prevSettings = getAppData('userConfigurable');
   setAppData('userConfigurable', appSettings);
@@ -106,7 +114,7 @@ ipcMain.on('toggle-sidebar', (event, toggle) => {
   setAppData('sidebarMinimized', toggle);
 });
 
-ipcMain.handle('update-eso-addon-path', () => new Promise((resolve, reject) => {
+ipcMain.handle('update-eso-addon-path', (_event, gameVersion) => new Promise((resolve, reject) => {
   dialog.showOpenDialog({
     properties: ['openDirectory'],
   })
@@ -123,7 +131,7 @@ ipcMain.handle('update-eso-addon-path', () => new Promise((resolve, reject) => {
         });
       }
       const [resultPath] = result.filePaths;
-      return updateESOAddonPath(resultPath)
+      return updateESOAddonPath(gameVersion, resultPath)
         .then(() => resolve({
           success: true,
         }));
@@ -134,7 +142,7 @@ ipcMain.handle('update-eso-addon-path', () => new Promise((resolve, reject) => {
     });
 }));
 
-ipcMain.handle('update-eso-install-path', () => new Promise((resolve, reject) => {
+ipcMain.handle('update-eso-install-path', (event, gameVersion) => new Promise((resolve, reject) => {
   dialog.showOpenDialog({
     properties: ['openDirectory'],
   })
@@ -154,6 +162,11 @@ ipcMain.handle('update-eso-install-path', () => new Promise((resolve, reject) =>
       return findInstalledGame('2', resultPath)
         .then((installedVersions) => {
           if (installedVersions && installedVersions.length > 0) {
+            if (installedVersions.includes(gameVersion)) {
+              const currentSettings = getGameSettings('2');
+              currentSettings[gameVersion].installPath = resultPath;
+              setGameSettings('2', currentSettings);
+            }
             return resolve({
               success: true,
               message: '',

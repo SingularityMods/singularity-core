@@ -48,7 +48,7 @@ export default class HomePage extends React.Component {
       <div id="HomePage">
         <Row>
           <Col className="homepage-title">
-            <img alt="Singularity logo" src={darkMode ? '../img/logo_v2_white.png' : '../img/logo_v2.png'} className="app-logo-banner" />
+            <img alt="Singularity logo" src={darkMode ? '../img/logo_dark.png' : '../img/logo_light.png'} className="app-logo-banner" />
           </Col>
         </Row>
 
@@ -62,6 +62,38 @@ export default class HomePage extends React.Component {
             </div>
             <SimpleBar scrollbarMaxSize={50} className={process.platform === 'darwin' ? 'home-page-bar mac' : 'home-page-bar'}>
               <div>
+                <h5>
+                  1.4.0
+                  <span className="release-note-date">2021-05-13</span>
+                </h5>
+                <h5 className="release-note-section-header">New Features:</h5>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Singularity now supports The Burning Crusade Classic on the Classic Beta and
+                  Classic PTR realms. Singularity 1.4.1 will release with the pre-patch on May 18
+                  with support for The Burning Crusade on mainline-Classic. Support for Vanilla
+                  classic will come back soon after Blizzard updates the installation directory
+                  structure.
+                </p>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Singularity now supports managing addons for the ESO Public Test Server (PTS)
+                  as a separate installation from the main ESO installation.
+                </p>
+                <p className="release-note-bullet">
+                  {' '}
+                  - You can now configure Singularity to automatically keep Wago (WeakAuras and
+                  Plater) scripts up-to-date by clicking the &ldquo;mode settings&rdquo; cogs on
+                  any WoW game version page. Singularity will take care of installing and updating
+                  the WeakAuras Companion addon when you enable this feature.
+                </p>
+                <h5 className="release-note-section-header">Bug Fixes:</h5>
+                <p className="release-note-bullet">
+                  {' '}
+                  - You can now successfully restore a cloud backup on a brand new installation of
+                  Singularity.
+                </p>
+                <hr />
                 <h3 className="release-notes-title">Release Notes</h3>
                 <h5>
                   1.3.2

@@ -12,6 +12,12 @@
         "installDeps": true,
         "uninstallDeps": true
       },
+      "wago": {
+        "enabled": false,
+        "enabledFor": [],
+        "wa": [],
+        "plater": []
+      },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_retail_\\",
       "addonPath": "",
       "settingsPath": "",
@@ -30,6 +36,12 @@
         "autoUpdate": false,
         "installDeps": true,
         "uninstallDeps": true
+      },
+      "wago": {
+        "enabled": false,
+        "enabledFor": [],
+        "wa": [],
+        "plater": []
       },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_classic_\\",
       "addonPath": "",
@@ -50,6 +62,12 @@
         "installDeps": true,
         "uninstallDeps": true
       },
+      "wago": {
+        "enabled": false,
+        "enabledFor": [],
+        "wa": [],
+        "plater": []
+      },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_ptr_\\",
       "addonPath": "",
       "settingsPath": "",
@@ -69,6 +87,12 @@
         "installDeps": true,
         "uninstallDeps": true
       },
+      "wago": {
+        "enabled": false,
+        "enabledFor": [],
+        "wa": [],
+        "plater": []
+      },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_classic_ptr_\\",
       "addonPath": "",
       "settingsPath": "",
@@ -86,6 +110,12 @@
         "autoUpdate": false,
         "installDeps": true,
         "uninstallDeps": true
+      },
+      "wago": {
+        "enabled": false,
+        "enabledFor": [],
+        "wa": [],
+        "plater": []
       },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_beta_\\",
       "addonPath": "",
@@ -105,6 +135,12 @@
         "installDeps": true,
         "uninstallDeps": true
       },
+      "wago": {
+        "enabled": false,
+        "enabledFor": [],
+        "wa": [],
+        "plater": []
+      },
       "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_classic_beta_\\",
       "addonPath": "",
       "settingsPath": "",
@@ -116,8 +152,27 @@
   "2": {
     "eso": {
       "name": "Elder Scrolls Online",
-      "nickName": "ESO",
+      "nickName": "Live",
       "shortName": "eso",
+      "installed": false,
+      "sync": false,
+      "defaults": {
+        "trackBranch": 1,
+        "autoUpdate": false,
+        "installDeps": true,
+        "uninstallDeps": true
+      },
+      "installPath": "",
+      "addonPath": "",
+      "settingsPath": "",
+      "installedAddons": [],
+      "unknownAddonDirs": [],
+      "dependencies": {}
+    },
+    "eso_pts": {
+      "name": "Elder Scrolls Online PTS",
+      "nickName": "PTS",
+      "shortName": "eso_pts",
       "installed": false,
       "sync": false,
       "defaults": {

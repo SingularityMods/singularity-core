@@ -4,7 +4,17 @@ import log from 'electron-log';
 import {
   autoFindGame, findAndUpdateAddons, findInstalledGame,
 } from '../../services/file.service';
-import { getGameData, getGameSettings, setGameSettings } from '../../services/storage.service';
+import {
+  getGameData,
+  getGameSettings,
+  setGameSettings,
+  getWago,
+  setWago,
+} from '../../services/storage.service';
+import {
+  checkGameVersionForWagoUpdates,
+  uninstallCompanion,
+} from '../../services/wago.service';
 
 ipcMain.handle('get-games', () => {
   const wowD = getGameData('1');
@@ -72,3 +82,36 @@ ipcMain.on('set-game-defaults', (_event, gameId, gameVersion, defaults) => {
   gameS[gameVersion].defaults = defaults;
   setGameSettings(gameId.toString(), gameS);
 });
+
+ipcMain.handle('get-wago-settings', (_event, gameVersion) => getWago(gameVersion));
+
+ipcMain.handle('set-wago-settings', (_event, gameVersion, settings) => setWago(gameVersion, settings));
+
+ipcMain.handle('toggle-wago', (_event, gameVersion, enabled) => new Promise((resolve, reject) => {
+  const wagoConf = getWago(gameVersion);
+  wagoConf.enabled = enabled;
+  setWago(gameVersion, wagoConf);
+  if (!enabled) {
+    log.info('Uninstalling WAGO Updater addon');
+    uninstallCompanion(gameVersion)
+      .then(() => {
+        log.info('WAGO Updater uninstalled');
+        return resolve();
+      })
+      .catch((e) => reject(e));
+  }
+  return resolve();
+}));
+
+ipcMain.handle('check-wago-updates', (event, gameVersion) => new Promise((resolve, reject) => {
+  event.sender.send('app-status-message', 'Checking for Wago updates', 'status');
+  return checkGameVersionForWagoUpdates(gameVersion)
+    .then((newWagoSettings) => {
+      event.sender.send('app-status-message', 'Done checking for Wago updates', 'success');
+      return resolve(newWagoSettings);
+    })
+    .catch((error) => {
+      event.sender.send('app-status-message', 'Error checking for Wago updates', 'error');
+      return reject(error);
+    });
+}));

@@ -89,14 +89,14 @@ ipcMain.on('create-granular-backup', async (event, gameId, gameVersion, cloud) =
                     const confirmPostData = {
                       backupId: res.data.backupId,
                     };
-                    const comirmPostConfig = {
+                    const confirmPostConfig = {
                       headers: {
                         'Content-Type': 'application/json;charset=UTF-8',
                         'User-Agent': `Singularity-${app.getVersion()}`,
                         'x-auth': getAccessToken(),
                       },
                     };
-                    return axios.post(`${AppConfig.API_URL}/user/confirmbackup`, confirmPostData, comirmPostConfig);
+                    return axios.post(`${AppConfig.API_URL}/user/backup/confirm`, confirmPostData, confirmPostConfig);
                   }
                   return Promise.resolve();
                 })
@@ -127,7 +127,7 @@ ipcMain.on('create-granular-backup', async (event, gameId, gameVersion, cloud) =
     .catch((err) => {
       log.error('Error creating cloud backup');
       log.error(err);
-      event.sender.send('granular-backup-complete', false, 'cloud', gameId, gameVersion, null);
+      event.sender.send('granular-backup-complete', false, 'cloud', gameId, gameVersion, err.message);
       event.sender.send('app-status-message', 'Error saving backup', 'error');
     });
 });
@@ -148,7 +148,7 @@ ipcMain.on('delete-granular-backup', async (event, backup) => {
             'x-auth': getAccessToken(),
           },
         };
-        return axios.post(`${AppConfig.API_URL}/user/deletebackup`, postData, axiosConfig);
+        return axios.post(`${AppConfig.API_URL}/user/backup/delete`, postData, axiosConfig);
       }
       log.info('Local backup deleted');
       event.sender.send('delete-backup-complete', true, null);
@@ -182,7 +182,7 @@ ipcMain.on('get-cloud-backups', async (event, gameId, gameVersion) => {
         'x-auth': getAccessToken(),
       },
     };
-    axios.get(`${AppConfig.API_URL}/user/backups?gameId=${gameId}&gameVersion=${gameVersion}&version=2`, axiosConfig)
+    axios.get(`${AppConfig.API_URL}/user/backup/mine?gameId=${gameId}&gameVersion=${gameVersion}&version=2`, axiosConfig)
       .then((res) => {
         if (res.status === 200 && res.data.success) {
           log.info('Cloud backups found');
@@ -219,11 +219,41 @@ ipcMain.on('get-local-backups', (event, gameId, gameVersion) => {
     });
 });
 
-ipcMain.handle('get-backup-details', (event, backupUUID) => new Promise((resolve, reject) => {
-  getLocalBackupDetails(backupUUID)
-    .then((backupDetails) => resolve(backupDetails))
-    .catch((error) => {
-      log.error(error);
+ipcMain.handle('get-backup-details', (event, backupUUID, cloud) => new Promise((resolve, reject) => {
+  if (!cloud) {
+    getLocalBackupDetails(backupUUID)
+      .then((backupDetails) => resolve(backupDetails))
+      .catch((error) => {
+        log.error(error);
+        return reject(new Error('Error retrieving backup details'));
+      });
+  }
+  event.sender.send('app-status-message', 'Retrieving cloud backup details', 'status');
+  log.info('Fetching cloud backup info');
+  const axiosConfig = {
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+      'User-Agent': `Singularity-${app.getVersion()}`,
+      'x-auth': getAccessToken(),
+    },
+  };
+  axios.get(`${AppConfig.API_URL}/user/backup/${backupUUID}`, axiosConfig)
+    .then((res) => {
+      if (res.status === 200 && res.data.success) {
+        event.sender.send('app-status-message', 'Cloud backup details found', 'success');
+        log.info('Cloud backup found');
+        const { backup } = res.data;
+        backup.cloud = cloud;
+        return resolve(backup);
+      }
+      event.sender.send('app-status-message', 'Error retrieving cloud backup details', 'error');
+      log.info('No cloud backup found');
+      return reject(new Error('Error retrieving backup details'));
+    })
+    .catch((err) => {
+      event.sender.send('app-status-message', 'Error retrieving cloud backup details', 'error');
+      log.error('Error fetching cloud backup details');
+      log.error(err);
       return reject(new Error('Error retrieving backup details'));
     });
 }));

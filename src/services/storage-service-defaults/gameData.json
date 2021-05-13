@@ -15,8 +15,6 @@
         "mac":["/Applications/"],
         "linux":["C:/Program Files (x86)/"]
       },
-      "addonDir": "Interface/Addons/",
-      "settingsDir": "WTF/",
       "addonDirLocation":{
         "win":"%GAMEDIR%",
         "mac":"%GAMEDIR%",
@@ -35,6 +33,8 @@
           "addonVersion": "wow_retail",
           "executable": "Wow.exe",
           "macExecutable": "World of Warcraft.app",
+          "addonDir": "Interface/Addons/",
+          "settingsDir": "WTF/",
           "gameDir": {
             "win": [
               "World of Warcraft/_retail_/Wow.exe"
@@ -52,6 +52,8 @@
           "addonVersion": "wow_classic",
           "executable": "WowClassic.exe",
           "macExecutable": "World of Warcraft Classic.app",
+          "addonDir": "Interface/Addons/",
+          "settingsDir": "WTF/",
           "gameDir": {
             "win": [
               "World of Warcraft/_classic_/WowClassic.exe"
@@ -69,6 +71,8 @@
           "addonVersion": "wow_retail",
           "executable": "WowT.exe",
           "macExecutable": "World of Warcraft Test.app",
+          "addonDir": "Interface/Addons/",
+          "settingsDir": "WTF/",
           "gameDir": {
             "win": [
               "World of Warcraft/_ptr_/WowT.exe"
@@ -83,9 +87,11 @@
           "name": "World of Warcraft Classic PTR",
           "nickName": "Classic PTR",
           "shortName": "wow-classic-ptr",
-          "addonVersion": "wow_classic",
+          "addonVersion": "wow_burning_crusade",
           "executable": "WowClassicT.exe",
           "macExecutable": "World of Warcraft Classic Test.app",
+          "addonDir": "Interface/Addons/",
+          "settingsDir": "WTF/",
           "gameDir": {
             "win": [
               "World of Warcraft/_classic_ptr_/WowClassicT.exe"
@@ -103,6 +109,8 @@
           "addonVersion": "wow_retail",
           "executable": "WowB.exe",
           "macExecutable": "World of Warcraft Beta.app",
+          "addonDir": "Interface/Addons/",
+          "settingsDir": "WTF/",
           "gameDir": {
             "win": [
               "World of Warcraft/_beta_/WowB.exe"
@@ -117,11 +125,13 @@
           "name": "World of Warcraft Classic Beta",
           "nickName": "Classic Beta",
           "shortName": "wow-classic-beta",
-          "addonVersion": "wow_classic",
+          "addonVersion": "wow_burning_crusade",
           "flavorString": "wow_classic_beta",
           "macFlavorString": "/_beta_",
           "executable": "WowClassicB.exe",
           "macExecutable": "World of Warcraft Classic Beta.app",
+          "addonDir": "Interface/Addons/",
+          "settingsDir": "WTF/",
           "gameDir": {
             "win": [
               "World of Warcraft/_classic_beta_/WowClassicB.exe"
@@ -951,8 +961,6 @@
           "C:/Program Files (x86)/Zenimax Online/"
         ]
       },
-      "addonDir": "Elder Scrolls Online/live/AddOns/",
-      "settingsDir": "Elder Scrolls Online/live/SavedVariables/",
       "addonDirLocation":{
         "win":"%DOCUMENTS%",
         "mac":"%DOCUMENTS%",
@@ -966,10 +974,12 @@
       "gameVersions": {
         "eso": {
           "name": "Elder Scrolls Online",
-          "nickName": "ESO",
+          "nickName": "Live",
           "shortName": "eso",
           "addonVersion": "eso",
           "flavorString": "eso",
+          "addonDir": "Elder Scrolls Online/live/AddOns/",
+          "settingsDir": "Elder Scrolls Online/live/SavedVariables/",
           "gameDir": {
             "win": [
               "The Elder Scrolls Online/game/client/eso.exe",
@@ -980,6 +990,26 @@
               "The Elder Scrolls Online/game/client/eso.exe",
               "The Elder Scrolls Online/game/client/eso64.exe"
             ]
+          },
+          "eso_pts": {
+            "name": "Elder Scrolls Online PTS",
+            "nickName": "PTS",
+            "shortName": "eso_pts",
+            "addonVersion": "eso",
+            "flavorString": "eso",
+            "addonDir": "Elder Scrolls Online/pts/AddOns/",
+            "settingsDir": "Elder Scrolls Online/pts/SavedVariables/",
+            "gameDir": {
+              "win": [
+                "The Elder Scrolls Online PTS/game/client/eso.exe",
+                "The Elder Scrolls Online PTS/game/client/eso64.exe"
+              ],
+              "mac": ["The Elder Scrolls Online PTS/game_mac/pubplayerclient/eso.app"],
+              "linux": [
+                "The Elder Scrolls Online PTS/game/client/eso.exe",
+                "The Elder Scrolls Online PTS/game/client/eso64.exe"
+              ]
+            }
           }
         }
       },

@@ -29,6 +29,7 @@
 }
 
 .game-settings .dropdown-menu {
+  max-height: 230px;
     color: var(--on-background);
     background-color: var(--container-light);
     border-color: var(--primary-dark);

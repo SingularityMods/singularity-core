@@ -41,7 +41,7 @@ function ClusterAddonTable(props) {
       } else if (formatExtraData === 2) {
         avatarUrl = '../img/icons/eso-icon.png';
       } else {
-        avatarUrl = '../img/app_icon.png';
+        avatarUrl = '../img/app_icon_light.png';
       }
 
       return (
