@@ -49,7 +49,7 @@
           "name": "World of Warcraft Classic",
           "nickName": "Classic",
           "shortName": "wow-classic",
-          "addonVersion": "wow_classic",
+          "addonVersion": "wow_burning_crusade",
           "executable": "WowClassic.exe",
           "macExecutable": "World of Warcraft Classic.app",
           "addonDir": "Interface/Addons/",
