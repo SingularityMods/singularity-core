@@ -990,26 +990,26 @@
               "The Elder Scrolls Online/game/client/eso.exe",
               "The Elder Scrolls Online/game/client/eso64.exe"
             ]
-          },
-          "eso_pts": {
-            "name": "Elder Scrolls Online PTS",
-            "nickName": "PTS",
-            "shortName": "eso_pts",
-            "addonVersion": "eso",
-            "flavorString": "eso",
-            "addonDir": "Elder Scrolls Online/pts/AddOns/",
-            "settingsDir": "Elder Scrolls Online/pts/SavedVariables/",
-            "gameDir": {
-              "win": [
-                "The Elder Scrolls Online PTS/game/client/eso.exe",
-                "The Elder Scrolls Online PTS/game/client/eso64.exe"
-              ],
-              "mac": ["The Elder Scrolls Online PTS/game_mac/pubplayerclient/eso.app"],
-              "linux": [
-                "The Elder Scrolls Online PTS/game/client/eso.exe",
-                "The Elder Scrolls Online PTS/game/client/eso64.exe"
-              ]
-            }
+          }
+        },
+        "eso_pts": {
+          "name": "Elder Scrolls Online PTS",
+          "nickName": "PTS",
+          "shortName": "eso_pts",
+          "addonVersion": "eso",
+          "flavorString": "eso",
+          "addonDir": "Elder Scrolls Online/pts/AddOns/",
+          "settingsDir": "Elder Scrolls Online/pts/SavedVariables/",
+          "gameDir": {
+            "win": [
+              "The Elder Scrolls Online PTS/game/client/eso.exe",
+              "The Elder Scrolls Online PTS/game/client/eso64.exe"
+            ],
+            "mac": ["The Elder Scrolls Online PTS/game_mac/pubplayerclient/eso.app"],
+            "linux": [
+              "The Elder Scrolls Online PTS/game/client/eso.exe",
+              "The Elder Scrolls Online PTS/game/client/eso64.exe"
+            ]
           }
         }
       },
