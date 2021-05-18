@@ -53,6 +53,8 @@ class AddonVersionTable extends React.Component {
     if (['wow_retail', 'wow_retail_ptr', 'wow_retail_beta', 'eso'].includes(gameVersion)) {
       tableData = addon.latestRetailFiles;
     } else if (['wow_classic', 'wow_classic_ptr', 'wow_classic_beta'].includes(gameVersion)) {
+      tableData = addon.latestTBCFiles;
+    } else if (['wow_classic_era'].includes(gameVersion)) {
       tableData = addon.latestClassicFiles;
     }
     const columns = [{
@@ -149,6 +151,9 @@ class AddonVersionTable extends React.Component {
       }
       return message;
     }
+
+    const noTableData = () => (
+      <div className="no-data-label">This game version has no files yet</div>);
     return (
       <Row>
         <Col xs={12} className="addon-version-table">
@@ -158,7 +163,7 @@ class AddonVersionTable extends React.Component {
                 addons={tableData}
                 columns={columns}
                 keyField="_id"
-                noTableData={() => {}}
+                noTableData={noTableData}
               />
             )
             : ''}
