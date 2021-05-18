@@ -986,6 +986,11 @@ function setAppConfig() {
       dependencies: {},
     };
   }
+  if (version < '1.4.1') {
+    const wowD = getGameData('1');
+    wowD.gameVersions.wow_classic.addonVersion = 'wow_burning_crusade';
+    setGameData('1', wowD);
+  }
   // Set new version
   setAppData('version', app.getVersion());
   // Set UUID if it doesn't exist
