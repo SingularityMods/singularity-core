@@ -63,6 +63,22 @@ export default class HomePage extends React.Component {
             <SimpleBar scrollbarMaxSize={50} className={process.platform === 'darwin' ? 'home-page-bar mac' : 'home-page-bar'}>
               <div>
                 <h5>
+                  1.4.1
+                  <span className="release-note-date">2021-05-18</span>
+                </h5>
+                <h5 className="release-note-section-header">New Features:</h5>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Singularity now supports The Burning Crusade Classic and Classic Era servers.
+                </p>
+                <h5 className="release-note-section-header">Bug Fixes:</h5>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Resolved an issue that could cause Singularity to use an abnormally large amount
+                  of memory if left running for an extended period of time.
+                </p>
+                <hr />
+                <h5>
                   1.4.0
                   <span className="release-note-date">2021-05-13</span>
                 </h5>
