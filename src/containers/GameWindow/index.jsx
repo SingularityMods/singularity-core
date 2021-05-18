@@ -43,11 +43,12 @@ class GameWindow extends React.Component {
     const gameSettings = ipcRenderer.sendSync('get-game-settings', gameId);
     const defaultWowVersion = ipcRenderer.sendSync('get-default-wow-version');
     const appUUID = ipcRenderer.sendSync('get-app-uuid');
-    const installedVersions = [];
+    let installedVersions = [];
     let selectedGameVersion = '';
     Object.entries(gameSettings).forEach(([gameVersion]) => {
       if (gameSettings[gameVersion].installed) {
         installedVersions.push({
+          sortOrder: gameSettings[gameVersion].sortOrder,
           gameVersion,
           nickName: gameData.gameVersions[gameVersion].nickName,
           installPath: gameSettings[gameVersion].installPath,
@@ -55,6 +56,7 @@ class GameWindow extends React.Component {
       }
     });
     if (installedVersions.length > 0) {
+      installedVersions = installedVersions.sort((a, b) => a.sortOrder - b.sortOrder);
       if (installedVersions.find((elem) => elem.gameVersion === defaultWowVersion)) {
         selectedGameVersion = defaultWowVersion;
       } else {
@@ -75,11 +77,12 @@ class GameWindow extends React.Component {
       const gameData = ipcRenderer.sendSync('get-game-data', gameId);
       const gameSettings = ipcRenderer.sendSync('get-game-settings', gameId);
       const defaultWowVersion = ipcRenderer.sendSync('get-default-wow-version');
-      const installedVersions = [];
+      let installedVersions = [];
       let selectedGameVersion = '';
       Object.entries(gameSettings).forEach(([gameVersion]) => {
         if (gameSettings[gameVersion].installed) {
           installedVersions.push({
+            sortOrder: gameSettings[gameVersion].sortOrder,
             gameVersion,
             nickName: gameData.gameVersions[gameVersion].nickName,
             installPath: gameSettings[gameVersion].installPath,
@@ -87,6 +90,7 @@ class GameWindow extends React.Component {
         }
       });
       if (installedVersions.length > 0) {
+        installedVersions = installedVersions.sort((a, b) => a.sortOrder - b.sortOrder);
         if (installedVersions.find((elem) => elem.gameVersion === defaultWowVersion)) {
           selectedGameVersion = defaultWowVersion;
         } else {
@@ -120,11 +124,12 @@ class GameWindow extends React.Component {
     const { gameId } = this.state;
     const gameSettings = ipcRenderer.sendSync('get-game-settings', gameId);
     const gameData = ipcRenderer.sendSync('get-game-data', gameId);
-    const installedVersions = [];
+    let installedVersions = [];
     let selectedGameVersion = '';
     Object.entries(gameSettings).forEach(([gameVersion]) => {
       if (gameSettings[gameVersion].installed) {
         installedVersions.push({
+          sortOrder: gameSettings[gameVersion].sortOrder,
           gameVersion,
           nickName: gameData.gameVersions[gameVersion].nickName,
           installPath: gameSettings[gameVersion].installPath,
@@ -132,6 +137,7 @@ class GameWindow extends React.Component {
       }
     });
     if (installedVersions.length > 0) {
+      installedVersions = installedVersions.sort((a, b) => a.sortOrder - b.sortOrder);
       selectedGameVersion = installedVersions[0].gameVersion;
     }
     this.setState({

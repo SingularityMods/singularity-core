@@ -88,11 +88,11 @@ class GameWindowMenu extends React.Component {
                   {version.nickName}
                 </Dropdown.Item>
               ))}
-              {((gameId === 1 && installedVersions && installedVersions.length < 6)
+              {((gameId === 1 && installedVersions && installedVersions.length < 7)
             || (gameId === 2 && installedVersions && installedVersions.length < 2))
                 ? <Dropdown.Divider />
                 : ''}
-              {((gameId === 1 && installedVersions && installedVersions.length < 6)
+              {((gameId === 1 && installedVersions && installedVersions.length < 7)
             || (gameId === 2 && installedVersions && installedVersions.length < 2))
                 ? (
                   <Dropdown.Item

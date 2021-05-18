@@ -989,7 +989,64 @@ function setAppConfig() {
   if (version < '1.4.1') {
     const wowD = getGameData('1');
     wowD.gameVersions.wow_classic.addonVersion = 'wow_burning_crusade';
+    wowD.gameVersions.wow_classic.name = 'World of Warcraft TBC Classic';
+    wowD.gameVersions.wow_classic.nickName = 'TBC Classic';
+    wowD.gameVersions.wow_classic_era = {
+      name: 'World of Warcraft Classic Era',
+      nickName: 'Classic Era',
+      shortName: 'wow-classic-era',
+      addonVersion: 'wow_classic',
+      executable: 'WowClassic.exe',
+      macExecutable: 'World of Warcraft Classic.app',
+      addonDir: 'Interface/Addons/',
+      settingsDir: 'WTF/',
+      gameDir: {
+        win: [
+          'World of Warcraft/_classic_era_/WowClassic.exe',
+        ],
+        mac: ['World of Warcraft/_classic_era_/World of Warcraft Classic.app'],
+        linux: [
+          'World of Warcraft/_classic_era_/WowClassic.exe',
+        ],
+      },
+    };
     setGameData('1', wowD);
+    const wowS = getGameSettings('1');
+    wowS.wow_retail.sortOrder = 1;
+    wowS.wow_classic.sortOrder = 2;
+    wowS.wow_retail_ptr.sortOrder = 4;
+    wowS.wow_classic_ptr.sortOrder = 5;
+    wowS.wow_retail_beta.sortOrder = 6;
+    wowS.wow_classic_beta.sortOrder = 7;
+    wowS.wow_classic.name = "World of Warcraft TBC Classic";
+    wowS.wow_classic.nickName = 'TBC Classic';
+    wowS.wow_classic_era = {
+      sortOrder: 3,
+      name: 'World of Warcraft Classic Era',
+      nickName: 'Classic Era',
+      shortName: 'wow-classic-era',
+      installed: false,
+      sync: false,
+      defaults: {
+        trackBranch: 1,
+        autoUpdate: false,
+        installDeps: true,
+        uninstallDeps: true,
+      },
+      wago: {
+        enabled: false,
+        enabledFor: [],
+        wa: [],
+        plater: [],
+      },
+      installPath: 'C:\\Program Files (x86)\\World of Warcraft\\_classic_era_\\',
+      addonPath: '',
+      settingsPath: '',
+      installedAddons: [],
+      unknownAddonDirs: [],
+      dependencies: {},
+    };
+    setGameSettings('1', wowS);
   }
   // Set new version
   setAppData('version', app.getVersion());
