@@ -1,6 +1,7 @@
 {
   "1": {
     "wow_retail": {
+      "sortOrder": 1,
       "name": "World of Warcraft",
       "nickName": "Retail",
       "shortName": "wow-retail",
@@ -26,8 +27,9 @@
       "dependencies": {}
     },
     "wow_classic": {
-      "name": "World of Warcraft Classic",
-      "nickName": "Classic",
+      "sortOrder": 2,
+      "name": "World of Warcraft TBC Classic",
+      "nickName": "TBC Classic",
       "shortName": "wow-classic",
       "installed": false,
       "sync": false,
@@ -50,7 +52,34 @@
       "unknownAddonDirs": [],
       "dependencies": {}
     },
+    "wow_classic_era": {
+      "sortOrder": 3,
+      "name": "World of Warcraft Classic Era",
+      "nickName": "Classic Era",
+      "shortName": "wow-classic-era",
+      "installed": false,
+      "sync": false,
+      "defaults": {
+        "trackBranch": 1,
+        "autoUpdate": false,
+        "installDeps": true,
+        "uninstallDeps": true
+      },
+      "wago": {
+        "enabled": false,
+        "enabledFor": [],
+        "wa": [],
+        "plater": []
+      },
+      "installPath": "C:\\Program Files (x86)\\World of Warcraft\\_classic_era_\\",
+      "addonPath": "",
+      "settingsPath": "",
+      "installedAddons": [],
+      "unknownAddonDirs": [],
+      "dependencies": {}
+    },
     "wow_retail_ptr": {
+      "sortOrder": 4,
       "name": "World of Warcraft PTR",
       "nickName": "PTR",
       "shortName": "wow-retail-ptr",
@@ -76,6 +105,7 @@
       "dependencies": {}
     },
     "wow_classic_ptr": {
+      "sortOrder": 5,
       "name": "World of Warcraft Classic PTR",
       "nickName": "Classic PTR",
       "shortName": "wow-classic-ptr",
@@ -101,6 +131,7 @@
       "dependencies": {}
     },
     "wow_retail_beta": {
+      "sortOrder": 6,
       "name": "World of Warcraft Beta",
       "nickName": "Beta",
       "shortName": "wow-retail-beta",
@@ -125,6 +156,7 @@
       "dependencies": {}
     },
     "wow_classic_beta": {
+      "sortOrder": 7,
       "name": "World of Warcraft Classic Beta",
       "nickName": "Classic Beta",
       "shortName": "wow-classic-beta",

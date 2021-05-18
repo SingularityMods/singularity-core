@@ -46,8 +46,8 @@
           }
         },
         "wow_classic": {
-          "name": "World of Warcraft Classic",
-          "nickName": "Classic",
+          "name": "World of Warcraft TBC Classic",
+          "nickName": "TBC Classic",
           "shortName": "wow-classic",
           "addonVersion": "wow_burning_crusade",
           "executable": "WowClassic.exe",
@@ -61,6 +61,25 @@
             "mac": ["World of Warcraft/_classic_/World of Warcraft Classic.app"],
             "linux": [
               "World of Warcraft/_classic_/WowClassic.exe"
+            ]
+          }
+        },
+        "wow_classic_era": {
+          "name": "World of Warcraft Classic Era",
+          "nickName": "Classic Era",
+          "shortName": "wow-classic-era",
+          "addonVersion": "wow_classic",
+          "executable": "WowClassic.exe",
+          "macExecutable": "World of Warcraft Classic.app",
+          "addonDir": "Interface/Addons/",
+          "settingsDir": "WTF/",
+          "gameDir": {
+            "win": [
+              "World of Warcraft/_classic_era_/WowClassic.exe"
+            ],
+            "mac": ["World of Warcraft/_classic_era_/World of Warcraft Classic.app"],
+            "linux": [
+              "World of Warcraft/_classic_era_/WowClassic.exe"
             ]
           }
         },

@@ -47,6 +47,7 @@ class SettingsWindow extends React.Component {
     const wowInstalls = {
       wow_retail: gameSettings.wow_retail.installPath,
       wow_classic: gameSettings.wow_classic.installPath,
+      wow_classic_era: gameSettings.wow_classic_era.installPath,
       wow_retail_ptr: gameSettings.wow_retail_ptr.installPath,
       wow_classic_ptr: gameSettings.wow_classic_ptr.installPath,
       wow_retail_beta: gameSettings.wow_retail_beta.installPath,
@@ -65,6 +66,7 @@ class SettingsWindow extends React.Component {
     const gameDefaults = {
       wow_retail: gameSettings.wow_retail.defaults,
       wow_classic: gameSettings.wow_classic.defaults,
+      wow_classic_era: gameSettings.wow_classic_era.defaults,
       wow_retail_ptr: gameSettings.wow_retail_ptr.defaults,
       wow_classic_ptr: gameSettings.wow_classic_ptr.defaults,
       wow_retail_beta: gameSettings.wow_retail_beta.defaults,
@@ -253,6 +255,10 @@ class SettingsWindow extends React.Component {
         gameDefaults.wow_classic.autoUpdate = checked;
         ipcRenderer.send('set-game-defaults', 1, 'wow_classic', gameDefaults.wow_classic);
         break;
+      case 'wow_classic_era_auto_update':
+        gameDefaults.wow_classic_era.autoUpdate = checked;
+        ipcRenderer.send('set-game-defaults', 1, 'wow_classic_era', gameDefaults.wow_classic_era);
+        break;
       case 'wow_retail_ptr_auto_update':
         gameDefaults.wow_retail_ptr.autoUpdate = checked;
         ipcRenderer.send('set-game-defaults', 1, 'wow_retail_ptr', gameDefaults.wow_retail_ptr);
@@ -339,7 +345,10 @@ class SettingsWindow extends React.Component {
           defaultWowTitle = 'Retail';
           break;
         case 'wow_classic':
-          defaultWowTitle = 'Classic';
+          defaultWowTitle = 'TBC Classic';
+          break;
+        case 'wow_classic_era':
+          defaultWowTitle = 'Classic Era';
           break;
         case 'wow_retail_ptr':
           defaultWowTitle = 'Retail PTR';
@@ -867,7 +876,13 @@ class SettingsWindow extends React.Component {
                             key="wow_classic"
                             eventKey="wow_classic"
                           >
-                            Classic
+                            TBC Classic
+                          </Dropdown.Item>
+                          <Dropdown.Item
+                            key="wow_classic_era"
+                            eventKey="wow_classic_era"
+                          >
+                            Classic Era
                           </Dropdown.Item>
                           <Dropdown.Item
                             key="wow_retail_ptr"
@@ -968,7 +983,7 @@ class SettingsWindow extends React.Component {
                     </Row>
                     <Row className="settings-item">
                       <Col xs={4} md={3} className="settings-item-name">
-                        <div>Classic Install Path</div>
+                        <div>TBC Classic Install Path</div>
                       </Col>
                       <Col xs={8} md={9} className="settings-item-config">
                         <p data-tip data-for="classic-dir-location">
@@ -989,11 +1004,11 @@ class SettingsWindow extends React.Component {
                     </Row>
                     <Row className="settings-item">
                       <Col xs={4} md={3} className="settings-item-name">
-                        <div>Classic Default Addon Track</div>
+                        <div>TBC Classic Default Addon Track</div>
                       </Col>
                       <Col xs={8} md={9} className="settings-item-config">
                         <DropdownButton
-                          id="default-wow-retail-track-dropdown"
+                          id="default-wow-classic-track-dropdown"
                           title={getDefaultTrackTile(gameDefaults.wow_classic.trackBranch)}
                           onSelect={this.toggleDefaultWowAddonTrack}
                         >
@@ -1023,7 +1038,7 @@ class SettingsWindow extends React.Component {
                     </Row>
                     <Row className="settings-item">
                       <Col xs={4} md={3} className="settings-item-name">
-                        <div>Classic Default Auto Update</div>
+                        <div>TBC Classic Default Auto Update</div>
                       </Col>
                       <Col xs={8} md={9} className="settings-item-config">
                         {appSettings
@@ -1033,6 +1048,82 @@ class SettingsWindow extends React.Component {
                               checked={gameDefaults.wow_classic.autoUpdate}
                               gameversion="wow_classic"
                               id="wow_classic_auto_update"
+                              onColor="#00cc00"
+                              height={20}
+                              width={40}
+                              activeBoxShadow="0 0 2px 3px #00cc00"
+                            />
+                          )
+                          : ''}
+                      </Col>
+                    </Row>
+                    <Row className="settings-item">
+                      <Col xs={4} md={3} className="settings-item-name">
+                        <div>Classic Era Install Path</div>
+                      </Col>
+                      <Col xs={8} md={9} className="settings-item-config">
+                        <p data-tip data-for="classic-era-dir-location">
+                          <Button
+                            className="select-install-dir-button"
+                            onClick={() => changeWowInstallDir('wow_classic_era')}
+                          >
+                            {wowInstalls.wow_classic_era || 'Not Installed'}
+                          </Button>
+                        </p>
+                        <ReactTooltip id="classic-era-dir-location">
+                          <span>{wowInstalls.wow_classic_era || 'Not Installed'}</span>
+                        </ReactTooltip>
+                        {wowInstallsErr && wowInstallsErr.wow_classic_era
+                          ? <span className="errorMsg">Couldn&apos;t find game in location</span>
+                          : ''}
+                      </Col>
+                    </Row>
+                    <Row className="settings-item">
+                      <Col xs={4} md={3} className="settings-item-name">
+                        <div>Classic Era Default Addon Track</div>
+                      </Col>
+                      <Col xs={8} md={9} className="settings-item-config">
+                        <DropdownButton
+                          id="default-wow-classic-era-track-dropdown"
+                          title={getDefaultTrackTile(gameDefaults.wow_classic_era.trackBranch)}
+                          onSelect={this.toggleDefaultWowAddonTrack}
+                        >
+                          <Dropdown.Item
+                            gameversion="wow_classic_era"
+                            key={1}
+                            eventKey={1}
+                          >
+                            Release
+                          </Dropdown.Item>
+                          <Dropdown.Item
+                            gameversion="wow_classic_era"
+                            key={2}
+                            eventKey={2}
+                          >
+                            Beta
+                          </Dropdown.Item>
+                          <Dropdown.Item
+                            gameversion="wow_classic_era"
+                            key={3}
+                            eventKey={3}
+                          >
+                            Alpha
+                          </Dropdown.Item>
+                        </DropdownButton>
+                      </Col>
+                    </Row>
+                    <Row className="settings-item">
+                      <Col xs={4} md={3} className="settings-item-name">
+                        <div>Classic Era Default Auto Update</div>
+                      </Col>
+                      <Col xs={8} md={9} className="settings-item-config">
+                        {appSettings
+                          ? (
+                            <Switch
+                              onChange={this.toggleDefaultAutoUpdate}
+                              checked={gameDefaults.wow_classic_era.autoUpdate}
+                              gameversion="wow_classic_era"
+                              id="wow_classic_era_auto_update"
                               onColor="#00cc00"
                               height={20}
                               width={40}
