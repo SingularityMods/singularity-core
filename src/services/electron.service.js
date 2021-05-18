@@ -67,7 +67,7 @@ function getLatestAppVersion() {
         'x-app-uuid': getAppData('UUID'),
       },
     };
-    axios.get(`${AppConfig.API_URL}app/latest?platform=${platform}&beta=${beta}`, axiosConfig)
+    axios.get(`${AppConfig.API_URL}/app/latest?platform=${platform}&beta=${beta}`, axiosConfig)
       .then((res) => {
         if (res.status === 200) {
           const latestVersion = res.data;
