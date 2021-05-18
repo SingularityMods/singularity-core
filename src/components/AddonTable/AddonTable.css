@@ -97,7 +97,7 @@ font-size: 0.8rem;
 margin-left: 0px;
 }
 
-#AddonTable .table-bordered td.react-bs-table-no-data {
+#AddonTable .table-bordered tr:last-child td.react-bs-table-no-data {
   border-radius: 0 0 1em 1em;
 }
 
