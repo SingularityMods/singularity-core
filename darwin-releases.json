@@ -1,6 +1,16 @@
 {
-"currentRelease": "1.4.2",
+"currentRelease": "1.4.3",
 	"releases": [
+		{
+			"version": "1.4.3",
+			"updateTo": {
+				"version": "1.4.3",
+				"pub_date": "2021-05-26T01:00:00",
+				"notes": "TBC Classic on mainline",
+				"name": "1.4.3",
+				"url": "https://storage.singularitycdn.com/App/Releases/Mac/Singularity-darwin-x64-1.4.3.zip"
+			}
+		},
 		{
 			"version": "1.4.2",
 			"updateTo": {
