@@ -62,6 +62,39 @@ export default class HomePage extends React.Component {
             </div>
             <SimpleBar scrollbarMaxSize={50} className={process.platform === 'darwin' ? 'home-page-bar mac' : 'home-page-bar'}>
               <div>
+                <h3 className="release-notes-title">Release Notes</h3>
+                <h5>
+                  1.4.3
+                  <span className="release-note-date">2021-05-26</span>
+                </h5>
+                <h5 className="release-note-section-header">Bug Fixes:</h5>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Improved Singularity&apos;s handling of addons with multiple manifest (.toc)
+                  files. This should resolve the issue where Singularity would show an addon
+                  update is available despite hte latest version being installed. As a side-effect
+                  of this fix, Singularity may not be able to automatically migrate WoW Classic Era
+                  addons to Burning Crusade addons in the _classic_ game directory for users that
+                  have not already migrated. Users will instead have to right-click the offending
+                  addons and select &ldquo;Reinstall Latest.&rdquo;
+                </p>
+                <hr />
+                <h5>
+                  1.4.2
+                  <span className="release-note-date">2021-05-19</span>
+                </h5>
+                <h5 className="release-note-section-header">Bug Fixes:</h5>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Improved displayed message when no addon files are available for a specific
+                  game version flavor.
+                </p>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Fixed an issue where the addon details window would fail to load Burning
+                  Crusade Classic addon files.
+                </p>
+                <hr />
                 <h5>
                   1.4.1
                   <span className="release-note-date">2021-05-18</span>
@@ -110,7 +143,6 @@ export default class HomePage extends React.Component {
                   Singularity.
                 </p>
                 <hr />
-                <h3 className="release-notes-title">Release Notes</h3>
                 <h5>
                   1.3.2
                   <span className="release-note-date">2021-03-05</span>

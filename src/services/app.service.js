@@ -1018,7 +1018,7 @@ function setAppConfig() {
     wowS.wow_classic_ptr.sortOrder = 5;
     wowS.wow_retail_beta.sortOrder = 6;
     wowS.wow_classic_beta.sortOrder = 7;
-    wowS.wow_classic.name = "World of Warcraft TBC Classic";
+    wowS.wow_classic.name = 'World of Warcraft TBC Classic';
     wowS.wow_classic.nickName = 'TBC Classic';
     wowS.wow_classic_era = {
       sortOrder: 3,
