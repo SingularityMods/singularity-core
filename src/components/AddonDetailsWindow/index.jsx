@@ -55,7 +55,6 @@ class AddonDetailsWindow extends React.Component {
     };
     this.addonInfoListener = this.addonInfoListener.bind(this);
     this.installAddon = this.installAddon.bind(this);
-    this.reinstallAddon = this.reinstallAddon.bind(this);
     this.updateAddon = this.updateAddon.bind(this);
     this.uninstallAddon = this.uninstallAddon.bind(this);
     this.confirmUninstall = this.confirmUninstall.bind(this);
@@ -143,7 +142,7 @@ class AddonDetailsWindow extends React.Component {
     }
     if (installed) {
       if (installedAddon.unknownUpdate) {
-        return <UpdateAddonButton handleClick={this.reinstallAddon} type="Reinstall" />;
+        return <UpdateAddonButton handleClick={this.updateAddon} type="Reinstall Latest" />;
       }
       if (updateAvailable) {
         return <UpdateAddonButton handleClick={this.updateAddon} clickData={addon} type="Update" />;
@@ -174,37 +173,6 @@ class AddonDetailsWindow extends React.Component {
         this.setState({
           installed: true,
           installedAddon,
-          currentlyUpdating: false,
-          currentlyInstallingFile: '',
-          updateAvailable,
-          updateError: false,
-        });
-      })
-      .catch(() => {
-        this.setState({
-          currentlyUpdating: false,
-          currentlyInstallingFile: '',
-          updateError: true,
-        });
-      });
-  }
-
-  reinstallAddon() {
-    const {
-      gameId,
-      gameVersion,
-      installedAddon,
-    } = this.state;
-    const installedFile = installedAddon.installedFile._id || installedAddon.installedFile.fileId;
-    this.setState({
-      currentlyUpdating: true,
-    });
-    ipcRenderer.invoke('install-addon', gameId, gameVersion, installedAddon, installedFile.fileId)
-      .then((newlyInstalledAddon) => {
-        const { updateAvailable } = newlyInstalledAddon;
-        this.setState({
-          installed: true,
-          installedAddon: newlyInstalledAddon,
           currentlyUpdating: false,
           currentlyInstallingFile: '',
           updateAvailable,
@@ -301,7 +269,7 @@ class AddonDetailsWindow extends React.Component {
     this.setState({
       currentlyUpdating: true,
     });
-    ipcRenderer.invoke('install-addon', gameId, gameVersion, installedAddon, latestFile.fileId)
+    ipcRenderer.invoke('install-addon', gameId, gameVersion, installedAddon, latestFile._id)
       .then((newlyInstalledAddon) => {
         const { updateAvailable } = newlyInstalledAddon;
         this.setState({

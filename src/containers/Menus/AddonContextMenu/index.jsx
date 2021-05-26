@@ -354,7 +354,7 @@ class AddonContextMenu extends React.Component {
         return (
           <Col xs={12} className="context-install-state" onClick={() => handleReinstall(title)}>
             <div><i className="fas fa-save context-menu-item-icon" /></div>
-            <div className="context-menu-item-lable">Reinstall</div>
+            <div className="context-menu-item-lable">Reinstall Latest</div>
           </Col>
         );
       }

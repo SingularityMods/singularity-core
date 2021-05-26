@@ -7,7 +7,7 @@ import {
   getAddonVersion,
 } from './storage.service';
 
-function getAddonsFromFingerprints(directories) {
+function getAddonsFromFingerprints(directories, addonVersion) {
   return new Promise((resolve, reject) => {
     if (directories.length === 0) {
       return resolve([]);
@@ -21,7 +21,7 @@ function getAddonsFromFingerprints(directories) {
       },
     };
     const postData = { directories };
-    return axios.post(`${AppConfig.API_URL}/addon/identify`, postData, axiosConfig)
+    return axios.post(`${AppConfig.API_URL}/addon/identify/${addonVersion}`, postData, axiosConfig)
       .then((res) => {
         if (res.status !== 200) {
           return reject(new Error('Unable to fingerprint addons'));

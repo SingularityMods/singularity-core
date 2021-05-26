@@ -383,6 +383,7 @@ class InstalledAddonsWindow extends React.Component {
 
   contextReinstallAddon(addonName) {
     const {
+      addonVersion,
       currentlyUpdating,
       installedAddons,
       pendingUpdates,
@@ -395,11 +396,12 @@ class InstalledAddonsWindow extends React.Component {
     const newCurrentlyUpdating = currentlyUpdating.slice();
     const newPendingUpdates = pendingUpdates.filter((obj) => obj !== addon.addonId);
     newCurrentlyUpdating.splice(0, 0, addon.addonId);
+    const latestFile = getLatestFile(addon, addonVersion);
     this.setState({
       currentlyUpdating: newCurrentlyUpdating,
       pendingUpdates: newPendingUpdates,
     });
-    ipcRenderer.invoke('install-addon', gameId, gameVersion, addon, addon.installedFile.fileId)
+    ipcRenderer.invoke('install-addon', gameId, gameVersion, addon, latestFile._id)
       .then((installedAddon) => {
         this.handleAddonInstallComplete(installedAddon);
       })

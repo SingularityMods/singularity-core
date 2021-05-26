@@ -668,7 +668,7 @@ function handleSync() {
 
 // For a given game ID and version, take in an object containing directories
 // and fingerprints and attempt to identify the installed addons via the api
-function identifyAddons(gameId, gameVersion, hashMap) {
+function identifyAddons(gameId, gameVersion, addonVersion, hashMap) {
   return new Promise((resolve, reject) => {
     const directories = [];
     Object.entries(hashMap).forEach(([folder, hash]) => {
@@ -678,7 +678,7 @@ function identifyAddons(gameId, gameVersion, hashMap) {
       });
     });
     log.info(`Submitting addon identification request for ${gameVersion}`);
-    getAddonsFromFingerprints(directories)
+    getAddonsFromFingerprints(directories, addonVersion)
       .then((addons) => {
         const win = getMainBrowserWindow();
         return handleFingerprintResponse(gameId, gameVersion, addons, hashMap, win);
@@ -1452,7 +1452,7 @@ function _findAddonsForGameVersion(gameId, gameVersion, sync) {
     const { fingerprintDepth, gameVersions } = getGameData(gameId.toString());
     const { addonVersion } = gameVersions[gameVersion];
     fingerprintAllAsync(gameId, gameS[gameVersion].addonPath, fingerprintDepth)
-      .then((hashMap) => identifyAddons(gameId.toString(), gameVersion, hashMap))
+      .then((hashMap) => identifyAddons(gameId.toString(), gameVersion, addonVersion, hashMap))
       .then((result) => {
         log.info('Checking for addons that are configured to auto update');
         const toUpdate = [];

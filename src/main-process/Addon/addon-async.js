@@ -170,7 +170,7 @@ ipcMain.on('find-addons-async', async (event, gameId, gameVersion) => {
     .then((hashMap) => {
       log.info(`Fingerprinted ${Object.keys(hashMap).length} directories for ${gameVersion}`);
       event.sender.send('app-status-message', 'Checking for updates', 'status');
-      identifyAddons(gameId.toString(), gameVersion, hashMap)
+      identifyAddons(gameId.toString(), gameVersion, gameD.gameVersions[gameVersion].addonVersion, hashMap)
         .then(() => {
           if (gameS[gameVersion].sync && isAuthenticated()) {
             log.info('Sync enabled for game version');
