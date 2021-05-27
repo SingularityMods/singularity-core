@@ -77,7 +77,7 @@ export default class HomePage extends React.Component {
                   {' '}
                   - Improved Singularity&apos;s handling of addons with multiple manifest (.toc)
                   files. This should resolve the issue where Singularity would show an addon
-                  update is available despite hte latest version being installed. As a side-effect
+                  update is available despite the latest version being installed. As a side-effect
                   of this fix, Singularity may not be able to automatically migrate WoW Classic Era
                   addons to Burning Crusade addons in the _classic_ game directory for users that
                   have not already migrated. Users will instead have to right-click the offending
