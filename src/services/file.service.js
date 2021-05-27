@@ -567,27 +567,33 @@ function handleProtocolUrl(url) {
     return getCluster(clusterId)
       .then((cluster) => {
         cluster.bannerPath = getBannerPath(cluster.gameId);
-        cluster.installedAddons = getInstalledAddons(cluster.gameId, cluster.gameVersion);
-        cluster.addons.forEach((addon, index) => {
+        let installedVersion = cluster.gameVersion;
+        if (cluster.gameVersion === 'wow_classic') {
+          installedVersion = 'wow_classic_era';
+        } else if (cluster.gameVersion === 'wow_burning_crusade') {
+          installedVersion = 'wow_classic';
+        }
+        cluster.installedAddons = getInstalledAddons(cluster.gameId, installedVersion);
+        cluster.projects.forEach((addon, index) => {
           if (addon.authors && addon.authors.length > 0) {
-            cluster.addons[index].author = addon.authors[0].name;
+            cluster.projects[index].author = addon.authors[0].name;
           } else if (addon.curseAuthors) {
-            cluster.addons[index].author = addon.curseAuthors[0].name;
+            cluster.projects[index].author = addon.curseAuthors[0].name;
           } else if (cluster.tukuiAuthor) {
-            cluster.addons[index].author = addon.tukuiAuthor;
+            cluster.projects[index].author = addon.tukuiAuthor;
           } else if (cluster.mmouiAuthor) {
-            cluster.addons[index].author = addon.mmouiAuthor;
+            cluster.projects[index].author = addon.mmouiAuthor;
           }
 
           if (addon.curseAttachments && addon.curseAttachments.length > 0) {
-            cluster.addons[index].avatar = addon.curseAttachments[0].url;
+            cluster.projects[index].avatar = addon.curseAttachments[0].url;
           } else if (addon.mmouiScreenshots && addon.mmouiScreenshots.length > 0) {
             const [screenshot] = addon.mmouiScreenshots;
-            cluster.addons[index].avatar = screenshot;
+            cluster.projects[index].avatar = screenshot;
           } else if (addon.tukuiScreenshotUrl) {
-            cluster.addons[index].avatar = addon.tukuiScreenshotUrl;
+            cluster.projects[index].avatar = addon.tukuiScreenshotUrl;
           } else {
-            cluster.addons[index].avatar = '';
+            cluster.projects[index].avatar = '';
           }
         });
         if (win) {
@@ -1038,20 +1044,27 @@ function installCluster(clusterId) {
     getClusterDownloadInfo(clusterId)
       .then((clusterInfo) => {
         const {
-          addons,
+          projects,
           gameId,
           gameVersion,
         } = clusterInfo;
-        const installedAddons = getInstalledAddons(gameId, gameVersion);
+        let installedVersion = gameVersion;
+        if (gameVersion === 'wow_classic') {
+          installedVersion = 'wow_classic_era';
+        } else if (gameVersion === 'wow_burning_crusade') {
+          installedVersion = 'wow_classic';
+        }
+        const installedAddons = getInstalledAddons(gameId, installedVersion);
 
         // Check for already installed addons
-        addons.forEach((addon) => {
+        projects.forEach((addon) => {
           const match = installedAddons.find((a) => a.addonId === addon._id);
           if (!match) {
             const installObj = {};
             installObj.addon = addon;
             log.info(`Addon ${addon.name} needs to be installed from cluster`);
-            installObj.gameVersion = gameVersion;
+            installObj.gameVersion = installedVersion;
+            installObj.addonVersion = gameVersion;
             installObj.gameId = gameId;
             clusterAddonsToInstall.push(installObj);
           }
@@ -1066,27 +1079,27 @@ function installCluster(clusterId) {
         pool.start()
           .then(() => {
             clusterInfo.bannerPath = getBannerPath(gameId);
-            clusterInfo.installedAddons = getInstalledAddons(gameId, gameVersion);
-            clusterInfo.addons.forEach((addon, index) => {
+            clusterInfo.installedAddons = getInstalledAddons(gameId, installedVersion);
+            clusterInfo.projects.forEach((addon, index) => {
               if (addon.authors && addon.authors.length > 0) {
-                clusterInfo.addons[index].author = addon.authors[0].name;
+                clusterInfo.projects[index].author = addon.authors[0].name;
               } else if (addon.curseAuthors) {
-                clusterInfo.addons[index].author = addon.curseAuthors[0].name;
+                clusterInfo.projects[index].author = addon.curseAuthors[0].name;
               } else if (addon.tukuiAuthor) {
-                clusterInfo.addons[index].author = addon.tukuiAuthor;
+                clusterInfo.projects[index].author = addon.tukuiAuthor;
               } else if (addon.mmouiAuthor) {
-                clusterInfo.addons[index].author = addon.mmouiAuthor;
+                clusterInfo.projects[index].author = addon.mmouiAuthor;
               }
 
               if (addon.curseAttachments && addon.curseAttachments.length > 0) {
-                clusterInfo.addons[index].avatar = addon.curseAttachments[0].url;
+                clusterInfo.projects[index].avatar = addon.curseAttachments[0].url;
               } else if (addon.mmouiScreenshots && addon.mmouiScreenshots.length > 0) {
                 const [screenshot] = addon.mmouiScreenshots;
-                clusterInfo.addons[index].avatar = screenshot;
+                clusterInfo.projects[index].avatar = screenshot;
               } else if (addon.tukuiScreenshotUrl) {
-                clusterInfo.addons[index].avatar = addon.tukuiScreenshotUrl;
+                clusterInfo.projects[index].avatar = addon.tukuiScreenshotUrl;
               } else {
-                clusterInfo.addons[index].avatar = '';
+                clusterInfo.projects[index].avatar = '';
               }
             });
 
@@ -1299,7 +1312,7 @@ function _autoUpdateAddon(updateObj) {
 function _installAddonFromCluster(installObj) {
   return new Promise((resolve, reject) => {
     const {
-      addon, gameId, gameVersion,
+      addon, gameId, gameVersion, addonVersion,
     } = installObj;
     addon.addonName = addon.name;
     addon.addonId = addon._id;
@@ -1309,7 +1322,7 @@ function _installAddonFromCluster(installObj) {
     let latestFile;
 
     const possibleFiles = addon.latestFiles.filter((file) => (
-      file.releaseType <= defaultTrackBranch && file.gameVersionFlavor === gameVersion
+      file.releaseType <= defaultTrackBranch && file.gameVersionFlavor === addonVersion
     ));
     if (possibleFiles && possibleFiles.length > 0) {
       latestFile = possibleFiles.reduce((a, b) => (

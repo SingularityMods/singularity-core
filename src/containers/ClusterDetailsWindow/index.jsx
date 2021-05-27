@@ -53,7 +53,13 @@ class ClusterDetailsWindow extends React.Component {
     } = this.props;
 
     const latestFile = getLatestFile(addon, cluster.gameVersion);
-    ipcRenderer.invoke('install-addon-from-cluster', cluster.gameId, cluster.gameVersion, addon, latestFile._id)
+    let installedVersion = cluster.gameVersion;
+    if (cluster.gameVersion === 'wow_classic') {
+      installedVersion = 'wow_classic_era';
+    } else if (cluster.gameVersion === 'wow_burning_crusade') {
+      installedVersion = 'wow_classic';
+    }
+    ipcRenderer.invoke('install-addon-from-cluster', cluster.gameId, installedVersion, addon, latestFile._id)
       .then(() => {
       })
       .catch((error) => {
@@ -67,7 +73,13 @@ class ClusterDetailsWindow extends React.Component {
     const {
       cluster,
     } = this.props;
-    ipcRenderer.invoke('install-cluster', cluster.clusterId, cluster.gameId, cluster.gameVersion)
+    let installedVersion = cluster.gameVersion;
+    if (cluster.gameVersion === 'wow_classic') {
+      installedVersion = 'wow_classic_era';
+    } else if (cluster.gameVersion === 'wow_burning_crusade') {
+      installedVersion = 'wow_classic';
+    }
+    ipcRenderer.invoke('install-cluster', cluster.clusterId, cluster.gameId, installedVersion)
       .then(() => {
       })
       .catch((error) => {
@@ -102,10 +114,23 @@ class ClusterDetailsWindow extends React.Component {
       if (gameVersion === 'wow_retail') {
         return 'Retail';
       }
+      if (gameVersion === 'wow_burning_crusade') {
+        return 'TBC Classic';
+      }
       if (gameVersion === 'wow_classic') {
-        return 'Classic';
+        return 'Classic Era';
       }
       return '';
+    }
+
+    function getInstalledVersion() {
+      let installedVersion = cluster.gameVersion;
+      if (cluster.gameVersion === 'wow_classic') {
+        installedVersion = 'wow_classic_era';
+      } else if (cluster.gameVersion === 'wow_burning_crusade') {
+        installedVersion = 'wow_classic';
+      }
+      return installedVersion;
     }
 
     function getDefaultAvatar(gameId) {
@@ -131,7 +156,7 @@ class ClusterDetailsWindow extends React.Component {
               <AddonDetailsWindow
                 addonId={selectedAddon}
                 gameId={cluster.gameId}
-                gameVersion={cluster.gameVersion}
+                gameVersion={getInstalledVersion()}
                 handleGoBack={this.deselectAddon}
               />
             )
@@ -202,9 +227,10 @@ class ClusterDetailsWindow extends React.Component {
                   </Row>
                   <Row className="cluster-details-section">
                     <ClusterAddonTable
-                      addons={cluster.addons}
+                      addons={cluster.projects}
                       installedAddons={cluster.installedAddons}
-                      gameVersion={cluster.gameVersion}
+                      gameVersion={getInstalledVersion()}
+                      addonVersion={cluster.gameVersion}
                       gameId={cluster.gameId}
                       keyField="_id"
                       handleSelectAddon={this.selectAddon}

@@ -67,6 +67,11 @@ export default class HomePage extends React.Component {
                   1.4.3
                   <span className="release-note-date">2021-05-26</span>
                 </h5>
+                <h5 className="release-note-section-header">New Features:</h5>
+                <p className="release-note-bullet">
+                  {' '}
+                  - Singularity now supports addon clusters for Burning Crusade Classic
+                </p>
                 <h5 className="release-note-section-header">Bug Fixes:</h5>
                 <p className="release-note-bullet">
                   {' '}

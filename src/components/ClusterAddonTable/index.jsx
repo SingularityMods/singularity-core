@@ -22,6 +22,7 @@ function ClusterAddonTable(props) {
     installedAddons,
     gameId,
     gameVersion,
+    addonVersion,
     keyField,
     handleSelectAddon,
     installAddon,
@@ -120,7 +121,7 @@ function ClusterAddonTable(props) {
     dataField: 'gameVersion',
     isDummyField: true,
     text: 'Patch',
-    formatExtraData: gameVersion,
+    formatExtraData: addonVersion,
     formatter: (cellContent, row, rowIndex, gameV) => {
       const latest = getLatestFile(row, gameV);
       if (latest) {
@@ -150,6 +151,7 @@ ClusterAddonTable.propTypes = {
   addons: PropTypes.array.isRequired,
   installedAddons: PropTypes.array.isRequired,
   gameVersion: PropTypes.string.isRequired,
+  addonVersion: PropTypes.string.isRequired,
   gameId: PropTypes.number.isRequired,
   keyField: PropTypes.string.isRequired,
   handleSelectAddon: PropTypes.func.isRequired,
