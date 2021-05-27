@@ -67,7 +67,7 @@ class AddonVersionTable extends React.Component {
     }, {
       dataField: 'gameVersion',
       text: 'Patch',
-      formatter: (cellContent) => (cellContent[0]),
+      formatter: (cell, row) => getLatestVersion(cell,row.gameVersionFlavor),
     }, {
       dataField: 'releaseType',
       text: 'Type',
@@ -110,6 +110,26 @@ class AddonVersionTable extends React.Component {
         );
       },
     }];
+
+    function getLatestVersion(versions, flavor) {
+      if (flavor === 'eso' || flavor === 'wow_retail') {
+        return versions.sort((a,b) => b-a)[0];
+      }
+      if (flavor === 'wow_classic') {
+        let latest = versions.find((v) => v.split('.')[0] === '1');
+        if (!latest) {
+          return versions.sort((a,b) => b-a)[0];
+        }
+        return latest;
+      }
+      if (flavor === 'wow_burning_crusade') {
+        let latest = versions.find((v) => v.split('.')[0] === '2');
+        if (!latest) {
+          return versions.sort((a,b) => b-a)[0];
+        }
+        return latest;
+      }
+    }
 
     function formatDate(date2) {
       const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
